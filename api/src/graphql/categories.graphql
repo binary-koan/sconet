@@ -1,0 +1,39 @@
+type Category {
+  id: String!
+  name: String!
+  color: String!
+  icon: String!
+  isRegular: Boolean!
+  budget: Int
+  sortOrder: Int
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Query {
+  categories: [Category!]! @authenticated
+  category(id: String!): Category @authenticated
+}
+
+input CreateCategoryInput {
+  name: String!
+  color: String!
+  icon: String!
+  isRegular: Boolean!
+  budget: Int
+}
+
+input UpdateCategoryInput {
+  name: String
+  color: String
+  icon: String
+  isRegular: Boolean
+  budget: Int
+}
+
+type Mutation {
+  createCategory(input: CreateCategoryInput!): Category! @authenticated
+  updateCategory(id: String!, input: UpdateCategoryInput!): Category! @authenticated
+  deleteCategory(id: String!): Category! @authenticated
+  reorderCategories(orderedIds: [String!]!): [Category!]! @authenticated
+}

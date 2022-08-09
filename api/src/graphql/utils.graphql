@@ -1,0 +1,4 @@
+scalar DateTime
+scalar JSON
+
+directive @authenticated on FIELD_DEFINITION

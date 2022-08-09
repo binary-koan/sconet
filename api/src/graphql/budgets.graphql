@@ -1,0 +1,19 @@
+type MonthBudget {
+  id: String!
+  month: Int!
+  year: String!
+
+  income: Int!
+  categories: [CategoryBudget!]!
+}
+
+type CategoryBudget {
+  id: String!
+  categoryId: String!
+  category: Category
+  amountSpent: Int!
+}
+
+type Query {
+  budgets(year: String!): [MonthBudget!]! @authenticated
+}

@@ -1,0 +1,43 @@
+type AccountMailbox {
+  id: String!
+  name: String!
+  mailServerOptions: JSON!
+  fromAddressPattern: String
+  datePattern: String
+  memoPattern: String
+  amountPattern: String
+  transactions: [Transaction!]!
+}
+
+type Query {
+  accountMailboxes: [AccountMailbox!]! @authenticated
+  accountMailbox(id: String!): AccountMailbox @authenticated
+}
+
+input CreateAccountMailboxInput {
+  name: String!
+  mailServerOptions: JSON!
+  fromAddressPattern: String
+  datePattern: String
+  memoPattern: String
+  amountPattern: String
+}
+
+input UpdateAccountMailboxInput {
+  name: String
+  mailServerOptions: JSON
+  fromAddressPattern: String
+  datePattern: String
+  memoPattern: String
+  amountPattern: String
+}
+
+type Mutation {
+  createAccountMailbox(input: CreateAccountMailboxInput!): AccountMailbox!
+    @authenticated
+  updateAccountMailbox(
+    id: String!
+    input: UpdateAccountMailboxInput!
+  ): AccountMailbox! @authenticated
+  deleteAccountMailbox(id: String!): AccountMailbox! @authenticated
+}

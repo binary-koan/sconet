@@ -1,0 +1,13 @@
+schema: src/graphql/*.graphql
+generates:
+  ./src/resolvers-types.ts:
+    plugins:
+      - typescript
+      - typescript-resolvers
+    config:
+      contextType: ./context#Context
+      scalars:
+        DateTime: Date
+      mappers:
+        Transaction: ./db/transaction#TransactionRecord
+        AccountMailbox: ./db/accountMailbox#AccountMailboxRecord
