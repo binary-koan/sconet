@@ -2,9 +2,10 @@ import { CategoryRecord } from "../db/category"
 import { findCategories } from "../db/category/findCategories"
 import { getCategory } from "../db/category/getCategory"
 import { insertCategory } from "../db/category/insertCategory"
+import { setCategoryOrder } from "../db/category/setCategoryOrder"
 import { softDeleteCategory } from "../db/category/softDeleteCategory"
 import { updateOneCategory } from "../db/category/updateOneCategory"
-import { MutationResolvers, QueryResolvers } from "../resolvers-types"
+import { MutationResolvers, QueryResolvers, Resolvers } from "../resolvers-types"
 
 export const categories: QueryResolvers["categories"] = () => {
   return findCategories()
@@ -50,4 +51,22 @@ export const deleteCategory: MutationResolvers["deleteCategory"] = (_, { id }) =
   softDeleteCategory(id)
 
   return category
+}
+
+export const reorderCategories: MutationResolvers["reorderCategories"] = (_, { orderedIds }) => {
+  setCategoryOrder(orderedIds)
+
+  return findCategories()
+}
+
+export const Category: Resolvers["Category"] = {
+  id: (category) => category.id,
+  name: (category) => category.name,
+  color: (category) => category.color,
+  icon: (category) => category.icon,
+  budget: (category) => category.budget,
+  isRegular: (category) => category.isRegular,
+  sortOrder: (category) => category.sortOrder,
+  createdAt: (category) => category.createdAt,
+  updatedAt: (category) => category.updatedAt
 }

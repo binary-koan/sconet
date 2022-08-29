@@ -1,13 +1,15 @@
 import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
+import { CategoryRecord } from './db/category';
 import { TransactionRecord } from './db/transaction';
 import { AccountMailboxRecord } from './db/accountMailbox';
+import { FindTransactionsResult } from './db/transaction/findTransactions';
+import { MonthBudgetResult, CategoryBudgetResult } from './db/budgets/budgetsInYear';
 import { Context } from './context';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -22,48 +24,48 @@ export type Scalars = {
 
 export type AccountMailbox = {
   __typename?: 'AccountMailbox';
-  amountPattern?: Maybe<Scalars['String']>;
-  datePattern?: Maybe<Scalars['String']>;
-  fromAddressPattern?: Maybe<Scalars['String']>;
+  amountPattern: Maybe<Scalars['String']>;
+  datePattern: Maybe<Scalars['String']>;
+  fromAddressPattern: Maybe<Scalars['String']>;
   id: Scalars['String'];
   mailServerOptions: Scalars['JSON'];
-  memoPattern?: Maybe<Scalars['String']>;
+  memoPattern: Maybe<Scalars['String']>;
   name: Scalars['String'];
   transactions: Array<Transaction>;
 };
 
 export type Category = {
   __typename?: 'Category';
-  budget?: Maybe<Scalars['Int']>;
+  budget: Maybe<Scalars['Int']>;
   color: Scalars['String'];
   createdAt: Scalars['DateTime'];
   icon: Scalars['String'];
   id: Scalars['String'];
   isRegular: Scalars['Boolean'];
   name: Scalars['String'];
-  sortOrder?: Maybe<Scalars['Int']>;
+  sortOrder: Maybe<Scalars['Int']>;
   updatedAt: Scalars['DateTime'];
 };
 
 export type CategoryBudget = {
   __typename?: 'CategoryBudget';
   amountSpent: Scalars['Int'];
-  category?: Maybe<Category>;
-  categoryId: Scalars['String'];
+  category: Maybe<Category>;
+  categoryId: Maybe<Scalars['String']>;
   id: Scalars['String'];
 };
 
 export type CreateAccountMailboxInput = {
-  amountPattern?: InputMaybe<Scalars['String']>;
-  datePattern?: InputMaybe<Scalars['String']>;
-  fromAddressPattern?: InputMaybe<Scalars['String']>;
+  amountPattern: InputMaybe<Scalars['String']>;
+  datePattern: InputMaybe<Scalars['String']>;
+  fromAddressPattern: InputMaybe<Scalars['String']>;
   mailServerOptions: Scalars['JSON'];
-  memoPattern?: InputMaybe<Scalars['String']>;
+  memoPattern: InputMaybe<Scalars['String']>;
   name: Scalars['String'];
 };
 
 export type CreateCategoryInput = {
-  budget?: InputMaybe<Scalars['Int']>;
+  budget: InputMaybe<Scalars['Int']>;
   color: Scalars['String'];
   icon: Scalars['String'];
   isRegular: Scalars['Boolean'];
@@ -73,9 +75,9 @@ export type CreateCategoryInput = {
 export type CreateTransactionInput = {
   accountMailboxId: Scalars['String'];
   amount: Scalars['Int'];
-  categoryId?: InputMaybe<Scalars['String']>;
-  date?: InputMaybe<Scalars['DateTime']>;
-  includeInReports?: InputMaybe<Scalars['Boolean']>;
+  categoryId: InputMaybe<Scalars['String']>;
+  date: InputMaybe<Scalars['DateTime']>;
+  includeInReports: InputMaybe<Scalars['Boolean']>;
   memo: Scalars['String'];
 };
 
@@ -165,18 +167,18 @@ export type MutationUpdateTransactionArgs = {
 export type PaginatedTransactions = {
   __typename?: 'PaginatedTransactions';
   data: Array<Transaction>;
-  nextOffset?: Maybe<Scalars['String']>;
+  nextOffset: Maybe<Scalars['String']>;
   totalCount: Scalars['Int'];
 };
 
 export type Query = {
   __typename?: 'Query';
-  accountMailbox?: Maybe<AccountMailbox>;
+  accountMailbox: Maybe<AccountMailbox>;
   accountMailboxes: Array<AccountMailbox>;
   budgets: Array<MonthBudget>;
   categories: Array<Category>;
-  category?: Maybe<Category>;
-  transaction?: Maybe<Transaction>;
+  category: Maybe<Category>;
+  transaction: Maybe<Transaction>;
   transactions: PaginatedTransactions;
 };
 
@@ -202,9 +204,9 @@ export type QueryTransactionArgs = {
 
 
 export type QueryTransactionsArgs = {
-  filter?: InputMaybe<TransactionFilter>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['String']>;
+  filter: InputMaybe<TransactionFilter>;
+  limit: InputMaybe<Scalars['Int']>;
+  offset: InputMaybe<Scalars['String']>;
 };
 
 export type Transaction = {
@@ -212,49 +214,49 @@ export type Transaction = {
   accountMailbox: AccountMailbox;
   accountMailboxId: Scalars['String'];
   amount: Scalars['Int'];
-  category?: Maybe<Category>;
-  categoryId?: Maybe<Scalars['String']>;
+  category: Maybe<Category>;
+  categoryId: Maybe<Scalars['String']>;
   date: Scalars['DateTime'];
   id: Scalars['String'];
   includeInReports: Scalars['Boolean'];
   memo: Scalars['String'];
   originalMemo: Scalars['String'];
-  splitFrom?: Maybe<Transaction>;
-  splitFromId?: Maybe<Scalars['String']>;
+  splitFrom: Maybe<Transaction>;
+  splitFromId: Maybe<Scalars['String']>;
   splitTo: Array<Transaction>;
 };
 
 export type TransactionFilter = {
-  categoryIds?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-  dateFrom?: InputMaybe<Scalars['DateTime']>;
-  dateUntil?: InputMaybe<Scalars['DateTime']>;
-  keyword?: InputMaybe<Scalars['String']>;
+  categoryIds: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  dateFrom: InputMaybe<Scalars['DateTime']>;
+  dateUntil: InputMaybe<Scalars['DateTime']>;
+  keyword: InputMaybe<Scalars['String']>;
 };
 
 export type UpdateAccountMailboxInput = {
-  amountPattern?: InputMaybe<Scalars['String']>;
-  datePattern?: InputMaybe<Scalars['String']>;
-  fromAddressPattern?: InputMaybe<Scalars['String']>;
-  mailServerOptions?: InputMaybe<Scalars['JSON']>;
-  memoPattern?: InputMaybe<Scalars['String']>;
-  name?: InputMaybe<Scalars['String']>;
+  amountPattern: InputMaybe<Scalars['String']>;
+  datePattern: InputMaybe<Scalars['String']>;
+  fromAddressPattern: InputMaybe<Scalars['String']>;
+  mailServerOptions: InputMaybe<Scalars['JSON']>;
+  memoPattern: InputMaybe<Scalars['String']>;
+  name: InputMaybe<Scalars['String']>;
 };
 
 export type UpdateCategoryInput = {
-  budget?: InputMaybe<Scalars['Int']>;
-  color?: InputMaybe<Scalars['String']>;
-  icon?: InputMaybe<Scalars['String']>;
-  isRegular?: InputMaybe<Scalars['Boolean']>;
-  name?: InputMaybe<Scalars['String']>;
+  budget: InputMaybe<Scalars['Int']>;
+  color: InputMaybe<Scalars['String']>;
+  icon: InputMaybe<Scalars['String']>;
+  isRegular: InputMaybe<Scalars['Boolean']>;
+  name: InputMaybe<Scalars['String']>;
 };
 
 export type UpdateTransactionInput = {
-  accountMailboxId?: InputMaybe<Scalars['String']>;
-  amount?: InputMaybe<Scalars['Int']>;
-  categoryId?: InputMaybe<Scalars['String']>;
-  date?: InputMaybe<Scalars['DateTime']>;
-  includeInReports?: InputMaybe<Scalars['Boolean']>;
-  memo?: InputMaybe<Scalars['String']>;
+  accountMailboxId: InputMaybe<Scalars['String']>;
+  amount: InputMaybe<Scalars['Int']>;
+  categoryId: InputMaybe<Scalars['String']>;
+  date: InputMaybe<Scalars['DateTime']>;
+  includeInReports: InputMaybe<Scalars['Boolean']>;
+  memo: InputMaybe<Scalars['String']>;
 };
 
 
@@ -328,17 +330,17 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversTypes = {
   AccountMailbox: ResolverTypeWrapper<AccountMailboxRecord>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
-  Category: ResolverTypeWrapper<Category>;
-  CategoryBudget: ResolverTypeWrapper<CategoryBudget>;
+  Category: ResolverTypeWrapper<CategoryRecord>;
+  CategoryBudget: ResolverTypeWrapper<CategoryBudgetResult>;
   CreateAccountMailboxInput: CreateAccountMailboxInput;
   CreateCategoryInput: CreateCategoryInput;
   CreateTransactionInput: CreateTransactionInput;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
   JSON: ResolverTypeWrapper<Scalars['JSON']>;
-  MonthBudget: ResolverTypeWrapper<MonthBudget>;
+  MonthBudget: ResolverTypeWrapper<MonthBudgetResult>;
   Mutation: ResolverTypeWrapper<{}>;
-  PaginatedTransactions: ResolverTypeWrapper<Omit<PaginatedTransactions, 'data'> & { data: Array<ResolversTypes['Transaction']> }>;
+  PaginatedTransactions: ResolverTypeWrapper<FindTransactionsResult>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']>;
   Transaction: ResolverTypeWrapper<TransactionRecord>;
@@ -352,17 +354,17 @@ export type ResolversTypes = {
 export type ResolversParentTypes = {
   AccountMailbox: AccountMailboxRecord;
   Boolean: Scalars['Boolean'];
-  Category: Category;
-  CategoryBudget: CategoryBudget;
+  Category: CategoryRecord;
+  CategoryBudget: CategoryBudgetResult;
   CreateAccountMailboxInput: CreateAccountMailboxInput;
   CreateCategoryInput: CreateCategoryInput;
   CreateTransactionInput: CreateTransactionInput;
   DateTime: Scalars['DateTime'];
   Int: Scalars['Int'];
   JSON: Scalars['JSON'];
-  MonthBudget: MonthBudget;
+  MonthBudget: MonthBudgetResult;
   Mutation: {};
-  PaginatedTransactions: Omit<PaginatedTransactions, 'data'> & { data: Array<ResolversParentTypes['Transaction']> };
+  PaginatedTransactions: FindTransactionsResult;
   Query: {};
   String: Scalars['String'];
   Transaction: TransactionRecord;
@@ -377,35 +379,35 @@ export type AuthenticatedDirectiveArgs = { };
 export type AuthenticatedDirectiveResolver<Result, Parent, ContextType = Context, Args = AuthenticatedDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
 
 export type AccountMailboxResolvers<ContextType = Context, ParentType extends ResolversParentTypes['AccountMailbox'] = ResolversParentTypes['AccountMailbox']> = {
-  amountPattern?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  datePattern?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  fromAddressPattern?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  mailServerOptions?: Resolver<ResolversTypes['JSON'], ParentType, ContextType>;
-  memoPattern?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  transactions?: Resolver<Array<ResolversTypes['Transaction']>, ParentType, ContextType>;
+  amountPattern: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  datePattern: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  fromAddressPattern: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  id: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  mailServerOptions: Resolver<ResolversTypes['JSON'], ParentType, ContextType>;
+  memoPattern: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  name: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  transactions: Resolver<Array<ResolversTypes['Transaction']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type CategoryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Category'] = ResolversParentTypes['Category']> = {
-  budget?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  color?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
-  icon?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  isRegular?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  sortOrder?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  budget: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  color: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  createdAt: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  icon: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  isRegular: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  name: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  sortOrder: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  updatedAt: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type CategoryBudgetResolvers<ContextType = Context, ParentType extends ResolversParentTypes['CategoryBudget'] = ResolversParentTypes['CategoryBudget']> = {
-  amountSpent?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  category?: Resolver<Maybe<ResolversTypes['Category']>, ParentType, ContextType>;
-  categoryId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  amountSpent: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  category: Resolver<Maybe<ResolversTypes['Category']>, ParentType, ContextType>;
+  categoryId: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  id: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -418,75 +420,75 @@ export interface JsonScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes
 }
 
 export type MonthBudgetResolvers<ContextType = Context, ParentType extends ResolversParentTypes['MonthBudget'] = ResolversParentTypes['MonthBudget']> = {
-  categories?: Resolver<Array<ResolversTypes['CategoryBudget']>, ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  income?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  month?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  year?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  categories: Resolver<Array<ResolversTypes['CategoryBudget']>, ParentType, ContextType>;
+  id: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  income: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  month: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  year: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  createAccountMailbox?: Resolver<ResolversTypes['AccountMailbox'], ParentType, ContextType, RequireFields<MutationCreateAccountMailboxArgs, 'input'>>;
-  createCategory?: Resolver<ResolversTypes['Category'], ParentType, ContextType, RequireFields<MutationCreateCategoryArgs, 'input'>>;
-  createTransaction?: Resolver<ResolversTypes['Transaction'], ParentType, ContextType, RequireFields<MutationCreateTransactionArgs, 'input'>>;
-  deleteAccountMailbox?: Resolver<ResolversTypes['AccountMailbox'], ParentType, ContextType, RequireFields<MutationDeleteAccountMailboxArgs, 'id'>>;
-  deleteCategory?: Resolver<ResolversTypes['Category'], ParentType, ContextType, RequireFields<MutationDeleteCategoryArgs, 'id'>>;
-  deleteTransaction?: Resolver<ResolversTypes['Transaction'], ParentType, ContextType, RequireFields<MutationDeleteTransactionArgs, 'id'>>;
-  reorderCategories?: Resolver<Array<ResolversTypes['Category']>, ParentType, ContextType, RequireFields<MutationReorderCategoriesArgs, 'orderedIds'>>;
-  splitTransaction?: Resolver<ResolversTypes['Transaction'], ParentType, ContextType, RequireFields<MutationSplitTransactionArgs, 'amounts' | 'id'>>;
-  updateAccountMailbox?: Resolver<ResolversTypes['AccountMailbox'], ParentType, ContextType, RequireFields<MutationUpdateAccountMailboxArgs, 'id' | 'input'>>;
-  updateCategory?: Resolver<ResolversTypes['Category'], ParentType, ContextType, RequireFields<MutationUpdateCategoryArgs, 'id' | 'input'>>;
-  updateTransaction?: Resolver<ResolversTypes['Transaction'], ParentType, ContextType, RequireFields<MutationUpdateTransactionArgs, 'id' | 'input'>>;
+  createAccountMailbox: Resolver<ResolversTypes['AccountMailbox'], ParentType, ContextType, RequireFields<MutationCreateAccountMailboxArgs, 'input'>>;
+  createCategory: Resolver<ResolversTypes['Category'], ParentType, ContextType, RequireFields<MutationCreateCategoryArgs, 'input'>>;
+  createTransaction: Resolver<ResolversTypes['Transaction'], ParentType, ContextType, RequireFields<MutationCreateTransactionArgs, 'input'>>;
+  deleteAccountMailbox: Resolver<ResolversTypes['AccountMailbox'], ParentType, ContextType, RequireFields<MutationDeleteAccountMailboxArgs, 'id'>>;
+  deleteCategory: Resolver<ResolversTypes['Category'], ParentType, ContextType, RequireFields<MutationDeleteCategoryArgs, 'id'>>;
+  deleteTransaction: Resolver<ResolversTypes['Transaction'], ParentType, ContextType, RequireFields<MutationDeleteTransactionArgs, 'id'>>;
+  reorderCategories: Resolver<Array<ResolversTypes['Category']>, ParentType, ContextType, RequireFields<MutationReorderCategoriesArgs, 'orderedIds'>>;
+  splitTransaction: Resolver<ResolversTypes['Transaction'], ParentType, ContextType, RequireFields<MutationSplitTransactionArgs, 'amounts' | 'id'>>;
+  updateAccountMailbox: Resolver<ResolversTypes['AccountMailbox'], ParentType, ContextType, RequireFields<MutationUpdateAccountMailboxArgs, 'id' | 'input'>>;
+  updateCategory: Resolver<ResolversTypes['Category'], ParentType, ContextType, RequireFields<MutationUpdateCategoryArgs, 'id' | 'input'>>;
+  updateTransaction: Resolver<ResolversTypes['Transaction'], ParentType, ContextType, RequireFields<MutationUpdateTransactionArgs, 'id' | 'input'>>;
 };
 
 export type PaginatedTransactionsResolvers<ContextType = Context, ParentType extends ResolversParentTypes['PaginatedTransactions'] = ResolversParentTypes['PaginatedTransactions']> = {
-  data?: Resolver<Array<ResolversTypes['Transaction']>, ParentType, ContextType>;
-  nextOffset?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  data: Resolver<Array<ResolversTypes['Transaction']>, ParentType, ContextType>;
+  nextOffset: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  totalCount: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  accountMailbox?: Resolver<Maybe<ResolversTypes['AccountMailbox']>, ParentType, ContextType, RequireFields<QueryAccountMailboxArgs, 'id'>>;
-  accountMailboxes?: Resolver<Array<ResolversTypes['AccountMailbox']>, ParentType, ContextType>;
-  budgets?: Resolver<Array<ResolversTypes['MonthBudget']>, ParentType, ContextType, RequireFields<QueryBudgetsArgs, 'year'>>;
-  categories?: Resolver<Array<ResolversTypes['Category']>, ParentType, ContextType>;
-  category?: Resolver<Maybe<ResolversTypes['Category']>, ParentType, ContextType, RequireFields<QueryCategoryArgs, 'id'>>;
-  transaction?: Resolver<Maybe<ResolversTypes['Transaction']>, ParentType, ContextType, RequireFields<QueryTransactionArgs, 'id'>>;
-  transactions?: Resolver<ResolversTypes['PaginatedTransactions'], ParentType, ContextType, Partial<QueryTransactionsArgs>>;
+  accountMailbox: Resolver<Maybe<ResolversTypes['AccountMailbox']>, ParentType, ContextType, RequireFields<QueryAccountMailboxArgs, 'id'>>;
+  accountMailboxes: Resolver<Array<ResolversTypes['AccountMailbox']>, ParentType, ContextType>;
+  budgets: Resolver<Array<ResolversTypes['MonthBudget']>, ParentType, ContextType, RequireFields<QueryBudgetsArgs, 'year'>>;
+  categories: Resolver<Array<ResolversTypes['Category']>, ParentType, ContextType>;
+  category: Resolver<Maybe<ResolversTypes['Category']>, ParentType, ContextType, RequireFields<QueryCategoryArgs, 'id'>>;
+  transaction: Resolver<Maybe<ResolversTypes['Transaction']>, ParentType, ContextType, RequireFields<QueryTransactionArgs, 'id'>>;
+  transactions: Resolver<ResolversTypes['PaginatedTransactions'], ParentType, ContextType, Partial<QueryTransactionsArgs>>;
 };
 
 export type TransactionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Transaction'] = ResolversParentTypes['Transaction']> = {
-  accountMailbox?: Resolver<ResolversTypes['AccountMailbox'], ParentType, ContextType>;
-  accountMailboxId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  amount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  category?: Resolver<Maybe<ResolversTypes['Category']>, ParentType, ContextType>;
-  categoryId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  date?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  includeInReports?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  memo?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  originalMemo?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  splitFrom?: Resolver<Maybe<ResolversTypes['Transaction']>, ParentType, ContextType>;
-  splitFromId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  splitTo?: Resolver<Array<ResolversTypes['Transaction']>, ParentType, ContextType>;
+  accountMailbox: Resolver<ResolversTypes['AccountMailbox'], ParentType, ContextType>;
+  accountMailboxId: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  amount: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  category: Resolver<Maybe<ResolversTypes['Category']>, ParentType, ContextType>;
+  categoryId: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  date: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  id: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  includeInReports: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  memo: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  originalMemo: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  splitFrom: Resolver<Maybe<ResolversTypes['Transaction']>, ParentType, ContextType>;
+  splitFromId: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  splitTo: Resolver<Array<ResolversTypes['Transaction']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type Resolvers<ContextType = Context> = {
-  AccountMailbox?: AccountMailboxResolvers<ContextType>;
-  Category?: CategoryResolvers<ContextType>;
-  CategoryBudget?: CategoryBudgetResolvers<ContextType>;
-  DateTime?: GraphQLScalarType;
-  JSON?: GraphQLScalarType;
-  MonthBudget?: MonthBudgetResolvers<ContextType>;
-  Mutation?: MutationResolvers<ContextType>;
-  PaginatedTransactions?: PaginatedTransactionsResolvers<ContextType>;
-  Query?: QueryResolvers<ContextType>;
-  Transaction?: TransactionResolvers<ContextType>;
+  AccountMailbox: AccountMailboxResolvers<ContextType>;
+  Category: CategoryResolvers<ContextType>;
+  CategoryBudget: CategoryBudgetResolvers<ContextType>;
+  DateTime: GraphQLScalarType;
+  JSON: GraphQLScalarType;
+  MonthBudget: MonthBudgetResolvers<ContextType>;
+  Mutation: MutationResolvers<ContextType>;
+  PaginatedTransactions: PaginatedTransactionsResolvers<ContextType>;
+  Query: QueryResolvers<ContextType>;
+  Transaction: TransactionResolvers<ContextType>;
 };
 
 export type DirectiveResolvers<ContextType = Context> = {
-  authenticated?: AuthenticatedDirectiveResolver<any, any, ContextType>;
+  authenticated: AuthenticatedDirectiveResolver<any, any, ContextType>;
 };

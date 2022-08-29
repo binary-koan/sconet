@@ -1,14 +1,23 @@
-import { sum, pick, omit } from "lodash"
+import { GraphQLResolveInfo } from "graphql"
+import { omit, pick, sum } from "lodash"
+import { Context } from "../context"
 import { TransactionRecord } from "../db/transaction"
 import { deleteSplitTransactions } from "../db/transaction/deleteSplitTransactions"
-import { findTransactions } from "../db/transaction/findTransactions"
+import { findTransactions, FindTransactionsResult } from "../db/transaction/findTransactions"
 import { getTransaction } from "../db/transaction/getTransaction"
 import { insertTransaction } from "../db/transaction/insertTransaction"
 import { softDeleteSplitTransactions } from "../db/transaction/softDeleteSplitTransactions"
 import { softDeleteTransaction } from "../db/transaction/softDeleteTransaction"
 import { updateOneTransaction } from "../db/transaction/updateOneTransaction"
 import { updateSplitTransactions } from "../db/transaction/updateSplitTransactions"
-import { MutationResolvers, QueryResolvers, Resolvers } from "../resolvers-types"
+import {
+  Maybe,
+  MutationResolvers,
+  QueryResolvers,
+  Resolvers,
+  ResolverTypeWrapper,
+  UpdateTransactionInput
+} from "../resolvers-types"
 
 export const transactions: QueryResolvers["transactions"] = (_, { limit, offset, filter }) => {
   return findTransactions({ limit, offset, filter })
@@ -38,17 +47,18 @@ export const updateTransaction: MutationResolvers["updateTransaction"] = (_, { i
 
   const parentAttributes = ["date", "accountMailboxId"]
 
+  let updateInput: Partial<UpdateTransactionInput> = input
   if (transaction.splitFromId) {
-    input = omit(input, parentAttributes)
+    updateInput = omit(input, parentAttributes)
   }
 
   const updates: Partial<TransactionRecord> = {
-    ...input,
-    memo: input.memo || undefined,
-    amount: input.amount || undefined,
-    date: input.date || undefined,
-    includeInReports: input.includeInReports || undefined,
-    accountMailboxId: input.accountMailboxId || undefined
+    ...updateInput,
+    memo: updateInput.memo || undefined,
+    amount: updateInput.amount || undefined,
+    date: updateInput.date || undefined,
+    includeInReports: updateInput.includeInReports || undefined,
+    accountMailboxId: updateInput.accountMailboxId || undefined
   }
 
   updateOneTransaction(id, updates)
@@ -105,6 +115,17 @@ export const splitTransaction: MutationResolvers["splitTransaction"] = async (
 }
 
 export const Transaction: Resolvers["Transaction"] = {
+  id: (transaction) => transaction.id,
+  amount: (transaction) => transaction.amount,
+  date: (transaction) => transaction.date,
+  memo: (transaction) => transaction.memo,
+  originalMemo: (transaction) => transaction.originalMemo,
+  includeInReports: (transaction) => transaction.includeInReports,
+
+  categoryId: (transaction) => transaction.categoryId,
+  accountMailboxId: (transaction) => transaction.accountMailboxId,
+  splitFromId: (transaction) => transaction.splitFromId,
+
   category: async (transaction, _, context) =>
     transaction.categoryId ? await context.data.category.load(transaction.categoryId) : null,
 
@@ -116,4 +137,10 @@ export const Transaction: Resolvers["Transaction"] = {
 
   splitTo: async (transaction, _, context) =>
     await context.data.transactionSplitTo.load(transaction.id)
+}
+
+export const PaginatedTransactions: Resolvers["PaginatedTransactions"] = {
+  data: (result) => result.data,
+  nextOffset: (result) => result.nextOffset || null,
+  totalCount: (result) => result.totalCount
 }

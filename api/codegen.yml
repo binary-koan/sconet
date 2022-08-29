@@ -5,9 +5,14 @@ generates:
       - typescript
       - typescript-resolvers
     config:
+      avoidOptionals: true
       contextType: ./context#Context
       scalars:
         DateTime: Date
       mappers:
+        Category: ./db/category#CategoryRecord
         Transaction: ./db/transaction#TransactionRecord
         AccountMailbox: ./db/accountMailbox#AccountMailboxRecord
+        PaginatedTransactions: ./db/transaction/findTransactions#FindTransactionsResult
+        MonthBudget: ./db/budgets/budgetsInYear#MonthBudgetResult
+        CategoryBudget: ./db/budgets/budgetsInYear#CategoryBudgetResult

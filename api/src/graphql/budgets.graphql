@@ -9,7 +9,7 @@ type MonthBudget {
 
 type CategoryBudget {
   id: String!
-  categoryId: String!
+  categoryId: String
   category: Category
   amountSpent: Int!
 }

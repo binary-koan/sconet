@@ -54,6 +54,14 @@ export const deleteAccountMailbox: MutationResolvers["deleteAccountMailbox"] = (
 }
 
 export const AccountMailbox: Resolvers["AccountMailbox"] = {
+  id: (accountMailbox) => accountMailbox.id,
+  name: (accountMailbox) => accountMailbox.name,
+  mailServerOptions: (accountMailbox) => accountMailbox.mailServerOptions,
+  fromAddressPattern: (accountMailbox) => accountMailbox.fromAddressPattern,
+  datePattern: (accountMailbox) => accountMailbox.datePattern,
+  memoPattern: (accountMailbox) => accountMailbox.memoPattern,
+  amountPattern: (accountMailbox) => accountMailbox.amountPattern,
+
   transactions: (accountMailbox) =>
     findTransactions({ filter: { accountMailboxId: accountMailbox.id } }).data
 }

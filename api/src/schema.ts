@@ -7,24 +7,30 @@ import {
   accountMailboxes,
   createAccountMailbox,
   deleteAccountMailbox,
-  updateAccountMailbox
+  updateAccountMailbox,
+  AccountMailbox
 } from "./resolvers/accountMailbox"
 import {
   category,
   categories,
   createCategory,
   deleteCategory,
-  updateCategory
+  updateCategory,
+  reorderCategories,
+  Category
 } from "./resolvers/categories"
 import {
   createTransaction,
   deleteTransaction,
+  PaginatedTransactions,
   splitTransaction,
   Transaction,
   transaction,
   transactions,
   updateTransaction
 } from "./resolvers/transaction"
+import { budgets, CategoryBudget, MonthBudget } from "./resolvers/budgets"
+import { DateTimeResolver, JSONResolver } from "graphql-scalars"
 
 const resolvers: Resolvers = {
   Query: {
@@ -33,7 +39,8 @@ const resolvers: Resolvers = {
     accountMailbox,
     accountMailboxes,
     category,
-    categories
+    categories,
+    budgets
   },
   Mutation: {
     createTransaction,
@@ -45,9 +52,18 @@ const resolvers: Resolvers = {
     deleteAccountMailbox,
     createCategory,
     updateCategory,
-    deleteCategory
+    deleteCategory,
+    reorderCategories
   },
-  Transaction
+  Transaction,
+  PaginatedTransactions,
+  Category,
+  AccountMailbox,
+  MonthBudget,
+  CategoryBudget,
+
+  DateTime: DateTimeResolver,
+  JSON: JSONResolver
 }
 
 const graphqlDir = resolve(import.meta.dir, "graphql")

@@ -1,7 +1,14 @@
 import { memoize } from "lodash"
 import { Maybe } from "../../types"
 import { db } from "../database"
+import { TransactionRecord } from "../transaction"
 import { loadTransaction } from "./loadTransaction"
+
+export interface FindTransactionsResult {
+  data: TransactionRecord[]
+  nextOffset?: string
+  totalCount: number
+}
 
 export function findTransactions({
   limit,
@@ -17,7 +24,7 @@ export function findTransactions({
     keyword?: Maybe<string>
     categoryIds?: Maybe<Array<string | null>>
   }>
-}) {
+}): FindTransactionsResult {
   let where = " WHERE splitFromId IS NULL AND deletedAt IS NULL"
   let args: { [key: string]: string | number | string[] | number[] } = {}
 
