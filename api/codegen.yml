@@ -10,9 +10,9 @@ generates:
       scalars:
         DateTime: Date
       mappers:
-        Category: ./db/category#CategoryRecord
-        Transaction: ./db/transaction#TransactionRecord
-        AccountMailbox: ./db/accountMailbox#AccountMailboxRecord
-        PaginatedTransactions: ./db/transaction/findTransactions#FindTransactionsResult
-        MonthBudget: ./db/budgets/budgetsInYear#MonthBudgetResult
-        CategoryBudget: ./db/budgets/budgetsInYear#CategoryBudgetResult
+        Category: ./db/records/category#CategoryRecord
+        Transaction: ./db/records/transaction#TransactionRecord
+        AccountMailbox: ./db/records/accountMailbox#AccountMailboxRecord
+        PaginatedTransactions: ./db/queries/transaction/findTransactions#FindTransactionsResult
+        MonthBudget: ./db/queries/budgets/budgetsInYear#MonthBudgetResult
+        CategoryBudget: ./db/queries/budgets/budgetsInYear#CategoryBudgetResult

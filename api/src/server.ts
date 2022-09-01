@@ -8,12 +8,6 @@ import {
 import { buildContext } from "./context"
 import { schema } from "./schema"
 
-// Temporary, until there are proper migrations
-import "./db/accountMailbox"
-import "./db/category"
-import "./db/transaction"
-import "./db/user"
-
 Bun.serve({
   port: 4444,
 

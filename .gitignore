@@ -1,1 +1,4 @@
 node_modules
+.env
+*.sqlite
+api/scratch.ts

@@ -2,7 +2,12 @@
   "scripts": {
     "start": "bun src/server.ts",
     "codegen": "graphql-codegen",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "migrate": "bun bin/migrate/index.ts",
+    "migrate:create": "bun bin/migrate/create.ts",
+    "migrate:rollback": "bun bin/migrate/rollback.ts",
+    "migrate:up": "bun bin/migrate/up.ts",
+    "migrate:down": "bun bin/migrate/down.ts"
   },
   "dependencies": {
     "@graphql-tools/schema": "^8.5.1",

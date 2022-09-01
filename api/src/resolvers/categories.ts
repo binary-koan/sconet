@@ -1,10 +1,10 @@
-import { CategoryRecord } from "../db/category"
-import { findCategories } from "../db/category/findCategories"
-import { getCategory } from "../db/category/getCategory"
-import { insertCategory } from "../db/category/insertCategory"
-import { setCategoryOrder } from "../db/category/setCategoryOrder"
-import { softDeleteCategory } from "../db/category/softDeleteCategory"
-import { updateOneCategory } from "../db/category/updateOneCategory"
+import { CategoryRecord } from "../db/records/category"
+import { findCategories } from "../db/queries/category/findCategories"
+import { getCategory } from "../db/queries/category/getCategory"
+import { insertCategory } from "../db/queries/category/insertCategory"
+import { setCategoryOrder } from "../db/queries/category/setCategoryOrder"
+import { softDeleteCategory } from "../db/queries/category/softDeleteCategory"
+import { updateOneCategory } from "../db/queries/category/updateOneCategory"
 import { MutationResolvers, QueryResolvers, Resolvers } from "../resolvers-types"
 
 export const categories: QueryResolvers["categories"] = () => {

@@ -1,15 +1,18 @@
 import { GraphQLResolveInfo } from "graphql"
 import { omit, pick, sum } from "lodash"
 import { Context } from "../context"
-import { TransactionRecord } from "../db/transaction"
-import { deleteSplitTransactions } from "../db/transaction/deleteSplitTransactions"
-import { findTransactions, FindTransactionsResult } from "../db/transaction/findTransactions"
-import { getTransaction } from "../db/transaction/getTransaction"
-import { insertTransaction } from "../db/transaction/insertTransaction"
-import { softDeleteSplitTransactions } from "../db/transaction/softDeleteSplitTransactions"
-import { softDeleteTransaction } from "../db/transaction/softDeleteTransaction"
-import { updateOneTransaction } from "../db/transaction/updateOneTransaction"
-import { updateSplitTransactions } from "../db/transaction/updateSplitTransactions"
+import { TransactionRecord } from "../db/records/transaction"
+import { deleteSplitTransactions } from "../db/queries/transaction/deleteSplitTransactions"
+import {
+  findTransactions,
+  FindTransactionsResult
+} from "../db/queries/transaction/findTransactions"
+import { getTransaction } from "../db/queries/transaction/getTransaction"
+import { insertTransaction } from "../db/queries/transaction/insertTransaction"
+import { softDeleteSplitTransactions } from "../db/queries/transaction/softDeleteSplitTransactions"
+import { softDeleteTransaction } from "../db/queries/transaction/softDeleteTransaction"
+import { updateOneTransaction } from "../db/queries/transaction/updateOneTransaction"
+import { updateSplitTransactions } from "../db/queries/transaction/updateSplitTransactions"
 import {
   Maybe,
   MutationResolvers,

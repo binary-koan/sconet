@@ -1,10 +1,10 @@
-import { AccountMailboxRecord } from "../db/accountMailbox"
-import { findAccountMailboxes } from "../db/accountMailbox/findAccountMailboxes"
-import { getAccountMailbox } from "../db/accountMailbox/getAccountMailbox"
-import { insertAccountMailbox } from "../db/accountMailbox/insertAccountMailbox"
-import { softDeleteAccountMailbox } from "../db/accountMailbox/softDeleteAccountMailbox"
-import { updateOneAccountMailbox } from "../db/accountMailbox/updateOneAccountMailbox"
-import { findTransactions } from "../db/transaction/findTransactions"
+import { AccountMailboxRecord } from "../db/records/accountMailbox"
+import { findAccountMailboxes } from "../db/queries/accountMailbox/findAccountMailboxes"
+import { getAccountMailbox } from "../db/queries/accountMailbox/getAccountMailbox"
+import { insertAccountMailbox } from "../db/queries/accountMailbox/insertAccountMailbox"
+import { softDeleteAccountMailbox } from "../db/queries/accountMailbox/softDeleteAccountMailbox"
+import { updateOneAccountMailbox } from "../db/queries/accountMailbox/updateOneAccountMailbox"
+import { findTransactions } from "../db/queries/transaction/findTransactions"
 import { MutationResolvers, QueryResolvers, Resolvers } from "../resolvers-types"
 
 export const accountMailboxes: QueryResolvers["accountMailboxes"] = () => {

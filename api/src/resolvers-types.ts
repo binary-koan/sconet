@@ -1,9 +1,9 @@
 import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
-import { CategoryRecord } from './db/category';
-import { TransactionRecord } from './db/transaction';
-import { AccountMailboxRecord } from './db/accountMailbox';
-import { FindTransactionsResult } from './db/transaction/findTransactions';
-import { MonthBudgetResult, CategoryBudgetResult } from './db/budgets/budgetsInYear';
+import { CategoryRecord } from './db/records/category';
+import { TransactionRecord } from './db/records/transaction';
+import { AccountMailboxRecord } from './db/records/accountMailbox';
+import { FindTransactionsResult } from './db/queries/transaction/findTransactions';
+import { MonthBudgetResult, CategoryBudgetResult } from './db/queries/budgets/budgetsInYear';
 import { Context } from './context';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
