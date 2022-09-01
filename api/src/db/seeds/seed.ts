@@ -17,6 +17,7 @@ export function seed() {
           new Date().getTime()
         ]
       )
+      console.log(`Created user ${email}`)
     }
   }
 }
