@@ -1,19 +1,24 @@
+import "./polyfills"
 import {
   getGraphQLParameters,
   processRequest,
   renderGraphiQL,
-  sendResult,
   shouldRenderGraphiQL
 } from "graphql-helix"
+import { buildContext } from "./context"
 import { schema } from "./schema"
+
+// Temporary, until there are proper migrations
+import "./db/accountMailbox"
+import "./db/category"
+import "./db/transaction"
+import "./db/user"
 
 Bun.serve({
   port: 4444,
 
   async fetch(req) {
     req.headers // fixes segfault
-
-    console.log(req)
 
     const url = new URL(req.url)
 
@@ -38,6 +43,7 @@ Bun.serve({
       const { operationName, query, variables } = getGraphQLParameters(request)
 
       const result = await processRequest({
+        contextFactory: (executionContext) => buildContext(req, executionContext),
         operationName,
         query,
         variables,
@@ -50,7 +56,7 @@ Bun.serve({
 
         return new Response(data, {
           status: result.status,
-          headers: result.headers.map(({ name, value }) => [name, value])
+          headers: result.headers.map<[string, string]>(({ name, value }) => [name, value])
         })
       }
 
@@ -58,3 +64,5 @@ Bun.serve({
     }
   }
 })
+
+console.log("Listening on port 4444")

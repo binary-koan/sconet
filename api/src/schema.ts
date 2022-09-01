@@ -31,6 +31,8 @@ import {
 } from "./resolvers/transaction"
 import { budgets, CategoryBudget, MonthBudget } from "./resolvers/budgets"
 import { DateTimeResolver, JSONResolver } from "graphql-scalars"
+import { applyAuthenticatedDirective } from "./resolvers/directives/authenticated"
+import { login, changePassword, generateNewToken } from "./resolvers/sessions"
 
 const resolvers: Resolvers = {
   Query: {
@@ -53,7 +55,10 @@ const resolvers: Resolvers = {
     createCategory,
     updateCategory,
     deleteCategory,
-    reorderCategories
+    reorderCategories,
+    login,
+    changePassword,
+    generateNewToken
   },
   Transaction,
   PaginatedTransactions,
@@ -68,9 +73,11 @@ const resolvers: Resolvers = {
 
 const graphqlDir = resolve(import.meta.dir, "graphql")
 
-export const schema = makeExecutableSchema({
-  typeDefs: readdirSync(graphqlDir).map((filename) =>
-    new TextDecoder().decode(readFileSync(resolve(graphqlDir, filename)))
-  ),
-  resolvers
-})
+export const schema = applyAuthenticatedDirective(
+  makeExecutableSchema({
+    typeDefs: readdirSync(graphqlDir).map((filename) =>
+      new TextDecoder().decode(readFileSync(resolve(graphqlDir, filename)))
+    ),
+    resolvers
+  })
+)

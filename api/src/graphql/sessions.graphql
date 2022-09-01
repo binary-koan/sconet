@@ -1,0 +1,7 @@
+type Mutation {
+  login(email: String!, password: String!): String!
+
+  changePassword(oldPassword: String!, newPassword: String!): Boolean!
+
+  generateNewToken: String! @authenticated
+}
