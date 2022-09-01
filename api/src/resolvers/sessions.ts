@@ -1,10 +1,10 @@
 import { GraphQLError } from "graphql"
-import { getUserByEmail } from "../db/user/getUserByEmail"
+import { getUserByEmail } from "../db/queries/user/getUserByEmail"
 import { MutationResolvers } from "../resolvers-types"
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
-import { getUser } from "../db/user/getUser"
-import { updateOneUser } from "../db/user/updateOneUser"
+import { getUser } from "../db/queries/user/getUser"
+import { updateOneUser } from "../db/queries/user/updateOneUser"
 
 export const login: MutationResolvers["login"] = async (_, { email, password }) => {
   const user = getUserByEmail(email)

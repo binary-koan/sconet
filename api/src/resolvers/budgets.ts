@@ -1,4 +1,4 @@
-import { budgetsInYear } from "../db/budgets/budgetsInYear"
+import { budgetsInYear } from "../db/queries/budgets/budgetsInYear"
 import { QueryResolvers, Resolvers } from "../resolvers-types"
 
 export const budgets: QueryResolvers["budgets"] = async (_, { year }) => {

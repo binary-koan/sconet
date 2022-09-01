@@ -1,5 +1,5 @@
-import { db } from "../database"
-import { UserRecord } from "../user"
+import { db } from "../../database"
+import { UserRecord } from "../../records/user"
 import { loadUser } from "./loadUser"
 
 export function getUserByEmail(email: string): UserRecord | undefined {

@@ -1,4 +1,4 @@
-import { db } from "../database"
+import { db } from "../../database"
 
 export function softDeleteCategory(id: string) {
   db.run(`UPDATE categories SET deletedAt = $now WHERE id = $id`, {

@@ -76,6 +76,7 @@ export type CreateTransactionInput = {
   accountMailboxId: Scalars['String'];
   amount: Scalars['Int'];
   categoryId: InputMaybe<Scalars['String']>;
+  currency: Scalars['String'];
   date: InputMaybe<Scalars['DateTime']>;
   includeInReports: InputMaybe<Scalars['Boolean']>;
   memo: Scalars['String'];
@@ -231,6 +232,7 @@ export type Transaction = {
   amount: Scalars['Int'];
   category: Maybe<Category>;
   categoryId: Maybe<Scalars['String']>;
+  currency: Scalars['String'];
   date: Scalars['DateTime'];
   id: Scalars['String'];
   includeInReports: Scalars['Boolean'];
@@ -269,6 +271,7 @@ export type UpdateTransactionInput = {
   accountMailboxId: InputMaybe<Scalars['String']>;
   amount: InputMaybe<Scalars['Int']>;
   categoryId: InputMaybe<Scalars['String']>;
+  currency: InputMaybe<Scalars['String']>;
   date: InputMaybe<Scalars['DateTime']>;
   includeInReports: InputMaybe<Scalars['Boolean']>;
   memo: InputMaybe<Scalars['String']>;
@@ -483,6 +486,7 @@ export type TransactionResolvers<ContextType = Context, ParentType extends Resol
   amount: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   category: Resolver<Maybe<ResolversTypes['Category']>, ParentType, ContextType>;
   categoryId: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  currency: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   date: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   id: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   includeInReports: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;

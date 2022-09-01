@@ -118,7 +118,7 @@ function rollbackMigration(filename: string, version: string, name: string) {
 function listMigrationFiles() {
   return orderBy(fs.readdirSync(import.meta.dir))
     .map((filename) => {
-      const [version, name] = FILENAME_PATTERN.exec(filename) || []
+      const [_, version, name] = FILENAME_PATTERN.exec(filename) || []
 
       if (!version || !name) return
 

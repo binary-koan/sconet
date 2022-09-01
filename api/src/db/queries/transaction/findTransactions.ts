@@ -1,7 +1,7 @@
 import { memoize } from "lodash"
-import { Maybe } from "../../types"
-import { db } from "../database"
-import { TransactionRecord } from "../transaction"
+import { Maybe } from "../../../types"
+import { db } from "../../database"
+import { TransactionRecord } from "../../records/transaction"
 import { loadTransaction } from "./loadTransaction"
 
 export interface FindTransactionsResult {

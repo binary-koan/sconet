@@ -1,5 +1,5 @@
-import { db } from "../database"
-import { TransactionRecord } from "../transaction"
+import { db } from "../../database"
+import { TransactionRecord } from "../../records/transaction"
 import { loadTransaction } from "./loadTransaction"
 
 export function getTransaction(id: string): TransactionRecord | undefined {

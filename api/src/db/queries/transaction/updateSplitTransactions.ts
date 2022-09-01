@@ -1,6 +1,6 @@
-import { db } from "../database"
-import { TransactionRecord } from "../transaction"
-import { assertFieldName } from "../../utils/assertFieldName"
+import { db } from "../../database"
+import { TransactionRecord } from "../../records/transaction"
+import { assertFieldName } from "../../../utils/assertFieldName"
 import { filter, mapKeys } from "lodash"
 
 export function updateSplitTransactions(fromId: string, fields: Partial<TransactionRecord>) {

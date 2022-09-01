@@ -1,7 +1,7 @@
-import { db } from "../database"
+import { db } from "../../database"
 import ObjectID from "bson-objectid"
-import { MakeOptional } from "../../types"
-import { CategoryRecord } from "../category"
+import { MakeOptional } from "../../../types"
+import { CategoryRecord } from "../../records/category"
 
 export type CategoryForInsert = MakeOptional<
   Omit<CategoryRecord, "id">,

@@ -1,7 +1,7 @@
-import { db } from "../database"
+import { db } from "../../database"
 import ObjectID from "bson-objectid"
-import { MakeOptional } from "../../types"
-import { AccountMailboxRecord } from "../accountMailbox"
+import { MakeOptional } from "../../../types"
+import { AccountMailboxRecord } from "../../records/accountMailbox"
 
 export type AccountMailboxForInsert = MakeOptional<
   Omit<AccountMailboxRecord, "id">,

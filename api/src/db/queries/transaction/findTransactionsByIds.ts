@@ -1,5 +1,5 @@
 import { fromPairs } from "lodash"
-import { db } from "../database"
+import { db } from "../../database"
 import { loadTransaction } from "./loadTransaction"
 
 export function findTransactionsByIds(ids: readonly string[]) {

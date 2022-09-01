@@ -1,7 +1,7 @@
-import { db } from "../database"
-import { TransactionRecord } from "../transaction"
+import { db } from "../../database"
+import { TransactionRecord } from "../../records/transaction"
 import ObjectID from "bson-objectid"
-import { MakeOptional } from "../../types"
+import { MakeOptional } from "../../../types"
 
 export type TransactionForInsert = MakeOptional<
   Omit<TransactionRecord, "id">,

@@ -1,4 +1,4 @@
-import { CategoryRecord } from "../category"
+import { CategoryRecord } from "../../records/category"
 
 export function loadCategory(row: any): CategoryRecord {
   return {

@@ -1,7 +1,7 @@
 import { orderBy } from "lodash"
-import { CategoryRecord } from "../category"
+import { CategoryRecord } from "../../records/category"
 import { findCategories } from "../category/findCategories"
-import { db } from "../database"
+import { db } from "../../database"
 
 export interface MonthBudgetResult {
   id: string

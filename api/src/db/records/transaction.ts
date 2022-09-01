@@ -3,6 +3,7 @@ export interface TransactionRecord {
   memo: string
   originalMemo: string
   amount: number
+  currency: string
   date: Date
   includeInReports: boolean
 

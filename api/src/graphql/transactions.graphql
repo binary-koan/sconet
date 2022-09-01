@@ -4,6 +4,7 @@ type Transaction {
   memo: String!
   originalMemo: String!
   amount: Int!
+  currency: String!
   category: Category
   categoryId: String
   accountMailbox: AccountMailbox!
@@ -28,17 +29,15 @@ input TransactionFilter {
 }
 
 type Query {
-  transactions(
-    limit: Int
-    offset: String
-    filter: TransactionFilter
-  ): PaginatedTransactions! @authenticated
+  transactions(limit: Int, offset: String, filter: TransactionFilter): PaginatedTransactions!
+    @authenticated
   transaction(id: String!): Transaction @authenticated
 }
 
 input CreateTransactionInput {
   memo: String!
   amount: Int!
+  currency: String!
   categoryId: String
   accountMailboxId: String!
   date: DateTime
@@ -48,6 +47,7 @@ input CreateTransactionInput {
 input UpdateTransactionInput {
   memo: String
   amount: Int
+  currency: String
   categoryId: String
   accountMailboxId: String
   date: DateTime
@@ -56,8 +56,7 @@ input UpdateTransactionInput {
 
 type Mutation {
   createTransaction(input: CreateTransactionInput!): Transaction! @authenticated
-  updateTransaction(id: String!, input: UpdateTransactionInput!): Transaction!
-    @authenticated
+  updateTransaction(id: String!, input: UpdateTransactionInput!): Transaction! @authenticated
   deleteTransaction(id: String!): Transaction! @authenticated
   splitTransaction(id: String!, amounts: [Int!]!): Transaction! @authenticated
 }

@@ -1,7 +1,7 @@
-import { db } from "../database"
-import { assertFieldName } from "../../utils/assertFieldName"
+import { db } from "../../database"
+import { assertFieldName } from "../../../utils/assertFieldName"
 import { filter, mapKeys } from "lodash"
-import { CategoryRecord } from "../category"
+import { CategoryRecord } from "../../records/category"
 
 export function updateOneCategory(id: string, fields: Partial<CategoryRecord>) {
   const fieldsToSet = filter(fields, (value) => value !== undefined)

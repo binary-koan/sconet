@@ -1,4 +1,4 @@
-import { TransactionRecord } from "../transaction"
+import { TransactionRecord } from "../../records/transaction"
 
 export function loadTransaction(row: any): TransactionRecord {
   return {
@@ -6,6 +6,7 @@ export function loadTransaction(row: any): TransactionRecord {
     memo: row.memo,
     originalMemo: row.originalMemo,
     amount: row.amount,
+    currency: row.currency,
     date: new Date(row.date),
     includeInReports: Boolean(row.includeInReports),
     categoryId: row.categoryId,

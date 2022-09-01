@@ -1,7 +1,7 @@
-import { db } from "../database"
-import { assertFieldName } from "../../utils/assertFieldName"
+import { db } from "../../database"
+import { assertFieldName } from "../../../utils/assertFieldName"
 import { filter, mapKeys } from "lodash"
-import { UserRecord } from "../user"
+import { UserRecord } from "../../records/user"
 
 export function updateOneUser(id: string, fields: Partial<UserRecord>) {
   const fieldsToSet = filter(fields, (value) => value !== undefined)

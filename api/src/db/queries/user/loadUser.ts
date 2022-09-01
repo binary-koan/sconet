@@ -1,4 +1,4 @@
-import { UserRecord } from "../user"
+import { UserRecord } from "../../records/user"
 
 export function loadUser(row: any): UserRecord {
   return {

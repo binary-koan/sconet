@@ -1,5 +1,5 @@
-import { CategoryRecord } from "../category"
-import { db } from "../database"
+import { CategoryRecord } from "../../records/category"
+import { db } from "../../database"
 import { loadCategory } from "./loadCategory"
 
 export function getCategory(id: string): CategoryRecord | undefined {

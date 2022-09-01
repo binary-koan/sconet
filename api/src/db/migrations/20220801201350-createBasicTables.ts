@@ -42,6 +42,7 @@ export function up() {
       memo TEXT NOT NULL,
       originalMemo TEXT NOT NULL,
       amount INTEGER NOT NULL,
+      currency TEXT NOT NULL,
       date INTEGER NOT NULL,
       includeInReports INTEGER NOT NULL,
 

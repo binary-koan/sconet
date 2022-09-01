@@ -1,7 +1,7 @@
-import { db } from "../database"
-import { assertFieldName } from "../../utils/assertFieldName"
+import { db } from "../../database"
+import { assertFieldName } from "../../../utils/assertFieldName"
 import { filter, mapKeys } from "lodash"
-import { AccountMailboxRecord } from "../accountMailbox"
+import { AccountMailboxRecord } from "../../records/accountMailbox"
 
 export function updateOneAccountMailbox(id: string, fields: Partial<AccountMailboxRecord>) {
   const fieldsToSet = filter(fields, (value) => value !== undefined)

@@ -1,5 +1,5 @@
-import { AccountMailboxRecord } from "../accountMailbox"
-import { db } from "../database"
+import { AccountMailboxRecord } from "../../records/accountMailbox"
+import { db } from "../../database"
 import { loadAccountMailbox } from "./loadAccountMailbox"
 
 export function getAccountMailbox(id: string): AccountMailboxRecord | undefined {

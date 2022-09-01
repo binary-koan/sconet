@@ -1,5 +1,5 @@
 import { fromPairs, keyBy } from "lodash"
-import { db } from "../database"
+import { db } from "../../database"
 import { loadAccountMailbox } from "./loadAccountMailbox"
 
 export function findAccountMailboxesByIds(ids: readonly string[]) {

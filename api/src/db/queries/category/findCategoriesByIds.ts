@@ -1,5 +1,5 @@
 import { fromPairs } from "lodash"
-import { db } from "../database"
+import { db } from "../../database"
 import { loadCategory } from "./loadCategory"
 
 export function findCategoriesByIds(ids: readonly string[]) {

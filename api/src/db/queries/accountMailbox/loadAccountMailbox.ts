@@ -1,4 +1,4 @@
-import { AccountMailboxRecord } from "../accountMailbox"
+import { AccountMailboxRecord } from "../../records/accountMailbox"
 
 export function loadAccountMailbox(row: any): AccountMailboxRecord {
   return {
