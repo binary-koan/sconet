@@ -1,7 +1,8 @@
 import { Box, HopeProps, Input, Text } from "@hope-ui/solid"
 import { gql } from "@solid-primitives/graphql"
+import { Component } from "solid-js"
 import { CategoryOptionsQuery } from "../../graphql-types"
-import { createQuery } from "../../graphqlClient"
+import { useQuery } from "../../graphqlClient"
 import { categoryIcons } from "../../utils/categoryIcons"
 import { formatDateTimeForInput } from "../../utils/formatters"
 import CategoryIndicator from "../CategoryIndicator"
@@ -26,15 +27,13 @@ const categoriesQuery = gql`
   }
 `
 
-const TransactionFilters = ({
-  values,
-  setValues,
-  ...props
-}: HopeProps & {
-  values: TransactionFilterValues
-  setValues: (values: TransactionFilterValues) => void
-}) => {
-  const [data] = createQuery<CategoryOptionsQuery>(categoriesQuery)
+const TransactionFilters: Component<
+  HopeProps & {
+    values: TransactionFilterValues
+    setValues: (values: TransactionFilterValues) => void
+  }
+> = (props) => {
+  const [data] = useQuery<CategoryOptionsQuery>(categoriesQuery)
 
   return (
     <Box {...props} background="$neutral1" padding="$4" marginBottom="$4" boxShadow="xs">
@@ -43,8 +42,8 @@ const TransactionFilters = ({
         placeholder="Filter ..."
         aria-label="Filter by keyword"
         background="$neutral1"
-        value={values.keyword}
-        onChange={(e) => setValues({ ...values, keyword: e.currentTarget.value })}
+        value={props.values.keyword}
+        onChange={(e) => props.setValues({ ...props.values, keyword: e.currentTarget.value })}
       />
 
       <Text
@@ -63,8 +62,8 @@ const TransactionFilters = ({
         id="transactionFilters[dateFrom]"
         type="date"
         background="$neutral1"
-        value={formatDateTimeForInput(values.dateFrom)}
-        onChange={(e) => setValues({ ...values, dateFrom: e.currentTarget.value })}
+        value={formatDateTimeForInput(props.values.dateFrom)}
+        onChange={(e) => props.setValues({ ...props.values, dateFrom: e.currentTarget.value })}
       />
 
       <Text
@@ -83,8 +82,8 @@ const TransactionFilters = ({
         type="date"
         id="transactionFilters[dateUntil]"
         background="$neutral1"
-        value={formatDateTimeForInput(values.dateUntil)}
-        onChange={(e) => setValues({ ...values, dateUntil: e.currentTarget.value })}
+        value={formatDateTimeForInput(props.values.dateUntil)}
+        onChange={(e) => props.setValues({ ...props.values, dateUntil: e.currentTarget.value })}
       />
 
       <Text fontSize="xs" fontWeight="bold" color="gray.500" marginTop="$4" marginBottom="$2">
@@ -92,8 +91,8 @@ const TransactionFilters = ({
       </Text>
       <OptionButtons
         multiple={true}
-        value={values.categoryIds || []}
-        onChange={(categoryIds) => setValues({ ...values, categoryIds })}
+        value={props.values.categoryIds || []}
+        onChange={(categoryIds) => props.setValues({ ...props.values, categoryIds })}
         options={
           data()?.categories?.map((category) => ({
             value: category.id,

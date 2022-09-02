@@ -8,6 +8,11 @@ import {
 import { buildContext } from "./context"
 import { schema } from "./schema"
 
+const corsHeaders: Array<[string, string]> = [
+  ["Access-Control-Allow-Origin", "http://localhost:3000"],
+  ["Access-Control-Allow-Headers", "Authorization, Content-Type"]
+]
+
 Bun.serve({
   port: 4444,
 
@@ -19,6 +24,12 @@ Bun.serve({
     if (url.pathname !== "/graphql") {
       return new Response("Not found", {
         status: 404
+      })
+    }
+
+    if (req.method === "OPTIONS") {
+      return new Response("", {
+        headers: corsHeaders
       })
     }
 
@@ -50,7 +61,9 @@ Bun.serve({
 
         return new Response(data, {
           status: result.status,
-          headers: result.headers.map<[string, string]>(({ name, value }) => [name, value])
+          headers: result.headers
+            .map<[string, string]>(({ name, value }) => [name, value])
+            .concat(corsHeaders)
         })
       }
 

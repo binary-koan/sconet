@@ -10,6 +10,8 @@ export interface FindTransactionsResult {
   totalCount: number
 }
 
+const DEFAULT_LIMIT = 100
+
 export function findTransactions({
   limit,
   offset,
@@ -82,7 +84,7 @@ export function findTransactions({
   const data = memoize(() =>
     db
       .query(`SELECT * FROM transactions ${where} ORDER BY date DESC, id DESC LIMIT $limit`)
-      .all({ ...args, $limit: limit ? limit + 1 : undefined } as any)
+      .all({ ...args, $limit: limit ? limit + 1 : DEFAULT_LIMIT })
       .map(loadTransaction)
   )
 

@@ -2,7 +2,7 @@ import { Box, Button, Text } from "@hope-ui/solid"
 import { gql } from "@solid-primitives/graphql"
 import { Component, For } from "solid-js"
 import { AccountMailboxOptionsQuery } from "../../graphql-types"
-import { createQuery } from "../../graphqlClient"
+import { useQuery } from "../../graphqlClient"
 
 export type AccountMailboxOption = AccountMailboxOptionsQuery["accountMailboxes"][0]
 
@@ -20,8 +20,8 @@ const accountMailboxesQuery = gql`
   }
 `
 
-const AccountMailboxPicker = (props: ValueProps) => {
-  const [data] = createQuery<AccountMailboxOptionsQuery>(accountMailboxesQuery)
+const AccountMailboxPicker: Component<ValueProps> = (props) => {
+  const [data] = useQuery<AccountMailboxOptionsQuery>(accountMailboxesQuery)
 
   return (
     <Box display="flex" flexDirection="column" gap="2">

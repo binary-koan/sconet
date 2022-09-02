@@ -1,6 +1,6 @@
 import { Button, Flex } from "@hope-ui/solid"
 import { union } from "lodash"
-import { JSX } from "solid-js"
+import { Component, JSX } from "solid-js"
 
 type ValueProps =
   | {
@@ -14,26 +14,23 @@ type ValueProps =
       onChange: (value: string[]) => void
     }
 
-const OptionButtons = ({
-  options,
-  multiple,
-  value,
-  onChange
-}: ValueProps & {
-  options: Array<{
-    value: string
-    content: JSX.Element
-    props?: any
-    buttonProps?: any
-  }>
-}) => {
+const OptionButtons: Component<
+  ValueProps & {
+    options: Array<{
+      value: string
+      content: JSX.Element
+      props?: any
+      buttonProps?: any
+    }>
+  }
+> = (props) => {
   return (
     <Flex wrap="wrap">
-      {options.map(({ value: optionValue, content, props, buttonProps }) => (
+      {props.options.map(({ value: optionValue, content, props, buttonProps }) => (
         <div key={optionValue} {...props}>
           <OptionButton
             optionValue={optionValue}
-            valueProps={{ value, onChange, multiple }}
+            valueProps={{ value: props.value, onChange: props.onChange, multiple: props.multiple }}
             {...buttonProps}
           >
             {content}
@@ -46,37 +43,34 @@ const OptionButtons = ({
 
 export default OptionButtons
 
-function OptionButton({
-  children,
-  optionValue,
-  valueProps,
-  ...props
-}: {
+const OptionButton: Component<{
   valueProps: ValueProps
   optionValue: string
   children: JSX.Element
-}) {
+}> = (props) => {
   const onClick = () => {
     // For some reason TS complains without the === true and === false. Because non-strict maybe?
-    if (valueProps.multiple === true) {
-      if (valueProps.value?.includes(optionValue)) {
-        valueProps.onChange(
-          valueProps.value?.filter((item) => item !== optionValue) || [optionValue]
+    if (props.valueProps.multiple === true) {
+      if (props.valueProps.value?.includes(props.optionValue)) {
+        props.valueProps.onChange(
+          props.valueProps.value?.filter((item) => item !== props.optionValue) || [
+            props.optionValue
+          ]
         )
       } else {
-        valueProps.onChange(union(valueProps.value, [optionValue]))
+        props.valueProps.onChange(union(props.valueProps.value, [props.optionValue]))
       }
     }
 
-    if (valueProps.multiple === false) {
-      valueProps.onChange(optionValue)
+    if (props.valueProps.multiple === false) {
+      props.valueProps.onChange(props.optionValue)
     }
   }
 
   const isCurrent =
-    typeof valueProps.value === "string"
-      ? valueProps.value === optionValue
-      : valueProps.value?.includes(optionValue)
+    typeof props.valueProps.value === "string"
+      ? props.valueProps.value === props.optionValue
+      : props.valueProps.value?.includes(props.optionValue)
 
   return (
     <>
@@ -86,7 +80,7 @@ function OptionButton({
         onClick={onClick}
         {...props}
       >
-        {children}
+        {props.children}
       </Button>
     </>
   )

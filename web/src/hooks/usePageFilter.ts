@@ -1,39 +1,37 @@
-import { useLocation, useNavigate, useParams } from "@solidjs/router"
-import { createMemo, createSignal } from "solid-js"
-import { isEmpty, isEqual } from "lodash"
 import { debounce } from "@solid-primitives/scheduled"
+import { useLocation, useSearchParams } from "@solidjs/router"
+import { isEmpty, isEqual } from "lodash"
+import { createMemo } from "solid-js"
+import { createStore } from "solid-js/store"
 
 const usePageFilter = <FilterValues extends object>({
   initialValues,
   serialize = (values) => JSON.stringify(values),
-  deserialize = (param) => JSON.parse(param),
-  route
+  deserialize = (param) => JSON.parse(param)
 }: {
-  initialValues: FilterValues
-  serialize?: (values: FilterValues) => string
-  deserialize?: (param: string) => FilterValues
-  route: string
+  initialValues: Partial<FilterValues>
+  serialize?: (values: Partial<FilterValues>) => string
+  deserialize?: (param: string) => Partial<FilterValues>
 }) => {
   const { pathname } = useLocation()
-  const { filters = "{}" } = useParams()
-  const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
 
   const activeFilterValues = createMemo<Partial<FilterValues>>(() => {
     try {
-      return deserialize(filters)
+      return deserialize(searchParams.filters || "{}")
     } catch (e) {
       console.error(e)
       return {}
     }
   })
 
-  const [filterValues, setFilterValues] = createSignal<FilterValues>({
+  const [filterValues, setFilterValues] = createStore<Partial<FilterValues>>({
     ...initialValues,
     ...activeFilterValues
   })
 
   const hasFilterValues = () =>
-    Object.values(filterValues()).some((value) => {
+    Object.values(filterValues).some((value) => {
       if (Array.isArray(value)) {
         return Boolean(value.length)
       }
@@ -48,19 +46,19 @@ const usePageFilter = <FilterValues extends object>({
       return
     }
 
-    if (isEqual(filterValues(), activeFilterValues())) {
+    if (isEqual(filterValues, activeFilterValues())) {
       return
     }
 
-    navigate(`${route}?filters=${encodeURIComponent(serialize(filterValues()))}`)
-  })
+    setSearchParams({ filters: serialize(filterValues) })
+  }, 500)
 
   return {
     activeFilterValues,
     filterValues,
     hasFilterValues,
     setFilterValues: (values: Partial<FilterValues>) => {
-      setFilterValues(() => ({ ...initialValues, ...values }))
+      setFilterValues(values)
       updateFilters()
     }
   }

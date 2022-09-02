@@ -1,49 +1,11 @@
 import { Alert } from "@hope-ui/solid"
-import { gql } from "@solid-primitives/graphql"
-import { Component } from "solid-js"
-import { FindTransactionsQuery, FindTransactionsQueryVariables } from "../../graphql-types"
-import { createQuery } from "../../graphqlClient"
+import { Component, Match, onMount, Switch } from "solid-js"
+import { FindTransactionsQuery } from "../../graphql-types"
+import { useQuery } from "../../graphqlClient"
+import { TRANSACTIONS_QUERY } from "../../queries/transactions"
 import LoadingBar from "../LoadingBar"
 import { TransactionFilterValues } from "./TransactionFilters"
 import Transactions from "./Transactions"
-
-const query = gql`
-  query FindTransactions($limit: Int, $offset: String, $filter: TransactionFilter) {
-    transactions(limit: $limit, offset: $offset, filter: $filter) {
-      data {
-        id
-        memo
-        date
-        originalMemo
-        amount
-        includeInReports
-        category {
-          id
-          name
-          color
-          icon
-        }
-        accountMailbox {
-          id
-          name
-        }
-        splitTo {
-          id
-          memo
-          amount
-          category {
-            id
-            name
-            icon
-            color
-          }
-          includeInReports
-        }
-      }
-      nextOffset
-    }
-  }
-`
 
 const Loading = () => <LoadingBar />
 
@@ -53,30 +15,25 @@ const Failure: Component<{ error: any }> = (props) => (
   <Alert status="danger">{props.error.message}</Alert>
 )
 
-const Success = ({
-  data,
-  fetchMore,
-  setFilterValues,
-  isEditing
-}: {
+const Success: Component<{
   data?: FindTransactionsQuery
   fetchMore: (variables: any) => void
   setFilterValues: (values: TransactionFilterValues) => void
   isEditing: boolean
-}) => {
+}> = (props) => {
   const doFetchMore = () => {
-    fetchMore({
-      offset: data?.transactions.nextOffset
+    props.fetchMore({
+      offset: props.data?.transactions.nextOffset
     })
   }
 
-  if (data) {
+  if (props.data) {
     return (
       <Transactions
-        transactions={data.transactions.data}
-        fetchMore={data.transactions.nextOffset ? doFetchMore : undefined}
-        setFilterValues={setFilterValues}
-        isEditing={isEditing}
+        transactions={props.data.transactions.data}
+        fetchMore={props.data.transactions.nextOffset ? doFetchMore : undefined}
+        setFilterValues={props.setFilterValues}
+        isEditing={props.isEditing}
       />
     )
   }
@@ -87,23 +44,32 @@ export const TransactionsCell: Component<{
   isEditing: boolean
   setFilterValues: (values: Partial<TransactionFilterValues>) => void
 }> = (props) => {
-  const [data] = createQuery<FindTransactionsQuery, FindTransactionsQueryVariables>(query)
+  const [data] = useQuery<FindTransactionsQuery>(TRANSACTIONS_QUERY)
 
-  switch (data.state) {
-    case "unresolved":
-    case "pending":
-      return <Loading />
-    case "errored":
-      return <Failure error={data.error} />
-    case "ready":
-    case "refreshing":
-      return (
+  return (
+    <Switch>
+      <Match when={data.state === "unresolved" || data.state === "pending"}>
+        <Loading />
+      </Match>
+      <Match when={data.state === "errored"}>
+        <Failure error={data.error} />
+      </Match>
+      <Match
+        when={
+          (data.state === "ready" || data.state === "refreshing") &&
+          !data().transactions.data.length
+        }
+      >
+        <Empty />
+      </Match>
+      <Match when={true}>
         <Success
           data={data()}
           fetchMore={() => {}}
           setFilterValues={props.setFilterValues}
           isEditing={props.isEditing}
         />
-      )
-  }
+      </Match>
+    </Switch>
+  )
 }

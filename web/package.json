@@ -27,12 +27,14 @@
     "@types/babel__core": "^7.1.19",
     "@types/lodash": "^4.14.184",
     "@types/node": "^18.7.14",
+    "@urql/core": "^3.0.2",
     "graphql": "^16.6.0",
     "lodash": "^4.17.21",
     "solid-icons": "^1.0.1",
     "solid-js": "^1.5.1",
     "solid-toast": "^0.3.4",
     "solid-transition-group": "^0.0.10",
-    "ts-node": "^10.9.1"
+    "ts-node": "^10.9.1",
+    "wonka": "^6.0.0"
   }
 }

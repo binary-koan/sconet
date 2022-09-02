@@ -1,45 +1,50 @@
 import { Box, HopeProps, Icon } from "@hope-ui/solid"
 import { TbBox, TbCurrencyPound, TbMinus, TbSeparator } from "solid-icons/tb"
-import { Component } from "solid-js"
+import { Component, mergeProps, splitProps } from "solid-js"
 
-const CategoryIndicator = ({
-  size,
-  iconSize,
-  color,
-  icon,
-  includeInReports = true,
-  isSplit = false,
-  isIncome = false,
-  ...props
-}: HopeProps & {
-  size: string
-  iconSize?: string
-  color?: string
-  icon?: Component<{ size?: string }>
-  includeInReports?: boolean
-  isSplit?: boolean
-  isIncome?: boolean
-}) => {
+const CategoryIndicator: Component<
+  HopeProps & {
+    size: string
+    iconSize?: string
+    color?: string
+    icon?: Component<{ size?: string }>
+    includeInReports?: boolean
+    isSplit?: boolean
+    isIncome?: boolean
+  }
+> = (allProps) => {
+  let [props, boxProps] = splitProps(allProps, [
+    "size",
+    "iconSize",
+    "color",
+    "icon",
+    "includeInReports",
+    "isSplit",
+    "isIncome"
+  ])
+
+  props = mergeProps({ includeInReports: true, isSplit: false, isIncome: false }, props)
+
   const getBackgroundColor = () => {
-    if (!includeInReports || isSplit) return "$neutral2"
-    if (isIncome) return "$neutral2"
-    if (!color) return "$neutral2"
-    return `$${color}8`
+    if (!props.includeInReports || props.isSplit) return "$neutral2"
+    if (props.isIncome) return "$neutral2"
+    if (!props.color) return "$neutral2"
+    return `$${props.color}8`
   }
 
   const getColor = () => {
-    if (!includeInReports || isSplit) return "$neutral2"
-    if (isIncome) return "$green8"
-    if (!color) return "$red8"
+    if (!props.includeInReports || props.isSplit) return "$neutral2"
+    if (props.isIncome) return "$green8"
+    if (!props.color) return "$red8"
     return "white"
   }
 
   const getIcon = (): Component<{ size?: string }> => {
-    if (isIncome) return TbCurrencyPound
-    if (isSplit) return TbSeparator
-    if (!includeInReports) return TbMinus
-    if (!icon) return TbBox
-    return icon
+    if (props.isIncome) return TbCurrencyPound
+    if (props.isSplit) return TbSeparator
+    if (!props.includeInReports) return TbMinus
+    if (!props.icon) return TbBox
+    return props.icon
   }
 
   return (
@@ -49,14 +54,14 @@ const CategoryIndicator = ({
       justifyContent="center"
       backgroundColor={getBackgroundColor()}
       borderRadius="full"
-      height={size}
-      width={size}
-      minHeight={size}
-      minWidth={size}
+      height={props.size}
+      width={props.size}
+      minHeight={props.size}
+      minWidth={props.size}
       color={getColor()}
-      {...props}
+      {...boxProps}
     >
-      <Icon size={iconSize} as={getIcon()} />
+      <Icon size={props.iconSize} as={getIcon()} />
     </Box>
   )
 }

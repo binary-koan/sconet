@@ -24,8 +24,7 @@ const TransactionsPage = () => {
     usePageFilter<TransactionFilterValues>({
       initialValues: localStorage.getItem(FILTERS_KEY)
         ? JSON.parse(localStorage.getItem(FILTERS_KEY)!)
-        : BLANK_FILTERS,
-      route: "/transactions"
+        : BLANK_FILTERS
     })
 
   createEffect(() => {
@@ -104,7 +103,7 @@ const TransactionsPage = () => {
         </Button>
       </Heading>
       <TransactionFilters
-        values={filterValues()}
+        values={filterValues}
         setValues={setFilterValues}
         display={isFiltering() ? "block" : "none"}
       />

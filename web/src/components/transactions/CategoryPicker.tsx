@@ -3,7 +3,7 @@ import { gql } from "@solid-primitives/graphql"
 import { union } from "lodash"
 import { Component, For } from "solid-js"
 import { CategoryOptionsQuery } from "../../graphql-types"
-import { createQuery } from "../../graphqlClient"
+import { useQuery } from "../../graphqlClient"
 import { categoryIcons } from "../../utils/categoryIcons"
 import CategoryIndicator from "../CategoryIndicator"
 
@@ -32,8 +32,8 @@ const categoriesQuery = gql`
   }
 `
 
-const CategoryPicker = (props: ValueProps) => {
-  const [data] = createQuery<CategoryOptionsQuery>(categoriesQuery)
+const CategoryPicker: Component<ValueProps> = (props) => {
+  const [data] = useQuery<CategoryOptionsQuery>(categoriesQuery)
 
   return (
     <Box display="flex" flexDirection="column" gap="2">
