@@ -1,6 +1,6 @@
 import { Box, Icon } from "@hope-ui/solid"
 import { TbCaretDown } from "solid-icons/tb"
-import { Component, createEffect, createSignal } from "solid-js"
+import { Component, createEffect, createSignal, Show } from "solid-js"
 import CategoryIndicator from "../CategoryIndicator"
 import RelationPickerModal from "./RelationPickerModal"
 
@@ -33,12 +33,12 @@ const RelationEditInput: Component<{
           includeInReports={props.includeInReports}
           isIncome={props.isIncome}
         />
-        {props.isEditing && props.includeInReports && !props.hasChildren && (
+        <Show when={props.isEditing && props.includeInReports && !props.hasChildren}>
           <CategoryEditIndicator category={props.category} />
-        )}
+        </Show>
       </Box>
 
-      {props.isEditing && (
+      <Show when={props.isEditing}>
         <RelationPickerModal
           isIncome={props.isIncome}
           categoryProps={{
@@ -53,7 +53,7 @@ const RelationEditInput: Component<{
           isOpen={modalOpen()}
           onClose={() => setModalOpen(false)}
         />
-      )}
+      </Show>
     </>
   )
 }

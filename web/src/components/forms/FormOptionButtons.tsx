@@ -1,5 +1,5 @@
 import { FormControl, FormLabel, Button, Flex, Box } from "@hope-ui/solid"
-import { Component, createSignal, For, JSX, splitProps } from "solid-js"
+import { Component, createSignal, For, JSX, Show, splitProps } from "solid-js"
 import { RefProp } from "../../types"
 
 const FormOptionButtons: Component<{
@@ -18,7 +18,9 @@ const FormOptionButtons: Component<{
 
   return (
     <FormControl ref={props.ref} marginEnd="$4">
-      {props.label && <FormLabel>{props.label}</FormLabel>}
+      <Show when={props.label}>
+        <FormLabel>{props.label}</FormLabel>
+      </Show>
       <Flex wrap="wrap">
         <For each={props.options}>
           {({ value, content, props: boxProps, buttonProps }) => (

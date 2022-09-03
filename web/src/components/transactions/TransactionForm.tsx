@@ -66,7 +66,7 @@ const TransactionForm: Component<{
 
   return (
     <Form onSave={onSave}>
-      {!props.transaction?.splitFromId && (
+      <Show when={!props.transaction?.splitFromId}>
         <>
           <FormOptionButtons
             name="amountType"
@@ -102,11 +102,11 @@ const TransactionForm: Component<{
             )}
           />
         </>
-      )}
+      </Show>
 
       <FormInput label="Memo" name="memo" defaultValue={props.transaction?.memo} />
 
-      {!props.transaction?.splitFromId && (
+      <Show when={!props.transaction?.splitFromId}>
         <FormInput
           label="Date"
           name="date"
@@ -115,11 +115,11 @@ const TransactionForm: Component<{
             props.transaction?.date ? new Date(props.transaction?.date) : new Date()
           )}
         />
-      )}
+      </Show>
 
       <CategorySelect transaction={props.transaction} categories={categories()?.categories} />
 
-      {!props.transaction?.splitFromId && (
+      <Show when={!props.transaction?.splitFromId}>
         <FormOptionButtons
           label="Account"
           name="accountMailboxId"
@@ -131,7 +131,7 @@ const TransactionForm: Component<{
             })) || []
           }
         />
-      )}
+      </Show>
 
       <FormSwitch
         label="Include in reports"

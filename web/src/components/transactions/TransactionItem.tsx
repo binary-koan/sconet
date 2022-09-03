@@ -1,7 +1,7 @@
 import { Box, Icon, Text } from "@hope-ui/solid"
 import { Link } from "@solidjs/router"
 import { TbEdit } from "solid-icons/tb"
-import { Component, createEffect, createSignal, For } from "solid-js"
+import { Component, createEffect, createSignal, For, Show } from "solid-js"
 import { Dynamic } from "solid-js/web"
 import { formatCurrency } from "../../utils/formatters"
 import MemoEditor from "./MemoEditor"
@@ -66,9 +66,11 @@ const TransactionItem: Component<{ transaction: any; parent?: any; isEditing: bo
                   onClick={() => props.isEditing && setEditingMemo(true)}
                 >
                   {props.transaction.memo}
-                  {props.isEditing && includeInReports() && <EditableIndicator />}
+                  <Show when={props.isEditing && includeInReports()}>
+                    <EditableIndicator />
+                  </Show>
                 </Text>
-                {!parent && !props.isEditing && (
+                <Show when={!parent && !props.isEditing}>
                   <Text
                     noOfLines={1}
                     paddingTop="1"
@@ -79,7 +81,7 @@ const TransactionItem: Component<{ transaction: any; parent?: any; isEditing: bo
                   >
                     {props.transaction.accountMailbox?.name} / {props.transaction.originalMemo}
                   </Text>
-                )}
+                </Show>
               </>
             )}
           </Box>

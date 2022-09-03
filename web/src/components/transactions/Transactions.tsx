@@ -1,5 +1,5 @@
 import { Box, Button, Text } from "@hope-ui/solid"
-import { Component, createEffect, createMemo, For } from "solid-js"
+import { Component, createEffect, createMemo, For, Show } from "solid-js"
 import { FindTransactionsQuery } from "../../graphql-types"
 import { monthRange } from "../../utils/date"
 import { formatDate } from "../../utils/formatters"
@@ -52,7 +52,7 @@ const TransactionsList: Component<{
 
           return (
             <>
-              {newMonth && (
+              <Show when={newMonth}>
                 <Box
                   position="sticky"
                   zIndex="docked"
@@ -88,7 +88,8 @@ const TransactionsList: Component<{
                     {formatDate(date, "monthYear")}
                   </Text>
                 </Box>
-              )}
+              </Show>
+
               <Text
                 fontSize="$small"
                 fontWeight="bold"
@@ -100,13 +101,18 @@ const TransactionsList: Component<{
               >
                 {formatDate(date, "fullDateWithoutYear")}
               </Text>
-              {props.isEditing && <NewTransactionItem date={newTransactionDate} />}
+
+              <Show when={props.isEditing}>
+                <NewTransactionItem date={newTransactionDate} />
+              </Show>
+
               <For each={transactions}>
                 {(transaction) => (
                   <TransactionItem transaction={transaction} isEditing={props.isEditing} />
                 )}
               </For>
-              {!props.isEditing && !transactions.length && (
+
+              <Show when={!props.isEditing && !transactions.length}>
                 <Box
                   display="flex"
                   alignItems="center"
@@ -119,13 +125,15 @@ const TransactionsList: Component<{
                 >
                   -
                 </Box>
-              )}
+              </Show>
             </>
           )
         }}
       </For>
 
-      {props.fetchMore && <Button onClick={props.fetchMore}>Fetch more</Button>}
+      <Show when={props.fetchMore}>
+        <Button onClick={props.fetchMore}>Fetch more</Button>
+      </Show>
     </>
   )
 }

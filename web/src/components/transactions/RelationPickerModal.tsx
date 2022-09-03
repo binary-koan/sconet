@@ -9,7 +9,7 @@ import {
   ModalFooter,
   Button
 } from "@hope-ui/solid"
-import { Component } from "solid-js"
+import { Component, Show } from "solid-js"
 import AccountMailboxPicker, {
   ValueProps as AccountMailboxValueProps
 } from "./AccountMailboxPicker"
@@ -30,14 +30,12 @@ const RelationPickerModal: Component<{
         <ModalCloseButton />
 
         <ModalBody paddingBottom={props.categoryProps.multiple ? "0" : "$8"}>
-          {!props.isIncome && (
-            <>
-              <Heading size="sm" marginBottom="$4">
-                {props.categoryProps.multiple ? "Categories" : "Category"}
-              </Heading>
-              <CategoryPicker {...props.categoryProps} />
-            </>
-          )}
+          <Show when={!props.isIncome}>
+            <Heading size="sm" marginBottom="$4">
+              {props.categoryProps.multiple ? "Categories" : "Category"}
+            </Heading>
+            <CategoryPicker {...props.categoryProps} />
+          </Show>
           <Heading size="sm" marginTop="$6" marginBottom="$4">
             Account Mailbox
           </Heading>
