@@ -2,6 +2,7 @@ import { db } from "../../database"
 import ObjectID from "bson-objectid"
 import { MakeOptional } from "../../../types"
 import { CategoryRecord } from "../../records/category"
+import { serializeDate } from "../../utils"
 
 export type CategoryForInsert = MakeOptional<
   Omit<CategoryRecord, "id">,
@@ -26,9 +27,9 @@ export function insertCategory(category: CategoryForInsert) {
       $isRegular: category.isRegular || true,
       $budget: category.budget,
       $sortOrder: category.sortOrder || null,
-      $deletedAt: category.deletedAt?.getTime(),
-      $createdAt: (category.createdAt || new Date()).getTime(),
-      $updatedAt: (category.updatedAt || new Date()).getTime()
+      $deletedAt: serializeDate(category.deletedAt),
+      $createdAt: serializeDate(category.createdAt || new Date()),
+      $updatedAt: serializeDate(category.updatedAt || new Date())
     }
   )
 

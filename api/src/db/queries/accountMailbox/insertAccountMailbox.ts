@@ -2,6 +2,7 @@ import { db } from "../../database"
 import ObjectID from "bson-objectid"
 import { MakeOptional } from "../../../types"
 import { AccountMailboxRecord } from "../../records/accountMailbox"
+import { serializeDate } from "../../utils"
 
 export type AccountMailboxForInsert = MakeOptional<
   Omit<AccountMailboxRecord, "id">,
@@ -34,9 +35,9 @@ export function insertAccountMailbox(accountMailbox: AccountMailboxForInsert) {
       $datePattern: accountMailbox.datePattern,
       $memoPattern: accountMailbox.memoPattern,
       $amountPattern: accountMailbox.amountPattern,
-      $deletedAt: accountMailbox.deletedAt?.getTime(),
-      $createdAt: (accountMailbox.createdAt || new Date()).getTime(),
-      $updatedAt: (accountMailbox.updatedAt || new Date()).getTime()
+      $deletedAt: serializeDate(accountMailbox.deletedAt),
+      $createdAt: serializeDate(accountMailbox.createdAt || new Date()),
+      $updatedAt: serializeDate(accountMailbox.updatedAt || new Date())
     }
   )
 

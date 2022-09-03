@@ -53,7 +53,7 @@ const NavigationItem: Component<{ icon: Component<IconProps>; text: JSX.Element;
         paddingTop="$4"
         paddingStart={{ "@initial": "0", "@lg": "$6" }}
         paddingEnd={{ "@initial": "0", "@lg": "$6" }}
-        color={match() ? "$primary8" : "$neutral8"}
+        color={match() ? "$primary9" : "$neutral9"}
       >
         <Icon as={props.icon} size="2em" />
         <Text fontSize={{ "@initial": "$xs", "@lg": "$medium" }}>{props.text}</Text>

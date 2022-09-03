@@ -57,6 +57,8 @@ Bun.serve({
       })
 
       if (result.type === "RESPONSE") {
+        result.payload.errors?.forEach((error) => console.error(error.originalError || error))
+
         const data = JSON.stringify(result.payload)
 
         return new Response(data, {

@@ -1,5 +1,5 @@
 import { Box, Button, Text } from "@hope-ui/solid"
-import { Component, For } from "solid-js"
+import { Component, createEffect, createMemo, For } from "solid-js"
 import { FindTransactionsQuery } from "../../graphql-types"
 import { monthRange } from "../../utils/date"
 import { formatDate } from "../../utils/formatters"
@@ -13,16 +13,13 @@ const TransactionsList: Component<{
   setFilterValues: (values: TransactionFilterValues) => void
   isEditing: boolean
 }> = (props) => {
-  if (!props.transactions.length) {
-    return null
-  }
-
-  const items = () => {
-    const firstTransactionDate = new Date(props.transactions[0].date)
-    firstTransactionDate.setHours(0, 0, 0, 0)
-
-    const lastTransactionDate = new Date(props.transactions[props.transactions.length - 1].date)
-    lastTransactionDate.setHours(0, 0, 0, 0)
+  const items = createMemo(() => {
+    const firstTransactionDate = new Date(
+      `${props.transactions[0].date.split("T")[0]}T00:00:00+09:00`
+    )
+    const lastTransactionDate = new Date(
+      `${props.transactions[props.transactions.length - 1].date.split("T")[0]}T00:00:00+09:00`
+    )
 
     const items: Array<{ date: Date; transactions: any[] }> = []
 
@@ -39,7 +36,7 @@ const TransactionsList: Component<{
     }
 
     return items
-  }
+  })
 
   return (
     <>

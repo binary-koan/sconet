@@ -57,7 +57,8 @@ const TransactionForm: Component<{
       ...data,
       amount: amountType === "expense" ? -parseInt(amount) : parseInt(amount),
       date: new Date(date).toISOString(),
-      currency: "JPY"
+      currency: "JPY",
+      includeInReports: Boolean(data.includeInReports)
     }
 
     props.onSave(coercedData, props?.transaction?.id)

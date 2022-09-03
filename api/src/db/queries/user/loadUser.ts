@@ -1,4 +1,5 @@
 import { UserRecord } from "../../records/user"
+import { loadDate } from "../../utils"
 
 export function loadUser(row: any): UserRecord {
   return {
@@ -6,7 +7,7 @@ export function loadUser(row: any): UserRecord {
     email: row.email,
     encryptedPassword: row.encryptedPassword,
 
-    createdAt: new Date(row.createdAt),
-    updatedAt: new Date(row.updatedAt)
+    createdAt: loadDate(row.createdAt as number),
+    updatedAt: loadDate(row.updatedAt as number)
   }
 }

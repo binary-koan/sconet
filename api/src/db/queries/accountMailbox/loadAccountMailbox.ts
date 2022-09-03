@@ -1,4 +1,5 @@
 import { AccountMailboxRecord } from "../../records/accountMailbox"
+import { loadDate } from "../../utils"
 
 export function loadAccountMailbox(row: any): AccountMailboxRecord {
   return {
@@ -12,8 +13,8 @@ export function loadAccountMailbox(row: any): AccountMailboxRecord {
     memoPattern: row.memoPattern,
     amountPattern: row.amountPattern,
 
-    deletedAt: row.deletedAt && new Date(row.deletedAt),
-    createdAt: new Date(row.createdAt),
-    updatedAt: new Date(row.updatedAt)
+    deletedAt: loadDate(row.deletedAt),
+    createdAt: loadDate(row.createdAt as number),
+    updatedAt: loadDate(row.updatedAt as number)
   }
 }

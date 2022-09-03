@@ -39,7 +39,6 @@ export async function buildContext(
 
 export function getAuthDetails(request: Request) {
   const token = request.headers.get("authorization")?.replace(/^Bearer /, "")
-  console.log("token", JSON.stringify(token))
 
   if (!token) {
     return
@@ -48,9 +47,6 @@ export function getAuthDetails(request: Request) {
   if (!process.env.JWT_SECRET) {
     throw new GraphQLError("No JWT secret set")
   }
-
-  console.log(token, process.env.JWT_SECRET)
-  console.log(jwt.verify(token, process.env.JWT_SECRET))
 
   const body = jwt.verify(token, process.env.JWT_SECRET)
 

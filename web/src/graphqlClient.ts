@@ -135,7 +135,7 @@ export function useMutation<Data, Variables>(
       onSuccess?.(data)
 
       refetchQueries?.forEach((query) => {
-        Object.values(context.queries[query]).forEach(({ listeners }) =>
+        Object.values(context.queries[query] || {}).forEach(({ listeners }) =>
           listeners?.forEach((listener) => listener.refetch())
         )
       })

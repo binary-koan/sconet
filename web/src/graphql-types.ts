@@ -334,6 +334,13 @@ export type FindTransactionsQueryVariables = Exact<{
 
 export type FindTransactionsQuery = { __typename?: 'Query', transactions: { __typename?: 'PaginatedTransactions', nextOffset?: string | null, data: Array<{ __typename?: 'Transaction', id: string, memo: string, date: any, originalMemo: string, amount: number, includeInReports: boolean, category?: { __typename?: 'Category', id: string, name: string, color: string, icon: string } | null, accountMailbox: { __typename?: 'AccountMailbox', id: string, name: string }, splitTo: Array<{ __typename?: 'Transaction', id: string, memo: string, amount: number, includeInReports: boolean, category?: { __typename?: 'Category', id: string, name: string, icon: string, color: string } | null }> }> } };
 
+export type CreateAccountMailboxMutationVariables = Exact<{
+  input: CreateAccountMailboxInput;
+}>;
+
+
+export type CreateAccountMailboxMutation = { __typename?: 'Mutation', createAccountMailbox: { __typename?: 'AccountMailbox', id: string } };
+
 export type CreateCategoryMutationVariables = Exact<{
   input: CreateCategoryInput;
 }>;

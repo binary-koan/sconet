@@ -1,4 +1,5 @@
 import { CategoryRecord } from "../../records/category"
+import { loadDate } from "../../utils"
 
 export function loadCategory(row: any): CategoryRecord {
   return {
@@ -11,8 +12,8 @@ export function loadCategory(row: any): CategoryRecord {
     budget: row.budget,
     sortOrder: row.sortOrder,
 
-    deletedAt: row.deletedAt && new Date(row.deletedAt),
-    createdAt: new Date(row.createdAt),
-    updatedAt: new Date(row.updatedAt)
+    deletedAt: loadDate(row.deletedAt),
+    createdAt: loadDate(row.createdAt as number),
+    updatedAt: loadDate(row.updatedAt as number)
   }
 }

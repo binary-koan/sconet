@@ -24,16 +24,14 @@ const Success: Component<{
     })
   }
 
-  if (props.data) {
-    return (
-      <Transactions
-        transactions={props.data.transactions.data}
-        fetchMore={props.data.transactions.nextOffset ? doFetchMore : undefined}
-        setFilterValues={props.setFilterValues}
-        isEditing={props.isEditing}
-      />
-    )
-  }
+  return (
+    <Transactions
+      transactions={props.data!.transactions.data}
+      fetchMore={props.data!.transactions.nextOffset ? doFetchMore : undefined}
+      setFilterValues={props.setFilterValues}
+      isEditing={props.isEditing}
+    />
+  )
 }
 
 export const TransactionsCell: Component<{

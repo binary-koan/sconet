@@ -2,6 +2,7 @@ import ObjectID from "bson-objectid"
 import { db } from "../database"
 import bcrypt from "bcryptjs"
 import { insertCategory } from "../queries/category/insertCategory"
+import { serializeDate } from "../utils"
 
 export function seed() {
   for (const email of process.env.USER_EMAILS?.split(",") || []) {
@@ -14,8 +15,8 @@ export function seed() {
           ObjectID().toHexString(),
           email,
           bcrypt.hashSync("changeme", 10),
-          new Date().getTime(),
-          new Date().getTime()
+          serializeDate(new Date()),
+          serializeDate(new Date())
         ]
       )
       console.log(`Created user ${email}`)
