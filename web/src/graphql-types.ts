@@ -269,6 +269,32 @@ export type UpdateTransactionInput = {
   memo?: InputMaybe<Scalars['String']>;
 };
 
+export type DeleteAccountMailboxMutationMutationVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type DeleteAccountMailboxMutationMutation = { __typename?: 'Mutation', deleteAccountMailbox: { __typename?: 'AccountMailbox', id: string } };
+
+export type FindAccountMailboxesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type FindAccountMailboxesQuery = { __typename?: 'Query', accountMailboxes: Array<{ __typename?: 'AccountMailbox', id: string, name: string, mailServerOptions: any, fromAddressPattern?: string | null, datePattern?: string | null, memoPattern?: string | null, amountPattern?: string | null }> };
+
+export type DeleteCategoryMutationMutationVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type DeleteCategoryMutationMutation = { __typename?: 'Mutation', deleteCategory: { __typename?: 'Category', id: string } };
+
+export type ReorderCategoriesMutationMutationVariables = Exact<{
+  orderedIds: Array<Scalars['String']> | Scalars['String'];
+}>;
+
+
+export type ReorderCategoriesMutationMutation = { __typename?: 'Mutation', reorderCategories: Array<{ __typename?: 'Category', id: string, sortOrder?: number | null }> };
+
 export type FindCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -283,3 +309,12 @@ export type CategoryOptionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type CategoryOptionsQuery = { __typename?: 'Query', categories: Array<{ __typename?: 'Category', id: string, name: string, color: string, icon: string }> };
+
+export type FindTransactionsQueryVariables = Exact<{
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['String']>;
+  filter?: InputMaybe<TransactionFilter>;
+}>;
+
+
+export type FindTransactionsQuery = { __typename?: 'Query', transactions: { __typename?: 'PaginatedTransactions', nextOffset?: string | null, data: Array<{ __typename?: 'Transaction', id: string, memo: string, date: any, originalMemo: string, amount: number, includeInReports: boolean, category?: { __typename?: 'Category', id: string, name: string, color: string, icon: string } | null, accountMailbox: { __typename?: 'AccountMailbox', id: string, name: string }, splitTo: Array<{ __typename?: 'Transaction', id: string, memo: string, amount: number, includeInReports: boolean, category?: { __typename?: 'Category', id: string, name: string, icon: string, color: string } | null }> }> } };

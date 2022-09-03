@@ -25,8 +25,8 @@ export const CATEGORIES_QUERY = gql`
 
 const Loading = () => <LoadingBar />
 
-const Failure: Component<{ error: any }> = ({ error }) => (
-  <Alert status="danger">{error.message}</Alert>
+const Failure: Component<{ error: any }> = (props) => (
+  <Alert status="danger">{props.error.message}</Alert>
 )
 
 const Success: Component<{ data: FindCategoriesQuery }> = (props) => {

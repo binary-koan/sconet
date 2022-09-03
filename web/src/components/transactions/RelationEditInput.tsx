@@ -74,7 +74,7 @@ const CategoryEditIndicator: Component<{ category: any }> = (props) => {
       backgroundColor="$neutral1"
       border="2px"
       borderColor={color()}
-      borderRadius="full"
+      borderRadius="$full"
       color={color()}
     >
       <Icon as={TbCaretDown} />

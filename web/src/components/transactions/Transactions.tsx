@@ -84,7 +84,7 @@ const TransactionsList: Component<{
                     paddingBottom="1"
                     backgroundColor="gray.500"
                     color="gray.50"
-                    borderRadius="md"
+                    borderRadius="$md"
                     fontWeight="bold"
                     fontSize="small"
                   >

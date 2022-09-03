@@ -2,11 +2,18 @@ import { Heading, Button, Text } from "@hope-ui/solid"
 import { Title } from "@solidjs/meta"
 import { Link, Route, useRouteData } from "@solidjs/router"
 import { Component, Resource } from "solid-js"
+import {
+  AccountMailboxesCell,
+  ACCOUNT_MAILBOXES_QUERY
+} from "../components/accountMailboxes/AccountMailboxesCell"
 import { CategoriesCell, CATEGORIES_QUERY } from "../components/categories/CategoriesCell"
-import { FindCategoriesQuery } from "../graphql-types"
+import { FindAccountMailboxesQuery, FindCategoriesQuery } from "../graphql-types"
 import { useQuery } from "../graphqlClient"
 
-type SettingsPageData = () => { categories: Resource<FindCategoriesQuery> }
+type SettingsPageData = () => {
+  categories: Resource<FindCategoriesQuery>
+  accountMailboxes: Resource<FindAccountMailboxesQuery>
+}
 
 const SettingsPage: Component = () => {
   const data = useRouteData<SettingsPageData>()
@@ -91,15 +98,16 @@ const SettingsPage: Component = () => {
         </Button>
       </Heading>
 
-      {/* <AccountMailboxesCell /> */}
+      <AccountMailboxesCell data={data.accountMailboxes} />
     </>
   )
 }
 
 const settingsData: SettingsPageData = () => {
-  const [data] = useQuery<FindCategoriesQuery>(CATEGORIES_QUERY)
+  const [categories] = useQuery<FindCategoriesQuery>(CATEGORIES_QUERY)
+  const [accountMailboxes] = useQuery<FindAccountMailboxesQuery>(ACCOUNT_MAILBOXES_QUERY)
 
-  return { categories: data }
+  return { categories, accountMailboxes }
 }
 
 export const SettingsRoute: Component = () => {

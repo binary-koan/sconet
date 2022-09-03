@@ -53,7 +53,7 @@ const CategoryIndicator: Component<
       alignItems="center"
       justifyContent="center"
       backgroundColor={getBackgroundColor()}
-      borderRadius="full"
+      borderRadius="$full"
       height={props.size}
       width={props.size}
       minHeight={props.size}
