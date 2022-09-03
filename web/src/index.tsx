@@ -5,11 +5,12 @@ import { Router } from "@solidjs/router"
 import { render } from "solid-js/web"
 
 import App from "./App"
+import { theme } from "./utils/theme"
 
 render(
   () => (
     <MetaProvider>
-      <HopeProvider>
+      <HopeProvider config={theme}>
         <Router>
           <App />
         </Router>

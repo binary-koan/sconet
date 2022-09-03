@@ -3,7 +3,7 @@ import { gql } from "@solid-primitives/graphql"
 import { Component } from "solid-js"
 import { CategoryOptionsQuery } from "../../graphql-types"
 import { useQuery } from "../../graphqlClient"
-import { categoryIcons } from "../../utils/categoryIcons"
+import { namedIcons } from "../../utils/namedIcons"
 import { formatDateTimeForInput } from "../../utils/formatters"
 import CategoryIndicator from "../CategoryIndicator"
 import OptionButtons from "../OptionButtons"
@@ -100,7 +100,7 @@ const TransactionFilters: Component<
               <Box display="flex" alignItems="center" gap="$2">
                 <CategoryIndicator
                   size="$6"
-                  icon={categoryIcons[category.icon]}
+                  icon={namedIcons[category.icon]}
                   color={category.color}
                 />
                 {category.name}

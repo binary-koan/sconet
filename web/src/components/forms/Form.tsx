@@ -1,45 +1,29 @@
-import { Component, createContext, createEffect, JSX, onCleanup, useContext } from "solid-js"
-import { createStore, SetStoreFunction } from "solid-js/store/types"
+import { JSX } from "solid-js"
 
-const formContext = createContext<{
-  values: { [key: string]: any }
-  setValues: SetStoreFunction<{ [key: string]: any }>
-}>()
+export const Form: <Values>(props: {
+  onSave: (input: Values) => void
+  children: JSX.Element
+}) => JSX.Element = (props) => {
+  const onSubmit = (event: SubmitEvent & { currentTarget: HTMLFormElement }) => {
+    event.preventDefault()
 
-export const Form: Component<{ children: JSX.Element }> = (props) => {
-  const [values, setValues] = createStore({})
+    const formData = new FormData(event.currentTarget)
+    const values: any = {}
 
-  createEffect(() => {})
+    formData.forEach((value, name) => {
+      const current = values[name]
 
-  return (
-    <formContext.Provider value={{ values, setValues }}>
-      <form>{props.children}</form>
-    </formContext.Provider>
-  )
-}
+      if (Array.isArray(current)) {
+        current.push(value)
+      } else if (current) {
+        values[name] = [current, value]
+      } else {
+        values[name] = value
+      }
+    })
 
-export const useInput = (
-  name: string,
-  options: { parseInputValue?: (value: any) => any; serializeInputValue?: (value: any) => any } = {}
-) => {
-  const form = useContext(formContext)
-
-  const { parseInputValue = (value) => value, serializeInputValue = (value) => value } = options
-
-  if (!form) {
-    throw new Error("No form context")
+    props.onSave(values)
   }
 
-  return {
-    get: () => form.values[name],
-    set: (value: any) => form.setValues({ name: value }),
-
-    get value() {
-      return serializeInputValue(form.values[name])
-    },
-    onInput: (event: { currentTarget: { value: any } }) =>
-      form.setValues({ name: parseInputValue(event.currentTarget.value) })
-  }
+  return <form onSubmit={onSubmit}>{props.children}</form>
 }
-
-export type InputConfig = ReturnType<typeof useInput>

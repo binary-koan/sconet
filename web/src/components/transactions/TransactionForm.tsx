@@ -7,9 +7,10 @@ import {
   CreateTransactionMutationVariables
 } from "../../graphql-types"
 import { useQuery } from "../../graphqlClient"
-import { categoryIcons } from "../../utils/categoryIcons"
+import { namedIcons } from "../../utils/namedIcons"
 import { formatDateTimeForInput } from "../../utils/formatters"
 import CategoryIndicator from "../CategoryIndicator"
+import { Form } from "../forms/Form"
 import FormInput from "../forms/FormInput"
 import FormOptionButtons from "../forms/FormOptionButtons"
 import FormSwitch from "../forms/FormSwitch"
@@ -51,26 +52,7 @@ const TransactionForm: Component<{
   const [categories] = useQuery<CategoryOptionsQuery>(categoriesQuery)
   const [accountMailboxes] = useQuery<AccountMailboxOptionsQuery>(accountMailboxesQuery)
 
-  const onSubmit = (event: SubmitEvent & { currentTarget: HTMLFormElement }) => {
-    event.preventDefault()
-
-    const formData = new FormData(event.currentTarget)
-    const values: any = {}
-
-    formData.forEach((value, name) => {
-      const current = values[name]
-
-      if (Array.isArray(current)) {
-        current.push(value)
-      } else if (current) {
-        values[name] = [current, value]
-      } else {
-        values[name] = value
-      }
-    })
-
-    const { amountType, amount, date, ...data } = values as TransactionFormValues
-
+  const onSave = ({ amountType, amount, date, ...data }: TransactionFormValues) => {
     const coercedData = {
       ...data,
       amount: amountType === "expense" ? -parseInt(amount) : parseInt(amount),
@@ -82,7 +64,7 @@ const TransactionForm: Component<{
   }
 
   return (
-    <form onSubmit={onSubmit}>
+    <Form onSave={onSave}>
       {!props.transaction?.splitFromId && (
         <>
           <FormOptionButtons
@@ -161,7 +143,7 @@ const TransactionForm: Component<{
       <Button type="submit" colorScheme="primary" width="$full" disabled={props.loading}>
         Save
       </Button>
-    </form>
+    </Form>
   )
 }
 
@@ -203,7 +185,7 @@ const CategorySelect: Component<{
               <Box display="flex" alignItems="center" gap="2">
                 <CategoryIndicator
                   size="6"
-                  icon={categoryIcons[category.icon]}
+                  icon={namedIcons[category.icon]}
                   color={category.color}
                 />
                 {category.name}

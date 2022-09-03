@@ -19,7 +19,7 @@ import {
   transformStyle
 } from "@thisbeyond/solid-dnd"
 import { TbArrowsSort, TbEdit, TbTrash } from "solid-icons/tb"
-import { categoryIcons } from "../../utils/categoryIcons"
+import { namedIcons } from "../../utils/namedIcons"
 
 const DELETE_CATEGORY_MUTATION = gql`
   mutation DeleteCategoryMutation($id: String!) {
@@ -190,7 +190,7 @@ const Category: Component<{
       <CategoryIndicator
         size="$10"
         iconSize="lg"
-        icon={categoryIcons[props.category.icon]}
+        icon={namedIcons[props.category.icon]}
         color={props.category.color}
         includeInReports={true}
       />

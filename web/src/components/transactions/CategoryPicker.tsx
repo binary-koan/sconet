@@ -4,7 +4,7 @@ import { union } from "lodash"
 import { Component, For } from "solid-js"
 import { CategoryOptionsQuery } from "../../graphql-types"
 import { useQuery } from "../../graphqlClient"
-import { categoryIcons } from "../../utils/categoryIcons"
+import { namedIcons } from "../../utils/namedIcons"
 import CategoryIndicator from "../CategoryIndicator"
 
 export type CategoryOption = CategoryOptionsQuery["categories"][0]
@@ -85,7 +85,7 @@ const CategoryOption: Component<{
       <Box display="flex" alignItems="center" gap="2">
         <CategoryIndicator
           size="6"
-          icon={categoryIcons[props.category.icon]}
+          icon={namedIcons[props.category.icon]}
           color={props.category.color}
         />
         <Text minWidth="0" noOfLines={1}>

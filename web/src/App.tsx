@@ -3,6 +3,7 @@ import { Routes, Route, Link, Navigate } from "@solidjs/router"
 import type { Component } from "solid-js"
 import { Toaster } from "solid-toast"
 import MainNavigation from "./components/MainNavigation"
+import { NewCategoryRoute } from "./routes/NewCategoryRoute"
 import { NewTransactionRoute } from "./routes/NewTransactionRoute"
 import { SettingsRoute } from "./routes/SettingsRoute"
 import { TransactionsRoute } from "./routes/TransactionsRoute"
@@ -22,6 +23,7 @@ const App: Component = () => {
         <TransactionsRoute />
         <NewTransactionRoute />
         <SettingsRoute />
+        <NewCategoryRoute />
 
         <Route path="/*all" element={<div>Not found</div>} />
       </Routes>

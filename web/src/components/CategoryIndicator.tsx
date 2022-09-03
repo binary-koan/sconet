@@ -29,13 +29,13 @@ const CategoryIndicator: Component<
     if (!props.includeInReports || props.isSplit) return "$neutral2"
     if (props.isIncome) return "$neutral2"
     if (!props.color) return "$neutral2"
-    return `$${props.color}8`
+    return `$${props.color}`
   }
 
   const getColor = () => {
     if (!props.includeInReports || props.isSplit) return "$neutral2"
-    if (props.isIncome) return "$green8"
-    if (!props.color) return "$red8"
+    if (props.isIncome) return "$green"
+    if (!props.color) return "$red"
     return "white"
   }
 
