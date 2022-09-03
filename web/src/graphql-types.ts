@@ -300,6 +300,21 @@ export type FindCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type FindCategoriesQuery = { __typename?: 'Query', categories: Array<{ __typename?: 'Category', id: string, name: string, color: string, icon: string, budget?: number | null, isRegular: boolean, sortOrder?: number | null, createdAt: any, updatedAt: any }> };
 
+export type EditCategoryByIdQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type EditCategoryByIdQuery = { __typename?: 'Query', category?: { __typename?: 'Category', id: string, name: string, color: string, icon: string, budget?: number | null, createdAt: any, updatedAt: any } | null };
+
+export type UpdateCategoryMutationVariables = Exact<{
+  id: Scalars['String'];
+  input: UpdateCategoryInput;
+}>;
+
+
+export type UpdateCategoryMutation = { __typename?: 'Mutation', updateCategory: { __typename?: 'Category', id: string, name: string, color: string, icon: string, budget?: number | null, createdAt: any, updatedAt: any } };
+
 export type AccountMailboxOptionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
