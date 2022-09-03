@@ -112,23 +112,37 @@ export function useQuery<Data, Variables = {}>(
   ]
 }
 
-export function useMutation(
+export function useMutation<Data, Variables>(
   mutation: string,
-  { refetchQueries }: { refetchQueries?: string[] } = {}
+  {
+    refetchQueries,
+    onSuccess,
+    onError
+  }: {
+    refetchQueries?: string[]
+    onSuccess?: (data: Data) => void
+    onError?: (error: any) => void
+  } = {}
 ) {
   const context = useContext(gqlContext)
   const [loading, setLoading] = createSignal(false)
 
-  const mutate = async (variables: any) => {
-    setLoading(true)
-    await requestGraphql(JSON.stringify({ query: mutation, variables }))
-    setLoading(false)
+  const mutate = async (variables: Variables) => {
+    try {
+      setLoading(true)
+      const data = await requestGraphql<Data>(JSON.stringify({ query: mutation, variables }))
+      setLoading(false)
+      onSuccess?.(data)
 
-    refetchQueries?.forEach((query) => {
-      Object.values(context.queries[query]).forEach(({ listeners }) =>
-        listeners?.forEach((listener) => listener.refetch())
-      )
-    })
+      refetchQueries?.forEach((query) => {
+        Object.values(context.queries[query]).forEach(({ listeners }) =>
+          listeners?.forEach((listener) => listener.refetch())
+        )
+      })
+    } catch (error) {
+      console.error(error)
+      onError?.(error)
+    }
   }
 
   return [

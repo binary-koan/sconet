@@ -36,7 +36,7 @@ const TransactionFilters: Component<
   const [data] = useQuery<CategoryOptionsQuery>(categoriesQuery)
 
   return (
-    <Box {...props} background="$neutral1" padding="$4" marginBottom="$4" boxShadow="xs">
+    <Box {...props} background="$neutral1" padding="$4" marginBottom="$4" boxShadow="$xs">
       <Input
         type="search"
         placeholder="Filter ..."
@@ -50,7 +50,7 @@ const TransactionFilters: Component<
         as="label"
         for="transactionFilters[dateFrom]"
         display="block"
-        fontSize="xs"
+        fontSize="$xs"
         fontWeight="bold"
         color="gray.500"
         marginTop="$4"
@@ -70,7 +70,7 @@ const TransactionFilters: Component<
         as="label"
         for="transactionFilters[dateUntil]"
         display="block"
-        fontSize="xs"
+        fontSize="$xs"
         fontWeight="bold"
         color="gray.500"
         marginTop="$4"
@@ -86,7 +86,7 @@ const TransactionFilters: Component<
         onChange={(e) => props.setValues({ ...props.values, dateUntil: e.currentTarget.value })}
       />
 
-      <Text fontSize="xs" fontWeight="bold" color="gray.500" marginTop="$4" marginBottom="$2">
+      <Text fontSize="$xs" fontWeight="bold" color="gray.500" marginTop="$4" marginBottom="$2">
         Categories
       </Text>
       <OptionButtons

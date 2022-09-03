@@ -198,7 +198,7 @@ const Category: Component<{
         <Text noOfLines={1} lineHeight="1" paddingBottom="$1">
           {props.category.name}
         </Text>
-        <Text noOfLines={1} lineHeight="1" fontSize="xs" color="gray.400">
+        <Text noOfLines={1} lineHeight="1" fontSize="$xs" color="gray.400">
           {props.category.budget ? `Budget: ${formatCurrency(props.category.budget)}` : "No budget"}
         </Text>
       </Box>

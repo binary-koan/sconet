@@ -61,7 +61,7 @@ const TransactionItem: Component<{ transaction: any; parent?: any; isEditing: bo
                 <Text
                   noOfLines={1}
                   lineHeight="1"
-                  color={includeInReports() ? "inherit" : "gray.400"}
+                  color={includeInReports() ? "inherit" : "$neutral6"}
                   textDecoration={includeInReports() ? "none" : "line-through"}
                   onClick={() => props.isEditing && setEditingMemo(true)}
                 >
@@ -73,8 +73,8 @@ const TransactionItem: Component<{ transaction: any; parent?: any; isEditing: bo
                     noOfLines={1}
                     paddingTop="1"
                     lineHeight="1"
-                    fontSize="xs"
-                    color={includeInReports() ? "gray.400" : "gray.200"}
+                    fontSize="$xs"
+                    color={includeInReports() ? "$neutral6" : "$neutral3"}
                     textTransform="uppercase"
                   >
                     {props.transaction.accountMailbox?.name} / {props.transaction.originalMemo}

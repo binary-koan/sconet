@@ -27,7 +27,7 @@ const SettingsPage: Component = () => {
       <Title>Settings</Title>
 
       <Heading
-        fontSize={{ "@initial": "lg", "@lg": "3xl" }}
+        fontSize={{ "@initial": "$lg", "@lg": "$3xl" }}
         marginTop="$4"
         marginBottom="$4"
         paddingStart="$4"
@@ -61,7 +61,7 @@ const SettingsPage: Component = () => {
       </Text>
 
       <Heading
-        fontSize={{ "@initial": "lg", "@lg": "3xl" }}
+        fontSize={{ "@initial": "$lg", "@lg": "$3xl" }}
         marginTop="$8"
         marginBottom="$4"
         paddingStart="$4"
@@ -78,7 +78,7 @@ const SettingsPage: Component = () => {
       <CategoriesCell data={data.categories} />
 
       <Heading
-        fontSize={{ "@initial": "lg", "@lg": "3xl" }}
+        fontSize={{ "@initial": "$lg", "@lg": "$3xl" }}
         marginTop="$8"
         marginBottom="$4"
         paddingStart="$4"

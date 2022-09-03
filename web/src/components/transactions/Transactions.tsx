@@ -86,14 +86,14 @@ const TransactionsList: Component<{
                     color="gray.50"
                     borderRadius="$md"
                     fontWeight="bold"
-                    fontSize="small"
+                    fontSize="$small"
                   >
                     {formatDate(date, "monthYear")}
                   </Text>
                 </Box>
               )}
               <Text
-                fontSize="small"
+                fontSize="$small"
                 fontWeight="bold"
                 color="gray.500"
                 paddingStart="4"

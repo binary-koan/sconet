@@ -56,7 +56,7 @@ const TransactionsPage: Component = () => {
       <Title>Transactions</Title>
 
       <Heading
-        fontSize={{ "@initial": "lg", "@lg": "3xl" }}
+        fontSize={{ "@initial": "$lg", "@lg": "$3xl" }}
         marginTop="$4"
         marginBottom="$4"
         paddingStart={{ "@initial": "$4", "@lg": "0" }}
@@ -105,8 +105,8 @@ const TransactionsPage: Component = () => {
           borderRadius="full"
           backgroundColor="$neutral2"
           color="$primary8"
-          boxShadow={{ "@initial": "lg", "@lg": "none" }}
-          leftIcon={<Icon as={TbPlus} size="lg" />}
+          boxShadow={{ "@initial": "$lg", "@lg": "none" }}
+          leftIcon={<Icon as={TbPlus} size="$lg" />}
         >
           Add
         </Button>

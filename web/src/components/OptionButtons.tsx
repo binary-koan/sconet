@@ -1,6 +1,6 @@
 import { Button, Flex } from "@hope-ui/solid"
 import { union } from "lodash"
-import { Component, JSX } from "solid-js"
+import { Component, For, JSX, splitProps } from "solid-js"
 
 type ValueProps =
   | {
@@ -23,20 +23,20 @@ const OptionButtons: Component<
       buttonProps?: any
     }>
   }
-> = (props) => {
+> = (allProps) => {
+  const [optionsProps, valueProps] = splitProps(allProps, ["options"])
+
   return (
     <Flex wrap="wrap">
-      {props.options.map(({ value: optionValue, content, props, buttonProps }) => (
-        <div key={optionValue} {...props}>
-          <OptionButton
-            optionValue={optionValue}
-            valueProps={{ value: props.value, onChange: props.onChange, multiple: props.multiple }}
-            {...buttonProps}
-          >
-            {content}
-          </OptionButton>
-        </div>
-      ))}
+      <For each={optionsProps.options}>
+        {({ value: optionValue, content, props, buttonProps }) => (
+          <div {...props}>
+            <OptionButton optionValue={optionValue} valueProps={valueProps} {...buttonProps}>
+              {content}
+            </OptionButton>
+          </div>
+        )}
+      </For>
     </Flex>
   )
 }

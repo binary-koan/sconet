@@ -48,10 +48,10 @@ const AccountMailboxesList: Component<{
           boxShadow="xs"
         >
           <Box minWidth="0" marginEnd="$4" flex="1">
-            <Text noOfLines={1} lineHeight="1" paddingBottom="1">
+            <Text noOfLines={1} lineHeight="1" paddingBottom="$1">
               {account.name}
             </Text>
-            <Text noOfLines={1} lineHeight="1" fontSize="xs" color="gray.400">
+            <Text noOfLines={1} lineHeight="1" fontSize="$xs" color="gray.400">
               {JSON.stringify(account.mailServerOptions)}
             </Text>
           </Box>

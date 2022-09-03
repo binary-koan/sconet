@@ -56,7 +56,7 @@ const NavigationItem: Component<{ icon: Component<IconProps>; text: JSX.Element;
         color={match() ? "$primary8" : "$neutral8"}
       >
         <Icon as={props.icon} size="2em" />
-        <Text fontSize={{ "@initial": "xs", "@lg": "medium" }}>{props.text}</Text>
+        <Text fontSize={{ "@initial": "$xs", "@lg": "$medium" }}>{props.text}</Text>
       </Box>
     </Box>
   )
