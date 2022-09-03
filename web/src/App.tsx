@@ -3,7 +3,8 @@ import { Routes, Route, Link, Navigate } from "@solidjs/router"
 import type { Component } from "solid-js"
 import { Toaster } from "solid-toast"
 import MainNavigation from "./components/MainNavigation"
-import TransactionsPage from "./pages/TransactionsPage"
+import { SettingsRoute } from "./routes/SettingsRoute"
+import { TransactionsRoute } from "./routes/TransactionsRoute"
 
 const App: Component = () => {
   return (
@@ -16,16 +17,10 @@ const App: Component = () => {
       <MainNavigation />
       <Routes>
         <Route path="/" element={<Navigate href="/transactions" />} />
-        <Route path="/transactions" component={TransactionsPage} />
-        <Route
-          path="/"
-          element={
-            <div>
-              Home <Link href="/about">About</Link>
-            </div>
-          }
-        />
-        <Route path="/about" element={<div>About</div>} />
+
+        <TransactionsRoute />
+        <SettingsRoute />
+
         <Route path="/*all" element={<div>Not found</div>} />
       </Routes>
     </Box>

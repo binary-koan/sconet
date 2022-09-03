@@ -269,6 +269,11 @@ export type UpdateTransactionInput = {
   memo?: InputMaybe<Scalars['String']>;
 };
 
+export type FindCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type FindCategoriesQuery = { __typename?: 'Query', categories: Array<{ __typename?: 'Category', id: string, name: string, color: string, icon: string, budget?: number | null, isRegular: boolean, sortOrder?: number | null, createdAt: any, updatedAt: any }> };
+
 export type AccountMailboxOptionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -278,12 +283,3 @@ export type CategoryOptionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type CategoryOptionsQuery = { __typename?: 'Query', categories: Array<{ __typename?: 'Category', id: string, name: string, color: string, icon: string }> };
-
-export type FindTransactionsQueryVariables = Exact<{
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['String']>;
-  filter?: InputMaybe<TransactionFilter>;
-}>;
-
-
-export type FindTransactionsQuery = { __typename?: 'Query', transactions: { __typename?: 'PaginatedTransactions', nextOffset?: string | null, data: Array<{ __typename?: 'Transaction', id: string, memo: string, date: any, originalMemo: string, amount: number, includeInReports: boolean, category?: { __typename?: 'Category', id: string, name: string, color: string, icon: string } | null, accountMailbox: { __typename?: 'AccountMailbox', id: string, name: string }, splitTo: Array<{ __typename?: 'Transaction', id: string, memo: string, amount: number, includeInReports: boolean, category?: { __typename?: 'Category', id: string, name: string, icon: string, color: string } | null }> }> } };

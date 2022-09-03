@@ -1,12 +1,16 @@
 import { Heading, Button, Icon, IconButton, Text } from "@hope-ui/solid"
-import { Link } from "@solidjs/router"
+import { Title } from "@solidjs/meta"
+import { Link, Route, useRouteData } from "@solidjs/router"
 import { TbCross, TbEdit, TbFilter, TbPlus } from "solid-icons/tb"
-import { createEffect, createSignal } from "solid-js"
+import { Component, createEffect, createSignal, Resource } from "solid-js"
 import TransactionFilters, {
   TransactionFilterValues
 } from "../components/transactions/TransactionFilters"
 import { TransactionsCell } from "../components/transactions/TransactionsCell"
+import { FindTransactionsQuery } from "../graphql-types"
+import { useQuery } from "../graphqlClient"
 import usePageFilter from "../hooks/usePageFilter"
+import { TRANSACTIONS_QUERY } from "../queries/transactions"
 
 const FILTERS_KEY = "sconet.transactionFilters"
 const BLANK_FILTERS = {
@@ -16,7 +20,10 @@ const BLANK_FILTERS = {
   dateUntil: undefined
 }
 
-const TransactionsPage = () => {
+type TransactionsPageData = () => Resource<FindTransactionsQuery>
+
+const TransactionsPage: Component = () => {
+  const data = useRouteData<TransactionsPageData>()
   const [isEditing, setEditing] = createSignal(false)
   const [isFiltering, setFiltering] = createSignal(false)
 
@@ -46,6 +53,8 @@ const TransactionsPage = () => {
 
   return (
     <>
+      <Title>Transactions</Title>
+
       <Heading
         fontSize={{ "@initial": "lg", "@lg": "3xl" }}
         marginTop="$4"
@@ -108,6 +117,7 @@ const TransactionsPage = () => {
         display={isFiltering() ? "block" : "none"}
       />
       <TransactionsCell
+        data={data}
         filter={coercedFilterValues}
         isEditing={isEditing()}
         setFilterValues={setFilterValues}
@@ -116,4 +126,12 @@ const TransactionsPage = () => {
   )
 }
 
-export default TransactionsPage
+const transactionsData: TransactionsPageData = () => {
+  const [data] = useQuery<FindTransactionsQuery>(TRANSACTIONS_QUERY)
+
+  return data
+}
+
+export const TransactionsRoute: Component = () => {
+  return <Route path="/transactions" component={TransactionsPage} data={transactionsData} />
+}

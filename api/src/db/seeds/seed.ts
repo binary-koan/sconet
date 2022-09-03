@@ -1,6 +1,7 @@
 import ObjectID from "bson-objectid"
 import { db } from "../database"
 import bcrypt from "bcryptjs"
+import { insertCategory } from "../queries/category/insertCategory"
 
 export function seed() {
   for (const email of process.env.USER_EMAILS?.split(",") || []) {
@@ -20,4 +21,16 @@ export function seed() {
       console.log(`Created user ${email}`)
     }
   }
+
+  insertCategory({
+    name: "First",
+    color: "danger",
+    icon: "3d-cube-sphere"
+  })
+
+  insertCategory({
+    name: "Second",
+    color: "success",
+    icon: "3d-cube-sphere"
+  })
 }

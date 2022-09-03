@@ -138,7 +138,7 @@ export function useMutation(
         return loading()
       }
     }
-  ]
+  ] as const
 }
 
 async function requestGraphql<Result>(body: string): Promise<Result> {
