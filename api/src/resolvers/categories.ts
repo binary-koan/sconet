@@ -6,6 +6,7 @@ import { softDeleteCategory } from "../db/queries/category/softDeleteCategory"
 import { updateOneCategory } from "../db/queries/category/updateOneCategory"
 import { CategoryRecord } from "../db/records/category"
 import { MutationResolvers, QueryResolvers, Resolvers } from "../resolvers-types"
+import { convertCurrency } from "./money"
 
 export const categories: QueryResolvers["categories"] = () => {
   return findCategories()
@@ -65,12 +66,14 @@ export const Category: Resolvers["Category"] = {
   color: (category) => category.color,
   icon: (category) => category.icon,
 
-  budget: async (category, _, context) =>
+  budget: async (category, { currency }, context) =>
     category.budget != null && category.budgetCurrencyId
-      ? {
+      ? convertCurrency({
           amount: category.budget,
-          currency: await context.data.currency.load(category.budgetCurrencyId!)
-        }
+          currency: await context.data.currency.load(category.budgetCurrencyId),
+          targetCurrencyCode: currency,
+          context
+        })
       : null,
 
   budgetCurrency: (category, _, context) =>

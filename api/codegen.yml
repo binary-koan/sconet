@@ -15,6 +15,7 @@ generates:
         Transaction: ./db/records/transaction#TransactionRecord
         AccountMailbox: ./db/records/accountMailbox#AccountMailboxRecord
         PaginatedTransactions: ./db/queries/transaction/findTransactions#FindTransactionsResult
-        MonthBudget: ./db/queries/budgets/budgetsInYear#MonthBudgetResult
-        CategoryBudget: ./db/queries/budgets/budgetsInYear#CategoryBudgetResult
+        MonthBudget: ./resolvers/budgets#MonthBudgetResult
+        CategoryBudgetGroup: ./resolvers/budgets#CategoryBudgetGroupResult
+        CategoryBudget: ./resolvers/budgets#CategoryBudgetResult
         Money: ./resolvers/money#MoneyOptions

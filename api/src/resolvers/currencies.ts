@@ -8,10 +8,6 @@ import { MutationResolvers, QueryResolvers, Resolvers } from "../resolvers-types
 import { insertExchangeRate } from "../db/queries/exchangeRate/insertExchangeRate"
 
 export const currencies: QueryResolvers["currencies"] = () => {
-  console.log("currencies", findCurrencies()[0].symbol.codePointAt(0), "¥".codePointAt(0))
-
-  console.log(Buffer.from(findCurrencies()[0].symbol, "utf-8").toString("utf-8"))
-
   return findCurrencies()
 }
 
@@ -80,12 +76,9 @@ export const deleteCurrency: MutationResolvers["deleteCurrency"] = (_, { id }) =
 export const Currency: Resolvers["Currency"] = {
   id: (currency) => currency.id,
   code: (currency) => currency.code,
-  symbol: (currency) => {
-    console.log("resolving symbol", currency.symbol)
-    return currency.symbol
-  },
+  symbol: (currency) => currency.symbol,
   decimalDigits: (currency) => currency.decimalDigits,
 
-  exchangeRate: (currency, { to }, context) =>
-    context.data.exchangeRate.load({ from: currency.code, to })
+  exchangeRate: async (currency, { to }, context) =>
+    (await context.data.exchangeRate.load({ from: currency.code, to })).rate
 }

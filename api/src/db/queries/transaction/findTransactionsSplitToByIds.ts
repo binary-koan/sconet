@@ -3,6 +3,10 @@ import { db } from "../../database"
 import { loadTransaction } from "./loadTransaction"
 
 export function findTransactionsSplitToByIds(splitFromIds: readonly string[]) {
+  if (!splitFromIds.length) {
+    return []
+  }
+
   const args = fromPairs(splitFromIds.map((id, index) => [`$id${index}`, id]))
 
   const allTransactions = db

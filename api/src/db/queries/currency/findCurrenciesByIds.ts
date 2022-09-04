@@ -3,6 +3,10 @@ import { db } from "../../database"
 import { loadCurrency } from "./loadCurrency"
 
 export function findCurrenciesByIds(ids: readonly string[]) {
+  if (!ids.length) {
+    return []
+  }
+
   const args = fromPairs(ids.map((id, index) => [`$id${index}`, id]))
 
   const results = keyBy(

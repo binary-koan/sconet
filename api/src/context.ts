@@ -23,7 +23,10 @@ export interface Context {
     transaction: Dataloader<string, TransactionRecord>
     transactionSplitTo: Dataloader<string, TransactionRecord[]>
     currency: Dataloader<string, CurrencyRecord>
-    exchangeRate: Dataloader<{ from: string; to: string }, number>
+    exchangeRate: Dataloader<
+      { from: string; to: string },
+      { rate: number; fromId: string; toId: string }
+    >
   }
 }
 
@@ -45,23 +48,29 @@ export async function buildContext(
 }
 
 export function getAuthDetails(request: Request) {
-  const token = request.headers.get("authorization")?.replace(/^Bearer /, "")
+  try {
+    const token = request.headers.get("authorization")?.replace(/^Bearer /, "")
 
-  if (!token) {
-    return
-  }
+    if (!token) {
+      return
+    }
 
-  if (!process.env.JWT_SECRET) {
-    throw new GraphQLError("No JWT secret set")
-  }
+    if (!process.env.JWT_SECRET) {
+      throw new GraphQLError("No JWT secret set")
+    }
 
-  const body = jwt.verify(token, process.env.JWT_SECRET)
+    const body = jwt.verify(token, process.env.JWT_SECRET)
 
-  if (!body || typeof body === "string" || !body.sub) {
-    throw new GraphQLError("Invalid token")
-  }
+    if (!body || typeof body === "string" || !body.sub) {
+      throw new GraphQLError("Invalid token")
+    }
 
-  return {
-    userId: body.sub
+    return {
+      userId: body.sub
+    }
+  } catch (e) {
+    console.error(e)
+    console.log("headers", [...request.headers.entries()])
+    throw e
   }
 }

@@ -5,7 +5,6 @@ import { CurrencyRecord } from "../../records/currency"
 
 export function updateOneCurrency(id: string, fields: Partial<CurrencyRecord>) {
   const fieldsToSet = pickBy(fields, (value) => value !== undefined)
-  if ("symbol" in fieldsToSet) fieldsToSet.symbol = Buffer.from(fieldsToSet.symbol)
 
   const set = Object.keys(fieldsToSet).map((key) => assertFieldName(key) && `${key} = $${key}`)
 

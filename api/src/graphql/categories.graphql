@@ -4,7 +4,7 @@ type Category {
   color: String!
   icon: String!
   isRegular: Boolean!
-  budget: Money
+  budget(currency: CurrencyCode): Money
   budgetCurrency: Currency
   sortOrder: Int
   createdAt: DateTime!

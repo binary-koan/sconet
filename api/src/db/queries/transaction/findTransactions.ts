@@ -2,15 +2,13 @@ import { memoize } from "lodash"
 import { Maybe } from "../../../types"
 import { db } from "../../database"
 import { TransactionRecord } from "../../records/transaction"
+import { serializeDate } from "../../utils"
 import { loadTransaction } from "./loadTransaction"
-
 export interface FindTransactionsResult {
   data: TransactionRecord[]
   nextOffset?: string
   totalCount: number
 }
-
-const DEFAULT_LIMIT = 100
 
 export function findTransactions({
   limit,
@@ -28,7 +26,7 @@ export function findTransactions({
   }>
 }): FindTransactionsResult {
   let where = " WHERE splitFromId IS NULL AND deletedAt IS NULL"
-  let args: { [key: string]: string | number | string[] | number[] } = {}
+  let args: Record<string, string | bigint | TypedArray | number | boolean | null> = {}
 
   if (filter?.accountMailboxId) {
     where += " AND accountMailboxId = $accountMailboxId"
@@ -37,12 +35,12 @@ export function findTransactions({
 
   if (filter?.dateFrom) {
     where += " AND date >= $dateFrom"
-    args.$dateFrom = filter.dateFrom.getTime()
+    args.$dateFrom = serializeDate(filter.dateFrom)
   }
 
   if (filter?.dateUntil) {
     where += " AND date <= $dateUntil"
-    args.$dateUntil = filter.dateUntil.getTime()
+    args.$dateUntil = serializeDate(filter.dateUntil)
   }
 
   if (filter?.keyword) {
@@ -81,10 +79,17 @@ export function findTransactions({
     args.$offsetDate = date
   }
 
+  let limitClause = ""
+
+  if (limit) {
+    limitClause = "LIMIT $limit"
+    args.$limit = limit + 1
+  }
+
   const data = memoize(() =>
     db
-      .query(`SELECT * FROM transactions ${where} ORDER BY date DESC, id DESC LIMIT $limit`)
-      .all({ ...args, $limit: limit ? limit + 1 : DEFAULT_LIMIT })
+      .query(`SELECT * FROM transactions ${where} ORDER BY date DESC, id DESC ${limitClause}`)
+      .all(args)
       .map(loadTransaction)
   )
 

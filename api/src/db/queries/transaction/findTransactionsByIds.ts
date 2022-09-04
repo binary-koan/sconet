@@ -3,6 +3,10 @@ import { db } from "../../database"
 import { loadTransaction } from "./loadTransaction"
 
 export function findTransactionsByIds(ids: readonly string[]) {
+  if (!ids.length) {
+    return []
+  }
+
   const args = fromPairs(ids.map((id, index) => [`$id${index}`, id]))
 
   const results = keyBy(

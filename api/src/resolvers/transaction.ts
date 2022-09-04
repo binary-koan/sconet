@@ -14,6 +14,7 @@ import {
   Resolvers,
   UpdateTransactionInput
 } from "../resolvers-types"
+import { convertCurrency } from "./money"
 
 export const transactions: QueryResolvers["transactions"] = (_, { limit, offset, filter }) => {
   return findTransactions({ limit, offset, filter })
@@ -113,29 +114,33 @@ export const splitTransaction: MutationResolvers["splitTransaction"] = async (
 
 export const Transaction: Resolvers["Transaction"] = {
   id: (transaction) => transaction.id,
-  amount: async (transaction, _, context) => ({
-    amount: transaction.amount,
-    currency: await context.data.currency.load(transaction.currencyId)
-  }),
-  currencyId: (transaction) => transaction.currencyId,
+
+  amount: async (transaction, { currency }, context) =>
+    convertCurrency({
+      amount: transaction.amount,
+      currency: await context.data.currency.load(transaction.currencyId),
+      targetCurrencyCode: currency,
+      context
+    }),
+
   date: (transaction) => transaction.date,
   memo: (transaction) => transaction.memo,
   originalMemo: (transaction) => transaction.originalMemo,
   includeInReports: (transaction) => transaction.includeInReports,
 
-  categoryId: (transaction) => transaction.categoryId,
-  accountMailboxId: (transaction) => transaction.accountMailboxId,
-  splitFromId: (transaction) => transaction.splitFromId,
-
+  currencyId: (transaction) => transaction.currencyId,
   currency: async (transaction, _, context) =>
     await context.data.currency.load(transaction.currencyId),
 
+  categoryId: (transaction) => transaction.categoryId,
   category: async (transaction, _, context) =>
     transaction.categoryId ? await context.data.category.load(transaction.categoryId) : null,
 
+  accountMailboxId: (transaction) => transaction.accountMailboxId,
   accountMailbox: async (transaction, _, context) =>
     await context.data.accountMailbox.load(transaction.accountMailboxId),
 
+  splitFromId: (transaction) => transaction.splitFromId,
   splitFrom: async (transaction, _, context) =>
     transaction.splitFromId ? await context.data.transaction.load(transaction.splitFromId) : null,
 

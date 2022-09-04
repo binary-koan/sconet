@@ -29,8 +29,13 @@ import {
   transactions,
   updateTransaction
 } from "./resolvers/transaction"
-import { budgets, CategoryBudget, MonthBudget } from "./resolvers/budgets"
-import { CurrencyResolver, DateTimeResolver, JSONResolver } from "graphql-scalars"
+import { budget, CategoryBudget, CategoryBudgetGroup, MonthBudget } from "./resolvers/budgets"
+import {
+  CurrencyResolver,
+  DateTimeResolver,
+  JSONResolver,
+  UtcOffsetResolver
+} from "graphql-scalars"
 import { applyAuthenticatedDirective } from "./resolvers/directives/authenticated"
 import { login, changePassword, generateNewToken } from "./resolvers/sessions"
 import {
@@ -52,7 +57,7 @@ const resolvers: Resolvers = {
     accountMailboxes,
     category,
     categories,
-    budgets,
+    budget,
     currencies,
     currency
   },
@@ -82,11 +87,13 @@ const resolvers: Resolvers = {
   AccountMailbox,
   MonthBudget,
   CategoryBudget,
+  CategoryBudgetGroup,
   Money,
 
   DateTime: DateTimeResolver,
   JSON: JSONResolver,
-  CurrencyCode: new GraphQLScalarType({ ...CurrencyResolver.toConfig(), name: "CurrencyCode" })
+  CurrencyCode: new GraphQLScalarType({ ...CurrencyResolver.toConfig(), name: "CurrencyCode" }),
+  UtcOffset: UtcOffsetResolver
 }
 
 const graphqlDir = resolve(import.meta.dir, "graphql")

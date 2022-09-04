@@ -1,9 +1,17 @@
 type MonthBudget {
   id: String!
   month: Int!
-  year: String!
+  year: Int!
 
-  income: Int!
+  income: Money!
+  totalSpending: Money!
+  difference: Money!
+  regularCategories: CategoryBudgetGroup!
+  irregularCategories: CategoryBudgetGroup!
+}
+
+type CategoryBudgetGroup {
+  totalSpending: Money!
   categories: [CategoryBudget!]!
 }
 
@@ -11,9 +19,14 @@ type CategoryBudget {
   id: String!
   categoryId: String
   category: Category
-  amountSpent: Int!
+  amountSpent: Money!
 }
 
 type Query {
-  budgets(year: String!): [MonthBudget!]! @authenticated
+  budget(
+    year: Int!
+    month: Int!
+    timezoneOffset: UtcOffset = "+00:00"
+    currency: CurrencyCode
+  ): MonthBudget! @authenticated
 }

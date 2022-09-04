@@ -3,7 +3,7 @@ type Transaction {
   date: DateTime!
   memo: String!
   originalMemo: String!
-  amount: Money!
+  amount(currency: CurrencyCode): Money!
   currency: Currency!
   currencyId: String!
   category: Category
@@ -30,7 +30,7 @@ input TransactionFilter {
 }
 
 type Query {
-  transactions(limit: Int, offset: String, filter: TransactionFilter): PaginatedTransactions!
+  transactions(limit: Int = 100, offset: String, filter: TransactionFilter): PaginatedTransactions!
     @authenticated
   transaction(id: String!): Transaction @authenticated
 }

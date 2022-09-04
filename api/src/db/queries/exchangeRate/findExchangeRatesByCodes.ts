@@ -9,7 +9,13 @@ export type ExchangeRateForInsert = MakeOptional<
   "deletedAt" | "createdAt" | "updatedAt"
 >
 
-export function findExchangeRatesByCodes(queries: ReadonlyArray<{ from: string; to: string }>) {
+export function findExchangeRatesByCodes(
+  queries: ReadonlyArray<{ from: string; to: string }>
+): Array<{ rate: number; fromId: string; toId: string }> {
+  if (!queries.length) {
+    return []
+  }
+
   const currencies = keyBy(findCurrencies(), (currency) => currency.code)
 
   if (
@@ -35,6 +41,18 @@ export function findExchangeRatesByCodes(queries: ReadonlyArray<{ from: string; 
     const from = currencies[query.from].id
     const to = currencies[query.to].id
 
-    return allRates.find((rate) => rate.fromCurrencyId === from && rate.toCurrencyId === to)?.rate
+    if (from === to) {
+      return {
+        fromId: from,
+        toId: to,
+        rate: 1
+      }
+    }
+
+    return {
+      fromId: from,
+      toId: to,
+      rate: allRates.find((rate) => rate.fromCurrencyId === from && rate.toCurrencyId === to)!.rate
+    }
   })
 }
