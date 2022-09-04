@@ -22,7 +22,8 @@
     "graphql-helix": "^1.13.0",
     "graphql-scalars": "^1.18.0",
     "jsonwebtoken": "^8.5.1",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "nodemon": "^2.0.19"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^2.11.3",

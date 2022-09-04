@@ -1,16 +1,8 @@
-import {
-  Box,
-  Heading,
-  Icon,
-  IconButton,
-  Progress,
-  ProgressIndicator,
-  Text,
-  useColorMode
-} from "@hope-ui/solid"
+import { Box, Heading, Icon, IconButton, Progress, ProgressIndicator, Text } from "@hope-ui/solid"
 import { Link } from "@solidjs/router"
+import { SolidApexCharts } from "solid-apexcharts"
 import { TbArrowRight } from "solid-icons/tb"
-import { Component, createMemo, For } from "solid-js"
+import { Component, For } from "solid-js"
 import { BudgetsQuery } from "../../graphql-types"
 import CategoryIndicator from "../CategoryIndicator"
 
@@ -21,15 +13,6 @@ const BudgetGroup: Component<{
   group: BudgetsQuery["budget"]["regularCategories"]
   filteredTransactionsRoute: (filters?: any) => string
 }> = (props) => {
-  const { colorMode } = useColorMode()
-
-  const labelColor = createMemo(
-    () =>
-      getColor(colorMode() === "dark" ? "--chakra-colors-gray-100" : "--chakra-colors-gray-900"),
-    [colorMode]
-  )
-  const arcLabelColor = () => getColor("--chakra-colors-gray-50")
-
   return (
     <Box display="flex" flexDirection={{ "@initial": "column", "@lg": "row-reverse" }}>
       <Box
@@ -39,38 +22,36 @@ const BudgetGroup: Component<{
         maxHeight="30rem"
         margin={{ "@initial": "0 auto", "@lg": "0" }}
       >
-        {/* <ResponsivePie
-          data={categories.map(({ category, amountSpent }) => ({
-            id: category?.id || 'uncategorized',
-            label: category?.name
-              ? truncate(category.name, { length: 15 })
-              : 'Uncategorized',
-            value: amountSpent,
-          }))}
-          colors={categories.map(({ category }) =>
-            getColor(
-              category?.color
-                ? `--chakra-colors-${category.color}-500`
-                : `--chakra-colors-gray-300`
-            )
-          )}
-          margin={{ top: 60, right: 60, bottom: 60, left: 60 }}
-          borderWidth={1}
-          borderColor={{
-            from: 'color',
-            modifiers: [['darker', 0.2]],
+        <SolidApexCharts
+          width="500"
+          type="pie"
+          options={{
+            labels: props.group.categories.map(({ category }) => category?.name || "Uncategorized"),
+            tooltip: { enabled: false },
+            dataLabels: {
+              dropShadow: { enabled: false }
+            },
+            fill: {
+              colors: props.group.categories.map(({ category }) =>
+                category?.color
+                  ? getColor(`--hope-colors-${category.color}`)
+                  : getColor("--hope-colors-neutral8")
+              )
+            },
+            legend: {
+              markers: {
+                fillColors: props.group.categories.map(({ category }) =>
+                  category?.color
+                    ? getColor(`--hope-colors-${category.color}`)
+                    : getColor("--hope-colors-neutral8")
+                )
+              }
+            }
           }}
-          arcLabel={({ value }) => formatCurrency(value)}
-          arcLabelsSkipAngle={10}
-          arcLabelsTextColor={arcLabelColor}
-          arcLinkLabel="label"
-          arcLinkLabelsTextColor={labelColor}
-          arcLinkLabelsThickness={2}
-          arcLinkLabelsColor={{ from: 'color' }}
-          isInteractive={false}
-        /> */}
+          series={props.group.categories.map(({ amountSpent }) => amountSpent.decimalAmount)}
+        />
       </Box>
-      <Box flex={{ "@initial": "0", "@lg": "$1" }}>
+      <Box flex={{ "@initial": "0", "@lg": "1" }}>
         <Heading
           size="sm"
           marginBottom="$4"

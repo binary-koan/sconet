@@ -148,10 +148,10 @@ const BudgetsPage = () => {
       >
         {date().toLocaleDateString("en", { year: "numeric", month: "long" })}
 
-        <Button size="sm" marginStart="auto" onClick={decrementMonth}>
+        <Button size="sm" colorScheme="neutral" marginStart="auto" onClick={decrementMonth}>
           <Icon as={TbArrowLeft} />
         </Button>
-        <Button size="sm" onClick={incrementMonth}>
+        <Button size="sm" colorScheme="neutral" onClick={incrementMonth}>
           <Icon as={TbArrowRight} />
         </Button>
       </Heading>
