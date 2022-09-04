@@ -3,6 +3,7 @@ import { db } from "../database"
 import bcrypt from "bcryptjs"
 import { insertCategory } from "../queries/category/insertCategory"
 import { serializeDate } from "../utils"
+import { insertAccountMailbox } from "../queries/accountMailbox/insertAccountMailbox"
 
 export function seed() {
   for (const email of process.env.USER_EMAILS?.split(",") || []) {
@@ -33,5 +34,14 @@ export function seed() {
     name: "Second",
     color: "success",
     icon: "3d-cube-sphere"
+  })
+
+  insertAccountMailbox({
+    name: "Test",
+    mailServerOptions: {},
+    fromAddressPattern: "",
+    memoPattern: "",
+    datePattern: "",
+    amountPattern: ""
   })
 }

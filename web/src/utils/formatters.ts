@@ -25,15 +25,6 @@ export const formatDate = (datetime: Date | string, format: DateFormat) => {
   return dateFormats[format].format(new Date(datetime))
 }
 
-const currencyFormat = new Intl.NumberFormat("en", {
-  style: "currency",
-  currency: "JPY"
-})
-
-export const formatCurrency = (amount: number) => {
-  return currencyFormat.format(amount)
-}
-
 export const formatDateTimeForInput = (value?: Date | string) => {
   if (!value) return
 

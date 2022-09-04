@@ -1,6 +1,8 @@
 import { JSX } from "solid-js"
+import { RefProp } from "../../types"
 
 export const Form: <Values>(props: {
+  ref?: RefProp<HTMLFormElement>
   onSave: (input: Values) => void
   children: JSX.Element
 }) => JSX.Element = (props) => {
@@ -25,5 +27,9 @@ export const Form: <Values>(props: {
     props.onSave(values)
   }
 
-  return <form onSubmit={onSubmit}>{props.children}</form>
+  return (
+    <form ref={props.ref} onSubmit={onSubmit}>
+      {props.children}
+    </form>
+  )
 }

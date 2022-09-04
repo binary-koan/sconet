@@ -1,0 +1,29 @@
+type Currency {
+  id: String!
+  code: CurrencyCode!
+  symbol: String!
+  decimalDigits: Int!
+  exchangeRate(to: CurrencyCode!): Float
+}
+
+type Query {
+  currencies: [Currency!]! @authenticated
+  currency(id: String!): Currency @authenticated
+}
+
+input CreateCurrencyInput {
+  code: CurrencyCode!
+  symbol: String!
+  decimalDigits: Int!
+}
+
+input UpdateCurrencyInput {
+  symbol: String!
+  decimalDigits: Int!
+}
+
+type Mutation {
+  createCurrency(input: CreateCurrencyInput!): Currency! @authenticated
+  updateCurrency(id: String!, input: UpdateCurrencyInput!): Currency! @authenticated
+  deleteCurrency(id: String!): Currency! @authenticated
+}

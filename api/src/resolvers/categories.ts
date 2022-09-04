@@ -1,10 +1,10 @@
-import { CategoryRecord } from "../db/records/category"
 import { findCategories } from "../db/queries/category/findCategories"
 import { getCategory } from "../db/queries/category/getCategory"
 import { insertCategory } from "../db/queries/category/insertCategory"
 import { setCategoryOrder } from "../db/queries/category/setCategoryOrder"
 import { softDeleteCategory } from "../db/queries/category/softDeleteCategory"
 import { updateOneCategory } from "../db/queries/category/updateOneCategory"
+import { CategoryRecord } from "../db/records/category"
 import { MutationResolvers, QueryResolvers, Resolvers } from "../resolvers-types"
 
 export const categories: QueryResolvers["categories"] = () => {
@@ -64,7 +64,18 @@ export const Category: Resolvers["Category"] = {
   name: (category) => category.name,
   color: (category) => category.color,
   icon: (category) => category.icon,
-  budget: (category) => category.budget,
+
+  budget: async (category, _, context) =>
+    category.budget != null && category.budgetCurrencyId
+      ? {
+          amount: category.budget,
+          currency: await context.data.currency.load(category.budgetCurrencyId!)
+        }
+      : null,
+
+  budgetCurrency: (category, _, context) =>
+    category.budgetCurrencyId ? context.data.currency.load(category.budgetCurrencyId) : null,
+
   isRegular: (category) => category.isRegular,
   sortOrder: (category) => category.sortOrder,
   createdAt: (category) => category.createdAt,

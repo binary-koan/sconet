@@ -3,8 +3,9 @@ type Transaction {
   date: DateTime!
   memo: String!
   originalMemo: String!
-  amount: Int!
-  currency: String!
+  amount: Money!
+  currency: Currency!
+  currencyId: String!
   category: Category
   categoryId: String
   accountMailbox: AccountMailbox!
@@ -37,7 +38,7 @@ type Query {
 input CreateTransactionInput {
   memo: String!
   amount: Int!
-  currency: String!
+  currencyId: String!
   categoryId: String
   accountMailboxId: String!
   date: DateTime
@@ -47,7 +48,7 @@ input CreateTransactionInput {
 input UpdateTransactionInput {
   memo: String
   amount: Int
-  currency: String
+  currencyId: String
   categoryId: String
   accountMailboxId: String
   date: DateTime

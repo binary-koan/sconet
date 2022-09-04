@@ -9,6 +9,9 @@ import { TransactionRecord } from "./db/records/transaction"
 import { findTransactionsByIds } from "./db/queries/transaction/findTransactionsByIds"
 import { findTransactionsSplitToByIds } from "./db/queries/transaction/findTransactionsSplitToByIds"
 import { GraphQLError } from "graphql"
+import { findCurrenciesByIds } from "./db/queries/currency/findCurrenciesByIds"
+import { CurrencyRecord } from "./db/records/currency"
+import { findExchangeRatesByCodes } from "./db/queries/exchangeRate/findExchangeRatesByCodes"
 
 export interface Context {
   auth?: {
@@ -19,6 +22,8 @@ export interface Context {
     category: Dataloader<string, CategoryRecord>
     transaction: Dataloader<string, TransactionRecord>
     transactionSplitTo: Dataloader<string, TransactionRecord[]>
+    currency: Dataloader<string, CurrencyRecord>
+    exchangeRate: Dataloader<{ from: string; to: string }, number>
   }
 }
 
@@ -32,7 +37,9 @@ export async function buildContext(
       accountMailbox: new Dataloader(async (ids) => findAccountMailboxesByIds(ids)),
       category: new Dataloader(async (ids) => findCategoriesByIds(ids)),
       transaction: new Dataloader(async (ids) => findTransactionsByIds(ids)),
-      transactionSplitTo: new Dataloader(async (ids) => findTransactionsSplitToByIds(ids))
+      transactionSplitTo: new Dataloader(async (ids) => findTransactionsSplitToByIds(ids)),
+      currency: new Dataloader(async (ids) => findCurrenciesByIds(ids)),
+      exchangeRate: new Dataloader(async (queries) => findExchangeRatesByCodes(queries))
     }
   }
 }

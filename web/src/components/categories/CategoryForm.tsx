@@ -1,11 +1,14 @@
 import { InputGroup, InputLeftAddon, Input, Button } from "@hope-ui/solid"
-import { Component } from "solid-js"
-import { CreateCategoryMutationVariables } from "../../graphql-types"
+import { repeat } from "lodash"
+import { Component, createSignal, onMount } from "solid-js"
+import { CreateCategoryMutationVariables, CurrencyOptionsQuery } from "../../graphql-types"
+import { useQuery } from "../../graphqlClient"
 import { Form } from "../forms/Form"
 import FormIconPicker from "../forms/FormIconPicker"
 import FormInput from "../forms/FormInput"
 import FormOptionButtons from "../forms/FormOptionButtons"
 import FormSwitch from "../forms/FormSwitch"
+import { currenciesQuery } from "../transactions/TransactionForm"
 
 interface CategoryFormValues {
   name: string
@@ -20,19 +23,38 @@ const CategoryForm: Component<{
   onSave: (input: CreateCategoryMutationVariables["input"], id?: string) => void
   loading: boolean
 }> = (props) => {
+  const [currencies] = useQuery<CurrencyOptionsQuery>(currenciesQuery)
+  const [selectedCurrency, setSelectedCurrency] = createSignal<
+    CurrencyOptionsQuery["currencies"][number] | undefined
+  >()
+
   const onSave = (data: CategoryFormValues) => {
     props.onSave(
       {
         ...data,
-        budget: data.budget ? parseInt(data.budget) : null,
+        budget: data.budget
+          ? Math.floor(parseFloat(data.budget) * 10 ** (selectedCurrency()?.decimalDigits || 0))
+          : null,
         isRegular: Boolean(data.isRegular)
       },
       props?.category?.id
     )
   }
 
+  let form: HTMLFormElement | undefined
+
+  onMount(() => {
+    form?.addEventListener("click", (event) => {
+      setTimeout(() => {
+        const currencyId = new FormData(form).get("budgetCurrencyId")
+
+        setSelectedCurrency(currencies()?.currencies.find((currency) => currency.id === currencyId))
+      })
+    })
+  })
+
   return (
-    <Form onSave={onSave}>
+    <Form ref={form} onSave={onSave}>
       <FormInput label="Name" name="name" defaultValue={props.category?.name} />
 
       <FormOptionButtons
@@ -55,15 +77,34 @@ const CategoryForm: Component<{
 
       <FormIconPicker name="icon" label="Icon" defaultValue={props.category?.icon} />
 
+      <FormOptionButtons
+        label="Budget Currency"
+        name="budgetCurrencyId"
+        defaultValue={props.category?.budgetCurrencyId}
+        options={
+          currencies()?.currencies?.map((currency) => ({
+            value: currency.id,
+            content: currency.code
+          })) || []
+        }
+      />
+
       <FormInput
         label="Budget"
         name="budget"
         type="number"
-        defaultValue={props.category?.budget}
+        defaultValue={props.category?.budget?.decimalAmount}
         render={(props) => (
           <InputGroup>
-            <InputLeftAddon>¥</InputLeftAddon>
-            <Input {...props} />
+            <InputLeftAddon>{selectedCurrency()?.symbol}</InputLeftAddon>
+            <Input
+              {...props}
+              step={
+                selectedCurrency()?.decimalDigits
+                  ? `0.${repeat("0", selectedCurrency()!.decimalDigits - 1)}1`
+                  : "1"
+              }
+            />
           </InputGroup>
         )}
       />

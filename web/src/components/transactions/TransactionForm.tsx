@@ -4,7 +4,8 @@ import { Component, createSignal, onCleanup, onMount, Show } from "solid-js"
 import {
   AccountMailboxOptionsQuery,
   CategoryOptionsQuery,
-  CreateTransactionMutationVariables
+  CreateTransactionMutationVariables,
+  CurrencyOptionsQuery
 } from "../../graphql-types"
 import { useQuery } from "../../graphqlClient"
 import { namedIcons } from "../../utils/namedIcons"
@@ -14,6 +15,7 @@ import { Form } from "../forms/Form"
 import FormInput from "../forms/FormInput"
 import FormOptionButtons from "../forms/FormOptionButtons"
 import FormSwitch from "../forms/FormSwitch"
+import { repeat } from "lodash"
 
 const categoriesQuery = gql`
   query CategoryOptions {
@@ -35,9 +37,21 @@ const accountMailboxesQuery = gql`
   }
 `
 
+export const currenciesQuery = gql`
+  query CurrencyOptions {
+    currencies {
+      id
+      code
+      symbol
+      decimalDigits
+    }
+  }
+`
+
 interface TransactionFormValues {
   amountType: "expense" | "income"
   amount: string
+  currencyId: string
   memo: string
   date: string
   accountMailboxId: string
@@ -51,57 +65,97 @@ const TransactionForm: Component<{
 }> = (props) => {
   const [categories] = useQuery<CategoryOptionsQuery>(categoriesQuery)
   const [accountMailboxes] = useQuery<AccountMailboxOptionsQuery>(accountMailboxesQuery)
+  const [currencies] = useQuery<CurrencyOptionsQuery>(currenciesQuery)
+  const [selectedCurrency, setSelectedCurrency] = createSignal<
+    CurrencyOptionsQuery["currencies"][number] | undefined
+  >()
 
   const onSave = ({ amountType, amount, date, ...data }: TransactionFormValues) => {
+    const baseAmount = parseFloat(amount)
+    const integerAmount = Math.floor(baseAmount * 10 ** (selectedCurrency()?.decimalDigits || 0))
+
     const coercedData = {
       ...data,
-      amount: amountType === "expense" ? -parseInt(amount) : parseInt(amount),
+      amount: amountType === "expense" ? -integerAmount : integerAmount,
       date: new Date(date).toISOString(),
-      currency: "JPY",
       includeInReports: Boolean(data.includeInReports)
     }
 
     props.onSave(coercedData, props?.transaction?.id)
   }
 
-  return (
-    <Form onSave={onSave}>
-      <Show when={!props.transaction?.splitFromId}>
-        <>
-          <FormOptionButtons
-            name="amountType"
-            defaultValue={
-              props.transaction?.amount && props.transaction.amount > 0 ? "income" : "expense"
-            }
-            options={[
-              {
-                value: "expense",
-                content: "Expense",
-                props: { flex: 1 },
-                buttonProps: { width: "full" }
-              },
-              {
-                value: "income",
-                content: "Income",
-                props: { flex: 1 },
-                buttonProps: { width: "full" }
-              }
-            ]}
-          />
+  let form: HTMLFormElement | undefined
 
-          <FormInput
-            label="Amount"
-            name="amount"
-            type="number"
-            defaultValue={props.transaction?.amount && Math.abs(props.transaction.amount)}
-            render={(props) => (
-              <InputGroup>
-                <InputLeftAddon>¥</InputLeftAddon>
-                <Input {...props} />
-              </InputGroup>
-            )}
-          />
-        </>
+  onMount(() => {
+    form?.addEventListener("click", (event) => {
+      setTimeout(() => {
+        const currencyId = new FormData(form).get("currencyId")
+
+        setSelectedCurrency(currencies()?.currencies.find((currency) => currency.id === currencyId))
+      })
+    })
+  })
+
+  return (
+    <Form ref={form} onSave={onSave}>
+      <Show when={!props.transaction?.splitFromId}>
+        <FormOptionButtons
+          name="amountType"
+          defaultValue={
+            props.transaction?.amount && props.transaction.amount.decimalAmount > 0
+              ? "income"
+              : "expense"
+          }
+          options={[
+            {
+              value: "expense",
+              content: "Expense",
+              props: { flex: 1 },
+              buttonProps: { width: "full" }
+            },
+            {
+              value: "income",
+              content: "Income",
+              props: { flex: 1 },
+              buttonProps: { width: "full" }
+            }
+          ]}
+        />
+
+        <FormOptionButtons
+          label="Currency"
+          name="currencyId"
+          defaultValue={props.transaction?.currencyId}
+          options={
+            currencies()?.currencies?.map((currency) => ({
+              value: currency.id,
+              content: currency.code
+            })) || []
+          }
+        />
+
+        <FormInput
+          label="Amount"
+          name="amount"
+          type="number"
+          defaultValue={
+            props.transaction?.amount.decimalAmount &&
+            Math.abs(props.transaction.amount.decimalAmount)
+          }
+          render={(props) => (
+            <InputGroup>
+              <InputLeftAddon>{selectedCurrency()?.symbol}</InputLeftAddon>
+              <Input
+                {...props}
+                step={
+                  selectedCurrency()?.decimalDigits
+                    ? `0.${repeat("0", selectedCurrency()!.decimalDigits - 1)}1`
+                    : "1"
+                }
+              />
+            </InputGroup>
+          )}
+        />
       </Show>
 
       <FormInput label="Memo" name="memo" defaultValue={props.transaction?.memo} />

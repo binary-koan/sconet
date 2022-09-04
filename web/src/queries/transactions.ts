@@ -1,6 +1,4 @@
 import { gql } from "@solid-primitives/graphql"
-import { createResource, createSignal } from "solid-js"
-import { FindTransactionsQuery, FindTransactionsQueryVariables } from "../graphql-types"
 
 export const TRANSACTIONS_QUERY = gql`
   query FindTransactions($limit: Int, $offset: String, $filter: TransactionFilter) {
@@ -10,7 +8,10 @@ export const TRANSACTIONS_QUERY = gql`
         memo
         date
         originalMemo
-        amount
+        amount {
+          decimalAmount
+          formatted
+        }
         includeInReports
         category {
           id
@@ -25,7 +26,10 @@ export const TRANSACTIONS_QUERY = gql`
         splitTo {
           id
           memo
-          amount
+          amount {
+            decimalAmount
+            formatted
+          }
           category {
             id
             name

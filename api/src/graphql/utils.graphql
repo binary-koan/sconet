@@ -1,4 +1,5 @@
 scalar DateTime
 scalar JSON
+scalar CurrencyCode
 
 directive @authenticated on FIELD_DEFINITION

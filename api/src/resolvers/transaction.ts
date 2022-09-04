@@ -52,7 +52,7 @@ export const updateTransaction: MutationResolvers["updateTransaction"] = (_, { i
     ...updateInput,
     memo: updateInput.memo || undefined,
     amount: updateInput.amount || undefined,
-    currency: updateInput.currency || undefined,
+    currencyId: updateInput.currencyId || undefined,
     date: updateInput.date || undefined,
     includeInReports: updateInput.includeInReports || undefined,
     accountMailboxId: updateInput.accountMailboxId || undefined
@@ -113,8 +113,11 @@ export const splitTransaction: MutationResolvers["splitTransaction"] = async (
 
 export const Transaction: Resolvers["Transaction"] = {
   id: (transaction) => transaction.id,
-  amount: (transaction) => transaction.amount,
-  currency: (transaction) => transaction.currency,
+  amount: async (transaction, _, context) => ({
+    amount: transaction.amount,
+    currency: await context.data.currency.load(transaction.currencyId)
+  }),
+  currencyId: (transaction) => transaction.currencyId,
   date: (transaction) => transaction.date,
   memo: (transaction) => transaction.memo,
   originalMemo: (transaction) => transaction.originalMemo,
@@ -123,6 +126,9 @@ export const Transaction: Resolvers["Transaction"] = {
   categoryId: (transaction) => transaction.categoryId,
   accountMailboxId: (transaction) => transaction.accountMailboxId,
   splitFromId: (transaction) => transaction.splitFromId,
+
+  currency: async (transaction, _, context) =>
+    await context.data.currency.load(transaction.currencyId),
 
   category: async (transaction, _, context) =>
     transaction.categoryId ? await context.data.category.load(transaction.categoryId) : null,

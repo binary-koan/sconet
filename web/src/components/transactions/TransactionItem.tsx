@@ -3,7 +3,6 @@ import { Link } from "@solidjs/router"
 import { TbEdit } from "solid-icons/tb"
 import { Component, createEffect, createSignal, For, Show } from "solid-js"
 import { Dynamic } from "solid-js/web"
-import { formatCurrency } from "../../utils/formatters"
 import MemoEditor from "./MemoEditor"
 import RelationEditor from "./RelationEditor"
 
@@ -91,7 +90,7 @@ const TransactionItem: Component<{ transaction: any; parent?: any; isEditing: bo
             marginStart="$2"
             css={{ whiteSpace: "nowrap" }}
           >
-            {formatCurrency(props.transaction.amount)}
+            {props.transaction.amount.formatted}
           </Text>
           {/* {props.isEditing && !parent && <SplitTransactionButton transaction={props.transaction} />}
           {props.isEditing && <VisibilityEditor transaction={props.transaction} />}

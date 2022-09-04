@@ -1,0 +1,5 @@
+type Money {
+  integerAmount: Int!
+  decimalAmount: Float!
+  formatted: String!
+}

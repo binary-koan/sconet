@@ -7,7 +7,7 @@ export function loadTransaction(row: any): TransactionRecord {
     memo: row.memo,
     originalMemo: row.originalMemo,
     amount: row.amount,
-    currency: row.currency,
+    currencyId: row.currencyId,
     date: loadDate(row.date as number),
     includeInReports: Boolean(row.includeInReports),
     categoryId: row.categoryId,

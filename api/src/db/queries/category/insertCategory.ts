@@ -6,7 +6,13 @@ import { serializeDate } from "../../utils"
 
 export type CategoryForInsert = MakeOptional<
   Omit<CategoryRecord, "id">,
-  "isRegular" | "budget" | "sortOrder" | "deletedAt" | "createdAt" | "updatedAt"
+  | "isRegular"
+  | "budget"
+  | "budgetCurrencyId"
+  | "sortOrder"
+  | "deletedAt"
+  | "createdAt"
+  | "updatedAt"
 >
 
 export function insertCategory(category: CategoryForInsert) {
@@ -15,9 +21,9 @@ export function insertCategory(category: CategoryForInsert) {
   db.run(
     `
     INSERT INTO categories
-      (id, name, color, icon, isRegular, budget, sortOrder, deletedAt, createdAt, updatedAt)
+      (id, name, color, icon, isRegular, budget, budgetCurrencyId, sortOrder, deletedAt, createdAt, updatedAt)
     VALUES
-      ($id, $name, $color, $icon, $isRegular, $budget, $sortOrder, $deletedAt, $createdAt, $updatedAt)
+      ($id, $name, $color, $icon, $isRegular, $budget, $budgetCurrencyId, $sortOrder, $deletedAt, $createdAt, $updatedAt)
   `,
     {
       $id: id,
@@ -26,6 +32,7 @@ export function insertCategory(category: CategoryForInsert) {
       $icon: category.icon,
       $isRegular: category.isRegular || true,
       $budget: category.budget,
+      $budgetCurrencyId: category.budgetCurrencyId,
       $sortOrder: category.sortOrder || null,
       $deletedAt: serializeDate(category.deletedAt),
       $createdAt: serializeDate(category.createdAt || new Date()),

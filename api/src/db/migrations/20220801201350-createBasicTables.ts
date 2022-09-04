@@ -42,16 +42,16 @@ export function up() {
       memo TEXT NOT NULL,
       originalMemo TEXT NOT NULL,
       amount INTEGER NOT NULL,
-      currency TEXT NOT NULL,
       date INTEGER NOT NULL,
       includeInReports INTEGER NOT NULL,
 
-      categoryId STRING,
-      accountMailboxId STRING NOT NULL,
+      currencyId TEXT NOT NULL,
+      categoryId TEXT,
+      accountMailboxId TEXT NOT NULL,
 
-      remoteId STRING,
+      remoteId TEXT,
 
-      splitFromId STRING,
+      splitFromId TEXT,
 
       deletedAt INTEGER,
 
@@ -70,6 +70,32 @@ export function up() {
       updatedAt INTEGER
     )
   `)
+
+  db.run(`
+    CREATE TABLE currencies (
+      id TEXT PRIMARY KEY,
+      code TEXT NOT NULL,
+      symbol TEXT NOT NULL,
+      decimalDigits INTEGER NOT NULL,
+
+      deletedAt INTEGER,
+      createdAt INTEGER,
+      updatedAt INTEGER
+    )
+  `)
+
+  db.run(`
+    CREATE TABLE exchangeRates (
+      id TEXT PRIMARY KEY,
+      fromCurrencyId TEXT NOT NULL,
+      toCurrencyId TEXT NOT NULL,
+      rate REAL NOT NULL,
+
+      deletedAt INTEGER,
+      createdAt INTEGER,
+      updatedAt INTEGER
+    )
+  `)
 }
 
 export function down() {
@@ -77,4 +103,6 @@ export function down() {
   db.run("DROP TABLE categories")
   db.run("DROP TABLE transactions")
   db.run("DROP TABLE users")
+  db.run("DROP TABLE currencies")
+  db.run("DROP TABLE exchangeRates")
 }

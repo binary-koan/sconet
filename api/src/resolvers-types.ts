@@ -1,9 +1,11 @@
 import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
 import { CategoryRecord } from './db/records/category';
+import { CurrencyRecord } from './db/records/currency';
 import { TransactionRecord } from './db/records/transaction';
 import { AccountMailboxRecord } from './db/records/accountMailbox';
 import { FindTransactionsResult } from './db/queries/transaction/findTransactions';
 import { MonthBudgetResult, CategoryBudgetResult } from './db/queries/budgets/budgetsInYear';
+import { MoneyOptions } from './resolvers/money';
 import { Context } from './context';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -18,6 +20,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  CurrencyCode: any;
   DateTime: Date;
   JSON: any;
 };
@@ -36,7 +39,8 @@ export type AccountMailbox = {
 
 export type Category = {
   __typename?: 'Category';
-  budget: Maybe<Scalars['Int']>;
+  budget: Maybe<Money>;
+  budgetCurrency: Maybe<Currency>;
   color: Scalars['String'];
   createdAt: Scalars['DateTime'];
   icon: Scalars['String'];
@@ -66,20 +70,48 @@ export type CreateAccountMailboxInput = {
 
 export type CreateCategoryInput = {
   budget: InputMaybe<Scalars['Int']>;
+  budgetCurrencyId: InputMaybe<Scalars['String']>;
   color: Scalars['String'];
   icon: Scalars['String'];
   isRegular: Scalars['Boolean'];
   name: Scalars['String'];
 };
 
+export type CreateCurrencyInput = {
+  code: Scalars['CurrencyCode'];
+  decimalDigits: Scalars['Int'];
+  symbol: Scalars['String'];
+};
+
 export type CreateTransactionInput = {
   accountMailboxId: Scalars['String'];
   amount: Scalars['Int'];
   categoryId: InputMaybe<Scalars['String']>;
-  currency: Scalars['String'];
+  currencyId: Scalars['String'];
   date: InputMaybe<Scalars['DateTime']>;
   includeInReports: InputMaybe<Scalars['Boolean']>;
   memo: Scalars['String'];
+};
+
+export type Currency = {
+  __typename?: 'Currency';
+  code: Scalars['CurrencyCode'];
+  decimalDigits: Scalars['Int'];
+  exchangeRate: Maybe<Scalars['Float']>;
+  id: Scalars['String'];
+  symbol: Scalars['String'];
+};
+
+
+export type CurrencyExchangeRateArgs = {
+  to: Scalars['CurrencyCode'];
+};
+
+export type Money = {
+  __typename?: 'Money';
+  decimalAmount: Scalars['Float'];
+  formatted: Scalars['String'];
+  integerAmount: Scalars['Int'];
 };
 
 export type MonthBudget = {
@@ -96,9 +128,11 @@ export type Mutation = {
   changePassword: Scalars['Boolean'];
   createAccountMailbox: AccountMailbox;
   createCategory: Category;
+  createCurrency: Currency;
   createTransaction: Transaction;
   deleteAccountMailbox: AccountMailbox;
   deleteCategory: Category;
+  deleteCurrency: Currency;
   deleteTransaction: Transaction;
   generateNewToken: Scalars['String'];
   login: Scalars['String'];
@@ -106,6 +140,7 @@ export type Mutation = {
   splitTransaction: Transaction;
   updateAccountMailbox: AccountMailbox;
   updateCategory: Category;
+  updateCurrency: Currency;
   updateTransaction: Transaction;
 };
 
@@ -126,6 +161,11 @@ export type MutationCreateCategoryArgs = {
 };
 
 
+export type MutationCreateCurrencyArgs = {
+  input: CreateCurrencyInput;
+};
+
+
 export type MutationCreateTransactionArgs = {
   input: CreateTransactionInput;
 };
@@ -137,6 +177,11 @@ export type MutationDeleteAccountMailboxArgs = {
 
 
 export type MutationDeleteCategoryArgs = {
+  id: Scalars['String'];
+};
+
+
+export type MutationDeleteCurrencyArgs = {
   id: Scalars['String'];
 };
 
@@ -175,6 +220,12 @@ export type MutationUpdateCategoryArgs = {
 };
 
 
+export type MutationUpdateCurrencyArgs = {
+  id: Scalars['String'];
+  input: UpdateCurrencyInput;
+};
+
+
 export type MutationUpdateTransactionArgs = {
   id: Scalars['String'];
   input: UpdateTransactionInput;
@@ -194,6 +245,8 @@ export type Query = {
   budgets: Array<MonthBudget>;
   categories: Array<Category>;
   category: Maybe<Category>;
+  currencies: Array<Currency>;
+  currency: Maybe<Currency>;
   transaction: Maybe<Transaction>;
   transactions: PaginatedTransactions;
 };
@@ -214,6 +267,11 @@ export type QueryCategoryArgs = {
 };
 
 
+export type QueryCurrencyArgs = {
+  id: Scalars['String'];
+};
+
+
 export type QueryTransactionArgs = {
   id: Scalars['String'];
 };
@@ -229,10 +287,11 @@ export type Transaction = {
   __typename?: 'Transaction';
   accountMailbox: AccountMailbox;
   accountMailboxId: Scalars['String'];
-  amount: Scalars['Int'];
+  amount: Money;
   category: Maybe<Category>;
   categoryId: Maybe<Scalars['String']>;
-  currency: Scalars['String'];
+  currency: Currency;
+  currencyId: Scalars['String'];
   date: Scalars['DateTime'];
   id: Scalars['String'];
   includeInReports: Scalars['Boolean'];
@@ -261,17 +320,23 @@ export type UpdateAccountMailboxInput = {
 
 export type UpdateCategoryInput = {
   budget: InputMaybe<Scalars['Int']>;
+  budgetCurrencyId: InputMaybe<Scalars['String']>;
   color: InputMaybe<Scalars['String']>;
   icon: InputMaybe<Scalars['String']>;
   isRegular: InputMaybe<Scalars['Boolean']>;
   name: InputMaybe<Scalars['String']>;
 };
 
+export type UpdateCurrencyInput = {
+  decimalDigits: Scalars['Int'];
+  symbol: Scalars['String'];
+};
+
 export type UpdateTransactionInput = {
   accountMailboxId: InputMaybe<Scalars['String']>;
   amount: InputMaybe<Scalars['Int']>;
   categoryId: InputMaybe<Scalars['String']>;
-  currency: InputMaybe<Scalars['String']>;
+  currencyId: InputMaybe<Scalars['String']>;
   date: InputMaybe<Scalars['DateTime']>;
   includeInReports: InputMaybe<Scalars['Boolean']>;
   memo: InputMaybe<Scalars['String']>;
@@ -352,10 +417,15 @@ export type ResolversTypes = {
   CategoryBudget: ResolverTypeWrapper<CategoryBudgetResult>;
   CreateAccountMailboxInput: CreateAccountMailboxInput;
   CreateCategoryInput: CreateCategoryInput;
+  CreateCurrencyInput: CreateCurrencyInput;
   CreateTransactionInput: CreateTransactionInput;
+  Currency: ResolverTypeWrapper<CurrencyRecord>;
+  CurrencyCode: ResolverTypeWrapper<Scalars['CurrencyCode']>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
+  Float: ResolverTypeWrapper<Scalars['Float']>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
   JSON: ResolverTypeWrapper<Scalars['JSON']>;
+  Money: ResolverTypeWrapper<MoneyOptions>;
   MonthBudget: ResolverTypeWrapper<MonthBudgetResult>;
   Mutation: ResolverTypeWrapper<{}>;
   PaginatedTransactions: ResolverTypeWrapper<FindTransactionsResult>;
@@ -365,6 +435,7 @@ export type ResolversTypes = {
   TransactionFilter: TransactionFilter;
   UpdateAccountMailboxInput: UpdateAccountMailboxInput;
   UpdateCategoryInput: UpdateCategoryInput;
+  UpdateCurrencyInput: UpdateCurrencyInput;
   UpdateTransactionInput: UpdateTransactionInput;
 };
 
@@ -376,10 +447,15 @@ export type ResolversParentTypes = {
   CategoryBudget: CategoryBudgetResult;
   CreateAccountMailboxInput: CreateAccountMailboxInput;
   CreateCategoryInput: CreateCategoryInput;
+  CreateCurrencyInput: CreateCurrencyInput;
   CreateTransactionInput: CreateTransactionInput;
+  Currency: CurrencyRecord;
+  CurrencyCode: Scalars['CurrencyCode'];
   DateTime: Scalars['DateTime'];
+  Float: Scalars['Float'];
   Int: Scalars['Int'];
   JSON: Scalars['JSON'];
+  Money: MoneyOptions;
   MonthBudget: MonthBudgetResult;
   Mutation: {};
   PaginatedTransactions: FindTransactionsResult;
@@ -389,6 +465,7 @@ export type ResolversParentTypes = {
   TransactionFilter: TransactionFilter;
   UpdateAccountMailboxInput: UpdateAccountMailboxInput;
   UpdateCategoryInput: UpdateCategoryInput;
+  UpdateCurrencyInput: UpdateCurrencyInput;
   UpdateTransactionInput: UpdateTransactionInput;
 };
 
@@ -409,7 +486,8 @@ export type AccountMailboxResolvers<ContextType = Context, ParentType extends Re
 };
 
 export type CategoryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Category'] = ResolversParentTypes['Category']> = {
-  budget: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  budget: Resolver<Maybe<ResolversTypes['Money']>, ParentType, ContextType>;
+  budgetCurrency: Resolver<Maybe<ResolversTypes['Currency']>, ParentType, ContextType>;
   color: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   createdAt: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   icon: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -429,6 +507,19 @@ export type CategoryBudgetResolvers<ContextType = Context, ParentType extends Re
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type CurrencyResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Currency'] = ResolversParentTypes['Currency']> = {
+  code: Resolver<ResolversTypes['CurrencyCode'], ParentType, ContextType>;
+  decimalDigits: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  exchangeRate: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType, RequireFields<CurrencyExchangeRateArgs, 'to'>>;
+  id: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  symbol: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export interface CurrencyCodeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['CurrencyCode'], any> {
+  name: 'CurrencyCode';
+}
+
 export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateTime'], any> {
   name: 'DateTime';
 }
@@ -436,6 +527,13 @@ export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversT
 export interface JsonScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['JSON'], any> {
   name: 'JSON';
 }
+
+export type MoneyResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Money'] = ResolversParentTypes['Money']> = {
+  decimalAmount: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  formatted: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  integerAmount: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
 
 export type MonthBudgetResolvers<ContextType = Context, ParentType extends ResolversParentTypes['MonthBudget'] = ResolversParentTypes['MonthBudget']> = {
   categories: Resolver<Array<ResolversTypes['CategoryBudget']>, ParentType, ContextType>;
@@ -450,9 +548,11 @@ export type MutationResolvers<ContextType = Context, ParentType extends Resolver
   changePassword: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationChangePasswordArgs, 'newPassword' | 'oldPassword'>>;
   createAccountMailbox: Resolver<ResolversTypes['AccountMailbox'], ParentType, ContextType, RequireFields<MutationCreateAccountMailboxArgs, 'input'>>;
   createCategory: Resolver<ResolversTypes['Category'], ParentType, ContextType, RequireFields<MutationCreateCategoryArgs, 'input'>>;
+  createCurrency: Resolver<ResolversTypes['Currency'], ParentType, ContextType, RequireFields<MutationCreateCurrencyArgs, 'input'>>;
   createTransaction: Resolver<ResolversTypes['Transaction'], ParentType, ContextType, RequireFields<MutationCreateTransactionArgs, 'input'>>;
   deleteAccountMailbox: Resolver<ResolversTypes['AccountMailbox'], ParentType, ContextType, RequireFields<MutationDeleteAccountMailboxArgs, 'id'>>;
   deleteCategory: Resolver<ResolversTypes['Category'], ParentType, ContextType, RequireFields<MutationDeleteCategoryArgs, 'id'>>;
+  deleteCurrency: Resolver<ResolversTypes['Currency'], ParentType, ContextType, RequireFields<MutationDeleteCurrencyArgs, 'id'>>;
   deleteTransaction: Resolver<ResolversTypes['Transaction'], ParentType, ContextType, RequireFields<MutationDeleteTransactionArgs, 'id'>>;
   generateNewToken: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   login: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'email' | 'password'>>;
@@ -460,6 +560,7 @@ export type MutationResolvers<ContextType = Context, ParentType extends Resolver
   splitTransaction: Resolver<ResolversTypes['Transaction'], ParentType, ContextType, RequireFields<MutationSplitTransactionArgs, 'amounts' | 'id'>>;
   updateAccountMailbox: Resolver<ResolversTypes['AccountMailbox'], ParentType, ContextType, RequireFields<MutationUpdateAccountMailboxArgs, 'id' | 'input'>>;
   updateCategory: Resolver<ResolversTypes['Category'], ParentType, ContextType, RequireFields<MutationUpdateCategoryArgs, 'id' | 'input'>>;
+  updateCurrency: Resolver<ResolversTypes['Currency'], ParentType, ContextType, RequireFields<MutationUpdateCurrencyArgs, 'id' | 'input'>>;
   updateTransaction: Resolver<ResolversTypes['Transaction'], ParentType, ContextType, RequireFields<MutationUpdateTransactionArgs, 'id' | 'input'>>;
 };
 
@@ -476,6 +577,8 @@ export type QueryResolvers<ContextType = Context, ParentType extends ResolversPa
   budgets: Resolver<Array<ResolversTypes['MonthBudget']>, ParentType, ContextType, RequireFields<QueryBudgetsArgs, 'year'>>;
   categories: Resolver<Array<ResolversTypes['Category']>, ParentType, ContextType>;
   category: Resolver<Maybe<ResolversTypes['Category']>, ParentType, ContextType, RequireFields<QueryCategoryArgs, 'id'>>;
+  currencies: Resolver<Array<ResolversTypes['Currency']>, ParentType, ContextType>;
+  currency: Resolver<Maybe<ResolversTypes['Currency']>, ParentType, ContextType, RequireFields<QueryCurrencyArgs, 'id'>>;
   transaction: Resolver<Maybe<ResolversTypes['Transaction']>, ParentType, ContextType, RequireFields<QueryTransactionArgs, 'id'>>;
   transactions: Resolver<ResolversTypes['PaginatedTransactions'], ParentType, ContextType, Partial<QueryTransactionsArgs>>;
 };
@@ -483,10 +586,11 @@ export type QueryResolvers<ContextType = Context, ParentType extends ResolversPa
 export type TransactionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Transaction'] = ResolversParentTypes['Transaction']> = {
   accountMailbox: Resolver<ResolversTypes['AccountMailbox'], ParentType, ContextType>;
   accountMailboxId: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  amount: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  amount: Resolver<ResolversTypes['Money'], ParentType, ContextType>;
   category: Resolver<Maybe<ResolversTypes['Category']>, ParentType, ContextType>;
   categoryId: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  currency: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  currency: Resolver<ResolversTypes['Currency'], ParentType, ContextType>;
+  currencyId: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   date: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   id: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   includeInReports: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -502,8 +606,11 @@ export type Resolvers<ContextType = Context> = {
   AccountMailbox: AccountMailboxResolvers<ContextType>;
   Category: CategoryResolvers<ContextType>;
   CategoryBudget: CategoryBudgetResolvers<ContextType>;
+  Currency: CurrencyResolvers<ContextType>;
+  CurrencyCode: GraphQLScalarType;
   DateTime: GraphQLScalarType;
   JSON: GraphQLScalarType;
+  Money: MoneyResolvers<ContextType>;
   MonthBudget: MonthBudgetResolvers<ContextType>;
   Mutation: MutationResolvers<ContextType>;
   PaginatedTransactions: PaginatedTransactionsResolvers<ContextType>;

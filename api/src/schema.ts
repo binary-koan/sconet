@@ -30,9 +30,19 @@ import {
   updateTransaction
 } from "./resolvers/transaction"
 import { budgets, CategoryBudget, MonthBudget } from "./resolvers/budgets"
-import { DateTimeResolver, JSONResolver } from "graphql-scalars"
+import { CurrencyResolver, DateTimeResolver, JSONResolver } from "graphql-scalars"
 import { applyAuthenticatedDirective } from "./resolvers/directives/authenticated"
 import { login, changePassword, generateNewToken } from "./resolvers/sessions"
+import {
+  currencies,
+  currency,
+  createCurrency,
+  updateCurrency,
+  deleteCurrency,
+  Currency
+} from "./resolvers/currencies"
+import { Money } from "./resolvers/money"
+import { GraphQLScalarType } from "graphql"
 
 const resolvers: Resolvers = {
   Query: {
@@ -42,7 +52,9 @@ const resolvers: Resolvers = {
     accountMailboxes,
     category,
     categories,
-    budgets
+    budgets,
+    currencies,
+    currency
   },
   Mutation: {
     createTransaction,
@@ -56,19 +68,25 @@ const resolvers: Resolvers = {
     updateCategory,
     deleteCategory,
     reorderCategories,
+    createCurrency,
+    updateCurrency,
+    deleteCurrency,
     login,
     changePassword,
     generateNewToken
   },
   Transaction,
   PaginatedTransactions,
+  Currency,
   Category,
   AccountMailbox,
   MonthBudget,
   CategoryBudget,
+  Money,
 
   DateTime: DateTimeResolver,
-  JSON: JSONResolver
+  JSON: JSONResolver,
+  CurrencyCode: new GraphQLScalarType({ ...CurrencyResolver.toConfig(), name: "CurrencyCode" })
 }
 
 const graphqlDir = resolve(import.meta.dir, "graphql")

@@ -11,8 +11,10 @@ generates:
         DateTime: Date
       mappers:
         Category: ./db/records/category#CategoryRecord
+        Currency: ./db/records/currency#CurrencyRecord
         Transaction: ./db/records/transaction#TransactionRecord
         AccountMailbox: ./db/records/accountMailbox#AccountMailboxRecord
         PaginatedTransactions: ./db/queries/transaction/findTransactions#FindTransactionsResult
         MonthBudget: ./db/queries/budgets/budgetsInYear#MonthBudgetResult
         CategoryBudget: ./db/queries/budgets/budgetsInYear#CategoryBudgetResult
+        Money: ./resolvers/money#MoneyOptions

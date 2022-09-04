@@ -5,7 +5,6 @@ import { orderBy, isEqual, debounce } from "lodash"
 import { Component, createEffect, createSignal, For, Show } from "solid-js"
 import { FindCategoriesQuery } from "../../graphql-types"
 import { useMutation } from "../../graphqlClient"
-import { formatCurrency } from "../../utils/formatters"
 import CategoryIndicator from "../CategoryIndicator"
 import { CATEGORIES_QUERY } from "./CategoriesCell"
 import {
@@ -199,7 +198,7 @@ const Category: Component<{
           {props.category.name}
         </Text>
         <Text noOfLines={1} lineHeight="1" fontSize="$xs" color="gray.400">
-          {props.category.budget ? `Budget: ${formatCurrency(props.category.budget)}` : "No budget"}
+          {props.category.budget ? `Budget: ${props.category.budget.formatted}` : "No budget"}
         </Text>
       </Box>
       <Button

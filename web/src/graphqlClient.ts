@@ -162,7 +162,7 @@ async function requestGraphql<Result>(body: string): Promise<Result> {
     headers: {
       "Content-Type": "application/json",
       Authorization:
-        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjIwMTQxOTgsImV4cCI6MTY2MzIyMzc5OCwic3ViIjoiNjMxMDUyZjIxNTBhZDkxN2E4NWI0ODc1In0.exaTIuLY8US6p1a33MNrpalJr06KlJYrhIslAA2jXkM"
+        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjIxODcxNDgsImV4cCI6MTY2MzM5Njc0OCwic3ViIjoiNjMxMmY2ODZlYjBiOTgxYWQ2YTMxNmZhIn0.8eX6XchEzKT25mpb2SrzgJD7O33_0DoHoorJUm5ibX4"
     }
   })
 

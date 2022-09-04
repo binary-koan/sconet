@@ -10,6 +10,7 @@ export function loadCategory(row: any): CategoryRecord {
     icon: row.icon,
     isRegular: row.isRegular,
     budget: row.budget,
+    budgetCurrencyId: row.budgetCurrencyId,
     sortOrder: row.sortOrder,
 
     deletedAt: loadDate(row.deletedAt),

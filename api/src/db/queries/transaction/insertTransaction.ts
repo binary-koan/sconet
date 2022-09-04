@@ -15,16 +15,16 @@ export function insertTransaction(transaction: TransactionForInsert) {
   db.run(
     `
     INSERT INTO transactions
-      (id, memo, originalMemo, amount, currency, date, includeInReports, categoryId, accountMailboxId, remoteId, splitFromId, deletedAt, createdAt, updatedAt)
+      (id, memo, originalMemo, amount, currencyId, date, includeInReports, categoryId, accountMailboxId, remoteId, splitFromId, deletedAt, createdAt, updatedAt)
     VALUES
-      ($id, $memo, $originalMemo, $amount, $currency, $date, $includeInReports, $categoryId, $accountMailboxId, $remoteId, $splitFromId, $deletedAt, $createdAt, $updatedAt)
+      ($id, $memo, $originalMemo, $amount, $currencyId, $date, $includeInReports, $categoryId, $accountMailboxId, $remoteId, $splitFromId, $deletedAt, $createdAt, $updatedAt)
   `,
     {
       $id: id,
       $memo: transaction.memo,
       $originalMemo: transaction.originalMemo,
       $amount: transaction.amount,
-      $currency: transaction.currency,
+      $currencyId: transaction.currencyId,
       $date: serializeDate(transaction.date),
       $includeInReports: transaction.includeInReports,
       $categoryId: transaction.categoryId,

@@ -4,7 +4,6 @@ import { Component, Resource } from "solid-js"
 import { FindCategoriesQuery } from "../../graphql-types"
 import { Cell } from "../Cell"
 import LoadingBar from "../LoadingBar"
-import { TransactionFilterValues } from "../transactions/TransactionFilters"
 import Categories from "./Categories"
 
 export const CATEGORIES_QUERY = gql`
@@ -14,7 +13,9 @@ export const CATEGORIES_QUERY = gql`
       name
       color
       icon
-      budget
+      budget {
+        formatted
+      }
       isRegular
       sortOrder
       createdAt

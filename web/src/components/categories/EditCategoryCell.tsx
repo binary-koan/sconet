@@ -17,7 +17,10 @@ export const EDIT_CATEGORY_QUERY = gql`
       name
       color
       icon
-      budget
+      budget {
+        decimalAmount
+        formatted
+      }
       createdAt
       updatedAt
     }
@@ -30,7 +33,10 @@ const UPDATE_CATEGORY_MUTATION = gql`
       name
       color
       icon
-      budget
+      budget {
+        decimalAmount
+        formatted
+      }
       createdAt
       updatedAt
     }

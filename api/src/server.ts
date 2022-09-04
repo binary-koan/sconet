@@ -7,6 +7,7 @@ import {
 } from "graphql-helix"
 import { buildContext } from "./context"
 import { schema } from "./schema"
+import { isEmpty } from "lodash"
 
 const corsHeaders: Array<[string, string]> = [
   ["Access-Control-Allow-Origin", "http://localhost:3000"],
@@ -47,6 +48,8 @@ Bun.serve({
     } else {
       const { operationName, query, variables } = getGraphQLParameters(request)
 
+      console.log(`[GRAPHQL] ${operationName || "unnamed operation"}`)
+
       const result = await processRequest({
         contextFactory: (executionContext) => buildContext(req, executionContext),
         operationName,
@@ -60,6 +63,8 @@ Bun.serve({
         result.payload.errors?.forEach((error) => console.error(error.originalError || error))
 
         const data = JSON.stringify(result.payload)
+
+        console.log(`[GRAPHQL] Done`)
 
         return new Response(data, {
           status: result.status,

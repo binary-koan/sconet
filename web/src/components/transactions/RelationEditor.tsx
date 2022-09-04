@@ -36,7 +36,7 @@ const RelationEditor: Component<{
   return (
     <RelationEditInput
       hasParent={Boolean(parent)}
-      isIncome={props.transaction.amount > 0}
+      isIncome={props.transaction.amount.decimalAmount > 0}
       category={props.transaction.category}
       accountMailbox={props.transaction.accountMailbox}
       hasChildren={Boolean(props.transaction.splitTo?.length)}
