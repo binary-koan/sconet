@@ -1,6 +1,7 @@
 import { InputRightElement, IconButton, Icon } from "@hope-ui/solid"
-import { TbCheck, TbCross } from "solid-icons/tb"
+import { TbCheck, TbX } from "solid-icons/tb"
 import { Component } from "solid-js"
+import { Dynamic } from "solid-js/web"
 
 const ConfirmCancelButtons: Component<{ onConfirm: () => void; onCancel: () => void }> = (
   props
@@ -12,7 +13,7 @@ const ConfirmCancelButtons: Component<{ onConfirm: () => void; onCancel: () => v
         flex="1"
         height="$6"
         colorScheme="primary"
-        icon={<Icon as={TbCheck} />}
+        icon={<Dynamic component={TbCheck} />}
         aria-label="Confirm"
         onClick={props.onConfirm}
       />
@@ -22,7 +23,7 @@ const ConfirmCancelButtons: Component<{ onConfirm: () => void; onCancel: () => v
         height="$6"
         marginStart="$1"
         colorScheme="neutral"
-        icon={<Icon as={TbCross} />}
+        icon={<Dynamic component={TbX} />}
         aria-label="Cancel"
         onClick={props.onCancel}
       />

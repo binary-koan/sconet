@@ -12,6 +12,7 @@ import { GraphQLError } from "graphql"
 import { findCurrenciesByIds } from "./db/queries/currency/findCurrenciesByIds"
 import { CurrencyRecord } from "./db/records/currency"
 import { findExchangeRatesByCodes } from "./db/queries/exchangeRate/findExchangeRatesByCodes"
+import { last } from "lodash"
 
 export interface Context {
   auth?: {
@@ -49,7 +50,7 @@ export async function buildContext(
 
 export function getAuthDetails(request: Request) {
   try {
-    const token = request.headers.get("authorization")?.replace(/^Bearer /, "")
+    const token = last(request.headers.get("authorization")?.split(" ") || [])
 
     if (!token) {
       return

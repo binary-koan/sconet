@@ -27,7 +27,7 @@ const OptionButtons: Component<
   const [optionsProps, valueProps] = splitProps(allProps, ["options"])
 
   return (
-    <Flex wrap="wrap">
+    <Flex wrap="wrap" gap="$1">
       <For each={optionsProps.options}>
         {({ value: optionValue, content, props, buttonProps }) => (
           <div {...props}>
@@ -77,6 +77,9 @@ const OptionButton: Component<{
       <Button
         size="sm"
         colorScheme={isCurrent ? "primary" : "neutral"}
+        variant="subtle"
+        paddingStart="$2"
+        paddingEnd="$2"
         onClick={onClick}
         {...props}
       >

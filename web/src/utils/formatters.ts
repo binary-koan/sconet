@@ -25,7 +25,7 @@ export const formatDate = (datetime: Date | string, format: DateFormat) => {
   return dateFormats[format].format(new Date(datetime))
 }
 
-export const formatDateTimeForInput = (value?: Date | string) => {
+export const formatDateForInput = (value?: Date | string) => {
   if (!value) return
 
   const date = new Date(value)
@@ -35,10 +35,6 @@ export const formatDateTimeForInput = (value?: Date | string) => {
     "-",
     (date.getMonth() + 1).toString().padStart(2, "0"),
     "-",
-    date.getDate().toString().padStart(2, "0"),
-    "T",
-    date.getHours().toString().padStart(2, "0"),
-    ":",
-    date.getMinutes().toString().padStart(2, "0")
+    date.getDate().toString().padStart(2, "0")
   ].join("")
 }

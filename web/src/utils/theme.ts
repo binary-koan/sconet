@@ -3,6 +3,8 @@ import { HopeThemeConfig } from "@hope-ui/solid"
 export const theme: HopeThemeConfig = {
   lightTheme: {
     colors: {
+      background: "#F8F9FA",
+      neutral1: "#FFFFFF",
       primary1: "#FDFCFE",
       primary2: "#FBFAFF",
       primary3: "#F5F2FF",
@@ -26,6 +28,8 @@ export const theme: HopeThemeConfig = {
   },
   darkTheme: {
     colors: {
+      background: "#151718",
+      neutral1: "#1A1D1E",
       primary1: "#17151F",
       primary2: "#1C172B",
       primary3: "#251E40",

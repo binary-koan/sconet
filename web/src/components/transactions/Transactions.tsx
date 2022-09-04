@@ -60,9 +60,9 @@ const TransactionsList: Component<{
                   marginStart={{ "@initial": "0", "@lg": "$-2" }}
                   marginEnd={{ "@initial": "0", "@lg": "$-2" }}
                   marginTop={index() === 0 ? "-2" : "6"}
-                  paddingTop="2"
-                  paddingBottom="2"
-                  backgroundColor="$neutral2"
+                  paddingTop="$2"
+                  paddingBottom="$2"
+                  backgroundColor="$background"
                 >
                   <Text
                     as="button"
@@ -73,14 +73,14 @@ const TransactionsList: Component<{
                       })
                     }
                     display="inline-block"
-                    marginStart="2"
-                    marginEnd="2"
-                    paddingStart="2"
-                    paddingEnd="2"
-                    paddingTop="1"
-                    paddingBottom="1"
-                    backgroundColor="gray.500"
-                    color="gray.50"
+                    marginStart="$2"
+                    marginEnd="$2"
+                    paddingStart="$2"
+                    paddingEnd="$2"
+                    paddingTop="$1"
+                    paddingBottom="$1"
+                    backgroundColor="$neutral9"
+                    color="white"
                     borderRadius="$md"
                     fontWeight="bold"
                     fontSize="$small"
@@ -94,10 +94,10 @@ const TransactionsList: Component<{
                 fontSize="$small"
                 fontWeight="bold"
                 color="gray.500"
-                paddingStart="4"
-                paddingEnd="4"
-                paddingTop="2"
-                paddingBottom="2"
+                paddingStart="$4"
+                paddingEnd="$4"
+                paddingTop="$2"
+                paddingBottom="$2"
               >
                 {formatDate(date, "fullDateWithoutYear")}
               </Text>
@@ -116,10 +116,10 @@ const TransactionsList: Component<{
                 <Box
                   display="flex"
                   alignItems="center"
-                  paddingStart="4"
-                  paddingEnd="4"
-                  paddingBottom="2"
-                  boxShadow="xs"
+                  paddingStart="$4"
+                  paddingEnd="$4"
+                  paddingBottom="$2"
+                  boxShadow="$xs"
                   fontStyle="italic"
                   color="gray.500"
                 >

@@ -1,8 +1,9 @@
 import { Heading, Button, Icon, IconButton, Text } from "@hope-ui/solid"
 import { Title } from "@solidjs/meta"
 import { Link, Route, useRouteData } from "@solidjs/router"
-import { TbCross, TbEdit, TbFilter, TbPlus } from "solid-icons/tb"
+import { TbX, TbEdit, TbFilter, TbPlus } from "solid-icons/tb"
 import { Component, createEffect, createSignal, Resource } from "solid-js"
+import { Dynamic } from "solid-js/web"
 import TransactionFilters, {
   TransactionFilterValues
 } from "../components/transactions/TransactionFilters"
@@ -69,24 +70,26 @@ const TransactionsPage: Component = () => {
         </Text>
         <Button
           marginEnd="$2"
-          display={hasFilterValues() ? "block" : "none"}
+          display={hasFilterValues() ? "flex" : "none"}
           fontSize="xs"
           colorScheme="primary"
-          rightIcon={<Icon as={TbCross} />}
+          rightIcon={<Dynamic component={TbX} />}
           onClick={() => setFilterValues({ ...BLANK_FILTERS })}
         >
-          {activeFilterCount} {activeFilterCount() === 1 ? "filter" : "filters"}
+          {activeFilterCount()} {activeFilterCount() === 1 ? "filter" : "filters"}
         </Button>
         <IconButton
           colorScheme={isFiltering() ? "primary" : "neutral"}
-          icon={<Icon as={TbFilter} size="1.25em" />}
+          variant={isFiltering() ? "solid" : "subtle"}
+          icon={<Dynamic component={TbFilter} size="1.25em" />}
           aria-label="Filter"
           onClick={() => setFiltering((isFiltering) => !isFiltering)}
         />
         <IconButton
           colorScheme={isEditing() ? "primary" : "neutral"}
+          variant={isEditing() ? "solid" : "subtle"}
           marginStart="$2"
-          icon={<Icon as={TbEdit} size="1.25em" />}
+          icon={<Dynamic component={TbEdit} size="1.25em" />}
           aria-label="Edit"
           onClick={() => setEditing((isEditing) => !isEditing)}
         />
@@ -102,11 +105,11 @@ const TransactionsPage: Component = () => {
           variant="outline"
           size="lg"
           paddingStart="5"
-          borderRadius="full"
-          backgroundColor="$neutral2"
-          color="$primary8"
+          borderRadius="$full"
+          backgroundColor="$neutral1"
+          color="$primary9"
           boxShadow={{ "@initial": "$lg", "@lg": "none" }}
-          leftIcon={<Icon as={TbPlus} size="$lg" />}
+          leftIcon={<Dynamic component={TbPlus} size="1.25em" />}
         >
           Add
         </Button>

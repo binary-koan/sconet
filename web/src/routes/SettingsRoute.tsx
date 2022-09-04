@@ -1,4 +1,4 @@
-import { Heading, Button, Text } from "@hope-ui/solid"
+import { Heading, Button, Text, useColorMode } from "@hope-ui/solid"
 import { Title } from "@solidjs/meta"
 import { Link, Route, useRouteData } from "@solidjs/router"
 import { Component, Resource } from "solid-js"
@@ -17,8 +17,8 @@ type SettingsPageData = () => {
 
 const SettingsPage: Component = () => {
   const data = useRouteData<SettingsPageData>()
+  const { toggleColorMode } = useColorMode()
 
-  const toggleColorMode = () => {}
   const logOut = () => {}
   const currentUser = { email: "TODO" }
 
@@ -50,7 +50,7 @@ const SettingsPage: Component = () => {
         </Button>
       </Heading>
       <Text
-        boxShadow="xs"
+        boxShadow="$xs"
         paddingTop="$2"
         paddingBottom="$2"
         paddingStart="$4"

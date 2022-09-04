@@ -1,6 +1,8 @@
-import { Box, Icon } from "@hope-ui/solid"
+import { Box } from "@hope-ui/solid"
 import { TbCaretDown } from "solid-icons/tb"
 import { Component, createEffect, createSignal, Show } from "solid-js"
+import { Dynamic } from "solid-js/web"
+import { namedIcons } from "../../utils/namedIcons"
 import CategoryIndicator from "../CategoryIndicator"
 import RelationPickerModal from "./RelationPickerModal"
 
@@ -25,9 +27,9 @@ const RelationEditInput: Component<{
     <>
       <Box position="relative" onClick={() => props.isEditing && setModalOpen(true)}>
         <CategoryIndicator
-          size={props.hasParent ? "8" : "10"}
-          iconSize="lg"
-          icon={props.category?.icon}
+          size={props.hasParent ? "$8" : "$10"}
+          iconSize="1.25em"
+          icon={props.category?.icon ? namedIcons[props.category?.icon] : undefined}
           color={props.category?.color}
           isSplit={props.hasChildren}
           includeInReports={props.includeInReports}
@@ -77,7 +79,7 @@ const CategoryEditIndicator: Component<{ category: any }> = (props) => {
       borderRadius="$full"
       color={color()}
     >
-      <Icon as={TbCaretDown} />
+      <Dynamic component={TbCaretDown} />
     </Box>
   )
 }

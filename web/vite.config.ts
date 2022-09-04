@@ -1,12 +1,18 @@
-import { defineConfig } from 'vite';
-import solidPlugin from 'vite-plugin-solid';
+import { defineConfig } from "vite"
+import solidPlugin from "vite-plugin-solid"
+import devtoolsPlugin from "@solid-devtools/transform"
 
 export default defineConfig({
-  plugins: [solidPlugin()],
+  plugins: [
+    solidPlugin(),
+    devtoolsPlugin({
+      name: true
+    })
+  ],
   server: {
-    port: 3000,
+    port: 3000
   },
   build: {
-    target: 'esnext',
-  },
-});
+    target: "esnext"
+  }
+})

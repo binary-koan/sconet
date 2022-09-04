@@ -2,6 +2,7 @@ import { Heading, Button, Icon, Box } from "@hope-ui/solid"
 import { Link } from "@solidjs/router"
 import { TbArrowLeft } from "solid-icons/tb"
 import { JSX, Show } from "solid-js"
+import { Dynamic } from "solid-js/web"
 
 const FormPageWrapper = ({
   heading,
@@ -26,14 +27,14 @@ const FormPageWrapper = ({
         alignItems="center"
       >
         <Button as={Link} href={backLink} variant="ghost" paddingLeft="0">
-          <Icon as={TbArrowLeft} />
+          <Dynamic component={TbArrowLeft} />
         </Button>
         {heading}
         <Show when={actions}>
           <Box marginLeft="auto">{actions}</Box>
         </Show>
       </Heading>
-      <Box padding={{ "@initial": "$4", "@lg": "$6" }} backgroundColor="$neutral1" boxShadow="xs">
+      <Box padding={{ "@initial": "$4", "@lg": "$6" }} backgroundColor="$neutral1" boxShadow="$xs">
         {children}
       </Box>
     </>

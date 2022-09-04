@@ -1,8 +1,9 @@
-import { Box, Button, Icon, Text } from "@hope-ui/solid"
+import { Box, Button, Text } from "@hope-ui/solid"
 import { gql } from "@solid-primitives/graphql"
 import { Link } from "@solidjs/router"
 import { TbEdit, TbTrash } from "solid-icons/tb"
 import { Component, For } from "solid-js"
+import { Dynamic } from "solid-js/web"
 import { FindAccountMailboxesQuery } from "../../graphql-types"
 import { useMutation } from "../../graphqlClient"
 import { ACCOUNT_MAILBOXES_QUERY } from "./AccountMailboxesCell"
@@ -45,7 +46,7 @@ const AccountMailboxesList: Component<{
           paddingTop="$2"
           paddingBottom="$2"
           backgroundColor="$neutral1"
-          boxShadow="xs"
+          boxShadow="$xs"
         >
           <Box minWidth="0" marginEnd="$4" flex="1">
             <Text noOfLines={1} lineHeight="1" paddingBottom="$1">
@@ -63,7 +64,7 @@ const AccountMailboxesList: Component<{
             marginEnd="$2"
             title={"Edit account " + account.id}
           >
-            <Icon as={TbEdit} />
+            <Dynamic component={TbEdit} />
           </Button>
           <Button
             type="button"
@@ -73,7 +74,7 @@ const AccountMailboxesList: Component<{
             title={"Delete account " + account.id}
             onClick={() => onDeleteClick(account.id)}
           >
-            <Icon as={TbTrash} />
+            <Dynamic component={TbTrash} />
           </Button>
         </Box>
       )}

@@ -1,4 +1,4 @@
-import { Box, Icon, Text } from "@hope-ui/solid"
+import { Box, Text } from "@hope-ui/solid"
 import { Link } from "@solidjs/router"
 import { TbEdit } from "solid-icons/tb"
 import { Component, createEffect, createSignal, For, Show } from "solid-js"
@@ -43,7 +43,7 @@ const TransactionItem: Component<{ transaction: any; parent?: any; isEditing: bo
           paddingTop="$2"
           paddingBottom="$2"
           backgroundColor="$neutral1"
-          boxShadow="xs"
+          boxShadow="$xs"
         >
           <RelationEditor
             parent={props.parent}
@@ -111,7 +111,9 @@ const TransactionItem: Component<{ transaction: any; parent?: any; isEditing: bo
 }
 
 const EditableIndicator = () => (
-  <Icon as={TbEdit} color="$neutral8" marginStart="1" position="relative" bottom="-2px" />
+  <Box marginStart="$1" position="relative" bottom="-2px" color="$neutral8">
+    <Dynamic component={TbEdit} />
+  </Box>
 )
 
 export default TransactionItem

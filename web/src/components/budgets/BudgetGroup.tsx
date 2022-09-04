@@ -3,6 +3,7 @@ import { Link } from "@solidjs/router"
 import { SolidApexCharts } from "solid-apexcharts"
 import { TbArrowRight } from "solid-icons/tb"
 import { Component, For } from "solid-js"
+import { Dynamic } from "solid-js/web"
 import { BudgetsQuery } from "../../graphql-types"
 import CategoryIndicator from "../CategoryIndicator"
 
@@ -71,14 +72,14 @@ const BudgetGroup: Component<{
             })}
             size="sm"
             variant="ghost"
-            icon={<Icon as={TbArrowRight} />}
+            icon={<Dynamic component={TbArrowRight} />}
             marginStart="$4"
             aria-label="View transactions"
           />
         </Heading>
         <Box
           backgroundColor="$neutral1"
-          boxShadow="xs"
+          boxShadow="$xs"
           paddingTop="$6"
           paddingStart="$4"
           paddingEnd="$4"
@@ -154,7 +155,7 @@ const BudgetGroup: Component<{
                   })}
                   size="sm"
                   variant="ghost"
-                  icon={<Icon as={TbArrowRight} />}
+                  icon={<Dynamic component={TbArrowRight} />}
                   marginStart="$4"
                   aria-label="View transactions"
                 />

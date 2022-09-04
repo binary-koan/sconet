@@ -1,6 +1,7 @@
 import { Box, Input, IconButton, Icon } from "@hope-ui/solid"
 import { TbPlus } from "solid-icons/tb"
 import { Component, createSignal } from "solid-js"
+import { Dynamic } from "solid-js/web"
 import AmountInput from "./AmountInput"
 import RelationEditInput from "./RelationEditInput"
 
@@ -43,7 +44,7 @@ const NewTransactionItem: Component<{ date: Date }> = (props) => {
       paddingTop="$2"
       paddingBottom="$2"
       backgroundColor="$neutral1"
-      boxShadow="xs"
+      boxShadow="$xs"
     >
       <RelationEditInput
         category={category}
@@ -85,7 +86,7 @@ const NewTransactionItem: Component<{ date: Date }> = (props) => {
         size="md"
         marginLeft="$2"
         colorScheme="primary"
-        icon={<Icon as={TbPlus} />}
+        icon={<Dynamic component={TbPlus} />}
         aria-label="Confirm"
         onClick={() => {}}
       />

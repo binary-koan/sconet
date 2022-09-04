@@ -4,7 +4,7 @@ import { Component } from "solid-js"
 import { CategoryOptionsQuery } from "../../graphql-types"
 import { useQuery } from "../../graphqlClient"
 import { namedIcons } from "../../utils/namedIcons"
-import { formatDateTimeForInput } from "../../utils/formatters"
+import { formatDateForInput } from "../../utils/formatters"
 import CategoryIndicator from "../CategoryIndicator"
 import OptionButtons from "../OptionButtons"
 
@@ -62,7 +62,7 @@ const TransactionFilters: Component<
         id="transactionFilters[dateFrom]"
         type="date"
         background="$neutral1"
-        value={formatDateTimeForInput(props.values.dateFrom)}
+        value={formatDateForInput(props.values.dateFrom)}
         onChange={(e) => props.setValues({ ...props.values, dateFrom: e.currentTarget.value })}
       />
 
@@ -82,7 +82,7 @@ const TransactionFilters: Component<
         type="date"
         id="transactionFilters[dateUntil]"
         background="$neutral1"
-        value={formatDateTimeForInput(props.values.dateUntil)}
+        value={formatDateForInput(props.values.dateUntil)}
         onChange={(e) => props.setValues({ ...props.values, dateUntil: e.currentTarget.value })}
       />
 

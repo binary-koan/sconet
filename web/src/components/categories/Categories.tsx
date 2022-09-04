@@ -19,6 +19,8 @@ import {
 } from "@thisbeyond/solid-dnd"
 import { TbArrowsSort, TbEdit, TbTrash } from "solid-icons/tb"
 import { namedIcons } from "../../utils/namedIcons"
+import toast from "solid-toast"
+import { Dynamic } from "solid-js/web"
 
 const DELETE_CATEGORY_MUTATION = gql`
   mutation DeleteCategoryMutation($id: String!) {
@@ -51,22 +53,22 @@ declare module "solid-js" {
 
 const CategoriesList: Component<{ categories: FindCategoriesQuery["categories"] }> = (props) => {
   const [deleteCategory] = useMutation(DELETE_CATEGORY_MUTATION, {
-    // onCompleted: () => {
-    //   toast('Category deleted')
-    // },
-    // onError: (error: any) => {
-    //   toast(error.message)
-    // },
+    onSuccess: () => {
+      toast.success("Category deleted")
+    },
+    onError: (error: any) => {
+      toast.error(error.message)
+    },
     refetchQueries: [CATEGORIES_QUERY]
   })
 
   const [reorderCategories] = useMutation(REORDER_CATEGORIES_MUTATION, {
-    // onCompleted: () => {
-    //   toast({ status: "success", title: "Categories reordered" })
-    // },
-    // onError: (error) => {
-    //   toast({ status: "error", title: error.message })
-    // }
+    onSuccess: () => {
+      toast.success("Categories reordered")
+    },
+    onError: (error) => {
+      toast.error(error.message)
+    }
   })
 
   const onDeleteClick = (id: string) => {
@@ -178,17 +180,14 @@ const Category: Component<{
       paddingTop="$2"
       paddingBottom="$2"
       backgroundColor="$neutral1"
-      boxShadow="xs"
+      boxShadow="$xs"
     >
-      <Icon
-        as={TbArrowsSort}
-        color="$neutral8"
-        marginRight="$2"
-        {...props.sortable?.dragActivators}
-      />
+      <Box marginRight="$2" cursor="move" color="$neutral8">
+        <Dynamic component={TbArrowsSort} {...props.sortable?.dragActivators} />
+      </Box>
       <CategoryIndicator
         size="$10"
-        iconSize="lg"
+        iconSize="1.5em"
         icon={namedIcons[props.category.icon]}
         color={props.category.color}
         includeInReports={true}
@@ -209,7 +208,7 @@ const Category: Component<{
         marginEnd="$2"
         title={"Edit category " + props.category.id}
       >
-        <Icon as={TbEdit} />
+        <Dynamic component={TbEdit} />
       </Button>
       <Button
         type="button"
@@ -219,7 +218,7 @@ const Category: Component<{
         title={"Delete category " + props.category.id}
         onClick={() => props.onDeleteClick(props.category.id)}
       >
-        <Icon as={TbTrash} />
+        <Dynamic component={TbTrash} />
       </Button>
     </Box>
   )

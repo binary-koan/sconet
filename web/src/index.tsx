@@ -1,4 +1,5 @@
 /* @refresh reload */
+import "solid-devtools"
 import { HopeProvider } from "@hope-ui/solid"
 import { MetaProvider } from "@solidjs/meta"
 import { Router } from "@solidjs/router"

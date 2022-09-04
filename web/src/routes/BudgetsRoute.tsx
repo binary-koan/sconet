@@ -4,6 +4,7 @@ import { Title } from "@solidjs/meta"
 import { Route, useSearchParams } from "@solidjs/router"
 import { TbArrowLeft, TbArrowRight } from "solid-icons/tb"
 import { Component, createEffect, Show } from "solid-js"
+import { Dynamic } from "solid-js/web"
 import { Budgets } from "../components/budgets/Budgets"
 import { BudgetsQuery, BudgetsQueryVariables } from "../graphql-types"
 import { useQuery } from "../graphqlClient"
@@ -149,10 +150,10 @@ const BudgetsPage = () => {
         {date().toLocaleDateString("en", { year: "numeric", month: "long" })}
 
         <Button size="sm" colorScheme="neutral" marginStart="auto" onClick={decrementMonth}>
-          <Icon as={TbArrowLeft} />
+          <Dynamic component={TbArrowLeft} />
         </Button>
         <Button size="sm" colorScheme="neutral" onClick={incrementMonth}>
-          <Icon as={TbArrowRight} />
+          <Dynamic component={TbArrowRight} />
         </Button>
       </Heading>
       <Budgets budget={data()!.budget} year={year().toString()} month={month()} />

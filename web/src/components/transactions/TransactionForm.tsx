@@ -9,7 +9,7 @@ import {
 } from "../../graphql-types"
 import { useQuery } from "../../graphqlClient"
 import { namedIcons } from "../../utils/namedIcons"
-import { formatDateTimeForInput } from "../../utils/formatters"
+import { formatDateForInput } from "../../utils/formatters"
 import CategoryIndicator from "../CategoryIndicator"
 import { Form } from "../forms/Form"
 import FormInput from "../forms/FormInput"
@@ -164,8 +164,8 @@ const TransactionForm: Component<{
         <FormInput
           label="Date"
           name="date"
-          type="datetime-local"
-          defaultValue={formatDateTimeForInput(
+          type="date"
+          defaultValue={formatDateForInput(
             props.transaction?.date ? new Date(props.transaction?.date) : new Date()
           )}
         />

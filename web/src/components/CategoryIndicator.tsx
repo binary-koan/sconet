@@ -1,6 +1,7 @@
-import { Box, HopeProps, Icon } from "@hope-ui/solid"
+import { Box, HopeProps } from "@hope-ui/solid"
 import { TbBox, TbCurrencyPound, TbMinus, TbSeparator } from "solid-icons/tb"
 import { Component, mergeProps, splitProps } from "solid-js"
+import { Dynamic } from "solid-js/web"
 
 const CategoryIndicator: Component<
   HopeProps & {
@@ -61,7 +62,7 @@ const CategoryIndicator: Component<
       color={getColor()}
       {...boxProps}
     >
-      <Icon size={props.iconSize} as={getIcon()} />
+      <Dynamic component={getIcon()} size={props.iconSize} />
     </Box>
   )
 }
