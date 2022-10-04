@@ -7,10 +7,10 @@ import BudgetGroup from "./BudgetGroup"
 
 export const Budgets: Component<{
   budget: BudgetsQuery["budget"]
-  year: string
+  year: number
   month: number
 }> = (props) => {
-  const range = () => monthRange(new Date(parseInt(props.year), props.month - 1))
+  const range = () => monthRange(new Date(props.year, props.month - 1))
 
   const isPastMonth = () => new Date() > range()[1]
 

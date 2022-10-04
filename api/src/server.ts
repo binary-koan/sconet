@@ -7,10 +7,9 @@ import {
 } from "graphql-helix"
 import { buildContext } from "./context"
 import { schema } from "./schema"
-import { isEmpty } from "lodash"
 
 const corsHeaders: Array<[string, string]> = [
-  ["Access-Control-Allow-Origin", "http://localhost:3000"],
+  ["Access-Control-Allow-Origin", "http://localhost:1234"],
   ["Access-Control-Allow-Headers", "Authorization, Content-Type"]
 ]
 

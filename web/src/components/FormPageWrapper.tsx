@@ -18,7 +18,7 @@ const FormPageWrapper = ({
   return (
     <>
       <Heading
-        fontSize={{ "@initial": "$lg", "@lg": "$3xl" }}
+        fontSize={{ "@initial": "$lg", "@lg": "$2xl" }}
         paddingStart="$4"
         paddingEnd="$4"
         marginTop={{ "@initial": "$2", "@lg": "$4" }}

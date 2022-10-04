@@ -57,7 +57,7 @@ const TransactionsPage: Component = () => {
       <Title>Transactions</Title>
 
       <Heading
-        fontSize={{ "@initial": "$lg", "@lg": "$3xl" }}
+        fontSize={{ "@initial": "$lg", "@lg": "$2xl" }}
         marginTop="$4"
         marginBottom="$4"
         paddingStart={{ "@initial": "$4", "@lg": "0" }}
