@@ -8,6 +8,10 @@ import {
   useContext
 } from "solid-js"
 
+const LOGIN_TOKEN_KEY = "sconet.loginToken"
+
+const loginToken = () => localStorage.getItem(LOGIN_TOKEN_KEY)
+
 const gqlContext = createContext<{
   queries: {
     [query: string]: {
@@ -119,7 +123,7 @@ export function useMutation<Data, Variables>(
     onSuccess,
     onError
   }: {
-    refetchQueries?: string[]
+    refetchQueries?: string[] | "ALL"
     onSuccess?: (data: Data) => void
     onError?: (error: any) => void
   } = {}
@@ -134,7 +138,9 @@ export function useMutation<Data, Variables>(
       setLoading(false)
       onSuccess?.(data)
 
-      refetchQueries?.forEach((query) => {
+      const refetchList = refetchQueries === "ALL" ? Object.keys(context.queries) : refetchQueries
+
+      refetchList?.forEach((query) => {
         Object.values(context.queries[query] || {}).forEach(({ listeners }) =>
           listeners?.forEach((listener) => listener.refetch())
         )
@@ -156,13 +162,14 @@ export function useMutation<Data, Variables>(
 }
 
 async function requestGraphql<Result>(body: string): Promise<Result> {
+  const token = loginToken()
+
   const response = await fetch("http://localhost:4444/graphql", {
     method: "POST",
     body,
     headers: {
       "Content-Type": "application/json",
-      Authorization:
-        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjIxODcxNDgsImV4cCI6MTY2MzM5Njc0OCwic3ViIjoiNjMxMmY2ODZlYjBiOTgxYWQ2YTMxNmZhIn0.8eX6XchEzKT25mpb2SrzgJD7O33_0DoHoorJUm5ibX4"
+      Authorization: token ? `Bearer ${token}` : ""
     }
   })
 
@@ -173,4 +180,8 @@ async function requestGraphql<Result>(body: string): Promise<Result> {
   }
 
   return data
+}
+
+export function setLoginToken(token: string) {
+  localStorage.setItem(LOGIN_TOKEN_KEY, token)
 }

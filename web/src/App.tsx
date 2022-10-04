@@ -5,6 +5,7 @@ import { Toaster } from "solid-toast"
 import MainNavigation from "./components/MainNavigation"
 import { BudgetsRoute } from "./routes/BudgetsRoute"
 import { EditCategoryRoute } from "./routes/categories/EditCategoryRoute"
+import { LoginRoute } from "./routes/LoginRoute"
 import { NewAccountMailboxRoute } from "./routes/NewAccountMailboxRoute"
 import { NewCategoryRoute } from "./routes/NewCategoryRoute"
 import { NewTransactionRoute } from "./routes/NewTransactionRoute"
@@ -22,6 +23,8 @@ const App: Component = () => {
       <MainNavigation />
       <Routes>
         <Route path="/" element={<Navigate href="/transactions" />} />
+
+        <LoginRoute />
 
         <TransactionsRoute />
         <NewTransactionRoute />
