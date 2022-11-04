@@ -4,6 +4,7 @@ import { Component, Show } from "solid-js"
 import { BudgetsQuery } from "../../graphql-types"
 import { monthRange } from "../../utils/date"
 import BudgetGroup from "./BudgetGroup"
+import { BudgetSummary } from "./BudgetSummary"
 
 export const Budgets: Component<{
   budget: BudgetsQuery["budget"]
@@ -30,83 +31,11 @@ export const Budgets: Component<{
 
   return (
     <>
-      <Box paddingStart="$4" paddingEnd="$4" paddingBottom="$6" display="flex" alignItems="center">
-        <Button
-          as={Link}
-          href={filteredTransactions()}
-          flex="1"
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          height="auto"
-          paddingTop="$2"
-          paddingBottom="$2"
-          marginEnd="$2"
-          marginStart="$2"
-        >
-          <Text fontSize="$lg" marginBottom="$1">
-            {props.budget.income.formatted}
-          </Text>
-          <Text fontSize="$xs" noOfLines={1}>
-            Income
-          </Text>
-        </Button>
-
-        <Show when={isPastMonth()}>
-          <Text fontSize="4xl">-</Text>
-        </Show>
-
-        <Button
-          as={Link}
-          href={filteredTransactions()}
-          flex="1"
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          height="auto"
-          paddingTop="$2"
-          paddingBottom="$2"
-          marginStart="$2"
-          marginEnd="$2"
-        >
-          <Text fontSize="$lg" marginBottom="$1">
-            {props.budget.totalSpending.formatted}
-          </Text>
-          <Text fontSize="$xs" noOfLines={1}>
-            Spending
-          </Text>
-        </Button>
-
-        <Show when={isPastMonth()}>
-          <Text fontSize="$4xl" marginStart="$2" marginEnd="$2">
-            =
-          </Text>
-
-          <Button
-            as={Link}
-            href={filteredTransactions()}
-            flex="1"
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            height="auto"
-            paddingTop="$2"
-            paddingBottom="$2"
-          >
-            <Text
-              fontSize="lg"
-              marginBottom="$1"
-              color={props.budget.difference.decimalAmount < 0 ? "$danger9" : "$success9"}
-            >
-              {props.budget.difference.formatted}
-            </Text>
-            <Text fontSize="xs" noOfLines={1}>
-              Balance
-            </Text>
-          </Button>
-        </Show>
-      </Box>
-
+      <BudgetSummary
+        isPastMonth={isPastMonth()}
+        filteredTransactions={filteredTransactions}
+        {...props}
+      />
       <BudgetGroup
         title="Regular spending"
         group={props.budget.regularCategories}

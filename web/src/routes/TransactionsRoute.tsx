@@ -71,7 +71,8 @@ const TransactionsPage: Component = () => {
         <Button
           marginEnd="$2"
           display={hasFilterValues() ? "flex" : "none"}
-          fontSize="xs"
+          size="sm"
+          fontSize="$xs"
           colorScheme="primary"
           rightIcon={<Dynamic component={TbX} />}
           onClick={() => setFilterValues({ ...BLANK_FILTERS })}
@@ -80,14 +81,16 @@ const TransactionsPage: Component = () => {
         </Button>
         <IconButton
           colorScheme={isFiltering() ? "primary" : "neutral"}
-          variant={isFiltering() ? "solid" : "subtle"}
+          variant={isFiltering() ? "solid" : "ghost"}
+          size="sm"
           icon={<Dynamic component={TbFilter} size="1.25em" />}
           aria-label="Filter"
           onClick={() => setFiltering((isFiltering) => !isFiltering)}
         />
         <IconButton
           colorScheme={isEditing() ? "primary" : "neutral"}
-          variant={isEditing() ? "solid" : "subtle"}
+          variant={isEditing() ? "solid" : "ghost"}
+          size="sm"
           marginStart="$2"
           icon={<Dynamic component={TbEdit} size="1.25em" />}
           aria-label="Edit"

@@ -16,11 +16,10 @@ specifiers:
   '@types/lodash': ^4.14.184
   '@types/node': ^18.7.14
   '@urql/core': ^3.0.2
-  apexcharts: ^3.35.5
+  echarts: ^5.4.0
   graphql: ^16.6.0
   jose: ^4.10.4
   lodash: ^4.17.21
-  solid-apexcharts: ^0.1.6
   solid-devtools: ^0.15.0
   solid-icons: ^1.0.1
   solid-js: ^1.5.1
@@ -48,11 +47,10 @@ dependencies:
   '@types/lodash': 4.14.184
   '@types/node': 18.7.14
   '@urql/core': 3.0.2_graphql@16.6.0
-  apexcharts: 3.35.5
+  echarts: 5.4.0
   graphql: 16.6.0
   jose: 4.10.4
   lodash: 4.17.21
-  solid-apexcharts: 0.1.6
   solid-devtools: 0.15.0_dis4kq3wxb3ocy3zpl2iok7mhe
   solid-icons: 1.0.1_solid-js@1.5.1
   solid-js: 1.5.1
@@ -1495,7 +1493,7 @@ packages:
     peerDependencies:
       solid-js: ^1.5.0
     dependencies:
-      '@solid-devtools/shared': 0.7.3_tphhiizkxv2hzwkunblc3hbmra
+      '@solid-devtools/shared': 0.7.3_hjt4lzsnh6alilupbusyupolru
       '@solid-primitives/event-bus': 0.1.2_solid-js@1.5.1
       '@solid-primitives/immutable': 0.1.2_solid-js@1.5.1
       '@solid-primitives/memo': 0.3.0_solid-js@1.5.1
@@ -1523,7 +1521,7 @@ packages:
     dependencies:
       '@solid-devtools/debugger': 0.7.2_dis4kq3wxb3ocy3zpl2iok7mhe
       '@solid-devtools/locator': 0.15.0_dis4kq3wxb3ocy3zpl2iok7mhe
-      '@solid-devtools/shared': 0.7.3_tphhiizkxv2hzwkunblc3hbmra
+      '@solid-devtools/shared': 0.7.3_hjt4lzsnh6alilupbusyupolru
       '@solid-primitives/utils': 3.0.2_solid-js@1.5.1
       solid-js: 1.5.1
       type-fest: 2.19.0
@@ -1542,7 +1540,7 @@ packages:
       solid-js: ^1.5.0
     dependencies:
       '@solid-devtools/debugger': 0.7.2_dis4kq3wxb3ocy3zpl2iok7mhe
-      '@solid-devtools/shared': 0.7.3_tphhiizkxv2hzwkunblc3hbmra
+      '@solid-devtools/shared': 0.7.3_hjt4lzsnh6alilupbusyupolru
       '@solid-primitives/bounds': 0.0.101_solid-js@1.5.1
       '@solid-primitives/cursor': 0.0.100_solid-js@1.5.1
       '@solid-primitives/event-listener': 2.2.2_solid-js@1.5.1
@@ -1564,13 +1562,15 @@ packages:
       - vite
     dev: false
 
-  /@solid-devtools/shared/0.7.3_tphhiizkxv2hzwkunblc3hbmra:
+  /@solid-devtools/shared/0.7.3_hjt4lzsnh6alilupbusyupolru:
     resolution: {integrity: sha512-GqT5nSRHG9RraWMdKUvyllpRmcFWitipAxSx/snTxRpmHvP4hdiixoNReugHSy9OXQFW5FH5hxWK7UD2wd5waQ==}
+    peerDependencies:
+      solid-js: ^1.5.0
     dependencies:
-      '@solid-primitives/event-bus': 0.1.2_solid-js@1.6.1
-      '@solid-primitives/immutable': 0.1.2_solid-js@1.6.1
-      '@solid-primitives/utils': 3.0.2_solid-js@1.6.1
-      solid-js: 1.6.1
+      '@solid-primitives/event-bus': 0.1.2_solid-js@1.5.1
+      '@solid-primitives/immutable': 0.1.2_solid-js@1.5.1
+      '@solid-primitives/utils': 3.0.2_solid-js@1.5.1
+      solid-js: 1.5.1
       ts-node: 10.9.1_tphhiizkxv2hzwkunblc3hbmra
       type-fest: 2.19.0
     transitivePeerDependencies:
@@ -1589,7 +1589,7 @@ packages:
       '@babel/core': 7.18.13
       '@babel/plugin-syntax-typescript': 7.18.6_@babel+core@7.18.13
       '@babel/types': 7.18.13
-      '@solid-devtools/shared': 0.7.3_tphhiizkxv2hzwkunblc3hbmra
+      '@solid-devtools/shared': 0.7.3_hjt4lzsnh6alilupbusyupolru
       solid-js: 1.5.1
       vite: 3.0.9
     transitivePeerDependencies:
@@ -1630,16 +1630,6 @@ packages:
       solid-js: 1.5.1
     dev: false
 
-  /@solid-primitives/event-bus/0.1.2_solid-js@1.6.1:
-    resolution: {integrity: sha512-W79mwPqTqflFZppNKyKG6IW/zKw+caqqO4LdPlRkFZAA0n8DIuOB//BriUnnBIf5YasLsMpwkGKzG1ABF1Qpjg==}
-    peerDependencies:
-      solid-js: ^1.3.1
-    dependencies:
-      '@solid-primitives/immutable': 0.1.2_solid-js@1.6.1
-      '@solid-primitives/utils': 3.0.2_solid-js@1.6.1
-      solid-js: 1.6.1
-    dev: false
-
   /@solid-primitives/event-listener/2.2.2_solid-js@1.5.1:
     resolution: {integrity: sha512-0MmaWoY6O6IWDNKiW7ww45FsVN1o2PCjMZv4PTWx+dQD++CaPdCranLv0xc1b5iRKgEFzE52cVa3c82GnsgUEQ==}
     peerDependencies:
@@ -1667,14 +1657,6 @@ packages:
     resolution: {integrity: sha512-h6P3bhQlgo9qsTfJ7eimUYzKkhf0dFchYPyfvEUy/QcG2eSDkKhhgOz0ss6DSP6cdavTDTaQoquLr/iR8LelMA==}
     dependencies:
       '@solid-primitives/utils': 3.0.2_solid-js@1.5.1
-    transitivePeerDependencies:
-      - solid-js
-    dev: false
-
-  /@solid-primitives/immutable/0.1.2_solid-js@1.6.1:
-    resolution: {integrity: sha512-h6P3bhQlgo9qsTfJ7eimUYzKkhf0dFchYPyfvEUy/QcG2eSDkKhhgOz0ss6DSP6cdavTDTaQoquLr/iR8LelMA==}
-    dependencies:
-      '@solid-primitives/utils': 3.0.2_solid-js@1.6.1
     transitivePeerDependencies:
       - solid-js
     dev: false
@@ -1769,14 +1751,6 @@ packages:
       solid-js: ^1.4.1
     dependencies:
       solid-js: 1.5.1
-    dev: false
-
-  /@solid-primitives/utils/3.0.2_solid-js@1.6.1:
-    resolution: {integrity: sha512-LCU3tVrJmyRqJ0ocG5uCEuUNqmGkcAC+cWpDEE49AuvtehkdQfv4CfqvdNJgs3eoQRQhLOrVcgd1bHFJY4lsrQ==}
-    peerDependencies:
-      solid-js: ^1.4.1
-    dependencies:
-      solid-js: 1.6.1
     dev: false
 
   /@solidjs/meta/0.28.0_solid-js@1.5.1:
@@ -1981,17 +1955,6 @@ packages:
     dependencies:
       normalize-path: 3.0.0
       picomatch: 2.3.1
-    dev: false
-
-  /apexcharts/3.35.5:
-    resolution: {integrity: sha512-Bi3aq35xWntI71JlywXTBBAOhuKTbB4wijKw4ClkIAFV904YDkHPIJ8N9LcZq9fvVb0VX1AEmyOFBOB2Vwsuew==}
-    dependencies:
-      svg.draggable.js: 2.2.2
-      svg.easing.js: 2.0.0
-      svg.filter.js: 2.0.2
-      svg.pathmorphing.js: 0.1.3
-      svg.resize.js: 1.4.3
-      svg.select.js: 3.0.1
     dev: false
 
   /arg/4.1.3:
@@ -2470,10 +2433,6 @@ packages:
       object-keys: 1.1.1
     dev: false
 
-  /defu/6.1.0:
-    resolution: {integrity: sha512-pOFYRTIhoKujrmbTRhcW5lYQLBXw/dlTwfI8IguF1QCDJOcJzNH1w+YFjxqy6BAuJrClTy6MUE8q+oKJ2FLsIw==}
-    dev: false
-
   /delayed-stream/1.0.0:
     resolution: {integrity: sha512-ZySD7Nf91aLB0RxL4KGrKHBXl7Eds1DAmEdcoVawXnLD7SDhpNgtuII2aAkg7a7QS41jxPSZ17p4VdGnMHk3MQ==}
     engines: {node: '>=0.4.0'}
@@ -2522,6 +2481,13 @@ packages:
     resolution: {integrity: sha512-nagl3RYrbNv6kQkeJIpt6NJZy8twLB/2vtz6yN9Z4vRKHN4/QZJIEbqohALSgwKdnksuY3k5Addp5lg8sVoVcQ==}
     dependencies:
       safe-buffer: 5.2.1
+    dev: false
+
+  /echarts/5.4.0:
+    resolution: {integrity: sha512-uPsO9VRUIKAdFOoH3B0aNg7NRVdN7aM39/OjovjO9MwmWsAkfGyeXJhK+dbRi51iDrQWliXV60/XwLA7kg3z0w==}
+    dependencies:
+      tslib: 2.3.0
+      zrender: 5.4.0
     dev: false
 
   /electron-to-chromium/1.4.189:
@@ -3955,14 +3921,6 @@ packages:
       tslib: 2.4.0
     dev: false
 
-  /solid-apexcharts/0.1.6:
-    resolution: {integrity: sha512-U9pFwLzDk3a/DPphXVlEGXbeU9HUcKVAH0CaSTXRJfRVFXQeVSJn4RDyScaMMJiqr8OZ+IsytudEcZQAvpHvMw==}
-    dependencies:
-      apexcharts: 3.35.5
-      defu: 6.1.0
-      solid-js: 1.5.1
-    dev: false
-
   /solid-devtools/0.15.0_dis4kq3wxb3ocy3zpl2iok7mhe:
     resolution: {integrity: sha512-a2t1vkjRcMNa3nUrvK8eRfjaA2RWCUfqaayaChHtV+rE3n1Lqybr0BIwBjKfRTvcOtjkjIV2DxR3cDrM2ilPPQ==}
     peerDependencies:
@@ -3995,12 +3953,6 @@ packages:
     resolution: {integrity: sha512-Y6aKystIxnrB0quV5nhqNuJV+l2Fk3/PQy1mMya/bzxlGiMHAym7v1NaqEgqDIvctbkxOi5dBj0ER/ewrH060g==}
     dependencies:
       csstype: 3.1.0
-
-  /solid-js/1.6.1:
-    resolution: {integrity: sha512-i8OmR419Hr0918Or6sm1ET/cgmxTtAB7Bdz/UwhZ7G2THixrvVSO3jd+C7YqMKKfVwmf8PJ2gUSbKE8NKv28GA==}
-    dependencies:
-      csstype: 3.1.0
-    dev: false
 
   /solid-refresh/0.4.1_solid-js@1.5.1:
     resolution: {integrity: sha512-v3tD/OXQcUyXLrWjPW1dXZyeWwP7/+GQNs8YTL09GBq+5FguA6IejJWUvJDrLIA4M0ho9/5zK2e9n+uy+4488g==}
@@ -4087,60 +4039,6 @@ packages:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
 
-  /svg.draggable.js/2.2.2:
-    resolution: {integrity: sha512-JzNHBc2fLQMzYCZ90KZHN2ohXL0BQJGQimK1kGk6AvSeibuKcIdDX9Kr0dT9+UJ5O8nYA0RB839Lhvk4CY4MZw==}
-    engines: {node: '>= 0.8.0'}
-    dependencies:
-      svg.js: 2.7.1
-    dev: false
-
-  /svg.easing.js/2.0.0:
-    resolution: {integrity: sha512-//ctPdJMGy22YoYGV+3HEfHbm6/69LJUTAqI2/5qBvaNHZ9uUFVC82B0Pl299HzgH13rKrBgi4+XyXXyVWWthA==}
-    engines: {node: '>= 0.8.0'}
-    dependencies:
-      svg.js: 2.7.1
-    dev: false
-
-  /svg.filter.js/2.0.2:
-    resolution: {integrity: sha512-xkGBwU+dKBzqg5PtilaTb0EYPqPfJ9Q6saVldX+5vCRy31P6TlRCP3U9NxH3HEufkKkpNgdTLBJnmhDHeTqAkw==}
-    engines: {node: '>= 0.8.0'}
-    dependencies:
-      svg.js: 2.7.1
-    dev: false
-
-  /svg.js/2.7.1:
-    resolution: {integrity: sha512-ycbxpizEQktk3FYvn/8BH+6/EuWXg7ZpQREJvgacqn46gIddG24tNNe4Son6omdXCnSOaApnpZw6MPCBA1dODA==}
-    dev: false
-
-  /svg.pathmorphing.js/0.1.3:
-    resolution: {integrity: sha512-49HWI9X4XQR/JG1qXkSDV8xViuTLIWm/B/7YuQELV5KMOPtXjiwH4XPJvr/ghEDibmLQ9Oc22dpWpG0vUDDNww==}
-    engines: {node: '>= 0.8.0'}
-    dependencies:
-      svg.js: 2.7.1
-    dev: false
-
-  /svg.resize.js/1.4.3:
-    resolution: {integrity: sha512-9k5sXJuPKp+mVzXNvxz7U0uC9oVMQrrf7cFsETznzUDDm0x8+77dtZkWdMfRlmbkEEYvUn9btKuZ3n41oNA+uw==}
-    engines: {node: '>= 0.8.0'}
-    dependencies:
-      svg.js: 2.7.1
-      svg.select.js: 2.1.2
-    dev: false
-
-  /svg.select.js/2.1.2:
-    resolution: {integrity: sha512-tH6ABEyJsAOVAhwcCjF8mw4crjXSI1aa7j2VQR8ZuJ37H2MBUbyeqYr5nEO7sSN3cy9AR9DUwNg0t/962HlDbQ==}
-    engines: {node: '>= 0.8.0'}
-    dependencies:
-      svg.js: 2.7.1
-    dev: false
-
-  /svg.select.js/3.0.1:
-    resolution: {integrity: sha512-h5IS/hKkuVCbKSieR9uQCj9w+zLHoPh+ce19bBYyqF53g6mnPB8sAtIbe1s9dh2S2fCmYX2xel1Ln3PJBbK4kw==}
-    engines: {node: '>= 0.8.0'}
-    dependencies:
-      svg.js: 2.7.1
-    dev: false
-
   /swap-case/2.0.2:
     resolution: {integrity: sha512-kc6S2YS/2yXbtkSMunBtKdah4VFETZ8Oh6ONSmSd9bRxhqTrtARUCBUiWXH3xVPpvR7tz2CSnkuXVE42EcGnMw==}
     dependencies:
@@ -4221,6 +4119,10 @@ packages:
   /ts-toolbelt/9.6.0:
     resolution: {integrity: sha512-nsZd8ZeNUzukXPlJmTBwUAuABDe/9qtVDelJeT/qW0ow3ZS3BsQJtNkan1802aM9Uf68/Y8ljw86Hu0h5IUW3w==}
     dev: true
+
+  /tslib/2.3.0:
+    resolution: {integrity: sha512-N82ooyxVNm6h1riLCoyS9e3fuJ3AMG2zIZs2Gd1ATcSFjSA23Q0fzjjZeh0jbJvWVDZ0cJT8yaNNaaXHzueNjg==}
+    dev: false
 
   /tslib/2.4.0:
     resolution: {integrity: sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ==}
@@ -4493,4 +4395,10 @@ packages:
   /yocto-queue/0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
+    dev: false
+
+  /zrender/5.4.0:
+    resolution: {integrity: sha512-rOS09Z2HSVGFs2dn/TuYk5BlCaZcVe8UDLLjj1ySYF828LATKKdxuakSZMvrDz54yiKPDYVfjdKqcX8Jky3BIA==}
+    dependencies:
+      tslib: 2.3.0
     dev: false

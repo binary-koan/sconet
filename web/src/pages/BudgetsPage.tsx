@@ -45,8 +45,8 @@ const BudgetsPage = () => {
 
       <Heading
         fontSize={{ "@initial": "$lg", "@lg": "$2xl" }}
-        marginTop="$3"
-        marginBottom="$3"
+        marginTop="$4"
+        marginBottom="$4"
         paddingStart="$4"
         paddingEnd="$4"
         display="flex"
@@ -55,10 +55,16 @@ const BudgetsPage = () => {
       >
         {date().toLocaleDateString("en", { year: "numeric", month: "long" })}
 
-        <Button size="sm" colorScheme="neutral" marginStart="auto" onClick={decrementMonth}>
+        <Button
+          size="sm"
+          colorScheme="neutral"
+          variant="ghost"
+          marginStart="auto"
+          onClick={decrementMonth}
+        >
           <Dynamic component={TbArrowLeft} />
         </Button>
-        <Button size="sm" colorScheme="neutral" onClick={incrementMonth}>
+        <Button size="sm" colorScheme="neutral" variant="ghost" onClick={incrementMonth}>
           <Dynamic component={TbArrowRight} />
         </Button>
       </Heading>

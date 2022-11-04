@@ -2,7 +2,7 @@ import { Heading, Button, Box } from "@hope-ui/solid"
 import { gql } from "@solid-primitives/graphql"
 import { Title } from "@solidjs/meta"
 import { useLocation, useNavigate } from "@solidjs/router"
-import { Component, onMount } from "solid-js"
+import { Component, createEffect } from "solid-js"
 import toast from "solid-toast"
 import { Form } from "../components/forms/Form"
 import FormInput from "../components/forms/FormInput"
@@ -24,7 +24,6 @@ const LoginPage: Component = () => {
     onSuccess: (data) => {
       setLoginToken(data.login)
       toast.success("Logged in")
-      navigate(location.state?.returnTo || "/")
     },
     onError: (error) => {
       toast.error(error.message)
@@ -32,9 +31,9 @@ const LoginPage: Component = () => {
     refetchQueries: "ALL"
   })
 
-  onMount(() => {
+  createEffect(() => {
     if (isLoggedIn()) {
-      navigate("/")
+      navigate(location.state?.returnTo || "/")
     }
   })
 

@@ -1,10 +1,12 @@
 import { decodeJwt } from "jose"
+import { createSignal } from "solid-js"
 
 const LOGIN_TOKEN_KEY = "sconet.loginToken"
 
-export const loginToken = () => localStorage.getItem(LOGIN_TOKEN_KEY)
+export const [loginToken, setLoginTokenSignal] = createSignal(localStorage.getItem(LOGIN_TOKEN_KEY))
 
 export function setLoginToken(token: string) {
+  setLoginTokenSignal(token)
   localStorage.setItem(LOGIN_TOKEN_KEY, token)
 }
 

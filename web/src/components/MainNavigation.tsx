@@ -1,5 +1,5 @@
 import { Box, Heading, Text } from "@hope-ui/solid"
-import { useMatch, Link } from "@solidjs/router"
+import { Link, useLocation } from "@solidjs/router"
 import { Component, JSX } from "solid-js"
 import { TbAdjustmentsHorizontal, TbChartPie, TbReportMoney } from "solid-icons/tb"
 import { IconProps } from "solid-icons"
@@ -10,7 +10,7 @@ const MainNavigation: Component = () => {
     <Box
       background="$neutral1"
       position="fixed"
-      zIndex="sticky"
+      zIndex="$sticky"
       bottom={{ "@initial": "0", "@lg": "auto" }}
       top={{ "@initial": "auto", "@lg": "0" }}
       left="0"
@@ -41,7 +41,9 @@ const MainNavigation: Component = () => {
 const NavigationItem: Component<{ icon: Component<IconProps>; text: JSX.Element; to: string }> = (
   props
 ) => {
-  const match = useMatch(() => props.to)
+  const location = useLocation()
+
+  const isMatch = () => location.pathname.startsWith(props.to)
 
   return (
     <Box as={Link} href={props.to} flex={{ "@initial": 1, "@lg": 0 }}>
@@ -54,7 +56,7 @@ const NavigationItem: Component<{ icon: Component<IconProps>; text: JSX.Element;
         paddingTop={{ "@initial": "$2", "@lg": "$4" }}
         paddingStart={{ "@initial": "0", "@lg": "$6" }}
         paddingEnd={{ "@initial": "0", "@lg": "$6" }}
-        color={match() ? "$primary9" : "$neutral9"}
+        color={isMatch() ? "$primary9" : "$neutral9"}
       >
         <Dynamic component={props.icon} size="1.5em" />
         <Text fontSize={{ "@initial": "$xs", "@lg": "$medium" }}>{props.text}</Text>

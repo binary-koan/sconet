@@ -1,13 +1,12 @@
-import { Box, Heading, Icon, IconButton, Progress, ProgressIndicator, Text } from "@hope-ui/solid"
+import { Box, Heading, IconButton, Progress, ProgressIndicator, Text } from "@hope-ui/solid"
 import { Link } from "@solidjs/router"
-import { SolidApexCharts } from "solid-apexcharts"
-import { TbArrowRight } from "solid-icons/tb"
+import { TbListSearch } from "solid-icons/tb"
 import { Component, For } from "solid-js"
 import { Dynamic } from "solid-js/web"
 import { BudgetsQuery } from "../../graphql-types"
+import { getCssValue } from "../../utils/getCssValue"
 import CategoryIndicator from "../CategoryIndicator"
-
-const getColor = (variable: string) => getComputedStyle(document.body).getPropertyValue(variable)
+import { PieChart } from "./PieChart"
 
 const BudgetGroup: Component<{
   title: string
@@ -16,42 +15,16 @@ const BudgetGroup: Component<{
 }> = (props) => {
   return (
     <Box display="flex" flexDirection={{ "@initial": "column", "@lg": "row-reverse" }}>
-      <Box
-        width="full"
-        height="100vw"
-        maxWidth="30rem"
-        maxHeight="30rem"
-        margin={{ "@initial": "0 auto", "@lg": "0" }}
-      >
-        <SolidApexCharts
-          width="500"
-          type="pie"
-          options={{
-            labels: props.group.categories.map(({ category }) => category?.name || "Uncategorized"),
-            tooltip: { enabled: false },
-            dataLabels: {
-              dropShadow: { enabled: false }
-            },
-            fill: {
-              colors: props.group.categories.map(({ category }) =>
-                category?.color
-                  ? getColor(`--hope-colors-${category.color}`)
-                  : getColor("--hope-colors-neutral8")
-              )
-            },
-            legend: {
-              markers: {
-                fillColors: props.group.categories.map(({ category }) =>
-                  category?.color
-                    ? getColor(`--hope-colors-${category.color}`)
-                    : getColor("--hope-colors-neutral8")
-                )
-              }
-            }
-          }}
-          series={props.group.categories.map(({ amountSpent }) => amountSpent.decimalAmount)}
-        />
-      </Box>
+      <PieChart
+        data={props.group.categories.map(({ category, amountSpent }) => ({
+          name: category?.name || "Uncategorized",
+          color: category?.color
+            ? getCssValue(`--hope-colors-${category.color}`)
+            : getCssValue("--hope-colors-neutral8"),
+          value: amountSpent.decimalAmount,
+          formattedValue: amountSpent.formatted
+        }))}
+      />
       <Box flex={{ "@initial": "0", "@lg": "1" }}>
         <Heading
           size="sm"
@@ -72,7 +45,7 @@ const BudgetGroup: Component<{
             })}
             size="sm"
             variant="ghost"
-            icon={<Dynamic component={TbArrowRight} />}
+            icon={<Dynamic component={TbListSearch} />}
             marginStart="$4"
             aria-label="View transactions"
           />
@@ -155,7 +128,7 @@ const BudgetGroup: Component<{
                   })}
                   size="sm"
                   variant="ghost"
-                  icon={<Dynamic component={TbArrowRight} />}
+                  icon={<Dynamic component={TbListSearch} />}
                   marginStart="$4"
                   aria-label="View transactions"
                 />
