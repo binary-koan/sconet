@@ -7,10 +7,7 @@ import {
   ResourceActions,
   useContext
 } from "solid-js"
-
-const LOGIN_TOKEN_KEY = "sconet.loginToken"
-
-const loginToken = () => localStorage.getItem(LOGIN_TOKEN_KEY)
+import { loginToken } from "./utils/auth"
 
 const gqlContext = createContext<{
   queries: {
@@ -180,8 +177,4 @@ async function requestGraphql<Result>(body: string): Promise<Result> {
   }
 
   return data
-}
-
-export function setLoginToken(token: string) {
-  localStorage.setItem(LOGIN_TOKEN_KEY, token)
 }

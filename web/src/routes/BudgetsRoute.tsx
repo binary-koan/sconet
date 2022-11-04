@@ -1,14 +1,14 @@
-import { Route, RouteDataFunc, useSearchParams } from "@solidjs/router"
+import { Route, RouteDataFunc } from "@solidjs/router"
 import { Component, lazy } from "solid-js"
 import { useBudgetQuery } from "../graphql/queries/budgetQuery"
-import { BudgetsPageData } from "../pages/BudgetsPage"
+import type { BudgetsPageData } from "../pages/BudgetsPage"
 
-const budgetsRouteData: RouteDataFunc<unknown, BudgetsPageData> = () => {
-  const [searchParams] = useSearchParams()
+const budgetsRouteData: RouteDataFunc<unknown, BudgetsPageData> = ({ params }) => {
+  const year = () =>
+    params.yearmonth ? parseInt(params.yearmonth.split("-")[0]) : new Date().getFullYear()
 
-  const year = () => (searchParams.year ? parseInt(searchParams.year!) : new Date().getFullYear())
   const month = () =>
-    searchParams.month ? parseInt(searchParams.month!) : new Date().getMonth() + 1
+    params.yearmonth ? parseInt(params.yearmonth.split("-")[1]) : new Date().getMonth() + 1
 
   const [data] = useBudgetQuery(() => ({
     year: year(),
@@ -17,9 +17,11 @@ const budgetsRouteData: RouteDataFunc<unknown, BudgetsPageData> = () => {
 
   return {
     data,
+
     get year() {
       return year()
     },
+
     get month() {
       return month()
     }

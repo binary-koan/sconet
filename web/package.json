@@ -33,6 +33,7 @@
     "@urql/core": "^3.0.2",
     "apexcharts": "^3.35.5",
     "graphql": "^16.6.0",
+    "jose": "^4.10.4",
     "lodash": "^4.17.21",
     "solid-apexcharts": "^0.1.6",
     "solid-devtools": "^0.15.0",

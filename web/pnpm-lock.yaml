@@ -18,6 +18,7 @@ specifiers:
   '@urql/core': ^3.0.2
   apexcharts: ^3.35.5
   graphql: ^16.6.0
+  jose: ^4.10.4
   lodash: ^4.17.21
   solid-apexcharts: ^0.1.6
   solid-devtools: ^0.15.0
@@ -49,6 +50,7 @@ dependencies:
   '@urql/core': 3.0.2_graphql@16.6.0
   apexcharts: 3.35.5
   graphql: 16.6.0
+  jose: 4.10.4
   lodash: 4.17.21
   solid-apexcharts: 0.1.6
   solid-devtools: 0.15.0_dis4kq3wxb3ocy3zpl2iok7mhe
@@ -1565,10 +1567,10 @@ packages:
   /@solid-devtools/shared/0.7.3_tphhiizkxv2hzwkunblc3hbmra:
     resolution: {integrity: sha512-GqT5nSRHG9RraWMdKUvyllpRmcFWitipAxSx/snTxRpmHvP4hdiixoNReugHSy9OXQFW5FH5hxWK7UD2wd5waQ==}
     dependencies:
-      '@solid-primitives/event-bus': 0.1.2_solid-js@1.5.4
-      '@solid-primitives/immutable': 0.1.2_solid-js@1.5.4
-      '@solid-primitives/utils': 3.0.2_solid-js@1.5.4
-      solid-js: 1.5.4
+      '@solid-primitives/event-bus': 0.1.2_solid-js@1.6.1
+      '@solid-primitives/immutable': 0.1.2_solid-js@1.6.1
+      '@solid-primitives/utils': 3.0.2_solid-js@1.6.1
+      solid-js: 1.6.1
       ts-node: 10.9.1_tphhiizkxv2hzwkunblc3hbmra
       type-fest: 2.19.0
     transitivePeerDependencies:
@@ -1628,14 +1630,14 @@ packages:
       solid-js: 1.5.1
     dev: false
 
-  /@solid-primitives/event-bus/0.1.2_solid-js@1.5.4:
+  /@solid-primitives/event-bus/0.1.2_solid-js@1.6.1:
     resolution: {integrity: sha512-W79mwPqTqflFZppNKyKG6IW/zKw+caqqO4LdPlRkFZAA0n8DIuOB//BriUnnBIf5YasLsMpwkGKzG1ABF1Qpjg==}
     peerDependencies:
       solid-js: ^1.3.1
     dependencies:
-      '@solid-primitives/immutable': 0.1.2_solid-js@1.5.4
-      '@solid-primitives/utils': 3.0.2_solid-js@1.5.4
-      solid-js: 1.5.4
+      '@solid-primitives/immutable': 0.1.2_solid-js@1.6.1
+      '@solid-primitives/utils': 3.0.2_solid-js@1.6.1
+      solid-js: 1.6.1
     dev: false
 
   /@solid-primitives/event-listener/2.2.2_solid-js@1.5.1:
@@ -1669,10 +1671,10 @@ packages:
       - solid-js
     dev: false
 
-  /@solid-primitives/immutable/0.1.2_solid-js@1.5.4:
+  /@solid-primitives/immutable/0.1.2_solid-js@1.6.1:
     resolution: {integrity: sha512-h6P3bhQlgo9qsTfJ7eimUYzKkhf0dFchYPyfvEUy/QcG2eSDkKhhgOz0ss6DSP6cdavTDTaQoquLr/iR8LelMA==}
     dependencies:
-      '@solid-primitives/utils': 3.0.2_solid-js@1.5.4
+      '@solid-primitives/utils': 3.0.2_solid-js@1.6.1
     transitivePeerDependencies:
       - solid-js
     dev: false
@@ -1769,12 +1771,12 @@ packages:
       solid-js: 1.5.1
     dev: false
 
-  /@solid-primitives/utils/3.0.2_solid-js@1.5.4:
+  /@solid-primitives/utils/3.0.2_solid-js@1.6.1:
     resolution: {integrity: sha512-LCU3tVrJmyRqJ0ocG5uCEuUNqmGkcAC+cWpDEE49AuvtehkdQfv4CfqvdNJgs3eoQRQhLOrVcgd1bHFJY4lsrQ==}
     peerDependencies:
       solid-js: ^1.4.1
     dependencies:
-      solid-js: 1.5.4
+      solid-js: 1.6.1
     dev: false
 
   /@solidjs/meta/0.28.0_solid-js@1.5.1:
@@ -2519,7 +2521,7 @@ packages:
   /ecdsa-sig-formatter/1.0.11:
     resolution: {integrity: sha512-nagl3RYrbNv6kQkeJIpt6NJZy8twLB/2vtz6yN9Z4vRKHN4/QZJIEbqohALSgwKdnksuY3k5Addp5lg8sVoVcQ==}
     dependencies:
-      safe-buffer: 5.1.2
+      safe-buffer: 5.2.1
     dev: false
 
   /electron-to-chromium/1.4.189:
@@ -3229,6 +3231,10 @@ packages:
       ws: 8.8.1
     dev: false
 
+  /jose/4.10.4:
+    resolution: {integrity: sha512-eBH77Xs9Yc/oTDvukhAEDVMijhekPuNktXJL4tUlB22jqKP1k48v5nmsUmc8feoJPsxB3HsfEt2LbVSoz+1mng==}
+    dev: false
+
   /js-tokens/4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
 
@@ -3292,14 +3298,14 @@ packages:
     dependencies:
       buffer-equal-constant-time: 1.0.1
       ecdsa-sig-formatter: 1.0.11
-      safe-buffer: 5.1.2
+      safe-buffer: 5.2.1
     dev: false
 
   /jws/3.2.2:
     resolution: {integrity: sha512-YHlZCB6lMTllWDtSPHz/ZXTsi8S00usEV6v1tjq8tOUZzw7DpSDWVXjXDre6ed1w/pd495ODpHZYSdkRTsa0HA==}
     dependencies:
       jwa: 1.4.1
-      safe-buffer: 5.1.2
+      safe-buffer: 5.2.1
     dev: false
 
   /lines-and-columns/1.2.4:
@@ -3990,8 +3996,8 @@ packages:
     dependencies:
       csstype: 3.1.0
 
-  /solid-js/1.5.4:
-    resolution: {integrity: sha512-+65anSHhH27htkhP5LuC912fviMIckgc7/yN+WWrKhS9Kp3dvtDNl5/m4GWX1lpCvcubjShqJjGt16HET5z5Ig==}
+  /solid-js/1.6.1:
+    resolution: {integrity: sha512-i8OmR419Hr0918Or6sm1ET/cgmxTtAB7Bdz/UwhZ7G2THixrvVSO3jd+C7YqMKKfVwmf8PJ2gUSbKE8NKv28GA==}
     dependencies:
       csstype: 3.1.0
     dev: false

@@ -1,6 +1,6 @@
 import { Button, Heading } from "@hope-ui/solid"
 import { Title } from "@solidjs/meta"
-import { useLocation, useNavigate, useRouteData } from "@solidjs/router"
+import { useNavigate, useRouteData } from "@solidjs/router"
 import { TbArrowLeft, TbArrowRight } from "solid-icons/tb"
 import { Resource, Show } from "solid-js"
 import { Dynamic } from "solid-js/web"
@@ -15,16 +15,10 @@ export interface BudgetsPageData {
 
 const BudgetsPage = () => {
   const routeData = useRouteData<BudgetsPageData>()
-
-  const location = useLocation()
   const navigate = useNavigate()
 
   const setParams = ({ year, month }: { year: number; month: number }) => {
-    const searchParams = new URLSearchParams(location.search)
-    searchParams.set("month", month.toString())
-    searchParams.set("year", year.toString())
-
-    navigate(`${location.pathname}?${searchParams.toString()}`)
+    navigate(`/budgets/${year}-${month}`)
   }
 
   const incrementMonth = () => {

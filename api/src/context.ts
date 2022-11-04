@@ -1,4 +1,4 @@
-import jwt from "jsonwebtoken"
+import { jwtVerify, errors } from "jose"
 import Dataloader from "dataloader"
 import { ExecutionContext } from "graphql-helix"
 import { AccountMailboxRecord } from "./db/records/accountMailbox"
@@ -36,7 +36,7 @@ export async function buildContext(
   _executionContext: ExecutionContext
 ): Promise<Context> {
   return {
-    auth: getAuthDetails(request),
+    auth: await getAuthDetails(request),
     data: {
       accountMailbox: new Dataloader(async (ids) => findAccountMailboxesByIds(ids)),
       category: new Dataloader(async (ids) => findCategoriesByIds(ids)),
@@ -48,7 +48,7 @@ export async function buildContext(
   }
 }
 
-export function getAuthDetails(request: Request) {
+async function getAuthDetails(request: Request) {
   try {
     const token = last(request.headers.get("authorization")?.split(" ") || [])
 
@@ -60,16 +60,20 @@ export function getAuthDetails(request: Request) {
       throw new GraphQLError("No JWT secret set")
     }
 
-    const body = jwt.verify(token, process.env.JWT_SECRET)
+    const body = await jwtVerify(token, Buffer.from(process.env.JWT_SECRET))
 
-    if (!body || typeof body === "string" || !body.sub) {
+    if (!body.payload.sub) {
       throw new GraphQLError("Invalid token")
     }
 
     return {
-      userId: body.sub
+      userId: body.payload.sub
     }
   } catch (e) {
+    if (e instanceof errors.JWTExpired) {
+      return
+    }
+
     console.error(e)
     console.log("headers", [...request.headers.entries()])
     throw e
