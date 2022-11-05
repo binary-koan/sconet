@@ -5,11 +5,12 @@ import { Component, Resource } from "solid-js"
 import AccountMailboxes from "../components/accountMailboxes/AccountMailboxes"
 import CategoriesList from "../components/categories/Categories"
 import { Cell } from "../components/Cell"
-import { AccountMailboxesQuery, CategoriesQuery } from "../graphql-types"
+import { AccountMailboxesQuery, CategoriesQuery, CurrentUserQuery } from "../graphql-types"
 
 export interface SettingsPageData {
   categories: Resource<CategoriesQuery>
   accountMailboxes: Resource<AccountMailboxesQuery>
+  currentUser: Resource<CurrentUserQuery>
 }
 
 const SettingsPage: Component = () => {
@@ -17,7 +18,6 @@ const SettingsPage: Component = () => {
   const { toggleColorMode } = useColorMode()
 
   const logOut = () => {}
-  const currentUser = { email: "TODO" }
 
   return (
     <>
@@ -54,7 +54,7 @@ const SettingsPage: Component = () => {
         paddingEnd="$4"
         background="$neutral1"
       >
-        {currentUser.email}
+        {data.currentUser()?.currentUser?.email}
       </Text>
 
       <Heading

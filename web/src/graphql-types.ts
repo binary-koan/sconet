@@ -109,6 +109,12 @@ export type CurrencyExchangeRateArgs = {
   to: Scalars['CurrencyCode'];
 };
 
+export type CurrentUser = {
+  __typename?: 'CurrentUser';
+  email: Scalars['String'];
+  id: Scalars['String'];
+};
+
 export type Money = {
   __typename?: 'Money';
   decimalAmount: Scalars['Float'];
@@ -252,6 +258,7 @@ export type Query = {
   category?: Maybe<Category>;
   currencies: Array<Currency>;
   currency?: Maybe<Currency>;
+  currentUser?: Maybe<CurrentUser>;
   transaction?: Maybe<Transaction>;
   transactions: PaginatedTransactions;
 };
@@ -374,6 +381,8 @@ export type FullAccountMailboxFragment = { __typename?: 'AccountMailbox', id: st
 
 export type FullCategoryFragment = { __typename?: 'Category', id: string, name: string, color: string, icon: string, isRegular: boolean, sortOrder?: number | null, createdAt: any, updatedAt: any, budget?: { __typename?: 'Money', formatted: string } | null };
 
+export type FullCurrentUserFragment = { __typename?: 'CurrentUser', id: string, email: string };
+
 export type CreateAccountMailboxMutationVariables = Exact<{
   input: CreateAccountMailboxInput;
 }>;
@@ -419,6 +428,11 @@ export type CategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type CategoriesQuery = { __typename?: 'Query', categories: Array<{ __typename?: 'Category', id: string, name: string, color: string, icon: string, isRegular: boolean, sortOrder?: number | null, createdAt: any, updatedAt: any, budget?: { __typename?: 'Money', formatted: string } | null }> };
+
+export type CurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CurrentUserQuery = { __typename?: 'Query', currentUser?: { __typename?: 'CurrentUser', id: string, email: string } | null };
 
 export type GetCategoryQueryVariables = Exact<{
   id: Scalars['String'];

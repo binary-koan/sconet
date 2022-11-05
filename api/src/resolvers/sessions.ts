@@ -1,6 +1,6 @@
 import { GraphQLError } from "graphql"
 import { getUserByEmail } from "../db/queries/user/getUserByEmail"
-import { MutationResolvers } from "../resolvers-types"
+import { MutationResolvers, QueryResolvers, Resolvers } from "../resolvers-types"
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 import { getUser } from "../db/queries/user/getUser"
@@ -58,4 +58,13 @@ export const generateNewToken: MutationResolvers["generateNewToken"] = async (
     subject: user.id,
     expiresIn: "14d"
   })
+}
+
+export const currentUser: QueryResolvers["currentUser"] = (_, _args, context) => {
+  return (context.auth?.userId && getUser(context.auth.userId)) || null
+}
+
+export const CurrentUser: Resolvers["CurrentUser"] = {
+  id: (user) => user.id,
+  email: (user) => user.email
 }

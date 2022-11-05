@@ -37,7 +37,13 @@ import {
   UtcOffsetResolver
 } from "graphql-scalars"
 import { applyAuthenticatedDirective } from "./resolvers/directives/authenticated"
-import { login, changePassword, generateNewToken } from "./resolvers/sessions"
+import {
+  login,
+  changePassword,
+  generateNewToken,
+  currentUser,
+  CurrentUser
+} from "./resolvers/sessions"
 import {
   currencies,
   currency,
@@ -59,7 +65,8 @@ const resolvers: Resolvers = {
     categories,
     budget,
     currencies,
-    currency
+    currency,
+    currentUser
   },
   Mutation: {
     createTransaction,
@@ -89,6 +96,7 @@ const resolvers: Resolvers = {
   CategoryBudget,
   CategoryBudgetGroup,
   Money,
+  CurrentUser,
 
   DateTime: DateTimeResolver,
   JSON: JSONResolver,

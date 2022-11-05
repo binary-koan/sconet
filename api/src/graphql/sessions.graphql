@@ -5,3 +5,12 @@ type Mutation {
 
   generateNewToken: String! @authenticated
 }
+
+type Query {
+  currentUser: CurrentUser
+}
+
+type CurrentUser {
+  id: String!
+  email: String!
+}

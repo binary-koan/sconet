@@ -6,6 +6,7 @@ import { AccountMailboxRecord } from './db/records/accountMailbox';
 import { FindTransactionsResult } from './db/queries/transaction/findTransactions';
 import { MonthBudgetResult, CategoryBudgetGroupResult, CategoryBudgetResult } from './resolvers/budgets';
 import { MoneyOptions } from './resolvers/money';
+import { UserRecord } from './db/records/user';
 import { Context } from './context';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -117,6 +118,12 @@ export type Currency = {
 
 export type CurrencyExchangeRateArgs = {
   to: Scalars['CurrencyCode'];
+};
+
+export type CurrentUser = {
+  __typename?: 'CurrentUser';
+  email: Scalars['String'];
+  id: Scalars['String'];
 };
 
 export type Money = {
@@ -262,6 +269,7 @@ export type Query = {
   category: Maybe<Category>;
   currencies: Array<Currency>;
   currency: Maybe<Currency>;
+  currentUser: Maybe<CurrentUser>;
   transaction: Maybe<Transaction>;
   transactions: PaginatedTransactions;
 };
@@ -445,6 +453,7 @@ export type ResolversTypes = {
   CreateTransactionInput: CreateTransactionInput;
   Currency: ResolverTypeWrapper<CurrencyRecord>;
   CurrencyCode: ResolverTypeWrapper<Scalars['CurrencyCode']>;
+  CurrentUser: ResolverTypeWrapper<UserRecord>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
   Float: ResolverTypeWrapper<Scalars['Float']>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
@@ -477,6 +486,7 @@ export type ResolversParentTypes = {
   CreateTransactionInput: CreateTransactionInput;
   Currency: CurrencyRecord;
   CurrencyCode: Scalars['CurrencyCode'];
+  CurrentUser: UserRecord;
   DateTime: Scalars['DateTime'];
   Float: Scalars['Float'];
   Int: Scalars['Int'];
@@ -553,6 +563,12 @@ export interface CurrencyCodeScalarConfig extends GraphQLScalarTypeConfig<Resolv
   name: 'CurrencyCode';
 }
 
+export type CurrentUserResolvers<ContextType = Context, ParentType extends ResolversParentTypes['CurrentUser'] = ResolversParentTypes['CurrentUser']> = {
+  email: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateTime'], any> {
   name: 'DateTime';
 }
@@ -615,6 +631,7 @@ export type QueryResolvers<ContextType = Context, ParentType extends ResolversPa
   category: Resolver<Maybe<ResolversTypes['Category']>, ParentType, ContextType, RequireFields<QueryCategoryArgs, 'id'>>;
   currencies: Resolver<Array<ResolversTypes['Currency']>, ParentType, ContextType>;
   currency: Resolver<Maybe<ResolversTypes['Currency']>, ParentType, ContextType, RequireFields<QueryCurrencyArgs, 'id'>>;
+  currentUser: Resolver<Maybe<ResolversTypes['CurrentUser']>, ParentType, ContextType>;
   transaction: Resolver<Maybe<ResolversTypes['Transaction']>, ParentType, ContextType, RequireFields<QueryTransactionArgs, 'id'>>;
   transactions: Resolver<ResolversTypes['PaginatedTransactions'], ParentType, ContextType, RequireFields<QueryTransactionsArgs, 'limit'>>;
 };
@@ -649,6 +666,7 @@ export type Resolvers<ContextType = Context> = {
   CategoryBudgetGroup: CategoryBudgetGroupResolvers<ContextType>;
   Currency: CurrencyResolvers<ContextType>;
   CurrencyCode: GraphQLScalarType;
+  CurrentUser: CurrentUserResolvers<ContextType>;
   DateTime: GraphQLScalarType;
   JSON: GraphQLScalarType;
   Money: MoneyResolvers<ContextType>;

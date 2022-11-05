@@ -19,3 +19,4 @@ generates:
         CategoryBudgetGroup: ./resolvers/budgets#CategoryBudgetGroupResult
         CategoryBudget: ./resolvers/budgets#CategoryBudgetResult
         Money: ./resolvers/money#MoneyOptions
+        CurrentUser: ./db/records/user#UserRecord
