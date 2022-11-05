@@ -4,6 +4,8 @@ import toast from "solid-toast"
 import CategoryForm from "../../components/categories/CategoryForm"
 import FormPageWrapper from "../../components/FormPageWrapper"
 import { GetCategoryQuery, UpdateCategoryMutationVariables } from "../../graphql-types"
+import { CATEGORIES_QUERY } from "../../graphql/queries/categoriesQuery"
+import { GET_CATEGORY_QUERY } from "../../graphql/queries/getCategoryQuery"
 import { useMutation } from "../../graphqlClient"
 import { gql } from "../../utils/gql"
 
@@ -39,7 +41,8 @@ const EditCategoryPage: Component = () => {
     },
     onError: (error) => {
       toast.error(error.message)
-    }
+    },
+    refetchQueries: [CATEGORIES_QUERY, GET_CATEGORY_QUERY]
   })
 
   const onSave = (input: UpdateCategoryMutationVariables["input"], id?: string) => {

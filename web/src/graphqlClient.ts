@@ -3,111 +3,143 @@ import {
   createEffect,
   createResource,
   createSignal,
+  onCleanup,
+  onMount,
   Resource,
   ResourceActions,
   useContext
 } from "solid-js"
 import { loginToken } from "./utils/auth"
 
-const gqlContext = createContext<{
+interface QueryState {
+  cache?: any
+  inflightRequest?: Promise<any>
+}
+
+interface StoredQuery {
+  get(): Promise<any>
+  fetch(): Promise<any>
+  refetch(): void
+  listeners: Set<ResourceActions<any>>
+  state: QueryState
+}
+
+interface GraphQLContext {
   queries: {
     [query: string]: {
-      [variables: string]: {
-        cache?: any
-        inflightRequest?: Promise<any>
-        listeners?: Set<ResourceActions<any>>
-      }
+      [variables: string]: StoredQuery
     }
   }
-}>({
+}
+
+const gqlContext = createContext<GraphQLContext>({
   queries: {}
 })
 
+const queryState = <Data>(context: GraphQLContext, query: string, serializedVariables: string) => {
+  let state: StoredQuery | undefined = context.queries[query]?.[serializedVariables]
+
+  if (!state) {
+    const state: QueryState = {}
+    const listeners: Set<ResourceActions<any>> = new Set()
+
+    const fetch = async () => {
+      if (!state?.inflightRequest) {
+        state!.inflightRequest = requestGraphql<Data>(query, serializedVariables).then((data) => {
+          state!.cache = data
+          delete state!.inflightRequest
+
+          return data
+        })
+      }
+
+      return await state!.inflightRequest
+    }
+
+    const get = () => {
+      return state.cache || fetch()
+    }
+
+    const refetch = () => {
+      delete state.inflightRequest
+
+      fetch().then((data) => listeners.forEach((listener) => listener.mutate(data)))
+    }
+
+    context.queries[query] ??= {}
+    context.queries[query][serializedVariables] ??= {
+      listeners,
+      get,
+      fetch,
+      refetch,
+      state
+    }
+  }
+
+  return context.queries[query][serializedVariables]
+}
 export interface QueryActions<Data, Variables> {
   refetch: () => void
   fetchMore: (variables: Variables, merge: (existingData: Data, newData: Data) => Data) => void
 }
 
 export function useQuery<Data, Variables = {}>(
-  query: string,
+  queryContent: string,
   variables?: () => Variables
 ): [Resource<Data>, QueryActions<Data, Variables>] {
   const context = useContext(gqlContext)
 
-  const queryParam = () => JSON.stringify(query)
+  const queryParam = () => queryContent
   const variablesParam = () => JSON.stringify(variables?.() || {})
 
   const [data, actions] = createResource<Data, [string, string]>(
     () => [queryParam(), variablesParam()] as [string, string],
     async ([queryParam, variablesParam]) => {
-      context.queries[queryParam] ??= {}
-      context.queries[queryParam][variablesParam] ??= {}
-
-      if (context.queries[queryParam][variablesParam].cache) {
-        return context.queries[queryParam][variablesParam].cache
-      }
-
-      if (!context.queries[queryParam][variablesParam].inflightRequest) {
-        context.queries[queryParam][variablesParam].inflightRequest = requestGraphql<Data>(
-          `{"query":${queryParam},"variables":${variablesParam}}`
-        ).then((data) => {
-          context.queries[queryParam][variablesParam].cache = data
-          delete context.queries[queryParam][variablesParam].inflightRequest
-          return data
-        })
-      }
-
-      return await context.queries[queryParam][variablesParam].inflightRequest
+      return queryState(context, queryParam, variablesParam).get()
     }
   )
 
-  let lastRequest: { queryParam: string; variablesParam: string } | undefined
-
   createEffect(() => {
-    if (lastRequest) {
-      context.queries[lastRequest.queryParam][lastRequest.variablesParam].listeners?.delete(actions)
-    }
+    const query = queryParam()
+    const variables = variablesParam()
 
-    context.queries[queryParam()][variablesParam()].listeners ??= new Set()
-    context.queries[queryParam()][variablesParam()].listeners!.add(actions)
+    context.queries[query][variables].listeners.add(actions)
+
+    onCleanup(() => {
+      context.queries[query][variables].listeners.delete(actions)
+    })
   })
 
   return [
     data,
     {
       refetch: () => {
-        delete context.queries[queryParam()][variablesParam()].cache
-        delete context.queries[queryParam()][variablesParam()].inflightRequest
-
-        context.queries[queryParam()][variablesParam()].listeners?.forEach((listener) =>
-          listener.refetch()
-        )
+        queryState(context, queryParam(), variablesParam()).refetch()
       },
 
       fetchMore: (variables, merge) => {
-        if (!context.queries[queryParam()][variablesParam()].cache) {
+        const { state } = queryState(context, queryParam(), variablesParam())
+
+        if (!state.cache) {
           throw new Error("Cannot fetchMore when the first result is not yet loaded")
         }
 
-        context.queries[queryParam()][variablesParam()].inflightRequest = requestGraphql<Data>(
-          `{"query":${queryParam()},"variables":${JSON.stringify(variables)}}`
-        ).then((newData) => {
-          if (!context.queries[queryParam()][variablesParam()].inflightRequest) {
-            // Something has changed in the meantime, we should cancel this
-            return
-          }
+        state.inflightRequest = requestGraphql<Data>(queryParam(), JSON.stringify(variables)).then(
+          (newData) => {
+            if (!state.inflightRequest) {
+              // Something has changed in the meantime, we should cancel this
+              return
+            }
 
-          if (!context.queries[queryParam()][variablesParam()].cache) {
-            throw new Error("Cannot fetchMore when the first result is not yet loaded")
-          }
+            if (!state.cache) {
+              throw new Error("Cannot fetchMore when the first result is not yet loaded")
+            }
 
-          context.queries[queryParam()][variablesParam()].cache = merge(
-            context.queries[queryParam()][variablesParam()].cache,
-            newData
-          )
-          delete context.queries[queryParam()][variablesParam()].inflightRequest
-          return data
-        })
+            state.cache = merge(state.cache, newData)
+            delete state.inflightRequest
+            return data
+          }
+        )
       }
     }
   ]
@@ -129,16 +161,14 @@ export function useMutation<Data, Variables>(
   const mutate = async (variables: Variables) => {
     try {
       setLoading(true)
-      const data = await requestGraphql<Data>(JSON.stringify({ query: mutation, variables }))
+      const data = await requestGraphql<Data>(mutation, JSON.stringify(variables))
       setLoading(false)
       onSuccess?.(data)
 
       const refetchList = refetchQueries === "ALL" ? Object.keys(context.queries) : refetchQueries
 
       refetchList?.forEach((query) => {
-        Object.values(context.queries[query] || {}).forEach(({ listeners }) =>
-          listeners?.forEach((listener) => listener.refetch())
-        )
+        Object.values(context.queries[query] || {}).forEach(({ refetch }) => refetch())
       })
     } catch (error) {
       console.error(error)
@@ -156,12 +186,12 @@ export function useMutation<Data, Variables>(
   ] as const
 }
 
-async function requestGraphql<Result>(body: string): Promise<Result> {
+async function requestGraphql<Result>(query: string, serializedVariables: string): Promise<Result> {
   const token = loginToken()
 
   const response = await fetch("http://localhost:4444/graphql", {
     method: "POST",
-    body,
+    body: `{"query":${JSON.stringify(query)},"variables":${serializedVariables}}`,
     headers: {
       "Content-Type": "application/json",
       Authorization: token ? `Bearer ${token}` : ""

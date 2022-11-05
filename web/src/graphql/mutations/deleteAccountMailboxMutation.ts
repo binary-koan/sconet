@@ -8,7 +8,7 @@ import { ACCOUNT_MAILBOXES_QUERY } from "../queries/accountMailboxesQuery"
 
 const DELETE_ACCOUNT_MAILBOX_MUTATION = gql`
   mutation DeleteAccountMailbox($id: String!) {
-    deleteCategory(id: $id) {
+    deleteAccountMailbox(id: $id) {
       id
     }
   }
