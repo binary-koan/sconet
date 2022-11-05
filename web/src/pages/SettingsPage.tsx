@@ -1,6 +1,6 @@
 import { useColorMode, Heading, Button, Text } from "@hope-ui/solid"
-import { Link, Title } from "@solidjs/meta"
-import { useRouteData } from "@solidjs/router"
+import { Title } from "@solidjs/meta"
+import { Link, useRouteData } from "@solidjs/router"
 import { Component, Resource } from "solid-js"
 import AccountMailboxes from "../components/accountMailboxes/AccountMailboxes"
 import CategoriesList from "../components/categories/Categories"

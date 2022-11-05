@@ -17,7 +17,7 @@ const AccountMailboxesList: Component<{
 
   const onDeleteClick = (id: string) => {
     if (confirm("Are you sure you want to delete accountMailbox " + id + "?")) {
-      deleteAccountMailbox({ variables: { id } })
+      deleteAccountMailbox({ id })
     }
   }
 

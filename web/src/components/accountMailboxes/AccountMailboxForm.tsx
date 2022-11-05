@@ -1,28 +1,36 @@
 import { Button } from "@hope-ui/solid"
 import { Component } from "solid-js"
-import { CreateAccountMailboxMutationVariables } from "../../graphql-types"
-import { Form } from "../forms/Form"
+import { CreateAccountMailboxInput } from "../../graphql-types"
 import FormInput from "../forms/FormInput"
+import { createForm } from "@felte/solid"
+import { validator } from "@felte/validator-superstruct"
+import { Describe, nonempty, nullable, object, optional, string } from "superstruct"
 
-interface AccountMailboxFormValues {
-  name: string
-  fromAddressPattern: string
-  datePattern: string
-  memoPattern: string
-  amountPattern: string
-}
+type AccountMailboxFormValues = Omit<CreateAccountMailboxInput, "mailServerOptions">
+
+const accountMailboxFormStruct: Describe<AccountMailboxFormValues> = object({
+  name: nonempty(string()),
+  fromAddressPattern: optional(nullable(string())),
+  datePattern: optional(nullable(string())),
+  memoPattern: optional(nullable(string())),
+  amountPattern: optional(nullable(string()))
+})
 
 const AccountMailboxForm: Component<{
   accountMailbox?: any
-  onSave: (input: CreateAccountMailboxMutationVariables["input"], id?: string) => void
+  onSave: (input: CreateAccountMailboxInput, id?: string) => void
   loading: boolean
 }> = (props) => {
-  const onSave = (data: AccountMailboxFormValues) => {
-    props.onSave({ ...data, mailServerOptions: {} }, props?.accountMailbox?.id)
-  }
+  const { form } = createForm<AccountMailboxFormValues>({
+    onSubmit: (values) => {
+      props.onSave({ ...values, mailServerOptions: {} }, props?.accountMailbox?.id)
+    },
+
+    extend: validator({ struct: accountMailboxFormStruct })
+  })
 
   return (
-    <Form onSave={onSave}>
+    <form use:form>
       <FormInput label="Name" name="name" defaultValue={props.accountMailbox?.name} />
 
       <FormInput
@@ -52,7 +60,7 @@ const AccountMailboxForm: Component<{
       <Button type="submit" colorScheme="primary" disabled={props.loading}>
         Save
       </Button>
-    </Form>
+    </form>
   )
 }
 

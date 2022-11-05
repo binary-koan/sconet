@@ -1,4 +1,7 @@
-import { CreateAccountMailboxMutation } from "../../graphql-types"
+import {
+  CreateAccountMailboxMutation,
+  CreateAccountMailboxMutationVariables
+} from "../../graphql-types"
 import { MutationOptions, useMutation } from "../../graphqlClient"
 import { gql } from "../../utils/gql"
 import { ACCOUNT_MAILBOXES_QUERY } from "../queries/accountMailboxesQuery"
@@ -11,7 +14,10 @@ const CREATE_ACCOUNT_MAILBOX_MUTATION = gql`
   }
 `
 export const useCreateAccountMailbox = (options: MutationOptions<CreateAccountMailboxMutation>) =>
-  useMutation(CREATE_ACCOUNT_MAILBOX_MUTATION, {
-    refetchQueries: [ACCOUNT_MAILBOXES_QUERY],
-    ...options
-  })
+  useMutation<CreateAccountMailboxMutation, CreateAccountMailboxMutationVariables>(
+    CREATE_ACCOUNT_MAILBOX_MUTATION,
+    {
+      refetchQueries: [ACCOUNT_MAILBOXES_QUERY],
+      ...options
+    }
+  )

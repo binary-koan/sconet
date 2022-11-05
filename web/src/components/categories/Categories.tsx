@@ -27,14 +27,6 @@ const DragDropProviderFixed = DragDropProvider as any
 const SortableProviderFixed = SortableProvider as any
 const DragOverlayFixed = DragOverlay as any
 
-declare module "solid-js" {
-  namespace JSX {
-    interface Directives {
-      sortable: true
-    }
-  }
-}
-
 const CategoriesList: Component<{ data: CategoriesQuery }> = (props) => {
   const [deleteCategory] = useDeleteCategory({
     onSuccess: () => toast.success("Category deleted"),
