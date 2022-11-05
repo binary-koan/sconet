@@ -1,9 +1,9 @@
 import { Box, Button, Text } from "@hope-ui/solid"
-import { gql } from "@solid-primitives/graphql"
 import { union } from "lodash"
 import { Component, For } from "solid-js"
 import { CategoryOptionsQuery } from "../../graphql-types"
 import { useQuery } from "../../graphqlClient"
+import { gql } from "../../utils/gql"
 import { namedIcons } from "../../utils/namedIcons"
 import CategoryIndicator from "../CategoryIndicator"
 

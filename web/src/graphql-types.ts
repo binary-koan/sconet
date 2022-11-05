@@ -355,37 +355,6 @@ export type UpdateTransactionInput = {
   memo?: InputMaybe<Scalars['String']>;
 };
 
-export type DeleteAccountMailboxMutationMutationVariables = Exact<{
-  id: Scalars['String'];
-}>;
-
-
-export type DeleteAccountMailboxMutationMutation = { __typename?: 'Mutation', deleteAccountMailbox: { __typename?: 'AccountMailbox', id: string } };
-
-export type FindAccountMailboxesQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type FindAccountMailboxesQuery = { __typename?: 'Query', accountMailboxes: Array<{ __typename?: 'AccountMailbox', id: string, name: string, mailServerOptions: any, fromAddressPattern?: string | null, datePattern?: string | null, memoPattern?: string | null, amountPattern?: string | null }> };
-
-export type DeleteCategoryMutationMutationVariables = Exact<{
-  id: Scalars['String'];
-}>;
-
-
-export type DeleteCategoryMutationMutation = { __typename?: 'Mutation', deleteCategory: { __typename?: 'Category', id: string } };
-
-export type ReorderCategoriesMutationMutationVariables = Exact<{
-  orderedIds: Array<Scalars['String']> | Scalars['String'];
-}>;
-
-
-export type ReorderCategoriesMutationMutation = { __typename?: 'Mutation', reorderCategories: Array<{ __typename?: 'Category', id: string, sortOrder?: number | null }> };
-
-export type FindCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type FindCategoriesQuery = { __typename?: 'Query', categories: Array<{ __typename?: 'Category', id: string, name: string, color: string, icon: string, isRegular: boolean, sortOrder?: number | null, createdAt: any, updatedAt: any, budget?: { __typename?: 'Money', formatted: string } | null }> };
-
 export type AccountMailboxOptionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -401,13 +370,55 @@ export type CurrencyOptionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type CurrencyOptionsQuery = { __typename?: 'Query', currencies: Array<{ __typename?: 'Currency', id: string, code: any, symbol: string, decimalDigits: number }> };
 
-export type BudgetsQueryVariables = Exact<{
+export type FullAccountMailboxFragment = { __typename?: 'AccountMailbox', id: string, name: string, mailServerOptions: any, fromAddressPattern?: string | null, datePattern?: string | null, memoPattern?: string | null, amountPattern?: string | null };
+
+export type FullCategoryFragment = { __typename?: 'Category', id: string, name: string, color: string, icon: string, isRegular: boolean, sortOrder?: number | null, createdAt: any, updatedAt: any, budget?: { __typename?: 'Money', formatted: string } | null };
+
+export type CreateAccountMailboxMutationVariables = Exact<{
+  input: CreateAccountMailboxInput;
+}>;
+
+
+export type CreateAccountMailboxMutation = { __typename?: 'Mutation', createAccountMailbox: { __typename?: 'AccountMailbox', id: string } };
+
+export type DeleteAccountMailboxMutationVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type DeleteAccountMailboxMutation = { __typename?: 'Mutation', deleteCategory: { __typename?: 'Category', id: string } };
+
+export type DeleteCategoryMutationVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type DeleteCategoryMutation = { __typename?: 'Mutation', deleteCategory: { __typename?: 'Category', id: string } };
+
+export type ReorderCategoriesMutationVariables = Exact<{
+  orderedIds: Array<Scalars['String']> | Scalars['String'];
+}>;
+
+
+export type ReorderCategoriesMutation = { __typename?: 'Mutation', reorderCategories: Array<{ __typename?: 'Category', id: string }> };
+
+export type AccountMailboxesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AccountMailboxesQuery = { __typename?: 'Query', accountMailboxes: Array<{ __typename?: 'AccountMailbox', id: string, name: string, mailServerOptions: any, fromAddressPattern?: string | null, datePattern?: string | null, memoPattern?: string | null, amountPattern?: string | null }> };
+
+export type BudgetQueryVariables = Exact<{
   year: Scalars['Int'];
   month: Scalars['Int'];
 }>;
 
 
-export type BudgetsQuery = { __typename?: 'Query', budget: { __typename?: 'MonthBudget', id: string, month: number, income: { __typename?: 'Money', decimalAmount: number, formatted: string }, totalSpending: { __typename?: 'Money', decimalAmount: number, formatted: string }, difference: { __typename?: 'Money', decimalAmount: number, formatted: string }, regularCategories: { __typename?: 'CategoryBudgetGroup', totalSpending: { __typename?: 'Money', decimalAmount: number, formatted: string }, categories: Array<{ __typename?: 'CategoryBudget', id: string, category?: { __typename?: 'Category', id: string, name: string, color: string, icon: string, isRegular: boolean, budget?: { __typename?: 'Money', decimalAmount: number, formatted: string } | null } | null, amountSpent: { __typename?: 'Money', decimalAmount: number, formatted: string } }> }, irregularCategories: { __typename?: 'CategoryBudgetGroup', totalSpending: { __typename?: 'Money', decimalAmount: number, formatted: string }, categories: Array<{ __typename?: 'CategoryBudget', id: string, category?: { __typename?: 'Category', id: string, name: string, color: string, icon: string, isRegular: boolean, budget?: { __typename?: 'Money', decimalAmount: number, formatted: string } | null } | null, amountSpent: { __typename?: 'Money', decimalAmount: number, formatted: string } }> } } };
+export type BudgetQuery = { __typename?: 'Query', budget: { __typename?: 'MonthBudget', id: string, month: number, income: { __typename?: 'Money', decimalAmount: number, formatted: string }, totalSpending: { __typename?: 'Money', decimalAmount: number, formatted: string }, difference: { __typename?: 'Money', decimalAmount: number, formatted: string }, regularCategories: { __typename?: 'CategoryBudgetGroup', totalSpending: { __typename?: 'Money', decimalAmount: number, formatted: string }, categories: Array<{ __typename?: 'CategoryBudget', id: string, category?: { __typename?: 'Category', id: string, name: string, color: string, icon: string, isRegular: boolean, budget?: { __typename?: 'Money', decimalAmount: number, formatted: string } | null } | null, amountSpent: { __typename?: 'Money', decimalAmount: number, formatted: string } }> }, irregularCategories: { __typename?: 'CategoryBudgetGroup', totalSpending: { __typename?: 'Money', decimalAmount: number, formatted: string }, categories: Array<{ __typename?: 'CategoryBudget', id: string, category?: { __typename?: 'Category', id: string, name: string, color: string, icon: string, isRegular: boolean, budget?: { __typename?: 'Money', decimalAmount: number, formatted: string } | null } | null, amountSpent: { __typename?: 'Money', decimalAmount: number, formatted: string } }> } } };
+
+export type CategoriesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CategoriesQuery = { __typename?: 'Query', categories: Array<{ __typename?: 'Category', id: string, name: string, color: string, icon: string, isRegular: boolean, sortOrder?: number | null, createdAt: any, updatedAt: any, budget?: { __typename?: 'Money', formatted: string } | null }> };
 
 export type GetCategoryQueryVariables = Exact<{
   id: Scalars['String'];
@@ -415,14 +426,6 @@ export type GetCategoryQueryVariables = Exact<{
 
 
 export type GetCategoryQuery = { __typename?: 'Query', category?: { __typename?: 'Category', id: string, name: string, color: string, icon: string, createdAt: any, updatedAt: any, budget?: { __typename?: 'Money', decimalAmount: number, formatted: string } | null } | null };
-
-export type UpdateCategoryMutationVariables = Exact<{
-  id: Scalars['String'];
-  input: UpdateCategoryInput;
-}>;
-
-
-export type UpdateCategoryMutation = { __typename?: 'Mutation', updateCategory: { __typename?: 'Category', id: string, name: string, color: string, icon: string, createdAt: any, updatedAt: any, budget?: { __typename?: 'Money', decimalAmount: number, formatted: string } | null } };
 
 export type FindTransactionsQueryVariables = Exact<{
   limit?: InputMaybe<Scalars['Int']>;
@@ -441,12 +444,13 @@ export type LoginMutationVariables = Exact<{
 
 export type LoginMutation = { __typename?: 'Mutation', login: string };
 
-export type CreateAccountMailboxMutationVariables = Exact<{
-  input: CreateAccountMailboxInput;
+export type UpdateCategoryMutationVariables = Exact<{
+  id: Scalars['String'];
+  input: UpdateCategoryInput;
 }>;
 
 
-export type CreateAccountMailboxMutation = { __typename?: 'Mutation', createAccountMailbox: { __typename?: 'AccountMailbox', id: string } };
+export type UpdateCategoryMutation = { __typename?: 'Mutation', updateCategory: { __typename?: 'Category', id: string, name: string, color: string, icon: string, createdAt: any, updatedAt: any, budget?: { __typename?: 'Money', decimalAmount: number, formatted: string } | null } };
 
 export type CreateCategoryMutationVariables = Exact<{
   input: CreateCategoryInput;

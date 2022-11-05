@@ -1,6 +1,6 @@
-import { gql } from "@solid-primitives/graphql"
 import { GetCategoryQueryVariables, GetCategoryQuery } from "../../graphql-types"
 import { useQuery } from "../../graphqlClient"
+import { gql } from "../../utils/gql"
 
 export const GET_CATEGORY_QUERY = gql`
   query GetCategory($id: String!) {

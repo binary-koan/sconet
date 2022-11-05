@@ -1,12 +1,10 @@
-import { Box, Icon, Button, Text } from "@hope-ui/solid"
-import { gql } from "@solid-primitives/graphql"
+import { Box, Button, Text } from "@hope-ui/solid"
 import { Link } from "@solidjs/router"
 import { orderBy, isEqual, debounce } from "lodash"
 import { Component, createEffect, createSignal, For, Show } from "solid-js"
-import { FindCategoriesQuery } from "../../graphql-types"
+import { CategoriesQuery, FullCategoryFragment } from "../../graphql-types"
 import { useMutation } from "../../graphqlClient"
 import CategoryIndicator from "../CategoryIndicator"
-import { CATEGORIES_QUERY } from "./CategoriesCell"
 import {
   closestCenter,
   createSortable,
@@ -21,23 +19,9 @@ import { TbArrowsSort, TbEdit, TbTrash } from "solid-icons/tb"
 import { namedIcons } from "../../utils/namedIcons"
 import toast from "solid-toast"
 import { Dynamic } from "solid-js/web"
-
-const DELETE_CATEGORY_MUTATION = gql`
-  mutation DeleteCategoryMutation($id: String!) {
-    deleteCategory(id: $id) {
-      id
-    }
-  }
-`
-
-const REORDER_CATEGORIES_MUTATION = gql`
-  mutation ReorderCategoriesMutation($orderedIds: [String!]!) {
-    reorderCategories(orderedIds: $orderedIds) {
-      id
-      sortOrder
-    }
-  }
-`
+import { gql } from "../../utils/gql"
+import { useDeleteCategory } from "../../graphql/mutations/deleteCategoryMutation"
+import { useReorderCategories } from "../../graphql/mutations/reorderCategoriesMutation"
 
 const DragDropProviderFixed = DragDropProvider as any
 const SortableProviderFixed = SortableProvider as any
@@ -51,24 +35,15 @@ declare module "solid-js" {
   }
 }
 
-const CategoriesList: Component<{ categories: FindCategoriesQuery["categories"] }> = (props) => {
-  const [deleteCategory] = useMutation(DELETE_CATEGORY_MUTATION, {
-    onSuccess: () => {
-      toast.success("Category deleted")
-    },
-    onError: (error: any) => {
-      toast.error(error.message)
-    },
-    refetchQueries: [CATEGORIES_QUERY]
+const CategoriesList: Component<{ data: CategoriesQuery }> = (props) => {
+  const [deleteCategory] = useDeleteCategory({
+    onSuccess: () => toast.success("Category deleted"),
+    onError: (error: any) => toast.error(error.message)
   })
 
-  const [reorderCategories] = useMutation(REORDER_CATEGORIES_MUTATION, {
-    onSuccess: () => {
-      toast.success("Categories reordered")
-    },
-    onError: (error) => {
-      toast.error(error.message)
-    }
+  const [reorderCategories] = useReorderCategories({
+    onSuccess: () => toast.success("Categories reordered"),
+    onError: (error) => toast.error(error.message)
   })
 
   const onDeleteClick = (id: string) => {
@@ -77,12 +52,8 @@ const CategoriesList: Component<{ categories: FindCategoriesQuery["categories"] 
     }
   }
 
-  const [orderedCategories, setOrderedCategories] = createSignal<FindCategoriesQuery["categories"]>(
-    []
-  )
-  const [draggingItem, setDraggingItem] = createSignal<
-    FindCategoriesQuery["categories"][number] | null
-  >(null)
+  const [orderedCategories, setOrderedCategories] = createSignal<FullCategoryFragment[]>([])
+  const [draggingItem, setDraggingItem] = createSignal<FullCategoryFragment | null>(null)
 
   const ids = () => orderedCategories().map((category) => category.id)
 
@@ -90,7 +61,7 @@ const CategoriesList: Component<{ categories: FindCategoriesQuery["categories"] 
     if (
       !isEqual(
         orderedCategories().map((category) => category.id),
-        props.categories.map((category) => category.id)
+        props.data.categories.map((category) => category.id)
       )
     ) {
       reorderCategories({
@@ -122,7 +93,7 @@ const CategoriesList: Component<{ categories: FindCategoriesQuery["categories"] 
   }
 
   createEffect(() => {
-    setOrderedCategories(orderBy(props.categories, (category) => category.sortOrder))
+    setOrderedCategories(orderBy(props.data.categories, (category) => category.sortOrder))
   })
 
   return (
@@ -148,7 +119,7 @@ const CategoriesList: Component<{ categories: FindCategoriesQuery["categories"] 
 }
 
 const SortableCategory: Component<{
-  category: FindCategoriesQuery["categories"][number]
+  category: CategoriesQuery["categories"][number]
   onDeleteClick: (id: string) => void
 }> = (props) => {
   const sortable = createSortable(props.category.id)
@@ -167,7 +138,7 @@ const SortableCategory: Component<{
 }
 
 const Category: Component<{
-  category: FindCategoriesQuery["categories"][number]
+  category: CategoriesQuery["categories"][number]
   onDeleteClick: (id: string) => void
   sortable?: ReturnType<typeof createSortable>
 }> = (props) => {

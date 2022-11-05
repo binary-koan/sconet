@@ -1,9 +1,9 @@
-import { gql } from "@solid-primitives/graphql"
-import { BudgetsQuery, BudgetsQueryVariables } from "../../graphql-types"
+import { BudgetQuery, BudgetQueryVariables } from "../../graphql-types"
 import { useQuery } from "../../graphqlClient"
+import { gql } from "../../utils/gql"
 
 export const BUDGET_QUERY = gql`
-  query Budgets($year: Int!, $month: Int!) {
+  query Budget($year: Int!, $month: Int!) {
     budget(year: $year, month: $month, currency: "JPY") {
       id
       month
@@ -71,5 +71,5 @@ export const BUDGET_QUERY = gql`
   }
 `
 
-export const useBudgetQuery = (variables: () => BudgetsQueryVariables) =>
-  useQuery<BudgetsQuery, BudgetsQueryVariables>(BUDGET_QUERY, variables)
+export const useBudgetQuery = (variables: () => BudgetQueryVariables) =>
+  useQuery<BudgetQuery, BudgetQueryVariables>(BUDGET_QUERY, variables)

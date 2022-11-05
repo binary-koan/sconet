@@ -5,10 +5,11 @@ import { TbArrowLeft, TbArrowRight } from "solid-icons/tb"
 import { Resource, Show } from "solid-js"
 import { Dynamic } from "solid-js/web"
 import { Budgets } from "../components/budgets/Budgets"
-import { BudgetsQuery } from "../graphql-types"
+import { Cell } from "../components/Cell"
+import { BudgetQuery } from "../graphql-types"
 
 export interface BudgetsPageData {
-  data: Resource<BudgetsQuery>
+  data: Resource<BudgetQuery>
   year: number
   month: number
 }
@@ -40,7 +41,7 @@ const BudgetsPage = () => {
   const date = () => new Date(routeData.year, routeData.month - 1, 1)
 
   return (
-    <Show when={Boolean(routeData.data())}>
+    <>
       <Title>Budgets</Title>
 
       <Heading
@@ -68,8 +69,12 @@ const BudgetsPage = () => {
           <Dynamic component={TbArrowRight} />
         </Button>
       </Heading>
-      <Budgets budget={routeData.data()!.budget} year={routeData.year} month={routeData.month} />
-    </Show>
+      <Cell
+        data={routeData.data}
+        success={Budgets}
+        successProps={{ year: routeData.year, month: routeData.month }}
+      />
+    </>
   )
 }
 

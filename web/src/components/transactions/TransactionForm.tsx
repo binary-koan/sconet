@@ -1,5 +1,4 @@
 import { InputGroup, InputLeftAddon, Input, Button, Box } from "@hope-ui/solid"
-import { gql } from "@solid-primitives/graphql"
 import { Component, createSignal, onCleanup, onMount, Show } from "solid-js"
 import {
   AccountMailboxOptionsQuery,
@@ -16,6 +15,7 @@ import FormInput from "../forms/FormInput"
 import FormOptionButtons from "../forms/FormOptionButtons"
 import FormSwitch from "../forms/FormSwitch"
 import { repeat } from "lodash"
+import { gql } from "../../utils/gql"
 
 const categoriesQuery = gql`
   query CategoryOptions {

@@ -1,4 +1,4 @@
-import { gql } from "@solid-primitives/graphql"
+import { gql } from "../../utils/gql"
 
 export const TRANSACTIONS_QUERY = gql`
   query FindTransactions($limit: Int, $offset: String, $filter: TransactionFilter) {

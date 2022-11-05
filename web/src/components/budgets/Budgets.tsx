@@ -1,13 +1,11 @@
-import { Box, Button, Text } from "@hope-ui/solid"
-import { Link } from "@solidjs/router"
-import { Component, Show } from "solid-js"
-import { BudgetsQuery } from "../../graphql-types"
+import { Component } from "solid-js"
+import { BudgetQuery } from "../../graphql-types"
 import { monthRange } from "../../utils/date"
 import BudgetGroup from "./BudgetGroup"
 import { BudgetSummary } from "./BudgetSummary"
 
 export const Budgets: Component<{
-  budget: BudgetsQuery["budget"]
+  data: BudgetQuery
   year: number
   month: number
 }> = (props) => {
@@ -34,16 +32,18 @@ export const Budgets: Component<{
       <BudgetSummary
         isPastMonth={isPastMonth()}
         filteredTransactions={filteredTransactions}
-        {...props}
+        budget={props.data.budget}
+        year={props.year}
+        month={props.month}
       />
       <BudgetGroup
         title="Regular spending"
-        group={props.budget.regularCategories}
+        group={props.data.budget.regularCategories}
         filteredTransactionsRoute={filteredTransactions}
       />
       <BudgetGroup
         title="Contingent spending"
-        group={props.budget.irregularCategories}
+        group={props.data.budget.irregularCategories}
         filteredTransactionsRoute={filteredTransactions}
       />
     </>

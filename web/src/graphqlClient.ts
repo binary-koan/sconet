@@ -113,17 +113,15 @@ export function useQuery<Data, Variables = {}>(
   ]
 }
 
+export interface MutationOptions<Data> {
+  refetchQueries?: string[] | "ALL"
+  onSuccess?: (data: Data) => void
+  onError?: (error: any) => void
+}
+
 export function useMutation<Data, Variables>(
   mutation: string,
-  {
-    refetchQueries,
-    onSuccess,
-    onError
-  }: {
-    refetchQueries?: string[] | "ALL"
-    onSuccess?: (data: Data) => void
-    onError?: (error: any) => void
-  } = {}
+  { refetchQueries, onSuccess, onError }: MutationOptions<Data> = {}
 ) {
   const context = useContext(gqlContext)
   const [loading, setLoading] = createSignal(false)

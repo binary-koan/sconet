@@ -1,8 +1,8 @@
 import { Box, Button, Text } from "@hope-ui/solid"
-import { gql } from "@solid-primitives/graphql"
 import { Component, For } from "solid-js"
 import { AccountMailboxOptionsQuery } from "../../graphql-types"
 import { useQuery } from "../../graphqlClient"
+import { gql } from "../../utils/gql"
 
 export type AccountMailboxOption = AccountMailboxOptionsQuery["accountMailboxes"][0]
 

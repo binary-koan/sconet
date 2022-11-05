@@ -1,32 +1,18 @@
 import { Box, Button, Text } from "@hope-ui/solid"
-import { gql } from "@solid-primitives/graphql"
 import { Link } from "@solidjs/router"
 import { TbEdit, TbTrash } from "solid-icons/tb"
 import { Component, For } from "solid-js"
 import { Dynamic } from "solid-js/web"
-import { FindAccountMailboxesQuery } from "../../graphql-types"
-import { useMutation } from "../../graphqlClient"
-import { ACCOUNT_MAILBOXES_QUERY } from "./AccountMailboxesCell"
-
-const DELETE_ACCOUNT_MAILBOX_MUTATION = gql`
-  mutation DeleteAccountMailboxMutation($id: String!) {
-    deleteAccountMailbox(id: $id) {
-      id
-    }
-  }
-`
+import toast from "solid-toast"
+import { AccountMailboxesQuery } from "../../graphql-types"
+import { useDeleteAccountMailbox } from "../../graphql/mutations/deleteAccountMailboxMutation"
 
 const AccountMailboxesList: Component<{
-  accountMailboxes: FindAccountMailboxesQuery["accountMailboxes"]
+  data: AccountMailboxesQuery
 }> = (props) => {
-  const [deleteAccountMailbox] = useMutation(DELETE_ACCOUNT_MAILBOX_MUTATION, {
-    // onCompleted: () => {
-    //   toast('AccountMailbox deleted')
-    // },
-    // onError: (error) => {
-    //   toast(error.message)
-    // },
-    refetchQueries: [ACCOUNT_MAILBOXES_QUERY]
+  const [deleteAccountMailbox] = useDeleteAccountMailbox({
+    onSuccess: () => toast.success("AccountMailbox deleted"),
+    onError: (error) => toast.error(error.message)
   })
 
   const onDeleteClick = (id: string) => {
@@ -36,7 +22,7 @@ const AccountMailboxesList: Component<{
   }
 
   return (
-    <For each={props.accountMailboxes}>
+    <For each={props.data.accountMailboxes}>
       {(account) => (
         <Box
           display="flex"

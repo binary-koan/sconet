@@ -11,7 +11,7 @@ import { TransactionsCell } from "../components/transactions/TransactionsCell"
 import { FindTransactionsQuery } from "../graphql-types"
 import { useQuery } from "../graphqlClient"
 import usePageFilter from "../hooks/usePageFilter"
-import { TRANSACTIONS_QUERY } from "../queries/transactions"
+import { TRANSACTIONS_QUERY } from "../graphql/queries/transactions"
 
 const FILTERS_KEY = "sconet.transactionFilters"
 const BLANK_FILTERS = {

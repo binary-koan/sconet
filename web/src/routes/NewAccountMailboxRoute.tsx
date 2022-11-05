@@ -1,39 +1,20 @@
-import { gql } from "@solid-primitives/graphql"
 import { Route, useNavigate } from "@solidjs/router"
 import { Component } from "solid-js"
 import toast from "solid-toast"
-import { ACCOUNT_MAILBOXES_QUERY } from "../components/accountMailboxes/AccountMailboxesCell"
 import AccountMailboxForm from "../components/accountMailboxes/AccountMailboxForm"
 import FormPageWrapper from "../components/FormPageWrapper"
-import {
-  CreateAccountMailboxMutation,
-  CreateAccountMailboxMutationVariables
-} from "../graphql-types"
-import { useMutation } from "../graphqlClient"
-
-const CREATE_ACCOUNT_MAILBOX_MUTATION = gql`
-  mutation CreateAccountMailbox($input: CreateAccountMailboxInput!) {
-    createAccountMailbox(input: $input) {
-      id
-    }
-  }
-`
+import { CreateAccountMailboxMutationVariables } from "../graphql-types"
+import { useCreateAccountMailbox } from "../graphql/mutations/createAccountMailboxMutation"
 
 const NewAccountMailbox = () => {
   const navigate = useNavigate()
 
-  const [createAccountMailbox, { loading }] = useMutation<
-    CreateAccountMailboxMutation,
-    CreateAccountMailboxMutationVariables
-  >(CREATE_ACCOUNT_MAILBOX_MUTATION, {
+  const [createAccountMailbox, { loading }] = useCreateAccountMailbox({
     onSuccess: () => {
       toast.success("AccountMailbox created")
       navigate("/settings")
     },
-    onError: (error) => {
-      toast.error(error.message)
-    },
-    refetchQueries: [ACCOUNT_MAILBOXES_QUERY]
+    onError: (error) => toast.error(error.message)
   })
 
   const onSave = (input: CreateAccountMailboxMutationVariables["input"]) => {

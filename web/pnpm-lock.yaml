@@ -6,7 +6,6 @@ specifiers:
   '@graphql-codegen/typescript-operations': ^2.5.3
   '@hope-ui/solid': ^0.6.7
   '@solid-devtools/transform': ^0.7.2
-  '@solid-primitives/graphql': ^1.3.0
   '@solid-primitives/scheduled': ^1.0.1
   '@solidjs/meta': ^0.28.0
   '@solidjs/router': ^0.4.3
@@ -15,7 +14,6 @@ specifiers:
   '@types/babel__core': ^7.1.19
   '@types/lodash': ^4.14.184
   '@types/node': ^18.7.14
-  '@urql/core': ^3.0.2
   echarts: ^5.4.0
   graphql: ^16.6.0
   jose: ^4.10.4
@@ -37,7 +35,6 @@ dependencies:
   '@graphql-codegen/typescript-operations': 2.5.3_graphql@16.6.0
   '@hope-ui/solid': 0.6.7_pk6gvyn2wlnwvfru7v242mk2ou
   '@solid-devtools/transform': 0.7.2_dis4kq3wxb3ocy3zpl2iok7mhe
-  '@solid-primitives/graphql': 1.3.0_solid-js@1.5.1
   '@solid-primitives/scheduled': 1.0.1_solid-js@1.5.1
   '@solidjs/meta': 0.28.0_solid-js@1.5.1
   '@solidjs/router': 0.4.3_solid-js@1.5.1
@@ -46,7 +43,6 @@ dependencies:
   '@types/babel__core': 7.1.19
   '@types/lodash': 4.14.184
   '@types/node': 18.7.14
-  '@urql/core': 3.0.2_graphql@16.6.0
   echarts: 5.4.0
   graphql: 16.6.0
   jose: 4.10.4
@@ -1304,14 +1300,6 @@ packages:
       value-or-promise: 1.0.11
     dev: false
 
-  /@graphql-typed-document-node/core/3.1.1_graphql@16.6.0:
-    resolution: {integrity: sha512-NQ17ii0rK1b34VZonlmT2QMJFI70m0TRwbknO/ihlbatXyaktDhN/98vBiUU6kNBPljqGqyIrl2T4nY2RpFANg==}
-    peerDependencies:
-      graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
-    dependencies:
-      graphql: 16.6.0
-    dev: false
-
   /@hope-ui/solid/0.6.7_pk6gvyn2wlnwvfru7v242mk2ou:
     resolution: {integrity: sha512-7zGGy4QbGUC7QhwRnNH8HO0MZFg4jFISlC2cnAMBfFBy272uqQN3PYdTjiIbnpR/4JilUfxCWpFQY+4qslqcIw==}
     peerDependencies:
@@ -1639,20 +1627,6 @@ packages:
       solid-js: 1.5.1
     dev: false
 
-  /@solid-primitives/graphql/1.3.0_solid-js@1.5.1:
-    resolution: {integrity: sha512-OM1Q2qnI7aV3bcQh+1lPEW8V6qy9o0oQhHdRVo5EQtGqRNZIG3ze/MCaj/Voh906tDlMEa78GGyu59IyshdHpw==}
-    peerDependencies:
-      solid-js: ^1.5.0
-    dependencies:
-      '@graphql-typed-document-node/core': 3.1.1_graphql@16.6.0
-      '@solid-primitives/utils': 3.0.2_solid-js@1.5.1
-      graphql: 16.6.0
-      node-fetch: 2.6.7
-      solid-js: 1.5.1
-    transitivePeerDependencies:
-      - encoding
-    dev: false
-
   /@solid-primitives/immutable/0.1.2_solid-js@1.5.1:
     resolution: {integrity: sha512-h6P3bhQlgo9qsTfJ7eimUYzKkhf0dFchYPyfvEUy/QcG2eSDkKhhgOz0ss6DSP6cdavTDTaQoquLr/iR8LelMA==}
     dependencies:
@@ -1861,16 +1835,6 @@ packages:
     resolution: {integrity: sha512-6YOoWjruKj1uLf3INHH7D3qTXwFfEsg1kf3c0uDdSBJwfa/llkwIjrAGV7j7mVgGNbzTQ3HiHKKDXl6bJPD97w==}
     dependencies:
       '@types/node': 18.7.14
-    dev: false
-
-  /@urql/core/3.0.2_graphql@16.6.0:
-    resolution: {integrity: sha512-TRpQOdt1Mtpt/EgPlFCx9Aqc3TbHtzH3yj8pJ9yjSUKT4slRyy+ofMQ8yx50oZzZjAOswF02zBRwnxsZANb35A==}
-    peerDependencies:
-      graphql: ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
-    dependencies:
-      '@graphql-typed-document-node/core': 3.1.1_graphql@16.6.0
-      graphql: 16.6.0
-      wonka: 6.0.0
     dev: false
 
   /@whatwg-node/fetch/0.3.2:

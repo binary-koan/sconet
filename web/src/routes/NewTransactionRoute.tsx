@@ -1,4 +1,3 @@
-import { gql } from "@solid-primitives/graphql"
 import { Route, useNavigate } from "@solidjs/router"
 import { Component } from "solid-js"
 import { toast } from "solid-toast"
@@ -6,6 +5,7 @@ import FormPageWrapper from "../components/FormPageWrapper"
 import TransactionForm from "../components/transactions/TransactionForm"
 import { CreateTransactionMutation, CreateTransactionMutationVariables } from "../graphql-types"
 import { useMutation } from "../graphqlClient"
+import { gql } from "../utils/gql"
 
 export const CREATE_TRANSACTION_MUTATION = gql`
   mutation CreateTransaction($input: CreateTransactionInput!) {

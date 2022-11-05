@@ -1,5 +1,4 @@
 import { Heading, Button, Box } from "@hope-ui/solid"
-import { gql } from "@solid-primitives/graphql"
 import { Title } from "@solidjs/meta"
 import { useLocation, useNavigate } from "@solidjs/router"
 import { Component, createEffect } from "solid-js"
@@ -9,6 +8,7 @@ import FormInput from "../components/forms/FormInput"
 import { LoginMutation, LoginMutationVariables } from "../graphql-types"
 import { useMutation } from "../graphqlClient"
 import { isLoggedIn, setLoginToken } from "../utils/auth"
+import { gql } from "../utils/gql"
 
 const LOGIN_MUTATION = gql`
   mutation Login($email: String!, $password: String!) {

@@ -1,5 +1,4 @@
 import { Box, HopeProps, Input, Text } from "@hope-ui/solid"
-import { gql } from "@solid-primitives/graphql"
 import { Component } from "solid-js"
 import { CategoryOptionsQuery } from "../../graphql-types"
 import { useQuery } from "../../graphqlClient"
@@ -7,6 +6,7 @@ import { namedIcons } from "../../utils/namedIcons"
 import { formatDateForInput } from "../../utils/formatters"
 import CategoryIndicator from "../CategoryIndicator"
 import OptionButtons from "../OptionButtons"
+import { gql } from "../../utils/gql"
 
 export interface TransactionFilterValues {
   dateFrom?: string

@@ -1,4 +1,3 @@
-import { gql } from "@solid-primitives/graphql"
 import { useNavigate, useRouteData } from "@solidjs/router"
 import { Component, Resource, Show } from "solid-js"
 import toast from "solid-toast"
@@ -6,6 +5,7 @@ import CategoryForm from "../../components/categories/CategoryForm"
 import FormPageWrapper from "../../components/FormPageWrapper"
 import { GetCategoryQuery, UpdateCategoryMutationVariables } from "../../graphql-types"
 import { useMutation } from "../../graphqlClient"
+import { gql } from "../../utils/gql"
 
 export interface EditCategoryPageData {
   data: Resource<GetCategoryQuery>
