@@ -2,10 +2,12 @@ import { useColorMode, Heading, Button, Text } from "@hope-ui/solid"
 import { Title } from "@solidjs/meta"
 import { Link, useRouteData } from "@solidjs/router"
 import { Component, Resource } from "solid-js"
+import toast from "solid-toast"
 import AccountMailboxes from "../components/accountMailboxes/AccountMailboxes"
 import CategoriesList from "../components/categories/Categories"
 import { Cell } from "../components/Cell"
 import { AccountMailboxesQuery, CategoriesQuery, CurrentUserQuery } from "../graphql-types"
+import { setLoginToken } from "../utils/auth"
 
 export interface SettingsPageData {
   categories: Resource<CategoriesQuery>
@@ -17,7 +19,10 @@ const SettingsPage: Component = () => {
   const data = useRouteData<SettingsPageData>()
   const { toggleColorMode } = useColorMode()
 
-  const logOut = () => {}
+  const logOut = () => {
+    setLoginToken(null)
+    toast.success("Logged out.")
+  }
 
   return (
     <>

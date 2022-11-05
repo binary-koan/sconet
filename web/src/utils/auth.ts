@@ -3,11 +3,18 @@ import { createSignal } from "solid-js"
 
 const LOGIN_TOKEN_KEY = "sconet.loginToken"
 
-export const [loginToken, setLoginTokenSignal] = createSignal(localStorage.getItem(LOGIN_TOKEN_KEY))
+const [loginToken, setLoginTokenSignal] = createSignal(localStorage.getItem(LOGIN_TOKEN_KEY))
 
-export function setLoginToken(token: string) {
-  setLoginTokenSignal(token)
-  localStorage.setItem(LOGIN_TOKEN_KEY, token)
+export { loginToken }
+
+export function setLoginToken(token: string | null) {
+  if (token) {
+    setLoginTokenSignal(token)
+    localStorage.setItem(LOGIN_TOKEN_KEY, token)
+  } else {
+    setLoginTokenSignal(null)
+    localStorage.removeItem(LOGIN_TOKEN_KEY)
+  }
 }
 
 export function isLoggedIn() {
