@@ -1,24 +1,50 @@
 import { makeExecutableSchema } from "@graphql-tools/schema"
 import { readdirSync, readFileSync } from "fs"
+import { GraphQLScalarType } from "graphql"
+import {
+  CurrencyResolver,
+  DateResolver,
+  DateTimeResolver,
+  JSONResolver,
+  UtcOffsetResolver
+} from "graphql-scalars"
 import { resolve } from "path"
 import { Resolvers } from "./resolvers-types"
 import {
   accountMailbox,
+  AccountMailbox,
   accountMailboxes,
   createAccountMailbox,
   deleteAccountMailbox,
-  updateAccountMailbox,
-  AccountMailbox
+  updateAccountMailbox
 } from "./resolvers/accountMailbox"
+import { budget, CategoryBudget, CategoryBudgetGroup, MonthBudget } from "./resolvers/budgets"
 import {
-  category,
   categories,
+  category,
+  Category,
   createCategory,
   deleteCategory,
-  updateCategory,
   reorderCategories,
-  Category
+  updateCategory
 } from "./resolvers/categories"
+import {
+  createCurrency,
+  currencies,
+  currency,
+  Currency,
+  deleteCurrency,
+  updateCurrency
+} from "./resolvers/currencies"
+import { applyAuthenticatedDirective } from "./resolvers/directives/authenticated"
+import { Money } from "./resolvers/money"
+import {
+  changePassword,
+  currentUser,
+  CurrentUser,
+  generateNewToken,
+  login
+} from "./resolvers/sessions"
 import {
   createTransaction,
   deleteTransaction,
@@ -29,31 +55,6 @@ import {
   transactions,
   updateTransaction
 } from "./resolvers/transaction"
-import { budget, CategoryBudget, CategoryBudgetGroup, MonthBudget } from "./resolvers/budgets"
-import {
-  CurrencyResolver,
-  DateTimeResolver,
-  JSONResolver,
-  UtcOffsetResolver
-} from "graphql-scalars"
-import { applyAuthenticatedDirective } from "./resolvers/directives/authenticated"
-import {
-  login,
-  changePassword,
-  generateNewToken,
-  currentUser,
-  CurrentUser
-} from "./resolvers/sessions"
-import {
-  currencies,
-  currency,
-  createCurrency,
-  updateCurrency,
-  deleteCurrency,
-  Currency
-} from "./resolvers/currencies"
-import { Money } from "./resolvers/money"
-import { GraphQLScalarType } from "graphql"
 
 const resolvers: Resolvers = {
   Query: {
@@ -98,6 +99,7 @@ const resolvers: Resolvers = {
   Money,
   CurrentUser,
 
+  Date: DateResolver,
   DateTime: DateTimeResolver,
   JSON: JSONResolver,
   CurrencyCode: new GraphQLScalarType({ ...CurrencyResolver.toConfig(), name: "CurrencyCode" }),

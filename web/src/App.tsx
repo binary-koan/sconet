@@ -1,5 +1,5 @@
 import { Box } from "@hope-ui/solid"
-import { Routes, Route, Navigate } from "@solidjs/router"
+import { Navigate, Route, Routes } from "@solidjs/router"
 import type { Component, JSX } from "solid-js"
 import { Toaster } from "solid-toast"
 import { MainLayout } from "./components/MainLayout"
@@ -11,7 +11,8 @@ import { NewAccountMailboxRoute } from "./routes/NewAccountMailboxRoute"
 import { NewCategoryRoute } from "./routes/NewCategoryRoute"
 import { NewTransactionRoute } from "./routes/NewTransactionRoute"
 import { SettingsRoute } from "./routes/SettingsRoute"
-import { TransactionsRoute } from "./routes/TransactionsRoute"
+import { TransactionsListRoute } from "./routes/TransactionsListRoute"
+import { transactionsViewPreference } from "./utils/transactions/viewPreference"
 
 const LoggedIn: Component<{ children: JSX.Element }> = (props) => {
   useRequireLogin()
@@ -35,12 +36,19 @@ const App: Component = () => {
     >
       <Toaster position="top-center" />
       <Routes>
-        <Route path="/" element={<Navigate href="/transactions" />} />
+        <Route
+          path="/"
+          element={<Navigate href={`/transactions/${transactionsViewPreference()}`} />}
+        />
+        <Route
+          path="/transactions"
+          element={<Navigate href={`/transactions/${transactionsViewPreference()}`} />}
+        />
 
         <LoginRoute />
 
         <LoggedIn>
-          <TransactionsRoute />
+          <TransactionsListRoute />
           <NewTransactionRoute />
           <SettingsRoute />
           <NewCategoryRoute />

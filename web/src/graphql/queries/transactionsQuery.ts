@@ -1,7 +1,9 @@
+import { TransactionsQuery, TransactionsQueryVariables } from "../../graphql-types"
+import { useQuery } from "../../graphqlClient"
 import { gql } from "../../utils/gql"
 
 export const TRANSACTIONS_QUERY = gql`
-  query FindTransactions($limit: Int, $offset: String, $filter: TransactionFilter) {
+  query Transactions($limit: Int, $offset: String, $filter: TransactionFilter) {
     transactions(limit: $limit, offset: $offset, filter: $filter) {
       data {
         id
@@ -43,3 +45,6 @@ export const TRANSACTIONS_QUERY = gql`
     }
   }
 `
+
+export const useTransactionsQuery = (variables: () => TransactionsQueryVariables) =>
+  useQuery<TransactionsQuery, TransactionsQueryVariables>(TRANSACTIONS_QUERY, variables)

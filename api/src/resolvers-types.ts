@@ -22,6 +22,7 @@ export type Scalars = {
   Int: number;
   Float: number;
   CurrencyCode: any;
+  Date: any;
   DateTime: Date;
   JSON: any;
   UtcOffset: any;
@@ -454,6 +455,7 @@ export type ResolversTypes = {
   Currency: ResolverTypeWrapper<CurrencyRecord>;
   CurrencyCode: ResolverTypeWrapper<Scalars['CurrencyCode']>;
   CurrentUser: ResolverTypeWrapper<UserRecord>;
+  Date: ResolverTypeWrapper<Scalars['Date']>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
   Float: ResolverTypeWrapper<Scalars['Float']>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
@@ -487,6 +489,7 @@ export type ResolversParentTypes = {
   Currency: CurrencyRecord;
   CurrencyCode: Scalars['CurrencyCode'];
   CurrentUser: UserRecord;
+  Date: Scalars['Date'];
   DateTime: Scalars['DateTime'];
   Float: Scalars['Float'];
   Int: Scalars['Int'];
@@ -568,6 +571,10 @@ export type CurrentUserResolvers<ContextType = Context, ParentType extends Resol
   id: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
+
+export interface DateScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Date'], any> {
+  name: 'Date';
+}
 
 export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateTime'], any> {
   name: 'DateTime';
@@ -667,6 +674,7 @@ export type Resolvers<ContextType = Context> = {
   Currency: CurrencyResolvers<ContextType>;
   CurrencyCode: GraphQLScalarType;
   CurrentUser: CurrentUserResolvers<ContextType>;
+  Date: GraphQLScalarType;
   DateTime: GraphQLScalarType;
   JSON: GraphQLScalarType;
   Money: MoneyResolvers<ContextType>;

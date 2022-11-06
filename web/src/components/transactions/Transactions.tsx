@@ -1,24 +1,28 @@
+import { ObjectSetter } from "@felte/common"
 import { Box, Button, Text } from "@hope-ui/solid"
-import { Component, createEffect, createMemo, For, Show } from "solid-js"
-import { FindTransactionsQuery } from "../../graphql-types"
+import { Component, createMemo, For, Show } from "solid-js"
+import { TransactionsQuery } from "../../graphql-types"
 import { monthRange } from "../../utils/date"
 import { formatDate } from "../../utils/formatters"
 import NewTransactionItem from "./NewTransactionItem"
-import { TransactionFilterValues } from "./TransactionFilters"
 import TransactionItem from "./TransactionItem"
 
-const TransactionsList: Component<{
-  transactions: FindTransactionsQuery["transactions"]["data"]
+export const TransactionsList: Component<{
+  data: TransactionsQuery
   fetchMore?: (variables: any) => void
-  setFilterValues: (values: TransactionFilterValues) => void
+  setFilter: ObjectSetter<any>
   isEditing: boolean
 }> = (props) => {
   const items = createMemo(() => {
+    const transactions = props.data.transactions.data
+
+    if (!transactions.length) return []
+
     const firstTransactionDate = new Date(
-      `${props.transactions[0].date.split("T")[0]}T00:00:00+09:00`
+      `${transactions.at(0)!.date.split("T")[0]}T00:00:00+09:00`
     )
     const lastTransactionDate = new Date(
-      `${props.transactions[props.transactions.length - 1].date.split("T")[0]}T00:00:00+09:00`
+      `${transactions.at(-1)!.date.split("T")[0]}T00:00:00+09:00`
     )
 
     const items: Array<{ date: Date; transactions: any[] }> = []
@@ -28,7 +32,7 @@ const TransactionsList: Component<{
       date >= lastTransactionDate;
       date.setDate(date.getDate() - 1)
     ) {
-      const transactionsOnDate = props.transactions.filter(
+      const transactionsOnDate = transactions.filter(
         (transaction) => formatDate(transaction.date, "fullDate") === formatDate(date, "fullDate")
       )
 
@@ -67,10 +71,11 @@ const TransactionsList: Component<{
                   <Text
                     as="button"
                     onClick={() =>
-                      props.setFilterValues({
+                      props.setFilter((filters: any) => ({
+                        ...filters,
                         dateFrom: dateFrom.toISOString(),
                         dateUntil: dateUntil.toISOString()
-                      })
+                      }))
                     }
                     display="inline-block"
                     marginStart="$2"
@@ -137,5 +142,3 @@ const TransactionsList: Component<{
     </>
   )
 }
-
-export default TransactionsList

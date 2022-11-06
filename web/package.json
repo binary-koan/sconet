@@ -16,6 +16,7 @@
     "vite-plugin-solid": "^2.3.0"
   },
   "dependencies": {
+    "@felte/common": "*",
     "@felte/solid": "^1.2.6",
     "@felte/validator-superstruct": "^1.0.10",
     "@graphql-codegen/cli": "^2.12.0",

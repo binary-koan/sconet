@@ -1,10 +1,10 @@
-import { Button } from "@hope-ui/solid"
-import { Component } from "solid-js"
-import { CreateAccountMailboxInput } from "../../graphql-types"
-import FormInput from "../forms/FormInput"
 import { createForm } from "@felte/solid"
 import { validator } from "@felte/validator-superstruct"
+import { Button } from "@hope-ui/solid"
+import { Component } from "solid-js"
 import { Describe, nonempty, nullable, object, optional, string } from "superstruct"
+import { CreateAccountMailboxInput } from "../../graphql-types"
+import FormInput from "../forms/FormInput"
 
 type AccountMailboxFormValues = Omit<CreateAccountMailboxInput, "mailServerOptions">
 
@@ -26,36 +26,24 @@ const AccountMailboxForm: Component<{
       props.onSave({ ...values, mailServerOptions: {} }, props?.accountMailbox?.id)
     },
 
-    extend: validator({ struct: accountMailboxFormStruct })
+    extend: validator({ struct: accountMailboxFormStruct }),
+
+    initialValues: {
+      name: props.accountMailbox?.name,
+      fromAddressPattern: props.accountMailbox?.fromAddressPattern,
+      datePattern: props.accountMailbox?.datePattern,
+      memoPattern: props.accountMailbox?.memoPattern,
+      amountPattern: props.accountMailbox?.amountPattern
+    }
   })
 
   return (
     <form use:form>
-      <FormInput label="Name" name="name" defaultValue={props.accountMailbox?.name} />
-
-      <FormInput
-        label="From address pattern"
-        name="fromAddressPattern"
-        defaultValue={props.accountMailbox?.fromAddressPattern}
-      />
-
-      <FormInput
-        label="Date pattern"
-        name="datePattern"
-        defaultValue={props.accountMailbox?.datePattern}
-      />
-
-      <FormInput
-        label="Memo pattern"
-        name="memoPattern"
-        defaultValue={props.accountMailbox?.memoPattern}
-      />
-
-      <FormInput
-        label="Amount pattern"
-        name="amountPattern"
-        defaultValue={props.accountMailbox?.amountPattern}
-      />
+      <FormInput label="Name" name="name" />
+      <FormInput label="From address pattern" name="fromAddressPattern" />
+      <FormInput label="Date pattern" name="datePattern" />
+      <FormInput label="Memo pattern" name="memoPattern" />
+      <FormInput label="Amount pattern" name="amountPattern" />
 
       <Button type="submit" colorScheme="primary" disabled={props.loading}>
         Save

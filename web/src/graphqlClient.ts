@@ -4,7 +4,6 @@ import {
   createResource,
   createSignal,
   onCleanup,
-  onMount,
   Resource,
   ResourceActions,
   useContext

@@ -23,8 +23,8 @@ type PaginatedTransactions {
 }
 
 input TransactionFilter {
-  dateFrom: DateTime
-  dateUntil: DateTime
+  dateFrom: Date
+  dateUntil: Date
   keyword: String
   categoryIds: [String]
 }

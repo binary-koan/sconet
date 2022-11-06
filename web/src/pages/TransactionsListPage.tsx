@@ -1,17 +1,17 @@
-import { Heading, Button, Icon, IconButton, Text } from "@hope-ui/solid"
+import { Button, Heading, IconButton, Text } from "@hope-ui/solid"
 import { Title } from "@solidjs/meta"
-import { Link, Route, useRouteData } from "@solidjs/router"
-import { TbX, TbEdit, TbFilter, TbPlus } from "solid-icons/tb"
-import { Component, createEffect, createSignal, Resource } from "solid-js"
+import { Link, useRouteData } from "@solidjs/router"
+import { TbEdit, TbFilter, TbPlus, TbX } from "solid-icons/tb"
+import { Component, createSignal, onMount, Resource } from "solid-js"
 import { Dynamic } from "solid-js/web"
+import { Cell } from "../components/Cell"
 import TransactionFilters, {
   TransactionFilterValues
 } from "../components/transactions/TransactionFilters"
-import { TransactionsCell } from "../components/transactions/TransactionsCell"
-import { FindTransactionsQuery } from "../graphql-types"
-import { useQuery } from "../graphqlClient"
+import { TransactionsList } from "../components/transactions/Transactions"
+import { TransactionsQuery } from "../graphql-types"
 import usePageFilter from "../hooks/usePageFilter"
-import { TRANSACTIONS_QUERY } from "../graphql/queries/transactions"
+import { setTransactionsViewPreference } from "../utils/transactions/viewPreference"
 
 const FILTERS_KEY = "sconet.transactionFilters"
 const BLANK_FILTERS = {
@@ -21,36 +21,24 @@ const BLANK_FILTERS = {
   dateUntil: undefined
 }
 
-type TransactionsPageData = () => Resource<FindTransactionsQuery>
+export interface TransactionsListPageData {
+  data: Resource<TransactionsQuery>
+}
 
-const TransactionsPage: Component = () => {
-  const data = useRouteData<TransactionsPageData>()
+const TransactionsListPage: Component = () => {
+  onMount(() => setTransactionsViewPreference("list"))
+
+  const routeData = useRouteData<TransactionsListPageData>()
   const [isEditing, setEditing] = createSignal(false)
   const [isFiltering, setFiltering] = createSignal(false)
 
-  const { activeFilterValues, filterValues, setFilterValues, hasFilterValues } =
+  const { form, hasFilterValues, filterCount, clearFilters, setFilter } =
     usePageFilter<TransactionFilterValues>({
-      initialValues: localStorage.getItem(FILTERS_KEY)
-        ? JSON.parse(localStorage.getItem(FILTERS_KEY)!)
-        : BLANK_FILTERS
+      basePath: "/transactions/list",
+      paramName: "filter",
+      localStorageKey: FILTERS_KEY,
+      initialValues: BLANK_FILTERS
     })
-
-  createEffect(() => {
-    localStorage.setItem(FILTERS_KEY, JSON.stringify(activeFilterValues()))
-  })
-
-  const coercedFilterValues = () => {
-    const { dateFrom, dateUntil, ...values } = activeFilterValues()
-
-    return {
-      ...values,
-      dateFrom: dateFrom && new Date(dateFrom).toISOString(),
-      dateUntil: dateUntil && new Date(dateUntil).toISOString()
-    }
-  }
-
-  const activeFilterCount = () =>
-    Object.values(activeFilterValues()).filter((value) => (value as any)?.length).length
 
   return (
     <>
@@ -75,9 +63,9 @@ const TransactionsPage: Component = () => {
           fontSize="$xs"
           colorScheme="primary"
           rightIcon={<Dynamic component={TbX} />}
-          onClick={() => setFilterValues({ ...BLANK_FILTERS })}
+          onClick={clearFilters}
         >
-          {activeFilterCount()} {activeFilterCount() === 1 ? "filter" : "filters"}
+          {filterCount()} {filterCount() === 1 ? "filter" : "filters"}
         </Button>
         <IconButton
           colorScheme={isFiltering() ? "primary" : "neutral"}
@@ -117,27 +105,14 @@ const TransactionsPage: Component = () => {
           Add
         </Button>
       </Heading>
-      <TransactionFilters
-        values={filterValues}
-        setValues={setFilterValues}
-        display={isFiltering() ? "block" : "none"}
-      />
-      <TransactionsCell
-        data={data}
-        filter={coercedFilterValues}
-        isEditing={isEditing()}
-        setFilterValues={setFilterValues}
+      <TransactionFilters form={form} display={isFiltering() ? "block" : "none"} />
+      <Cell
+        data={routeData.data}
+        success={TransactionsList}
+        successProps={{ isEditing: isEditing(), setFilter, fetchMore: () => {} }}
       />
     </>
   )
 }
 
-const transactionsData: TransactionsPageData = () => {
-  const [data] = useQuery<FindTransactionsQuery>(TRANSACTIONS_QUERY)
-
-  return data
-}
-
-export const TransactionsRoute: Component = () => {
-  return <Route path="/transactions" component={TransactionsPage} data={transactionsData} />
-}
+export default TransactionsListPage

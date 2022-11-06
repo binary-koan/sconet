@@ -10,3 +10,7 @@ declare module "solid-js" {
     }
   }
 }
+
+export type Directive = (node: any) => {
+  destroy: () => void
+}
