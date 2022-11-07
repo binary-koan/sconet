@@ -4,6 +4,7 @@ import { useQuery } from "../../graphqlClient"
 import { Directive } from "../../types"
 import { gql } from "../../utils/gql"
 import { namedIcons } from "../../utils/namedIcons"
+import { usedAsDirective } from "../../utils/usedAsDirective"
 import CategoryIndicator from "../CategoryIndicator"
 import FormInput from "../forms/FormInput"
 import FormOptionButtons from "../forms/FormOptionButtons"
@@ -32,6 +33,8 @@ const TransactionFilters: Component<{
 }> = (props) => {
   const [data] = useQuery<CategoryOptionsQuery>(categoriesQuery)
   const { form } = props
+
+  usedAsDirective(form)
 
   return (
     <div class="mb-4 bg-white p-4 shadow-sm lg:rounded">

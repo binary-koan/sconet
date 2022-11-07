@@ -3,6 +3,7 @@ import { validator } from "@felte/validator-superstruct"
 import { Component } from "solid-js"
 import { Describe, nonempty, nullable, object, optional, string } from "superstruct"
 import { CreateAccountMailboxInput } from "../../graphql-types"
+import { usedAsDirective } from "../../utils/usedAsDirective"
 import { Button } from "../base/Button"
 import FormInput from "../forms/FormInput"
 
@@ -36,6 +37,8 @@ const AccountMailboxForm: Component<{
       amountPattern: props.accountMailbox?.amountPattern
     }
   })
+
+  usedAsDirective(form)
 
   return (
     <form use:form>

@@ -1,8 +1,23 @@
+import { createForm } from "@felte/solid"
+import { validator } from "@felte/validator-superstruct"
 import { repeat } from "lodash"
 import { Component, createSignal, onCleanup, onMount, Show } from "solid-js"
 import {
+  boolean,
+  Describe,
+  enums,
+  min,
+  nonempty,
+  nullable,
+  number,
+  object,
+  optional,
+  string
+} from "superstruct"
+import {
   AccountMailboxOptionsQuery,
   CategoryOptionsQuery,
+  CreateTransactionInput,
   CreateTransactionMutationVariables,
   CurrencyOptionsQuery
 } from "../../graphql-types"
@@ -10,10 +25,10 @@ import { useQuery } from "../../graphqlClient"
 import { formatDateForInput } from "../../utils/formatters"
 import { gql } from "../../utils/gql"
 import { namedIcons } from "../../utils/namedIcons"
+import { usedAsDirective } from "../../utils/usedAsDirective"
 import { Button } from "../base/Button"
 import { InputAddon, InputGroup, InputGroupInput } from "../base/InputGroup"
 import CategoryIndicator from "../CategoryIndicator"
-import { Form } from "../forms/Form"
 import FormInput from "../forms/FormInput"
 import FormOptionButtons from "../forms/FormOptionButtons"
 import FormSwitch from "../forms/FormSwitch"
@@ -49,15 +64,18 @@ export const currenciesQuery = gql`
   }
 `
 
-interface TransactionFormValues {
-  amountType: "expense" | "income"
-  amount: string
-  currencyId: string
-  memo: string
-  date: string
-  accountMailboxId: string
-  includeInReports: boolean
-}
+type TransactionFormValues = CreateTransactionInput & { amountType: "expense" | "income" }
+
+const transactionFormStruct: Describe<TransactionFormValues> = object({
+  accountMailboxId: nonempty(string()),
+  amount: min(number(), 0),
+  categoryId: optional(nullable(nonempty(string()))),
+  currencyId: nonempty(string()),
+  date: optional(nullable(string())),
+  includeInReports: optional(nullable(boolean())),
+  memo: nonempty(string()),
+  amountType: enums(["expense", "income"])
+})
 
 const TransactionForm: Component<{
   transaction?: any
@@ -67,38 +85,31 @@ const TransactionForm: Component<{
   const [categories] = useQuery<CategoryOptionsQuery>(categoriesQuery)
   const [accountMailboxes] = useQuery<AccountMailboxOptionsQuery>(accountMailboxesQuery)
   const [currencies] = useQuery<CurrencyOptionsQuery>(currenciesQuery)
-  const [selectedCurrency, setSelectedCurrency] = createSignal<
-    CurrencyOptionsQuery["currencies"][number] | undefined
-  >()
 
-  const onSave = ({ amountType, amount, date, ...data }: TransactionFormValues) => {
-    const baseAmount = parseFloat(amount)
-    const integerAmount = Math.floor(baseAmount * 10 ** (selectedCurrency()?.decimalDigits || 0))
+  const { form, data } = createForm<TransactionFormValues>({
+    onSubmit: ({ amountType, amount, date, ...data }) => {
+      const integerAmount = Math.floor(amount * 10 ** (selectedCurrency()?.decimalDigits || 0))
 
-    const coercedData = {
-      ...data,
-      amount: amountType === "expense" ? -integerAmount : integerAmount,
-      date: new Date(date).toISOString(),
-      includeInReports: Boolean(data.includeInReports)
-    }
+      const coercedData = {
+        ...data,
+        amount: amountType === "expense" ? -integerAmount : integerAmount,
+        date: new Date(date).toISOString(),
+        includeInReports: Boolean(data.includeInReports)
+      }
 
-    props.onSave(coercedData, props?.transaction?.id)
-  }
+      props.onSave(coercedData, props?.transaction?.id)
+    },
 
-  let form: HTMLFormElement | undefined
-
-  onMount(() => {
-    form?.addEventListener("click", (event) => {
-      setTimeout(() => {
-        const currencyId = new FormData(form).get("currencyId")
-
-        setSelectedCurrency(currencies()?.currencies.find((currency) => currency.id === currencyId))
-      })
-    })
+    extend: validator({ struct: transactionFormStruct })
   })
 
+  const selectedCurrency = () =>
+    currencies()?.currencies.find((currency) => currency.id === data("currencyId"))
+
+  usedAsDirective(form)
+
   return (
-    <Form ref={form} onSave={onSave}>
+    <form use:form>
       <Show when={!props.transaction?.splitFromId}>
         <FormOptionButtons
           name="amountType"
@@ -199,7 +210,7 @@ const TransactionForm: Component<{
       <Button type="submit" colorScheme="primary" class="w-full" disabled={props.loading}>
         Save
       </Button>
-    </Form>
+    </form>
   )
 }
 

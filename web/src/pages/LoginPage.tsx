@@ -9,6 +9,7 @@ import { LoginMutation, LoginMutationVariables } from "../graphql-types"
 import { useMutation } from "../graphqlClient"
 import { isLoggedIn, setLoginToken } from "../utils/auth"
 import { gql } from "../utils/gql"
+import { usedAsDirective } from "../utils/usedAsDirective"
 
 const LOGIN_MUTATION = gql`
   mutation Login($email: String!, $password: String!) {
@@ -36,6 +37,8 @@ const LoginPage: Component = () => {
       login(values)
     }
   })
+
+  usedAsDirective(form)
 
   createEffect(() => {
     if (isLoggedIn()) {
