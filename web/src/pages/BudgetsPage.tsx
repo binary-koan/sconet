@@ -4,7 +4,7 @@ import { TbArrowLeft, TbArrowRight } from "solid-icons/tb"
 import { Resource } from "solid-js"
 import { Dynamic } from "solid-js/web"
 import { Button } from "../components/base/Button"
-import { Heading1 } from "../components/base/Heading"
+import { PageHeader } from "../components/base/PageHeader"
 import { Budgets } from "../components/budgets/Budgets"
 import { Cell } from "../components/Cell"
 import { BudgetQuery } from "../graphql-types"
@@ -45,7 +45,7 @@ const BudgetsPage = () => {
     <>
       <Title>Budgets</Title>
 
-      <Heading1 size="lg">
+      <PageHeader size="lg">
         {date().toLocaleDateString("en", { year: "numeric", month: "long" })}
 
         <Button
@@ -60,7 +60,7 @@ const BudgetsPage = () => {
         <Button size="sm" colorScheme="neutral" variant="ghost" onClick={incrementMonth}>
           <Dynamic component={TbArrowRight} />
         </Button>
-      </Heading1>
+      </PageHeader>
       <Cell
         data={routeData.data}
         success={Budgets}

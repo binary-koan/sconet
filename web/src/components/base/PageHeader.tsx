@@ -15,20 +15,8 @@ const headingClasses = (props: HeadingProps) =>
 
 //TODO: Can this be refactored with <Dynamic>? (trying to do that seems to break event handler parameters for some reason)
 
-export const Heading1 = (allProps: JSX.IntrinsicElements["h1"] & { size: HeadingSize }) => {
+export const PageHeader = (allProps: JSX.IntrinsicElements["h1"] & { size: HeadingSize }) => {
   const [props, elementProps] = splitProps(allProps, ["class", "size"])
 
   return <h1 class={`${headingClasses(props)} ${props.class}`} {...elementProps} />
-}
-
-export const Heading2 = (allProps: JSX.IntrinsicElements["h2"] & { size: HeadingSize }) => {
-  const [props, elementProps] = splitProps(allProps, ["class", "size"])
-
-  return <h2 class={`${headingClasses(props)} ${props.class}`} {...elementProps} />
-}
-
-export const Heading3 = (allProps: JSX.IntrinsicElements["h3"] & { size: HeadingSize }) => {
-  const [props, elementProps] = splitProps(allProps, ["class", "size"])
-
-  return <h3 class={`${headingClasses(props)} ${props.class}`} {...elementProps} />
 }

@@ -4,7 +4,7 @@ import { Component, Resource } from "solid-js"
 import toast from "solid-toast"
 import AccountMailboxes from "../components/accountMailboxes/AccountMailboxes"
 import { Button, LinkButton } from "../components/base/Button"
-import { Heading1 } from "../components/base/Heading"
+import { PageHeader } from "../components/base/PageHeader"
 import CategoriesList from "../components/categories/Categories"
 import { Cell } from "../components/Cell"
 import { AccountMailboxesQuery, CategoriesQuery, CurrentUserQuery } from "../graphql-types"
@@ -30,7 +30,7 @@ const SettingsPage: Component = () => {
     <>
       <Title>Settings</Title>
 
-      <Heading1 size="lg">
+      <PageHeader size="lg">
         Profile
         <Button
           class="ml-auto"
@@ -44,24 +44,24 @@ const SettingsPage: Component = () => {
         <Button size="sm" variant="ghost" colorScheme="danger" onClick={() => logOut()}>
           Sign Out
         </Button>
-      </Heading1>
+      </PageHeader>
       <div class="bg-white py-2 px-4 shadow-sm">{data.currentUser()?.currentUser?.email}</div>
 
-      <Heading1 size="lg">
+      <PageHeader size="lg">
         Categories
         <LinkButton class="ml-auto" size="sm" colorScheme="primary" href="/categories/new">
           New Category
         </LinkButton>
-      </Heading1>
+      </PageHeader>
 
       <Cell data={data.categories} success={CategoriesList} />
 
-      <Heading1 size="lg">
+      <PageHeader size="lg">
         Accounts
         <LinkButton class="ml-auto" size="sm" colorScheme="primary" href="/account-mailboxes/new">
           New Account
         </LinkButton>
-      </Heading1>
+      </PageHeader>
 
       <Cell data={data.accountMailboxes} success={AccountMailboxes} />
     </>

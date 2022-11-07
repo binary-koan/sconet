@@ -3,7 +3,7 @@ import { Link, useRouteData } from "@solidjs/router"
 import { TbEdit, TbFilter, TbPlus, TbX } from "solid-icons/tb"
 import { Component, createSignal, onMount, Resource } from "solid-js"
 import { Button } from "../components/base/Button"
-import { Heading1 } from "../components/base/Heading"
+import { PageHeader } from "../components/base/PageHeader"
 import { Cell } from "../components/Cell"
 import TransactionFilters, {
   TransactionFilterValues
@@ -44,7 +44,7 @@ const TransactionsListPage: Component = () => {
     <>
       <Title>Transactions</Title>
 
-      <Heading1 size="lg">
+      <PageHeader size="lg">
         <span class="mr-auto">Transactions</span>
         <Button
           class="mr-2"
@@ -82,7 +82,7 @@ const TransactionsListPage: Component = () => {
           <TbPlus size="1.25em" class="mr-2 -ml-1" />
           Add
         </Link>
-      </Heading1>
+      </PageHeader>
       <div classList={{ block: isFiltering(), hidden: !isFiltering() }}>
         <TransactionFilters form={form} />
       </div>
