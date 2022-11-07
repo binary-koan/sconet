@@ -30,8 +30,11 @@ input TransactionFilter {
 }
 
 type Query {
-  transactions(limit: Int = 100, offset: String, filter: TransactionFilter): PaginatedTransactions!
-    @authenticated
+  transactions(
+    limit: Int = 1000
+    offset: String
+    filter: TransactionFilter
+  ): PaginatedTransactions! @authenticated
   transaction(id: String!): Transaction @authenticated
 }
 

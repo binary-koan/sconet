@@ -1,6 +1,6 @@
 import { Title } from "@solidjs/meta"
-import { Link, useRouteData } from "@solidjs/router"
-import { TbEdit, TbFilter, TbPlus, TbX } from "solid-icons/tb"
+import { Link, useNavigate, useRouteData } from "@solidjs/router"
+import { TbCalendarEvent, TbEdit, TbFilter, TbPlus, TbX } from "solid-icons/tb"
 import { Component, createSignal, onMount, Resource } from "solid-js"
 import { Button } from "../components/base/Button"
 import { PageHeader } from "../components/base/PageHeader"
@@ -28,6 +28,7 @@ export interface TransactionsListPageData {
 const TransactionsListPage: Component = () => {
   onMount(() => setTransactionsViewPreference("list"))
 
+  const navigate = useNavigate()
   const routeData = useRouteData<TransactionsListPageData>()
   const [isEditing, setEditing] = createSignal(false)
   const [isFiltering, setFiltering] = createSignal(false)
@@ -74,6 +75,16 @@ const TransactionsListPage: Component = () => {
           onClick={() => setEditing((isEditing) => !isEditing)}
         >
           <TbEdit size="1.25em" />
+        </Button>
+        <Button
+          class="ml-2"
+          colorScheme="neutral"
+          variant="ghost"
+          size="square"
+          aria-label="Edit"
+          onClick={() => navigate("/transactions/calendar")}
+        >
+          <TbCalendarEvent />
         </Button>
         <Link
           class="z-navbar fixed bottom-[calc(66px+1rem+env(safe-area-inset-bottom))] right-4 flex items-center rounded-full border border-gray-200 bg-white py-2 px-5 text-lg text-violet-600 shadow-lg lg:static lg:z-0 lg:ml-2 lg:shadow-none"

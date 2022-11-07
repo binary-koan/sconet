@@ -11,6 +11,7 @@ export type Scalars = {
   Int: number;
   Float: number;
   CurrencyCode: any;
+  Date: any;
   DateTime: any;
   JSON: any;
   UtcOffset: any;
@@ -324,8 +325,8 @@ export type TransactionAmountArgs = {
 
 export type TransactionFilter = {
   categoryIds?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-  dateFrom?: InputMaybe<Scalars['DateTime']>;
-  dateUntil?: InputMaybe<Scalars['DateTime']>;
+  dateFrom?: InputMaybe<Scalars['Date']>;
+  dateUntil?: InputMaybe<Scalars['Date']>;
   keyword?: InputMaybe<Scalars['String']>;
 };
 
@@ -382,6 +383,8 @@ export type FullAccountMailboxFragment = { __typename?: 'AccountMailbox', id: st
 export type FullCategoryFragment = { __typename?: 'Category', id: string, name: string, color: string, icon: string, isRegular: boolean, sortOrder?: number | null, createdAt: any, updatedAt: any, budget?: { __typename?: 'Money', formatted: string } | null };
 
 export type FullCurrentUserFragment = { __typename?: 'CurrentUser', id: string, email: string };
+
+export type FullTransactionFragment = { __typename?: 'Transaction', id: string, memo: string, date: any, originalMemo: string, includeInReports: boolean, amount: { __typename?: 'Money', decimalAmount: number, formatted: string }, category?: { __typename?: 'Category', id: string, name: string, color: string, icon: string } | null, accountMailbox: { __typename?: 'AccountMailbox', id: string, name: string }, splitTo: Array<{ __typename?: 'Transaction', id: string, memo: string, includeInReports: boolean, amount: { __typename?: 'Money', decimalAmount: number, formatted: string }, category?: { __typename?: 'Category', id: string, name: string, icon: string, color: string } | null }> };
 
 export type CreateAccountMailboxMutationVariables = Exact<{
   input: CreateAccountMailboxInput;

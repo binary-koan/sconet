@@ -10,6 +10,7 @@ import { NewAccountMailboxRoute } from "./routes/NewAccountMailboxRoute"
 import { NewCategoryRoute } from "./routes/NewCategoryRoute"
 import { NewTransactionRoute } from "./routes/NewTransactionRoute"
 import { SettingsRoute } from "./routes/SettingsRoute"
+import { TransactionsCalendarRoute } from "./routes/TransactionsCalendarRoute"
 import { TransactionsListRoute } from "./routes/TransactionsListRoute"
 import { transactionsViewPreference } from "./utils/transactions/viewPreference"
 
@@ -24,6 +25,9 @@ const LoggedIn: Component<{ children: JSX.Element }> = (props) => {
 }
 
 const App: Component = () => {
+  const currentYearMonth = () =>
+    `${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, "0")}`
+
   return (
     <div class="flex min-h-screen flex-col lg:mx-auto lg:max-w-5xl lg:pt-16">
       <Toaster position="top-center" />
@@ -32,28 +36,26 @@ const App: Component = () => {
           path="/"
           element={<Navigate href={`/transactions/${transactionsViewPreference()}`} />}
         />
-        <Route
-          path="/transactions"
-          element={<Navigate href={`/transactions/${transactionsViewPreference()}`} />}
-        />
 
         <LoginRoute />
 
         <LoggedIn>
+          <Route
+            path="/transactions"
+            element={<Navigate href={`/transactions/${transactionsViewPreference()}`} />}
+          />
+          <Route
+            path="/transactions/calendar"
+            element={<Navigate href={`/transactions/calendar/${currentYearMonth()}`} />}
+          />
           <TransactionsListRoute />
+          <TransactionsCalendarRoute />
           <NewTransactionRoute />
           <SettingsRoute />
           <NewCategoryRoute />
           <EditCategoryRoute />
           <NewAccountMailboxRoute />
-          <Route
-            path="/budgets"
-            element={
-              <Navigate
-                href={`/budgets/${new Date().getFullYear()}-${new Date().getMonth() + 1}`}
-              />
-            }
-          />
+          <Route path="/budgets" element={<Navigate href={`/budgets/${currentYearMonth()}`} />} />
           <BudgetsRoute />
 
           <Route path="/*all" element={<div>Not found</div>} />
