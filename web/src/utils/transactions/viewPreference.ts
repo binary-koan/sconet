@@ -1,16 +1,27 @@
 import { createSignal } from "solid-js"
 
-export type TransactionsViewPreference = "list" | "calendar"
+const createPreference = <PreferenceType>(name: string, defaultValue: PreferenceType) => {
+  const LOCAL_STORAGE_KEY = `sconet.preferences.${name}`
+  const storedValue = localStorage.getItem(LOCAL_STORAGE_KEY)
 
-const LOCAL_STORAGE_KEY = "sconet.transactionsViewPreference"
+  const [value, setSignal] = createSignal<PreferenceType>(
+    (storedValue && (JSON.parse(storedValue) as PreferenceType)) || defaultValue
+  )
 
-const [transactionsViewPreference, setSignal] = createSignal<TransactionsViewPreference>(
-  (localStorage.getItem(LOCAL_STORAGE_KEY) as TransactionsViewPreference) || "list"
-)
+  const setValue = (value: PreferenceType) => {
+    setSignal(() => value)
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(value))
+  }
 
-export { transactionsViewPreference }
-
-export const setTransactionsViewPreference = (preference: TransactionsViewPreference) => {
-  setSignal(preference)
-  localStorage.setItem(LOCAL_STORAGE_KEY, preference)
+  return [value, setValue] as const
 }
+
+export type TransactionsViewPreference = "list" | "calendar"
+export const [transactionsViewPreference, setTransactionsViewPreference] =
+  createPreference<TransactionsViewPreference>("transactionsViewPreference", "list")
+
+export type LastViewedBudget = string | null
+export const [lastViewedBudget, setLastViewedBudget] = createPreference<LastViewedBudget>(
+  "lastViewedBudget",
+  null
+)

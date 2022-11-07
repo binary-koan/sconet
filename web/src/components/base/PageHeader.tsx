@@ -11,7 +11,7 @@ export interface HeadingProps {
 }
 
 const headingClasses = (props: HeadingProps) =>
-  `my-2 flex items-center px-4 font-semibold lg:my-4 ${SIZE_CLASSES[props.size]}`
+  `mt-8 mb-2 flex items-center px-4 font-semibold lg:mb-4 ${SIZE_CLASSES[props.size]}`
 
 //TODO: Can this be refactored with <Dynamic>? (trying to do that seems to break event handler parameters for some reason)
 

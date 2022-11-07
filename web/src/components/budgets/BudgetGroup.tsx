@@ -17,8 +17,8 @@ const BudgetGroup: Component<{
         data={props.group.categories.map(({ category, amountSpent }) => ({
           name: category?.name || "Uncategorized",
           color: category?.color
-            ? getCssValue(`--hope-colors-${category.color}`)
-            : getCssValue("--hope-colors-neutral8"),
+            ? getCssValue(`--color-${category.color}-500`)
+            : getCssValue("--color-gray-400"),
           value: amountSpent.decimalAmount,
           formattedValue: amountSpent.formatted
         }))}

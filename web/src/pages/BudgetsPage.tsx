@@ -1,45 +1,48 @@
 import { Title } from "@solidjs/meta"
 import { useNavigate, useRouteData } from "@solidjs/router"
 import { TbArrowLeft, TbArrowRight } from "solid-icons/tb"
-import { Resource } from "solid-js"
+import { createEffect, Resource } from "solid-js"
 import { Dynamic } from "solid-js/web"
 import { Button } from "../components/base/Button"
 import { PageHeader } from "../components/base/PageHeader"
 import { Budgets } from "../components/budgets/Budgets"
 import { Cell } from "../components/Cell"
 import { BudgetQuery } from "../graphql-types"
+import { setLastViewedBudget } from "../utils/transactions/viewPreference"
 
 export interface BudgetsPageData {
   data: Resource<BudgetQuery>
-  year: number
-  month: number
+  year: string
+  month: string
 }
 
 const BudgetsPage = () => {
   const routeData = useRouteData<BudgetsPageData>()
   const navigate = useNavigate()
 
-  const setParams = ({ year, month }: { year: number; month: number }) => {
-    navigate(`/budgets/${year}-${month}`)
+  createEffect(() => setLastViewedBudget(`${routeData.year}-${routeData.month}`))
+
+  const setParams = ({ year, month }: { year: string | number; month: string | number }) => {
+    navigate(`/budgets/${year}-${month.toString().padStart(2, "0")}`)
   }
 
   const incrementMonth = () => {
-    if (routeData.month === 12) {
-      setParams({ month: 1, year: routeData.year + 1 })
+    if (routeData.month === "12") {
+      setParams({ month: 1, year: parseInt(routeData.year) + 1 })
     } else {
-      setParams({ month: routeData.month + 1, year: routeData.year })
+      setParams({ month: parseInt(routeData.month) + 1, year: routeData.year })
     }
   }
 
   const decrementMonth = () => {
-    if (routeData.month === 1) {
-      setParams({ month: 12, year: routeData.year - 1 })
+    if (routeData.month === "1") {
+      setParams({ month: 12, year: parseInt(routeData.year) - 1 })
     } else {
-      setParams({ month: routeData.month - 1, year: routeData.year })
+      setParams({ month: parseInt(routeData.month) - 1, year: routeData.year })
     }
   }
 
-  const date = () => new Date(routeData.year, routeData.month - 1, 1)
+  const date = () => new Date(parseInt(routeData.year), parseInt(routeData.month) - 1, 1)
 
   return (
     <>

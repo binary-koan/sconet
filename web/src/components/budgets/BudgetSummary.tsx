@@ -4,8 +4,8 @@ import { LinkButton } from "../base/Button"
 
 export const BudgetSummary: Component<{
   budget: BudgetQuery["budget"]
-  year: number
-  month: number
+  year: string
+  month: string
   isPastMonth: boolean
   filteredTransactions: () => string
 }> = (props) => {

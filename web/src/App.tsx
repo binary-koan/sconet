@@ -29,7 +29,7 @@ const App: Component = () => {
     `${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, "0")}`
 
   return (
-    <div class="flex min-h-screen flex-col lg:mx-auto lg:max-w-5xl lg:pt-16">
+    <>
       <Toaster position="top-center" />
       <Routes>
         <Route
@@ -55,13 +55,13 @@ const App: Component = () => {
           <NewCategoryRoute />
           <EditCategoryRoute />
           <NewAccountMailboxRoute />
-          <Route path="/budgets" element={<Navigate href={`/budgets/${currentYearMonth()}`} />} />
+
           <BudgetsRoute />
 
           <Route path="/*all" element={<div>Not found</div>} />
         </LoggedIn>
       </Routes>
-    </div>
+    </>
   )
 }
 

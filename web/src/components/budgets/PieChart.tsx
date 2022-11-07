@@ -38,12 +38,12 @@ export const PieChart: Component<{
         {
           ...baseSeriesOptions,
           label: {
-            fontFamily: getCssValue("--hope-fonts-sans"),
-            color: getCssValue("--hope-colors-neutral11")
+            fontFamily: getComputedStyle(document.body).fontFamily,
+            color: getCssValue("--color-gray-800")
           },
           labelLine: {
             lineStyle: {
-              color: getCssValue("--hope-colors-neutral9")
+              color: getCssValue("--color-gray-600")
             },
             smooth: 0.2,
             length: 8,
@@ -58,7 +58,7 @@ export const PieChart: Component<{
           label: {
             color: "white",
             position: "inside",
-            fontFamily: getCssValue("--hope-fonts-sans"),
+            fontFamily: getComputedStyle(document.body).fontFamily,
             formatter: ({ data }: any) => data.formattedValue
           },
           itemStyle: {
