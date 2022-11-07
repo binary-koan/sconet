@@ -1,5 +1,6 @@
-import { FormControl, FormLabel, Input, InputProps } from "@hope-ui/solid"
 import { Component, JSX } from "solid-js"
+import { FormControl, FormLabel } from "../base/FormControl"
+import { Input, InputProps } from "../base/Input"
 
 const FormInput: Component<{
   label: JSX.Element
@@ -9,7 +10,7 @@ const FormInput: Component<{
   render?: (inputProps: any) => JSX.Element
 }> = (props) => {
   return (
-    <FormControl marginBottom="$4">
+    <FormControl>
       <FormLabel>{props.label}</FormLabel>
       {(props.render || defaultRender)({
         type: props.type,
@@ -21,7 +22,7 @@ const FormInput: Component<{
 }
 
 const defaultRender: Component<InputProps & { defaultValue: any }> = (props) => {
-  return <Input value={props.defaultValue} {...props} />
+  return <Input value={props.defaultValue} class="w-full" {...props} />
 }
 
 export default FormInput

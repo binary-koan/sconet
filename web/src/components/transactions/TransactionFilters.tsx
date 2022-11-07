@@ -1,5 +1,4 @@
-import { Box, HopeProps } from "@hope-ui/solid"
-import { Component, splitProps } from "solid-js"
+import { Component } from "solid-js"
 import { CategoryOptionsQuery } from "../../graphql-types"
 import { useQuery } from "../../graphqlClient"
 import { Directive } from "../../types"
@@ -28,16 +27,14 @@ const categoriesQuery = gql`
   }
 `
 
-const TransactionFilters: Component<
-  HopeProps & {
-    form: Directive
-  }
-> = (props) => {
+const TransactionFilters: Component<{
+  form: Directive
+}> = (props) => {
   const [data] = useQuery<CategoryOptionsQuery>(categoriesQuery)
-  const [{ form }, otherProps] = splitProps(props, ["form"])
+  const { form } = props
 
   return (
-    <Box {...otherProps} background="$neutral1" padding="$4" marginBottom="$4" boxShadow="$xs">
+    <div class="mb-4 bg-white p-4 shadow-sm lg:rounded">
       <form use:form>
         <FormInput name="keyword" type="search" label="Filter" />
 
@@ -52,20 +49,20 @@ const TransactionFilters: Component<
             data()?.categories?.map((category) => ({
               value: category.id,
               content: (
-                <Box display="flex" alignItems="center" gap="$2">
+                <div class="flex items-center gap-2">
                   <CategoryIndicator
-                    size="$6"
+                    class="h-6 w-6"
                     icon={namedIcons[category.icon]}
                     color={category.color}
                   />
                   {category.name}
-                </Box>
+                </div>
               )
             })) || []
           }
         />
       </form>
-    </Box>
+    </div>
   )
 }
 

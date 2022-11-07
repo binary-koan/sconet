@@ -1,5 +1,5 @@
-import { FormControl, FormLabel } from "@hope-ui/solid"
 import { JSX } from "solid-js"
+import { FormControl, FormLabel } from "../base/FormControl"
 import IconPicker from "../IconPicker"
 
 const FormIconPicker = ({
@@ -12,7 +12,7 @@ const FormIconPicker = ({
   defaultValue?: string
 }) => {
   return (
-    <FormControl marginBottom="$4">
+    <FormControl>
       <FormLabel>{label}</FormLabel>
       <IconPicker name={name} defaultValue={defaultValue} />
     </FormControl>

@@ -1,40 +1,19 @@
-import { Box, Heading, Text } from "@hope-ui/solid"
 import { Link, useLocation } from "@solidjs/router"
-import { Component, JSX } from "solid-js"
-import { TbAdjustmentsHorizontal, TbChartPie, TbReportMoney } from "solid-icons/tb"
 import { IconProps } from "solid-icons"
+import { TbAdjustmentsHorizontal, TbChartPie, TbReportMoney } from "solid-icons/tb"
+import { Component, JSX } from "solid-js"
 import { Dynamic } from "solid-js/web"
 
 const MainNavigation: Component = () => {
   return (
-    <Box
-      background="$neutral1"
-      position="fixed"
-      zIndex="$sticky"
-      bottom={{ "@initial": "0", "@lg": "auto" }}
-      top={{ "@initial": "auto", "@lg": "0" }}
-      left="0"
-      right="0"
-      paddingLeft={{ "@initial": "0", "@lg": "$4" }}
-      boxShadow={{ "@initial": "$lg", "@lg": "$sm" }}
-      paddingBottom={{ "@initial": "env(safe-area-inset-bottom)", "@lg": "0" }}
-    >
-      <Box
-        maxWidth={{ "@initial": "none", "@lg": "64rem" }}
-        margin={{ "@initial": "initial", "@lg": "0 auto" }}
-        paddingStart={{ "@initial": "0", "@lg": "$2" }}
-        paddingEnd={{ "@initial": "0", "@lg": "$2" }}
-        display="flex"
-        alignItems="center"
-      >
-        <Heading display={{ "@initial": "none", "@lg": "block" }} marginEnd="$4" size="sm">
-          Sconet
-        </Heading>
+    <div class="z-navbar fixed bottom-0 top-auto left-0 right-0 bg-white pb-[env(safe-area-inset-bottom)] shadow lg:bottom-auto lg:top-0 lg:pl-4 lg:pb-0">
+      <div class="flex items-center lg:mx-auto lg:max-w-5xl lg:px-2">
+        <div class="mr-4 hidden text-lg font-semibold lg:block">Sconet</div>
         <NavigationItem icon={TbReportMoney} text="History" to="/transactions" />
         <NavigationItem icon={TbChartPie} text="Budgets" to="/budgets" />
         <NavigationItem icon={TbAdjustmentsHorizontal} text="Settings" to="/settings" />
-      </Box>
-    </Box>
+      </div>
+    </div>
   )
 }
 
@@ -46,22 +25,14 @@ const NavigationItem: Component<{ icon: Component<IconProps>; text: JSX.Element;
   const isMatch = () => location.pathname.startsWith(props.to)
 
   return (
-    <Box as={Link} href={props.to} flex={{ "@initial": 1, "@lg": 0 }}>
-      <Box
-        display="flex"
-        flexDirection={{ "@initial": "column", "@lg": "row" }}
-        alignItems="center"
-        gap={{ "@initial": "$1", "@lg": "$2" }}
-        paddingBottom={{ "@initial": "$2", "@lg": "$4" }}
-        paddingTop={{ "@initial": "$2", "@lg": "$4" }}
-        paddingStart={{ "@initial": "0", "@lg": "$6" }}
-        paddingEnd={{ "@initial": "0", "@lg": "$6" }}
-        color={isMatch() ? "$primary9" : "$neutral9"}
-      >
-        <Dynamic component={props.icon} size="1.5em" />
-        <Text fontSize={{ "@initial": "$xs", "@lg": "$medium" }}>{props.text}</Text>
-      </Box>
-    </Box>
+    <Link
+      href={props.to}
+      class="flex flex-1 flex-col items-center gap-1 py-2 lg:flex-none lg:flex-row lg:gap-2 lg:py-4 lg:px-3"
+      classList={{ "text-indigo-600": isMatch(), "text-gray-600": !isMatch() }}
+    >
+      <Dynamic component={props.icon} size="1.5em" />
+      <span class="text-xs lg:text-base">{props.text}</span>
+    </Link>
   )
 }
 

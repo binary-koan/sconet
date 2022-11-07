@@ -1,99 +1,58 @@
-import { Box, Button, Text } from "@hope-ui/solid"
-import { Link } from "@solidjs/router"
 import { Component, Show } from "solid-js"
-import { BudgetsQuery } from "../../graphql-types"
+import { BudgetQuery } from "../../graphql-types"
+import { LinkButton } from "../base/Button"
 
 export const BudgetSummary: Component<{
-  budget: BudgetsQuery["budget"]
+  budget: BudgetQuery["budget"]
   year: number
   month: number
   isPastMonth: boolean
   filteredTransactions: () => string
 }> = (props) => {
   return (
-    <Box
-      paddingStart="$4"
-      paddingEnd="$4"
-      paddingBottom={{ "@initial": "0", "@lg": "$6" }}
-      display="flex"
-      alignItems="center"
-    >
-      <Button
-        as={Link}
-        colorScheme="neutral"
-        variant="subtle"
+    <div class="flex items-center px-4 lg:pb-6">
+      <LinkButton
         href={props.filteredTransactions()}
-        flex="1"
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        height="auto"
-        padding="$2"
-        marginEnd="$2"
+        size="custom"
+        class="mr-2 flex flex-1 flex-col items-center p-2"
       >
-        <Text fontSize={{ "@initial": "$sm", "@lg": "$lg" }} marginBottom="$1">
-          {props.budget.income.formatted}
-        </Text>
-        <Text fontSize="$xs" noOfLines={1}>
-          Income
-        </Text>
-      </Button>
+        <div class="text-sm lg:text-xl">{props.budget.income.formatted}</div>
+        <div class="truncate text-xs">Income</div>
+      </LinkButton>
 
       <Show when={props.isPastMonth}>
-        <Text fontSize="$2xl">-</Text>
+        <div class="text-2xl">-</div>
       </Show>
 
-      <Button
-        as={Link}
-        colorScheme="neutral"
-        variant="subtle"
+      <LinkButton
         href={props.filteredTransactions()}
-        flex="1"
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        height="auto"
-        padding="$2"
-        marginStart="$2"
+        size="custom"
+        class="ml-2 flex flex-1 flex-col items-center p-2"
       >
-        <Text fontSize={{ "@initial": "$sm", "@lg": "$lg" }} marginBottom="$1">
-          {props.budget.totalSpending.formatted}
-        </Text>
-        <Text fontSize="$xs" noOfLines={1}>
-          Spending
-        </Text>
-      </Button>
+        <div class="text-sm lg:text-xl">{props.budget.totalSpending.formatted}</div>
+        <div class="truncate text-xs">Spending</div>
+      </LinkButton>
 
       <Show when={props.isPastMonth}>
-        <Text fontSize="$2xl" marginStart="$2">
-          =
-        </Text>
+        <div class="ml-2 text-2xl">=</div>
 
-        <Button
-          as={Link}
-          colorScheme="neutral"
-          variant="subtle"
+        <LinkButton
           href={props.filteredTransactions()}
-          flex="1"
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          height="auto"
-          padding="$2"
-          marginStart="$2"
+          size="custom"
+          class="ml-2 flex flex-1 flex-col items-center p-2"
         >
-          <Text
-            fontSize={{ "@initial": "$sm", "@lg": "$lg" }}
-            marginBottom="$1"
-            color={props.budget.difference.decimalAmount < 0 ? "$danger9" : "$success9"}
+          <div
+            class="text-sm lg:text-xl"
+            classList={{
+              "text-red-600": props.budget.difference.decimalAmount < 0,
+              "text-green-600": props.budget.difference.decimalAmount >= 0
+            }}
           >
             {props.budget.difference.formatted}
-          </Text>
-          <Text fontSize="$xs" noOfLines={1}>
-            Balance
-          </Text>
-        </Button>
+          </div>
+          <div class="truncate text-xs">Balance</div>
+        </LinkButton>
       </Show>
-    </Box>
+    </div>
   )
 }

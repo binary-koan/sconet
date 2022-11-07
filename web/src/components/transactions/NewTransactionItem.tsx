@@ -1,7 +1,7 @@
-import { Box, Input, IconButton, Icon } from "@hope-ui/solid"
 import { TbPlus } from "solid-icons/tb"
 import { Component, createSignal } from "solid-js"
-import { Dynamic } from "solid-js/web"
+import { Button } from "../base/Button"
+import { Input } from "../base/Input"
 import AmountInput from "./AmountInput"
 import RelationEditInput from "./RelationEditInput"
 
@@ -36,16 +36,7 @@ const NewTransactionItem: Component<{ date: Date }> = (props) => {
   // })
 
   return (
-    <Box
-      display="flex"
-      alignItems="center"
-      paddingStart="$4"
-      paddingEnd="$4"
-      paddingTop="$2"
-      paddingBottom="$2"
-      backgroundColor="$neutral1"
-      boxShadow="$xs"
-    >
+    <div class="flex items-center bg-white px-4 py-2 shadow-sm">
       <RelationEditInput
         category={category}
         accountMailbox={accountMailbox}
@@ -59,38 +50,32 @@ const NewTransactionItem: Component<{ date: Date }> = (props) => {
       />
 
       <Input
-        marginLeft="$2"
-        flex="3"
-        minWidth="0"
-        paddingStart="$2"
-        paddingEnd="$2"
+        size="custom"
+        class="ml-2 h-10 min-w-0 flex-[3] px-2"
         value={memo()}
         onChange={(e) => setMemo(e.currentTarget.value)}
       />
 
       <AmountInput
         containerProps={{
-          marginLeft: "2",
-          flex: "2",
-          minWidth: "0"
+          class: "ml-2 flex-[2] min-w-0"
         }}
         onLeftAddonClick={() => setIncome((isIncome) => !isIncome)}
         prefix={isIncome() ? "+" : "-"}
-        paddingStart="$2"
-        paddingEnd="$2"
         value={amount()}
         onChange={(e) => setAmount(e.currentTarget.value)}
       />
 
-      <IconButton
-        size="md"
-        marginLeft="$2"
+      <Button
+        size="square"
+        class="ml-2"
         colorScheme="primary"
-        icon={<Dynamic component={TbPlus} />}
         aria-label="Confirm"
         onClick={() => {}}
-      />
-    </Box>
+      >
+        <TbPlus />
+      </Button>
+    </div>
   )
 }
 

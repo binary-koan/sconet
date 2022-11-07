@@ -1,9 +1,10 @@
-import { useColorMode, Heading, Button, Text } from "@hope-ui/solid"
 import { Title } from "@solidjs/meta"
-import { Link, useRouteData } from "@solidjs/router"
+import { useRouteData } from "@solidjs/router"
 import { Component, Resource } from "solid-js"
 import toast from "solid-toast"
 import AccountMailboxes from "../components/accountMailboxes/AccountMailboxes"
+import { Button, LinkButton } from "../components/base/Button"
+import { Heading1 } from "../components/base/Heading"
 import CategoriesList from "../components/categories/Categories"
 import { Cell } from "../components/Cell"
 import { AccountMailboxesQuery, CategoriesQuery, CurrentUserQuery } from "../graphql-types"
@@ -17,7 +18,8 @@ export interface SettingsPageData {
 
 const SettingsPage: Component = () => {
   const data = useRouteData<SettingsPageData>()
-  const { toggleColorMode } = useColorMode()
+  // TODO:
+  const toggleColorMode = () => {}
 
   const logOut = () => {
     setLoginToken(null)
@@ -28,18 +30,10 @@ const SettingsPage: Component = () => {
     <>
       <Title>Settings</Title>
 
-      <Heading
-        fontSize={{ "@initial": "$lg", "@lg": "$2xl" }}
-        marginTop="$4"
-        marginBottom="$4"
-        paddingStart="$4"
-        paddingEnd="$4"
-        display="flex"
-        alignItems="center"
-      >
+      <Heading1 size="lg">
         Profile
         <Button
-          marginStart="auto"
+          class="ml-auto"
           size="sm"
           variant="ghost"
           colorScheme="neutral"
@@ -50,55 +44,24 @@ const SettingsPage: Component = () => {
         <Button size="sm" variant="ghost" colorScheme="danger" onClick={() => logOut()}>
           Sign Out
         </Button>
-      </Heading>
-      <Text
-        boxShadow="$xs"
-        paddingTop="$2"
-        paddingBottom="$2"
-        paddingStart="$4"
-        paddingEnd="$4"
-        background="$neutral1"
-      >
-        {data.currentUser()?.currentUser?.email}
-      </Text>
+      </Heading1>
+      <div class="bg-white py-2 px-4 shadow-sm">{data.currentUser()?.currentUser?.email}</div>
 
-      <Heading
-        fontSize={{ "@initial": "$lg", "@lg": "$2xl" }}
-        marginTop="$8"
-        marginBottom="$4"
-        paddingStart="$4"
-        paddingEnd="$4"
-        display="flex"
-        alignItems="center"
-      >
+      <Heading1 size="lg">
         Categories
-        <Button marginStart="auto" size="sm" colorScheme="primary" as={Link} href="/categories/new">
+        <LinkButton class="ml-auto" size="sm" colorScheme="primary" href="/categories/new">
           New Category
-        </Button>
-      </Heading>
+        </LinkButton>
+      </Heading1>
 
       <Cell data={data.categories} success={CategoriesList} />
 
-      <Heading
-        fontSize={{ "@initial": "$lg", "@lg": "$2xl" }}
-        marginTop="$8"
-        marginBottom="$4"
-        paddingStart="$4"
-        paddingEnd="$4"
-        display="flex"
-        alignItems="center"
-      >
+      <Heading1 size="lg">
         Accounts
-        <Button
-          marginStart="auto"
-          size="sm"
-          colorScheme="primary"
-          as={Link}
-          href="/account-mailboxes/new"
-        >
+        <LinkButton class="ml-auto" size="sm" colorScheme="primary" href="/account-mailboxes/new">
           New Account
-        </Button>
-      </Heading>
+        </LinkButton>
+      </Heading1>
 
       <Cell data={data.accountMailboxes} success={AccountMailboxes} />
     </>

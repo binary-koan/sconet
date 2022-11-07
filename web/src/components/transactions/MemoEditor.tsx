@@ -1,5 +1,5 @@
-import { InputGroup, Input } from "@hope-ui/solid"
 import { Component, createSignal } from "solid-js"
+import { InputGroup, InputGroupInput } from "../base/InputGroup"
 import ConfirmCancelButtons from "./ConfirmCancelButtons"
 
 const MemoEditor: Component<{ transaction: any; stopEditing: () => void }> = (props) => {
@@ -18,12 +18,7 @@ const MemoEditor: Component<{ transaction: any; stopEditing: () => void }> = (pr
 
   return (
     <InputGroup>
-      <Input
-        flex="1"
-        paddingEnd="24"
-        value={newMemo()}
-        onChange={(e) => setNewMemo(e.currentTarget.value)}
-      />
+      <InputGroupInput value={newMemo()} onChange={(e) => setNewMemo(e.currentTarget.value)} />
       <ConfirmCancelButtons onConfirm={() => {}} onCancel={props.stopEditing} />
     </InputGroup>
   )

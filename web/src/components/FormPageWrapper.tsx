@@ -1,8 +1,8 @@
-import { Heading, Button, Icon, Box } from "@hope-ui/solid"
-import { Link } from "@solidjs/router"
 import { TbArrowLeft } from "solid-icons/tb"
 import { Component, JSX, Show } from "solid-js"
 import { Dynamic } from "solid-js/web"
+import { LinkButton } from "./base/Button"
+import { Heading1 } from "./base/Heading"
 
 const FormPageWrapper: Component<{
   heading: JSX.Element
@@ -12,26 +12,16 @@ const FormPageWrapper: Component<{
 }> = (props) => {
   return (
     <>
-      <Heading
-        fontSize={{ "@initial": "$lg", "@lg": "$2xl" }}
-        paddingStart="$4"
-        paddingEnd="$4"
-        marginTop={{ "@initial": "$2", "@lg": "$4" }}
-        marginBottom={{ "@initial": "$2", "@lg": "$4" }}
-        display="flex"
-        alignItems="center"
-      >
-        <Button as={Link} href={props.backLink} variant="ghost" paddingLeft="0">
+      <Heading1 size="lg">
+        <LinkButton href={props.backLink} variant="ghost" colorScheme="primary" class="-ml-4 mr-2">
           <Dynamic component={TbArrowLeft} />
-        </Button>
+        </LinkButton>
         {props.heading}
         <Show when={props.actions}>
-          <Box marginLeft="auto">{props.actions}</Box>
+          <div class="ml-auto">{props.actions}</div>
         </Show>
-      </Heading>
-      <Box padding={{ "@initial": "$4", "@lg": "$6" }} backgroundColor="$neutral1" boxShadow="$xs">
-        {props.children}
-      </Box>
+      </Heading1>
+      <div class="bg-white p-4 shadow-sm lg:rounded lg:p-6">{props.children}</div>
     </>
   )
 }

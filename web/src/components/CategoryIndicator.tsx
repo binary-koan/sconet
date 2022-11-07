@@ -1,11 +1,26 @@
-import { Box, HopeProps } from "@hope-ui/solid"
 import { TbBox, TbCurrencyPound, TbMinus, TbSeparator } from "solid-icons/tb"
-import { Component, mergeProps, splitProps } from "solid-js"
+import { Component, mergeProps } from "solid-js"
 import { Dynamic } from "solid-js/web"
+import { ClassProps } from "../types"
+
+export const CATEGORY_BACKGROUND_COLORS = {
+  gray: "bg-gray-500",
+  red: "bg-red-500",
+  orange: "bg-orange-500",
+  yellow: "bg-yellow-500",
+  green: "bg-green-500",
+  teal: "bg-teal-500",
+  blue: "bg-blue-500",
+  cyan: "bg-cyan-500",
+  purple: "bg-violet-500",
+  pink: "bg-pink-500"
+}
+
+export const CATEGORY_COLORS = Object.keys(CATEGORY_BACKGROUND_COLORS)
+export type CategoryColor = keyof typeof CATEGORY_BACKGROUND_COLORS
 
 const CategoryIndicator: Component<
-  HopeProps & {
-    size: string
+  ClassProps & {
     iconSize?: string
     color?: string
     icon?: Component<{ size?: string }>
@@ -13,31 +28,21 @@ const CategoryIndicator: Component<
     isSplit?: boolean
     isIncome?: boolean
   }
-> = (allProps) => {
-  let [props, boxProps] = splitProps(allProps, [
-    "size",
-    "iconSize",
-    "color",
-    "icon",
-    "includeInReports",
-    "isSplit",
-    "isIncome"
-  ])
-
+> = (props) => {
   props = mergeProps({ includeInReports: true, isSplit: false, isIncome: false }, props)
 
   const getBackgroundColor = () => {
-    if (!props.includeInReports || props.isSplit) return "$neutral2"
-    if (props.isIncome) return "$neutral2"
-    if (!props.color) return "$neutral2"
-    return `$${props.color}`
+    if (!props.includeInReports || props.isSplit) return "bg-gray-200"
+    if (props.isIncome) return "bg-gray-200"
+    if (!props.color) return "bg-gray-200"
+    return CATEGORY_BACKGROUND_COLORS[props.color as CategoryColor] || "bg-gray-200"
   }
 
   const getColor = () => {
-    if (!props.includeInReports || props.isSplit) return "$neutral2"
-    if (props.isIncome) return "$green"
-    if (!props.color) return "$red"
-    return "white"
+    if (!props.includeInReports || props.isSplit) return "text-gray-200"
+    if (props.isIncome) return "text-green-500"
+    if (!props.color) return "text-red-500"
+    return "text-white"
   }
 
   const getIcon = (): Component<{ size?: string }> => {
@@ -49,21 +54,12 @@ const CategoryIndicator: Component<
   }
 
   return (
-    <Box
-      display="flex"
-      alignItems="center"
-      justifyContent="center"
-      backgroundColor={getBackgroundColor()}
-      borderRadius="$full"
-      height={props.size}
-      width={props.size}
-      minHeight={props.size}
-      minWidth={props.size}
-      color={getColor()}
-      {...boxProps}
+    <div
+      class={`flex items-center justify-center rounded-full ${props.class}`}
+      classList={{ [getBackgroundColor()]: true, [getColor()]: true }}
     >
       <Dynamic component={getIcon()} size={props.iconSize} />
-    </Box>
+    </div>
   )
 }
 

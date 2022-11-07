@@ -1,9 +1,9 @@
 import { ObjectSetter } from "@felte/common"
-import { Box, Button, Text } from "@hope-ui/solid"
 import { Component, createMemo, For, Show } from "solid-js"
 import { TransactionsQuery } from "../../graphql-types"
 import { monthRange } from "../../utils/date"
 import { formatDate } from "../../utils/formatters"
+import { Button } from "../base/Button"
 import NewTransactionItem from "./NewTransactionItem"
 import TransactionItem from "./TransactionItem"
 
@@ -57,19 +57,12 @@ export const TransactionsList: Component<{
           return (
             <>
               <Show when={newMonth}>
-                <Box
-                  position="sticky"
-                  zIndex="docked"
-                  top={{ "@initial": "0", "@lg": "$14" }}
-                  marginStart={{ "@initial": "0", "@lg": "$-2" }}
-                  marginEnd={{ "@initial": "0", "@lg": "$-2" }}
-                  marginTop={index() === 0 ? "-2" : "6"}
-                  paddingTop="$2"
-                  paddingBottom="$2"
-                  backgroundColor="$background"
+                <div
+                  class="z-docked sticky top-0 bg-gray-50 py-2 lg:top-14 lg:-mx-2"
+                  classList={{ "-mt-2": index() === 0, "mt-6": index() !== 0 }}
                 >
-                  <Text
-                    as="button"
+                  <button
+                    type="button"
                     onClick={() =>
                       props.setFilter((filters: any) => ({
                         ...filters,
@@ -77,35 +70,16 @@ export const TransactionsList: Component<{
                         dateUntil: dateUntil.toISOString()
                       }))
                     }
-                    display="inline-block"
-                    marginStart="$2"
-                    marginEnd="$2"
-                    paddingStart="$2"
-                    paddingEnd="$2"
-                    paddingTop="$1"
-                    paddingBottom="$1"
-                    backgroundColor="$neutral9"
-                    color="white"
-                    borderRadius="$md"
-                    fontWeight="bold"
-                    fontSize="$small"
+                    class="mx-2 inline-block rounded bg-gray-500 px-2 py-1 text-sm font-bold text-white"
                   >
                     {formatDate(date, "monthYear")}
-                  </Text>
-                </Box>
+                  </button>
+                </div>
               </Show>
 
-              <Text
-                fontSize="$small"
-                fontWeight="bold"
-                color="gray.500"
-                paddingStart="$4"
-                paddingEnd="$4"
-                paddingTop="$2"
-                paddingBottom="$2"
-              >
+              <div class="px-4 py-2 text-sm font-bold text-gray-600">
                 {formatDate(date, "fullDateWithoutYear")}
-              </Text>
+              </div>
 
               <Show when={props.isEditing}>
                 <NewTransactionItem date={newTransactionDate} />
@@ -118,18 +92,7 @@ export const TransactionsList: Component<{
               </For>
 
               <Show when={!props.isEditing && !transactions.length}>
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  paddingStart="$4"
-                  paddingEnd="$4"
-                  paddingBottom="$2"
-                  boxShadow="$xs"
-                  fontStyle="italic"
-                  color="gray.500"
-                >
-                  -
-                </Box>
+                <div class="flex items-center px-4 pb-2 italic text-gray-600 shadow-sm">-</div>
               </Show>
             </>
           )

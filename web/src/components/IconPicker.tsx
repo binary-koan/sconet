@@ -1,22 +1,10 @@
-import {
-  Box,
-  Button,
-  Flex,
-  Icon,
-  Input,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
-  SimpleGrid,
-  Text
-} from "@hope-ui/solid"
 import { TbArrowLeft, TbArrowRight } from "solid-icons/tb"
 import { Component, createMemo, createSignal, For, Show } from "solid-js"
 import { Dynamic } from "solid-js/web"
 import { namedIcons } from "../utils/namedIcons"
+import { Button } from "./base/Button"
+import { Input } from "./base/Input"
+import { Modal, ModalCloseButton, ModalContent, ModalTitle } from "./base/Modal"
 
 const PAGE_SIZE = 40
 
@@ -46,77 +34,60 @@ const IconPicker: Component<{ name: string; defaultValue?: string }> = (props) =
     <>
       <input name={props.name} value={value()} style={{ display: "none" }} />
 
-      <Flex alignItems="center">
+      <div class="flex items-center">
         <Show when={value()}>
-          <Box marginEnd="$2">
+          <div class="mr-2">
             <Dynamic component={namedIcons[value()!]} size="2em" />
-          </Box>
+          </div>
         </Show>
         <Button onClick={[setOpen, true]}>Pick icon</Button>
-      </Flex>
+      </div>
 
-      <Modal opened={open()} onClose={() => setOpen(false)} size="2xl">
-        <ModalOverlay />
-        <ModalContent paddingBottom="$4">
-          <ModalHeader>Pick Icon</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody display="flex" flexDirection="column">
-            <Flex>
+      <Modal isOpen={open()} onClose={() => setOpen(false)}>
+        <ModalContent>
+          <ModalTitle>
+            Pick Icon <ModalCloseButton onClick={() => setOpen(false)} />
+          </ModalTitle>
+          <div class="flex flex-col">
+            <div class="flex">
               <Input
+                class="mb-4 w-full"
                 type="search"
                 placeholder="Search"
-                marginBottom="$4"
                 onInput={(e) => setQuery(e.currentTarget.value)}
               />
               <Button
-                colorScheme="neutral"
-                marginStart="$2"
+                class="ml-2"
                 disabled={!pageInfo().hasPrevious}
                 onClick={[setPage, page() - 1]}
               >
                 <TbArrowLeft />
               </Button>
-              <Button
-                colorScheme="neutral"
-                marginStart="$2"
-                disabled={!pageInfo().hasNext}
-                onClick={[setPage, page() + 1]}
-              >
+              <Button class="ml-2" disabled={!pageInfo().hasNext} onClick={[setPage, page() + 1]}>
                 <TbArrowRight />
               </Button>
-            </Flex>
-            <SimpleGrid flex="1" columns={4} gap="$1">
+            </div>
+            <div class="grid flex-1 grid-cols-4 gap-1">
               <For each={pageInfo().icons}>
                 {([icon, component]) => (
                   <Button
-                    display="flex"
-                    flexDirection="column"
-                    alignItems="center"
-                    colorScheme="neutral"
-                    variant="subtle"
+                    colorScheme={value() === icon ? "primary" : "neutral"}
+                    class="flex-col"
+                    size="xs"
                     onClick={() => {
                       setValue(icon)
                       setOpen(false)
                     }}
-                    height="auto"
-                    padding="$1"
                   >
                     <Dynamic component={component} size="1.5em" />
-                    <Text
-                      noOfLines={1}
-                      marginTop="$1"
-                      fontSize="$2xs"
-                      textAlign="center"
-                      fontWeight="normal"
-                      width="$full"
-                    >
+                    <span class="text-2xs mt-1 w-full truncate text-center font-normal">
                       {icon}
-                    </Text>
+                    </span>
                   </Button>
                 )}
               </For>
-            </SimpleGrid>
-          </ModalBody>
+            </div>
+          </div>
         </ModalContent>
       </Modal>
     </>

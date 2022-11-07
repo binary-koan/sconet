@@ -1,9 +1,9 @@
 import { createForm } from "@felte/solid"
 import { validator } from "@felte/validator-superstruct"
-import { Button } from "@hope-ui/solid"
 import { Component } from "solid-js"
 import { Describe, nonempty, nullable, object, optional, string } from "superstruct"
 import { CreateAccountMailboxInput } from "../../graphql-types"
+import { Button } from "../base/Button"
 import FormInput from "../forms/FormInput"
 
 type AccountMailboxFormValues = Omit<CreateAccountMailboxInput, "mailServerOptions">

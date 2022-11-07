@@ -1,11 +1,10 @@
-import { Alert } from "@hope-ui/solid"
-import { Component, Resource, Switch, Match, JSX, splitProps } from "solid-js"
+import { Component, ErrorBoundary, JSX, Match, Resource, Switch } from "solid-js"
 import { Dynamic } from "solid-js/web"
 import LoadingBar from "./LoadingBar"
 
 const DefaultLoader = () => <LoadingBar />
 const DefaultFailure: Component<{ error: any }> = (props) => (
-  <Alert status="danger">{props.error.message}</Alert>
+  <div class="rounded bg-red-100 p-4 text-red-700">{props.error.message}</div>
 )
 
 export const Cell: <Data, OtherProps = never>(props: {
@@ -14,20 +13,29 @@ export const Cell: <Data, OtherProps = never>(props: {
   failure?: Component<{ error: any }>
   success: Component<{ data: Data } & OtherProps>
   successProps?: OtherProps
-}) => JSX.Element = (allProps) => {
-  const [props, otherProps] = splitProps(allProps, ["data", "loading", "failure", "success"])
-
+}) => JSX.Element = (props) => {
   return (
-    <Switch>
-      <Match when={props.data.state === "unresolved" || props.data.state === "pending"}>
-        <Dynamic component={props.loading || DefaultLoader} />
-      </Match>
-      <Match when={props.failure && props.data.state === "errored"}>
-        <Dynamic component={props.failure || DefaultFailure} error={props.data.error} />
-      </Match>
-      <Match when={true}>
-        <Dynamic component={props.success} data={props.data()} {...(otherProps as any)} />
-      </Match>
-    </Switch>
+    <ErrorBoundary
+      fallback={(error) => {
+        console.error(error)
+        return <Dynamic component={props.failure || DefaultFailure} error={error} />
+      }}
+    >
+      <Switch>
+        <Match when={props.data.state === "unresolved" || props.data.state === "pending"}>
+          <Dynamic component={props.loading || DefaultLoader} />
+        </Match>
+        <Match when={props.failure && props.data.state === "errored"}>
+          <Dynamic component={props.failure || DefaultFailure} error={props.data.error} />
+        </Match>
+        <Match when={true}>
+          <Dynamic
+            component={props.success}
+            data={props.data()!}
+            {...(props.successProps as any)}
+          />
+        </Match>
+      </Switch>
+    </ErrorBoundary>
   )
 }

@@ -1,10 +1,11 @@
-import { GraphQLError } from "graphql"
-import { getUserByEmail } from "../db/queries/user/getUserByEmail"
-import { MutationResolvers, QueryResolvers, Resolvers } from "../resolvers-types"
 import bcrypt from "bcryptjs"
-import jwt from "jsonwebtoken"
+import { GraphQLError } from "graphql"
+import { SignJWT } from "jose"
 import { getUser } from "../db/queries/user/getUser"
+import { getUserByEmail } from "../db/queries/user/getUserByEmail"
 import { updateOneUser } from "../db/queries/user/updateOneUser"
+import { UserRecord } from "../db/records/user"
+import { MutationResolvers, QueryResolvers, Resolvers } from "../resolvers-types"
 
 export const login: MutationResolvers["login"] = async (_, { email, password }) => {
   const user = getUserByEmail(email)
@@ -14,10 +15,7 @@ export const login: MutationResolvers["login"] = async (_, { email, password }) 
   }
 
   if (await bcrypt.compare(password, user.encryptedPassword)) {
-    return jwt.sign({}, process.env.JWT_SECRET!, {
-      subject: user.id,
-      expiresIn: "14d"
-    })
+    return await createToken(user)
   }
 
   throw new GraphQLError("Invalid email or password")
@@ -54,10 +52,7 @@ export const generateNewToken: MutationResolvers["generateNewToken"] = async (
     throw new GraphQLError("No such user")
   }
 
-  return jwt.sign({}, process.env.JWT_SECRET!, {
-    subject: user.id,
-    expiresIn: "14d"
-  })
+  return await createToken(user)
 }
 
 export const currentUser: QueryResolvers["currentUser"] = (_, _args, context) => {
@@ -67,4 +62,11 @@ export const currentUser: QueryResolvers["currentUser"] = (_, _args, context) =>
 export const CurrentUser: Resolvers["CurrentUser"] = {
   id: (user) => user.id,
   email: (user) => user.email
+}
+
+const createToken = (user: UserRecord) => {
+  return new SignJWT({})
+    .setSubject(user.id)
+    .setExpirationTime("14d")
+    .sign(Buffer.from(process.env.JWT_SECRET!))
 }

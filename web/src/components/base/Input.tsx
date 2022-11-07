@@ -1,0 +1,23 @@
+import { JSX, splitProps } from "solid-js"
+
+const INPUT_SIZES = {
+  md: "px-4 h-10",
+  custom: ""
+}
+
+interface InputCustomProps {
+  size?: keyof typeof INPUT_SIZES
+}
+
+export const inputClasses = (props: InputCustomProps) =>
+  `border rounded border-gray-200 ring-0 ring-violet-200 transition focus:border-violet-400 focus:outline-0 focus:ring disabled:pointer-events-none disabled:opacity-50 ${
+    INPUT_SIZES[props.size || "md"]
+  }`
+
+export type InputProps = JSX.IntrinsicElements["input"] & InputCustomProps
+
+export const Input = (allProps: InputProps) => {
+  const [props, elementProps] = splitProps(allProps, ["size", "class"])
+
+  return <input class={`${inputClasses(props)} ${props.class}`} {...elementProps} />
+}

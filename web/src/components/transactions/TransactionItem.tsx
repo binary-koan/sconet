@@ -1,4 +1,3 @@
-import { Box, Text } from "@hope-ui/solid"
 import { Link } from "@solidjs/router"
 import { TbEdit } from "solid-icons/tb"
 import { Component, createEffect, createSignal, For, Show } from "solid-js"
@@ -35,15 +34,9 @@ const TransactionItem: Component<{ transaction: any; parent?: any; isEditing: bo
           }
         }}
       >
-        <Box
-          display="flex"
-          alignItems="center"
-          paddingStart={props.parent ? "$10" : "$4"}
-          paddingEnd="$4"
-          paddingTop="$2"
-          paddingBottom="$2"
-          backgroundColor="$neutral1"
-          boxShadow="$xs"
+        <div
+          class="flex items-center bg-white py-2 pr-4 shadow-sm"
+          classList={{ "pl-10": props.parent, "pl-4": !props.parent }}
         >
           <RelationEditor
             parent={props.parent}
@@ -52,50 +45,45 @@ const TransactionItem: Component<{ transaction: any; parent?: any; isEditing: bo
             isEditing={props.isEditing}
           />
 
-          <Box marginLeft="$4" flex="1" minWidth="0">
+          <div class="ml-4 min-w-0 flex-1">
             {editingMemo() ? (
               <MemoEditor transaction={props.transaction} stopEditing={stopEditing} />
             ) : (
               <>
-                <Text
-                  noOfLines={1}
-                  lineHeight="1"
-                  color={includeInReports() ? "inherit" : "$neutral6"}
-                  textDecoration={includeInReports() ? "none" : "line-through"}
+                <div
+                  class="truncate leading-none"
+                  classList={{ "text-gray-600 line-through": !includeInReports() }}
                   onClick={() => props.isEditing && setEditingMemo(true)}
                 >
                   {props.transaction.memo}
                   <Show when={props.isEditing && includeInReports()}>
                     <EditableIndicator />
                   </Show>
-                </Text>
+                </div>
                 <Show when={!parent && !props.isEditing}>
-                  <Text
-                    noOfLines={1}
-                    paddingTop="1"
-                    lineHeight="1"
-                    fontSize="$xs"
-                    color={includeInReports() ? "$neutral6" : "$neutral3"}
-                    textTransform="uppercase"
+                  <div
+                    class="truncate pt-1 text-xs uppercase leading-tight"
+                    classList={{
+                      "text-gray-600": includeInReports(),
+                      "text-gray-300": !includeInReports()
+                    }}
                   >
                     {props.transaction.accountMailbox?.name} / {props.transaction.originalMemo}
-                  </Text>
+                  </div>
                 </Show>
               </>
             )}
-          </Box>
-          <Text
-            color={includeInReports() ? "inherit" : "gray.400"}
-            textDecoration={includeInReports() ? "none" : "line-through"}
-            marginStart="$2"
-            css={{ whiteSpace: "nowrap" }}
+          </div>
+          <div
+            class="ml-2 whitespace-nowrap"
+            classList={{ "text-gray-600 line-through": !includeInReports() }}
           >
             {props.transaction.amount.formatted}
-          </Text>
+          </div>
           {/* {props.isEditing && !parent && <SplitTransactionButton transaction={props.transaction} />}
           {props.isEditing && <VisibilityEditor transaction={props.transaction} />}
           {props.isEditing && <DeleteTransactionButton transaction={props.transaction} />} */}
-        </Box>
+        </div>
       </Dynamic>
       <For each={props.transaction.splitTo}>
         {(child: any) => (
@@ -111,9 +99,9 @@ const TransactionItem: Component<{ transaction: any; parent?: any; isEditing: bo
 }
 
 const EditableIndicator = () => (
-  <Box marginStart="$1" position="relative" bottom="-2px" color="$neutral8">
-    <Dynamic component={TbEdit} />
-  </Box>
+  <div class="relative bottom-[-2px] ml-1 text-gray-600">
+    <TbEdit />
+  </div>
 )
 
 export default TransactionItem

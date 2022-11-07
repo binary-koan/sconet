@@ -1,9 +1,9 @@
-import { Button, Heading, IconButton, Text } from "@hope-ui/solid"
 import { Title } from "@solidjs/meta"
 import { Link, useRouteData } from "@solidjs/router"
 import { TbEdit, TbFilter, TbPlus, TbX } from "solid-icons/tb"
 import { Component, createSignal, onMount, Resource } from "solid-js"
-import { Dynamic } from "solid-js/web"
+import { Button } from "../components/base/Button"
+import { Heading1 } from "../components/base/Heading"
 import { Cell } from "../components/Cell"
 import TransactionFilters, {
   TransactionFilterValues
@@ -44,68 +44,48 @@ const TransactionsListPage: Component = () => {
     <>
       <Title>Transactions</Title>
 
-      <Heading
-        fontSize={{ "@initial": "$lg", "@lg": "$2xl" }}
-        marginTop="$4"
-        marginBottom="$4"
-        paddingStart={{ "@initial": "$4", "@lg": "0" }}
-        paddingEnd={{ "@initial": "$4", "@lg": "0" }}
-        display="flex"
-        alignItems="center"
-      >
-        <Text as="span" marginEnd="auto">
-          Transactions
-        </Text>
+      <Heading1 size="lg">
+        <span class="mr-auto">Transactions</span>
         <Button
-          marginEnd="$2"
-          display={hasFilterValues() ? "flex" : "none"}
+          class="mr-2"
+          classList={{ hidden: !hasFilterValues() }}
           size="sm"
-          fontSize="$xs"
           colorScheme="primary"
-          rightIcon={<Dynamic component={TbX} />}
           onClick={clearFilters}
         >
           {filterCount()} {filterCount() === 1 ? "filter" : "filters"}
+          <TbX class="ml-2" />
         </Button>
-        <IconButton
+        <Button
           colorScheme={isFiltering() ? "primary" : "neutral"}
           variant={isFiltering() ? "solid" : "ghost"}
-          size="sm"
-          icon={<Dynamic component={TbFilter} size="1.25em" />}
+          size="square"
           aria-label="Filter"
           onClick={() => setFiltering((isFiltering) => !isFiltering)}
-        />
-        <IconButton
+        >
+          <TbFilter size="1.25em" />
+        </Button>
+        <Button
+          class="ml-2"
           colorScheme={isEditing() ? "primary" : "neutral"}
           variant={isEditing() ? "solid" : "ghost"}
-          size="sm"
-          marginStart="$2"
-          icon={<Dynamic component={TbEdit} size="1.25em" />}
+          size="square"
           aria-label="Edit"
           onClick={() => setEditing((isEditing) => !isEditing)}
-        />
-        <Button
-          as={Link}
-          href="/transactions/new"
-          position={{ "@initial": "fixed", "@lg": "static" }}
-          zIndex={{ "@initial": "dropdown", "@lg": "0" }}
-          marginStart={{ "@initial": "0", "@lg": "$2" }}
-          bottom="calc(66px + 16px + env(safe-area-inset-bottom))"
-          right="$4"
-          colorScheme="neutral"
-          variant="outline"
-          size="lg"
-          paddingStart="5"
-          borderRadius="$full"
-          backgroundColor="$neutral1"
-          color="$primary9"
-          boxShadow={{ "@initial": "$lg", "@lg": "none" }}
-          leftIcon={<Dynamic component={TbPlus} size="1.25em" />}
         >
-          Add
+          <TbEdit size="1.25em" />
         </Button>
-      </Heading>
-      <TransactionFilters form={form} display={isFiltering() ? "block" : "none"} />
+        <Link
+          class="z-navbar fixed bottom-[calc(66px+1rem+env(safe-area-inset-bottom))] right-4 flex items-center rounded-full border border-gray-200 bg-white py-2 px-5 text-lg text-violet-600 shadow-lg lg:static lg:z-0 lg:ml-2 lg:shadow-none"
+          href="/transactions/new"
+        >
+          <TbPlus size="1.25em" class="mr-2 -ml-1" />
+          Add
+        </Link>
+      </Heading1>
+      <div classList={{ block: isFiltering(), hidden: !isFiltering() }}>
+        <TransactionFilters form={form} />
+      </div>
       <Cell
         data={routeData.data}
         success={TransactionsList}

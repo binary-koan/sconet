@@ -1,4 +1,4 @@
-import { InputGroup, InputLeftAddon, Input, Button, Box } from "@hope-ui/solid"
+import { repeat } from "lodash"
 import { Component, createSignal, onCleanup, onMount, Show } from "solid-js"
 import {
   AccountMailboxOptionsQuery,
@@ -7,15 +7,16 @@ import {
   CurrencyOptionsQuery
 } from "../../graphql-types"
 import { useQuery } from "../../graphqlClient"
-import { namedIcons } from "../../utils/namedIcons"
 import { formatDateForInput } from "../../utils/formatters"
+import { gql } from "../../utils/gql"
+import { namedIcons } from "../../utils/namedIcons"
+import { Button } from "../base/Button"
+import { InputAddon, InputGroup, InputGroupInput } from "../base/InputGroup"
 import CategoryIndicator from "../CategoryIndicator"
 import { Form } from "../forms/Form"
 import FormInput from "../forms/FormInput"
 import FormOptionButtons from "../forms/FormOptionButtons"
 import FormSwitch from "../forms/FormSwitch"
-import { repeat } from "lodash"
-import { gql } from "../../utils/gql"
 
 const categoriesQuery = gql`
   query CategoryOptions {
@@ -144,8 +145,8 @@ const TransactionForm: Component<{
           }
           render={(props) => (
             <InputGroup>
-              <InputLeftAddon>{selectedCurrency()?.symbol}</InputLeftAddon>
-              <Input
+              <InputAddon>{selectedCurrency()?.symbol}</InputAddon>
+              <InputGroupInput
                 {...props}
                 step={
                   selectedCurrency()?.decimalDigits
@@ -195,7 +196,7 @@ const TransactionForm: Component<{
         }
       />
 
-      <Button type="submit" colorScheme="primary" width="$full" disabled={props.loading}>
+      <Button type="submit" colorScheme="primary" class="w-full" disabled={props.loading}>
         Save
       </Button>
     </Form>
@@ -237,14 +238,14 @@ const CategorySelect: Component<{
           props.categories?.map((category) => ({
             value: category.id,
             content: (
-              <Box display="flex" alignItems="center" gap="2">
+              <div class="flex items-center gap-2">
                 <CategoryIndicator
-                  size="6"
+                  class="h-6 w-6"
                   icon={namedIcons[category.icon]}
                   color={category.color}
                 />
                 {category.name}
-              </Box>
+              </div>
             )
           })) || []
         }

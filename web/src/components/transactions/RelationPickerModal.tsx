@@ -1,15 +1,6 @@
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-  Heading,
-  ModalFooter,
-  Button
-} from "@hope-ui/solid"
 import { Component, Show } from "solid-js"
+import { Button } from "../base/Button"
+import { Modal, ModalCloseButton, ModalContent, ModalTitle } from "../base/Modal"
 import AccountMailboxPicker, {
   ValueProps as AccountMailboxValueProps
 } from "./AccountMailboxPicker"
@@ -23,30 +14,26 @@ const RelationPickerModal: Component<{
   onClose: () => void
 }> = (props) => {
   return (
-    <Modal opened={props.isOpen} onClose={props.onClose} size="xs">
-      <ModalOverlay />
+    <Modal isOpen={props.isOpen} onClose={props.onClose}>
       <ModalContent>
-        <ModalHeader>Select</ModalHeader>
-        <ModalCloseButton />
+        <ModalTitle>
+          Select <ModalCloseButton onClick={props.onClose} />
+        </ModalTitle>
 
-        <ModalBody paddingBottom={props.categoryProps.multiple ? "0" : "$8"}>
+        <div classList={{ "pb-8": props.categoryProps.multiple }}>
           <Show when={!props.isIncome}>
-            <Heading size="sm" marginBottom="$4">
+            <h3 class="mb-4 font-semibold">
               {props.categoryProps.multiple ? "Categories" : "Category"}
-            </Heading>
+            </h3>
             <CategoryPicker {...props.categoryProps} />
           </Show>
-          <Heading size="sm" marginTop="$6" marginBottom="$4">
-            Account Mailbox
-          </Heading>
+          <h3 class="mt-6 mb-4 font-semibold">Account Mailbox</h3>
           <AccountMailboxPicker {...props.accountMailboxProps} />
-        </ModalBody>
+        </div>
 
-        <ModalFooter>
-          <Button colorScheme="primary" onClick={props.onClose}>
-            Done
-          </Button>
-        </ModalFooter>
+        <Button colorScheme="primary" onClick={props.onClose}>
+          Done
+        </Button>
       </ModalContent>
     </Modal>
   )

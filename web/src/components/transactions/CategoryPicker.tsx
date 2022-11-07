@@ -1,10 +1,10 @@
-import { Box, Button, Text } from "@hope-ui/solid"
 import { union } from "lodash"
 import { Component, For } from "solid-js"
 import { CategoryOptionsQuery } from "../../graphql-types"
 import { useQuery } from "../../graphqlClient"
 import { gql } from "../../utils/gql"
 import { namedIcons } from "../../utils/namedIcons"
+import { Button } from "../base/Button"
 import CategoryIndicator from "../CategoryIndicator"
 
 export type CategoryOption = CategoryOptionsQuery["categories"][0]
@@ -36,11 +36,11 @@ const CategoryPicker: Component<ValueProps> = (props) => {
   const [data] = useQuery<CategoryOptionsQuery>(categoriesQuery)
 
   return (
-    <Box display="flex" flexDirection="column" gap="2">
+    <div class="flex flex-col gap-2">
       <For each={data()?.categories}>
         {(category) => <CategoryOption category={category} valueProps={props} />}
       </For>
-    </Box>
+    </div>
   )
 }
 
@@ -76,22 +76,17 @@ const CategoryOption: Component<{
   return (
     <Button
       size="sm"
-      display="block"
-      width="full"
+      class="block w-full gap-2"
       colorScheme={isCurrent() ? "primary" : "neutral"}
       variant={isCurrent() ? "solid" : "ghost"}
       onClick={onClick}
     >
-      <Box display="flex" alignItems="center" gap="2">
-        <CategoryIndicator
-          size="6"
-          icon={namedIcons[props.category.icon]}
-          color={props.category.color}
-        />
-        <Text minWidth="0" noOfLines={1}>
-          {props.category.name}
-        </Text>
-      </Box>
+      <CategoryIndicator
+        class="h-6 w-6"
+        icon={namedIcons[props.category.icon]}
+        color={props.category.color}
+      />
+      <div class="min-w-0 truncate">{props.category.name}</div>
     </Button>
   )
 }

@@ -1,8 +1,8 @@
-import { Box, Button, Text } from "@hope-ui/solid"
 import { Component, For } from "solid-js"
 import { AccountMailboxOptionsQuery } from "../../graphql-types"
 import { useQuery } from "../../graphqlClient"
 import { gql } from "../../utils/gql"
+import { Button } from "../base/Button"
 
 export type AccountMailboxOption = AccountMailboxOptionsQuery["accountMailboxes"][0]
 
@@ -24,13 +24,13 @@ const AccountMailboxPicker: Component<ValueProps> = (props) => {
   const [data] = useQuery<AccountMailboxOptionsQuery>(accountMailboxesQuery)
 
   return (
-    <Box display="flex" flexDirection="column" gap="2">
+    <div class="flex flex-col gap-2">
       <For each={data()?.accountMailboxes}>
         {(accountMailbox) => (
           <AccountMailboxOption accountMailbox={accountMailbox} valueProps={props} />
         )}
       </For>
-    </Box>
+    </div>
   )
 }
 
@@ -49,17 +49,12 @@ const AccountMailboxOption: Component<{
   return (
     <Button
       size="sm"
-      display="block"
-      width="full"
+      class="block w-full"
       colorScheme={isCurrent ? "primary" : "neutral"}
       variant={isCurrent ? "solid" : "ghost"}
       onClick={onClick}
     >
-      <Box display="flex" alignItems="center" gap="2">
-        <Text minWidth="0" noOfLines={1}>
-          {props.accountMailbox.name}
-        </Text>
-      </Box>
+      <span class="min-w-0 truncate">{props.accountMailbox.name}</span>
     </Button>
   )
 }

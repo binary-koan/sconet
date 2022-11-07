@@ -1,9 +1,10 @@
-import { Button, Heading } from "@hope-ui/solid"
 import { Title } from "@solidjs/meta"
 import { useNavigate, useRouteData } from "@solidjs/router"
 import { TbArrowLeft, TbArrowRight } from "solid-icons/tb"
-import { Resource, Show } from "solid-js"
+import { Resource } from "solid-js"
 import { Dynamic } from "solid-js/web"
+import { Button } from "../components/base/Button"
+import { Heading1 } from "../components/base/Heading"
 import { Budgets } from "../components/budgets/Budgets"
 import { Cell } from "../components/Cell"
 import { BudgetQuery } from "../graphql-types"
@@ -44,23 +45,14 @@ const BudgetsPage = () => {
     <>
       <Title>Budgets</Title>
 
-      <Heading
-        fontSize={{ "@initial": "$lg", "@lg": "$2xl" }}
-        marginTop="$4"
-        marginBottom="$4"
-        paddingStart="$4"
-        paddingEnd="$4"
-        display="flex"
-        alignItems="center"
-        gap="$2"
-      >
+      <Heading1 size="lg">
         {date().toLocaleDateString("en", { year: "numeric", month: "long" })}
 
         <Button
           size="sm"
           colorScheme="neutral"
           variant="ghost"
-          marginStart="auto"
+          class="ml-auto"
           onClick={decrementMonth}
         >
           <Dynamic component={TbArrowLeft} />
@@ -68,7 +60,7 @@ const BudgetsPage = () => {
         <Button size="sm" colorScheme="neutral" variant="ghost" onClick={incrementMonth}>
           <Dynamic component={TbArrowRight} />
         </Button>
-      </Heading>
+      </Heading1>
       <Cell
         data={routeData.data}
         success={Budgets}

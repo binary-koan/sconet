@@ -1,8 +1,7 @@
-import { Box } from "@hope-ui/solid"
-import { Component, createEffect, onCleanup, onMount } from "solid-js"
 import * as echarts from "echarts"
-import { getCssValue } from "../../utils/getCssValue"
 import { orderBy } from "lodash"
+import { Component, createEffect, onCleanup } from "solid-js"
+import { getCssValue } from "../../utils/getCssValue"
 
 export const PieChart: Component<{
   data: Array<{ name: string; color: string; value: number; formattedValue: string }>
@@ -81,13 +80,5 @@ export const PieChart: Component<{
     })
   })
 
-  return (
-    <Box
-      ref={container}
-      position="relative"
-      width={{ "@initial": "100vw", "@lg": "$containerSm" }}
-      height={{ "@initial": "100vw", "@lg": "$containerSm" }}
-      margin={{ "@initial": "0 auto", "@lg": "0" }}
-    />
-  )
+  return <div class="relative mx-auto aspect-square w-screen max-w-xl lg:mx-0" ref={container} />
 }

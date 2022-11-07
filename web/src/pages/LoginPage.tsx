@@ -1,9 +1,9 @@
-import { Heading, Button, Box } from "@hope-ui/solid"
+import { createForm } from "@felte/solid"
 import { Title } from "@solidjs/meta"
 import { useLocation, useNavigate } from "@solidjs/router"
 import { Component, createEffect } from "solid-js"
 import toast from "solid-toast"
-import { Form } from "../components/forms/Form"
+import { Button } from "../components/base/Button"
 import FormInput from "../components/forms/FormInput"
 import { LoginMutation, LoginMutationVariables } from "../graphql-types"
 import { useMutation } from "../graphqlClient"
@@ -31,6 +31,12 @@ const LoginPage: Component = () => {
     refetchQueries: "ALL"
   })
 
+  const { form } = createForm({
+    onSubmit: (values) => {
+      login(values)
+    }
+  })
+
   createEffect(() => {
     if (isLoggedIn()) {
       navigate(location.state?.returnTo || "/")
@@ -41,39 +47,19 @@ const LoginPage: Component = () => {
     <>
       <Title>Login</Title>
 
-      <Box
-        flex="1"
-        display="flex"
-        flexDirection="column"
-        justifyContent="center"
-        paddingBottom="$20"
-      >
-        <Box
-          maxWidth={{ "@initial": "none", "@lg": "48rem" }}
-          margin={{ "@initial": "$6", "@lg": "0 auto" }}
-          padding="$6"
-          backgroundColor="$neutral1"
-          boxShadow="$2xl"
-          borderRadius="$md"
-        >
-          <Heading
-            fontSize={{ "@initial": "$lg", "@lg": "$2xl" }}
-            marginBottom="$4"
-            display="flex"
-            alignItems="center"
-          >
-            Login
-          </Heading>
-          <Form<{ email: string; password: string }> onSave={login}>
+      <div class="flex flex-1 flex-col justify-center pb-20">
+        <div class="m-6 rounded p-6 shadow-2xl lg:my-0 lg:mx-auto lg:max-w-3xl">
+          <h1 class="mb-4 flex items-center text-lg font-bold lg:text-2xl">Login</h1>
+          <form use:form>
             <FormInput type="text" name="email" label="Email" />
             <FormInput type="password" name="password" label="Password" />
 
             <Button type="submit" colorScheme="primary" disabled={loading}>
               Login
             </Button>
-          </Form>
-        </Box>
-      </Box>
+          </form>
+        </div>
+      </div>
     </>
   )
 }

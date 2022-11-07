@@ -1,5 +1,6 @@
-import { InputProps, InputGroupProps, InputGroup, InputLeftAddon, Input } from "@hope-ui/solid"
 import { Component, splitProps } from "solid-js"
+import { InputProps } from "../base/Input"
+import { InputAddon, InputGroup, InputGroupInput, InputGroupProps } from "../base/InputGroup"
 
 const AmountInput: Component<
   InputProps & {
@@ -12,10 +13,10 @@ const AmountInput: Component<
 
   return (
     <InputGroup {...props.containerProps}>
-      <InputLeftAddon paddingStart="$2" paddingEnd="$2" onClick={props.onLeftAddonClick}>
+      <InputAddon class="w-10" onClick={props.onLeftAddonClick}>
         {props.prefix}¥
-      </InputLeftAddon>
-      <Input {...inputProps} />
+      </InputAddon>
+      <InputGroupInput {...inputProps} />
     </InputGroup>
   )
 }

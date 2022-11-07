@@ -1,4 +1,3 @@
-import { Box } from "@hope-ui/solid"
 import { Navigate, Route, Routes } from "@solidjs/router"
 import type { Component, JSX } from "solid-js"
 import { Toaster } from "solid-toast"
@@ -26,14 +25,7 @@ const LoggedIn: Component<{ children: JSX.Element }> = (props) => {
 
 const App: Component = () => {
   return (
-    <Box
-      maxWidth={{ "@initial": "none", "@lg": "64rem" }}
-      margin={{ "@initial": "initial", "@lg": "0 auto" }}
-      paddingTop={{ "@initial": "0", "@lg": "4rem" }}
-      minHeight="100vh"
-      display="flex"
-      flexDirection="column"
-    >
+    <div class="flex min-h-screen flex-col lg:mx-auto lg:max-w-5xl lg:pt-16">
       <Toaster position="top-center" />
       <Routes>
         <Route
@@ -54,12 +46,20 @@ const App: Component = () => {
           <NewCategoryRoute />
           <EditCategoryRoute />
           <NewAccountMailboxRoute />
+          <Route
+            path="/budgets"
+            element={
+              <Navigate
+                href={`/budgets/${new Date().getFullYear()}-${new Date().getMonth() + 1}`}
+              />
+            }
+          />
           <BudgetsRoute />
 
           <Route path="/*all" element={<div>Not found</div>} />
         </LoggedIn>
       </Routes>
-    </Box>
+    </div>
   )
 }
 

@@ -1,8 +1,9 @@
-import { InputGroup, InputLeftAddon, Input, Button } from "@hope-ui/solid"
 import { repeat } from "lodash"
 import { Component, createSignal, onMount } from "solid-js"
 import { CreateCategoryMutationVariables, CurrencyOptionsQuery } from "../../graphql-types"
 import { useQuery } from "../../graphqlClient"
+import { Button } from "../base/Button"
+import { InputAddon, InputGroup, InputGroupInput } from "../base/InputGroup"
 import { Form } from "../forms/Form"
 import FormIconPicker from "../forms/FormIconPicker"
 import FormInput from "../forms/FormInput"
@@ -96,8 +97,8 @@ const CategoryForm: Component<{
         defaultValue={props.category?.budget?.decimalAmount}
         render={(props) => (
           <InputGroup>
-            <InputLeftAddon>{selectedCurrency()?.symbol}</InputLeftAddon>
-            <Input
+            <InputAddon>{selectedCurrency()?.symbol}</InputAddon>
+            <InputGroupInput
               {...props}
               step={
                 selectedCurrency()?.decimalDigits

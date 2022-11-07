@@ -1,10 +1,3 @@
-import { Box, Button, Text } from "@hope-ui/solid"
-import { Link } from "@solidjs/router"
-import { orderBy, isEqual, debounce } from "lodash"
-import { Component, createEffect, createSignal, For, Show } from "solid-js"
-import { CategoriesQuery, FullCategoryFragment } from "../../graphql-types"
-import { useMutation } from "../../graphqlClient"
-import CategoryIndicator from "../CategoryIndicator"
 import {
   closestCenter,
   createSortable,
@@ -15,13 +8,16 @@ import {
   SortableProvider,
   transformStyle
 } from "@thisbeyond/solid-dnd"
+import { debounce, isEqual, orderBy } from "lodash"
 import { TbArrowsSort, TbEdit, TbTrash } from "solid-icons/tb"
-import { namedIcons } from "../../utils/namedIcons"
+import { Component, createEffect, createSignal, For, Show } from "solid-js"
 import toast from "solid-toast"
-import { Dynamic } from "solid-js/web"
-import { gql } from "../../utils/gql"
+import { CategoriesQuery, FullCategoryFragment } from "../../graphql-types"
 import { useDeleteCategory } from "../../graphql/mutations/deleteCategoryMutation"
 import { useReorderCategories } from "../../graphql/mutations/reorderCategoriesMutation"
+import { namedIcons } from "../../utils/namedIcons"
+import { Button, LinkButton } from "../base/Button"
+import CategoryIndicator from "../CategoryIndicator"
 
 const DragDropProviderFixed = DragDropProvider as any
 const SortableProviderFixed = SortableProvider as any
@@ -135,55 +131,41 @@ const Category: Component<{
   sortable?: ReturnType<typeof createSortable>
 }> = (props) => {
   return (
-    <Box
-      display="flex"
-      alignItems="center"
-      paddingStart="$4"
-      paddingEnd="$4"
-      paddingTop="$2"
-      paddingBottom="$2"
-      backgroundColor="$neutral1"
-      boxShadow="$xs"
-    >
-      <Box marginRight="$2" cursor="move" color="$neutral8">
-        <Dynamic component={TbArrowsSort} {...props.sortable?.dragActivators} />
-      </Box>
+    <div class="flex items-center bg-white px-4 py-2 shadow-sm">
+      <div class="mr-2 cursor-move text-gray-600">
+        <TbArrowsSort {...props.sortable?.dragActivators} />
+      </div>
       <CategoryIndicator
-        size="$10"
+        class="h-10 w-10"
         iconSize="1.5em"
         icon={namedIcons[props.category.icon]}
         color={props.category.color}
         includeInReports={true}
       />
-      <Box minWidth="0" marginStart="$4" marginEnd="$4" flex="1">
-        <Text noOfLines={1} lineHeight="1" paddingBottom="$1">
-          {props.category.name}
-        </Text>
-        <Text noOfLines={1} lineHeight="1" fontSize="$xs" color="gray.400">
+      <div class="me-4 ml-4 min-w-0 flex-1">
+        <h3 class="mb-1 truncate leading-none">{props.category.name}</h3>
+        <p class="truncate text-xs leading-tight text-gray-600">
           {props.category.budget ? `Budget: ${props.category.budget.formatted}` : "No budget"}
-        </Text>
-      </Box>
-      <Button
-        as={Link}
+        </p>
+      </div>
+      <LinkButton
         href={`/categories/${props.category.id}`}
         size="sm"
-        marginStart="auto"
-        marginEnd="$2"
+        class="ml-auto mr-2"
         title={"Edit category " + props.category.id}
       >
-        <Dynamic component={TbEdit} />
-      </Button>
+        <TbEdit />
+      </LinkButton>
       <Button
-        type="button"
         size="sm"
         variant="ghost"
         colorScheme="danger"
         title={"Delete category " + props.category.id}
         onClick={() => props.onDeleteClick(props.category.id)}
       >
-        <Dynamic component={TbTrash} />
+        <TbTrash />
       </Button>
-    </Box>
+    </div>
   )
 }
 

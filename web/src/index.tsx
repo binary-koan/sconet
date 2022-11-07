@@ -1,21 +1,18 @@
 /* @refresh reload */
-import "solid-devtools"
-import { HopeProvider } from "@hope-ui/solid"
 import { MetaProvider } from "@solidjs/meta"
 import { Router } from "@solidjs/router"
+import "solid-devtools"
 import { render } from "solid-js/web"
 
 import App from "./App"
-import { theme } from "./utils/theme"
+import "./index.css"
 
 render(
   () => (
     <MetaProvider>
-      <HopeProvider config={theme}>
-        <Router>
-          <App />
-        </Router>
-      </HopeProvider>
+      <Router>
+        <App />
+      </Router>
     </MetaProvider>
   ),
   document.getElementById("root") as HTMLElement

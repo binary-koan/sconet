@@ -1,11 +1,9 @@
-import { Box, Button, Text } from "@hope-ui/solid"
-import { Link } from "@solidjs/router"
 import { TbEdit, TbTrash } from "solid-icons/tb"
 import { Component, For } from "solid-js"
-import { Dynamic } from "solid-js/web"
 import toast from "solid-toast"
 import { AccountMailboxesQuery } from "../../graphql-types"
 import { useDeleteAccountMailbox } from "../../graphql/mutations/deleteAccountMailboxMutation"
+import { Button, LinkButton } from "../base/Button"
 
 const AccountMailboxesList: Component<{
   data: AccountMailboxesQuery
@@ -24,45 +22,32 @@ const AccountMailboxesList: Component<{
   return (
     <For each={props.data.accountMailboxes}>
       {(account) => (
-        <Box
-          display="flex"
-          alignItems="center"
-          paddingStart="$4"
-          paddingEnd="$4"
-          paddingTop="$2"
-          paddingBottom="$2"
-          backgroundColor="$neutral1"
-          boxShadow="$xs"
-        >
-          <Box minWidth="0" marginEnd="$4" flex="1">
-            <Text noOfLines={1} lineHeight="1" paddingBottom="$1">
-              {account.name}
-            </Text>
-            <Text noOfLines={1} lineHeight="1" fontSize="$xs" color="gray.400">
+        <div class="flex items-center bg-white px-4 py-2 shadow-sm">
+          <div class="mr-4 min-w-0 flex-1">
+            <h3 class="mb-1 truncate leading-none">{account.name}</h3>
+            <p class="truncate text-xs leading-tight text-gray-600">
               {JSON.stringify(account.mailServerOptions)}
-            </Text>
-          </Box>
-          <Button
-            as={Link}
+            </p>
+          </div>
+          <LinkButton
             href={`/account-mailboxes/${account.id}`}
             size="sm"
-            marginStart="auto"
-            marginEnd="$2"
+            variant="ghost"
+            class="ml-auto mr-2"
             title={"Edit account " + account.id}
           >
-            <Dynamic component={TbEdit} />
-          </Button>
+            <TbEdit />
+          </LinkButton>
           <Button
-            type="button"
             size="sm"
             variant="ghost"
             colorScheme="danger"
             title={"Delete account " + account.id}
             onClick={() => onDeleteClick(account.id)}
           >
-            <Dynamic component={TbTrash} />
+            <TbTrash />
           </Button>
-        </Box>
+        </div>
       )}
     </For>
   )

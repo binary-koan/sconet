@@ -44,6 +44,7 @@ const queryState = <Data>(context: GraphQLContext, query: string, serializedVari
 
     const fetch = async () => {
       if (!state?.inflightRequest) {
+        // TODO: Errors here don't go to the createResource error state correctly (hence ErrorBoundary in Cell)
         state!.inflightRequest = requestGraphql<Data>(query, serializedVariables).then((data) => {
           state!.cache = data
           delete state!.inflightRequest
