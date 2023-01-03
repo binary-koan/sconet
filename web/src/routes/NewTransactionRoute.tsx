@@ -1,47 +1,8 @@
-import { Route, useNavigate } from "@solidjs/router"
-import { Component } from "solid-js"
-import { toast } from "solid-toast"
-import FormPageWrapper from "../components/FormPageWrapper"
-import TransactionForm from "../components/transactions/TransactionForm"
-import { CreateTransactionMutation, CreateTransactionMutationVariables } from "../graphql-types"
-import { useMutation } from "../graphqlClient"
-import { gql } from "../utils/gql"
+import { Route } from "@solidjs/router"
+import { Component, lazy } from "solid-js"
 
-export const CREATE_TRANSACTION_MUTATION = gql`
-  mutation CreateTransaction($input: CreateTransactionInput!) {
-    createTransaction(input: $input) {
-      id
-    }
-  }
-`
-
-const NewTransaction: Component = () => {
-  const navigate = useNavigate()
-
-  const [createTransaction, { loading }] = useMutation<
-    CreateTransactionMutation,
-    CreateTransactionMutationVariables
-  >(CREATE_TRANSACTION_MUTATION, {
-    onSuccess: () => {
-      toast.success("Transaction created")
-      navigate("/transactions")
-    },
-    onError: (error) => {
-      toast.error(error.message)
-    }
-  })
-
-  const onSave = (input: CreateTransactionMutationVariables["input"]) => {
-    createTransaction({ input })
-  }
-
-  return (
-    <FormPageWrapper heading="New Transaction" backLink="/transactions">
-      <TransactionForm onSave={onSave} loading={loading} />
-    </FormPageWrapper>
-  )
-}
+const NewTransactionPage = lazy(() => import("../pages/NewTransactionPage"))
 
 export const NewTransactionRoute: Component = () => {
-  return <Route path="/transactions/new" component={NewTransaction} />
+  return <Route path="/transactions/new" component={NewTransactionPage} />
 }

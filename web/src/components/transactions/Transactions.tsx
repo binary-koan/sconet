@@ -58,9 +58,10 @@ export const TransactionsList: Component<{
             <>
               <Show when={newMonth}>
                 <div
-                  class="z-docked sticky top-0 bg-gray-50 py-2 lg:top-14 lg:-mx-2"
+                  class="z-docked sticky top-0 bg-gray-50 py-2 lg:top-14"
                   classList={{ "-mt-2": index() === 0, "mt-6": index() !== 0 }}
                 >
+                  <div class="absolute top-1/2 left-4 right-4 border-b border-gray-200" />
                   <button
                     type="button"
                     onClick={() =>
@@ -70,14 +71,14 @@ export const TransactionsList: Component<{
                         dateUntil: dateUntil.toISOString()
                       }))
                     }
-                    class="mx-2 inline-block rounded bg-gray-500 px-2 py-1 text-sm font-bold text-white"
+                    class="relative mx-2 inline-block rounded bg-gray-50 py-1 pl-2 pr-4 text-base font-semibold text-gray-700"
                   >
                     {formatDate(date, "monthYear")}
                   </button>
                 </div>
               </Show>
 
-              <div class="px-4 py-2 text-sm font-bold text-gray-600">
+              <div class="px-4 py-2 text-sm text-gray-600">
                 {formatDate(date, "fullDateWithoutYear")}
               </div>
 
@@ -92,7 +93,7 @@ export const TransactionsList: Component<{
               </For>
 
               <Show when={!props.isEditing && !transactions.length}>
-                <div class="flex items-center px-4 pb-2 italic text-gray-600 shadow-sm">-</div>
+                <div class="flex items-center px-4 pb-2 italic text-gray-600">-</div>
               </Show>
             </>
           )

@@ -50,8 +50,8 @@ const LoginPage: Component = () => {
     <>
       <Title>Login</Title>
 
-      <div class="flex flex-1 flex-col justify-center pb-20">
-        <div class="m-6 rounded p-6 shadow-2xl lg:my-0 lg:mx-auto lg:max-w-3xl">
+      <div class="min-h-screen flex flex-col justify-center pb-20">
+        <div class="bg-white m-6 rounded p-6 shadow-2xl lg:my-0 lg:mx-auto lg:w-96">
           <h1 class="mb-4 flex items-center text-lg font-bold lg:text-2xl">Login</h1>
           <form use:form>
             <FormInput type="text" name="email" label="Email" />

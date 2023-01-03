@@ -18,8 +18,9 @@ import {
   AccountMailboxOptionsQuery,
   CategoryOptionsQuery,
   CreateTransactionInput,
-  CreateTransactionMutationVariables,
-  CurrencyOptionsQuery
+  CurrencyOptionsQuery,
+  GetTransactionQuery,
+  UpdateTransactionInput
 } from "../../graphql-types"
 import { useQuery } from "../../graphqlClient"
 import { formatDateForInput } from "../../utils/formatters"
@@ -78,8 +79,8 @@ const transactionFormStruct: Describe<TransactionFormValues> = object({
 })
 
 const TransactionForm: Component<{
-  transaction?: any
-  onSave: (input: CreateTransactionMutationVariables["input"], id?: string) => void
+  data?: GetTransactionQuery
+  onSave: (input: CreateTransactionInput) => void | ((input: UpdateTransactionInput) => void)
   loading: boolean
 }> = (props) => {
   const [categories] = useQuery<CategoryOptionsQuery>(categoriesQuery)
@@ -97,7 +98,7 @@ const TransactionForm: Component<{
         includeInReports: Boolean(data.includeInReports)
       }
 
-      props.onSave(coercedData, props?.transaction?.id)
+      props.onSave(coercedData)
     },
 
     extend: validator({ struct: transactionFormStruct })
@@ -110,11 +111,11 @@ const TransactionForm: Component<{
 
   return (
     <form use:form>
-      <Show when={!props.transaction?.splitFromId}>
+      <Show when={!props.data?.transaction?.splitFromId}>
         <FormOptionButtons
           name="amountType"
           defaultValue={
-            props.transaction?.amount && props.transaction.amount.decimalAmount > 0
+            props.data?.transaction?.amount && props.data?.transaction.amount.decimalAmount > 0
               ? "income"
               : "expense"
           }
@@ -137,7 +138,7 @@ const TransactionForm: Component<{
         <FormOptionButtons
           label="Currency"
           name="currencyId"
-          defaultValue={props.transaction?.currencyId}
+          defaultValue={props.data?.transaction?.currencyId}
           options={
             currencies()?.currencies?.map((currency) => ({
               value: currency.id,
@@ -151,8 +152,8 @@ const TransactionForm: Component<{
           name="amount"
           type="number"
           defaultValue={
-            props.transaction?.amount.decimalAmount &&
-            Math.abs(props.transaction.amount.decimalAmount)
+            props.data?.transaction?.amount.decimalAmount &&
+            Math.abs(props.data?.transaction.amount.decimalAmount)
           }
           render={(props) => (
             <InputGroup>
@@ -170,26 +171,26 @@ const TransactionForm: Component<{
         />
       </Show>
 
-      <FormInput label="Memo" name="memo" defaultValue={props.transaction?.memo} />
+      <FormInput label="Memo" name="memo" defaultValue={props.data?.transaction?.memo} />
 
-      <Show when={!props.transaction?.splitFromId}>
+      <Show when={!props.data?.transaction?.splitFromId}>
         <FormInput
           label="Date"
           name="date"
           type="date"
           defaultValue={formatDateForInput(
-            props.transaction?.date ? new Date(props.transaction?.date) : new Date()
+            props.data?.transaction?.date ? new Date(props.data?.transaction?.date) : new Date()
           )}
         />
       </Show>
 
-      <CategorySelect transaction={props.transaction} categories={categories()?.categories} />
+      <CategorySelect transaction={props.data?.transaction} categories={categories()?.categories} />
 
-      <Show when={!props.transaction?.splitFromId}>
+      <Show when={!props.data?.transaction?.splitFromId}>
         <FormOptionButtons
           label="Account"
           name="accountMailboxId"
-          defaultValue={props.transaction?.accountMailboxId}
+          defaultValue={props.data?.transaction?.accountMailbox?.id}
           options={
             accountMailboxes()?.accountMailboxes?.map((account) => ({
               value: account.id,
@@ -203,7 +204,9 @@ const TransactionForm: Component<{
         label="Include in reports"
         name="includeInReports"
         defaultValue={
-          props.transaction?.includeInReports != null ? props.transaction.includeInReports : true
+          props.data?.transaction?.includeInReports != null
+            ? props.data?.transaction.includeInReports
+            : true
         }
       />
 

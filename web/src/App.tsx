@@ -5,6 +5,7 @@ import { MainLayout } from "./components/MainLayout"
 import { useRequireLogin } from "./hooks/useRequireLogin"
 import { BudgetsRoute } from "./routes/BudgetsRoute"
 import { EditCategoryRoute } from "./routes/categories/EditCategoryRoute"
+import { EditTransactionRoute } from "./routes/EditTransactionRoute"
 import { LoginRoute } from "./routes/LoginRoute"
 import { NewAccountMailboxRoute } from "./routes/NewAccountMailboxRoute"
 import { NewCategoryRoute } from "./routes/NewCategoryRoute"
@@ -48,12 +49,17 @@ const App: Component = () => {
             path="/transactions/calendar"
             element={<Navigate href={`/transactions/calendar/${currentYearMonth()}`} />}
           />
+
           <TransactionsListRoute />
           <TransactionsCalendarRoute />
           <NewTransactionRoute />
+          <EditTransactionRoute />
+
           <SettingsRoute />
+
           <NewCategoryRoute />
           <EditCategoryRoute />
+
           <NewAccountMailboxRoute />
 
           <BudgetsRoute />

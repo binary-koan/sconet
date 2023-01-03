@@ -13,6 +13,7 @@ const CREATE_ACCOUNT_MAILBOX_MUTATION = gql`
     }
   }
 `
+
 export const useCreateAccountMailbox = (options: MutationOptions<CreateAccountMailboxMutation>) =>
   useMutation<CreateAccountMailboxMutation, CreateAccountMailboxMutationVariables>(
     CREATE_ACCOUNT_MAILBOX_MUTATION,

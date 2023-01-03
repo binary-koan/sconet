@@ -21,6 +21,8 @@ export const FullTransactionFragment = gql`
       id
       name
     }
+    currencyId
+    splitFromId
     splitTo {
       id
       memo
