@@ -66,6 +66,7 @@ export const CurrentUser: Resolvers["CurrentUser"] = {
 
 const createToken = (user: UserRecord) => {
   return new SignJWT({})
+    .setProtectedHeader({ alg: 'HS256' })
     .setSubject(user.id)
     .setExpirationTime("14d")
     .sign(Buffer.from(process.env.JWT_SECRET!))
