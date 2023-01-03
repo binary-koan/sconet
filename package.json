@@ -1,5 +1,9 @@
 {
+	"scripts": {
+		"dev": "concurrently -n api,web -c blue,magenta 'cd api && bun start' 'cd web && pnpm dev'"
+	},
 	"devDependencies": {
+		"concurrently": "^7.6.0",
 		"prettier": "^2.7.1",
 		"prettier-plugin-tailwindcss": "^0.1.13"
 	}
