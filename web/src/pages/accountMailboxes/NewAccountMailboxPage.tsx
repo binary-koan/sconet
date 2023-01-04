@@ -1,12 +1,11 @@
-import { Route, useNavigate } from "@solidjs/router"
-import { Component } from "solid-js"
+import { useNavigate } from "@solidjs/router"
 import toast from "solid-toast"
-import AccountMailboxForm from "../components/accountMailboxes/AccountMailboxForm"
-import FormPageWrapper from "../components/FormPageWrapper"
-import { CreateAccountMailboxMutationVariables } from "../graphql-types"
-import { useCreateAccountMailbox } from "../graphql/mutations/createAccountMailboxMutation"
+import AccountMailboxForm from "../../components/accountMailboxes/AccountMailboxForm"
+import FormPageWrapper from "../../components/FormPageWrapper"
+import { CreateAccountMailboxMutationVariables } from "../../graphql-types"
+import { useCreateAccountMailbox } from "../../graphql/mutations/createAccountMailboxMutation"
 
-const NewAccountMailbox = () => {
+const NewAccountMailboxPage = () => {
   const navigate = useNavigate()
 
   const [createAccountMailbox, { loading }] = useCreateAccountMailbox({
@@ -28,6 +27,4 @@ const NewAccountMailbox = () => {
   )
 }
 
-export const NewAccountMailboxRoute: Component = () => {
-  return <Route path="/account-mailboxes/new" component={NewAccountMailbox} />
-}
+export default NewAccountMailboxPage

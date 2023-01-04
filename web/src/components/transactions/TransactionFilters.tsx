@@ -1,8 +1,6 @@
 import { Component } from "solid-js"
-import { CategoryOptionsQuery } from "../../graphql-types"
-import { useQuery } from "../../graphqlClient"
+import { useCategoriesQuery } from "../../graphql/queries/categoriesQuery"
 import { Directive } from "../../types"
-import { gql } from "../../utils/gql"
 import { namedIcons } from "../../utils/namedIcons"
 import { usedAsDirective } from "../../utils/usedAsDirective"
 import CategoryIndicator from "../CategoryIndicator"
@@ -17,21 +15,10 @@ export interface TransactionFilterValues {
   uncategorized?: boolean
 }
 
-const categoriesQuery = gql`
-  query CategoryOptions {
-    categories {
-      id
-      name
-      color
-      icon
-    }
-  }
-`
-
 const TransactionFilters: Component<{
   form: Directive
 }> = (props) => {
-  const [data] = useQuery<CategoryOptionsQuery>(categoriesQuery)
+  const [data] = useCategoriesQuery()
   const { form } = props
 
   usedAsDirective(form)

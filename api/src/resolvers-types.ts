@@ -336,8 +336,8 @@ export type TransactionAmountArgs = {
 
 export type TransactionFilter = {
   categoryIds: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-  dateFrom: InputMaybe<Scalars['DateTime']>;
-  dateUntil: InputMaybe<Scalars['DateTime']>;
+  dateFrom: InputMaybe<Scalars['Date']>;
+  dateUntil: InputMaybe<Scalars['Date']>;
   keyword: InputMaybe<Scalars['String']>;
 };
 

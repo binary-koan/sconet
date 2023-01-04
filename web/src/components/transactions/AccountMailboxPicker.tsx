@@ -1,27 +1,15 @@
 import { Component, For } from "solid-js"
-import { AccountMailboxOptionsQuery } from "../../graphql-types"
-import { useQuery } from "../../graphqlClient"
-import { gql } from "../../utils/gql"
+import { FullAccountMailboxFragment } from "../../graphql-types"
+import { useAccountMailboxesQuery } from "../../graphql/queries/accountMailboxesQuery"
 import { Button } from "../base/Button"
 
-export type AccountMailboxOption = AccountMailboxOptionsQuery["accountMailboxes"][0]
-
 export type ValueProps = {
-  value: AccountMailboxOption | undefined
-  onChange: (accountMailbox: AccountMailboxOption) => void
+  value: FullAccountMailboxFragment | undefined
+  onChange: (accountMailbox: FullAccountMailboxFragment) => void
 }
 
-const accountMailboxesQuery = gql`
-  query AccountMailboxOptions {
-    accountMailboxes {
-      id
-      name
-    }
-  }
-`
-
 const AccountMailboxPicker: Component<ValueProps> = (props) => {
-  const [data] = useQuery<AccountMailboxOptionsQuery>(accountMailboxesQuery)
+  const [data] = useAccountMailboxesQuery()
 
   return (
     <div class="flex flex-col gap-2">
@@ -37,7 +25,7 @@ const AccountMailboxPicker: Component<ValueProps> = (props) => {
 export default AccountMailboxPicker
 
 const AccountMailboxOption: Component<{
-  accountMailbox: AccountMailboxOption
+  accountMailbox: FullAccountMailboxFragment
   valueProps: ValueProps
 }> = (props) => {
   const onClick = () => {

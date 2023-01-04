@@ -1,8 +1,7 @@
 import { union } from "lodash"
 import { Component, For } from "solid-js"
 import { CategoryOptionsQuery } from "../../graphql-types"
-import { useQuery } from "../../graphqlClient"
-import { gql } from "../../utils/gql"
+import { useCategoriesQuery } from "../../graphql/queries/categoriesQuery"
 import { namedIcons } from "../../utils/namedIcons"
 import { Button } from "../base/Button"
 import CategoryIndicator from "../CategoryIndicator"
@@ -21,19 +20,8 @@ export type ValueProps =
       onChange: (categories: CategoryOption[]) => void
     }
 
-const categoriesQuery = gql`
-  query CategoryOptions {
-    categories {
-      id
-      name
-      color
-      icon
-    }
-  }
-`
-
 const CategoryPicker: Component<ValueProps> = (props) => {
-  const [data] = useQuery<CategoryOptionsQuery>(categoriesQuery)
+  const [data] = useCategoriesQuery()
 
   return (
     <div class="flex flex-col gap-2">

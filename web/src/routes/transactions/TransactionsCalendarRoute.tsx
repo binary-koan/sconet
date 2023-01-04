@@ -1,7 +1,7 @@
 import { Route, RouteDataFunc } from "@solidjs/router"
 import { Component, lazy } from "solid-js"
-import { useTransactionsQuery } from "../graphql/queries/transactionsQuery"
-import { TransactionsCalendarPageData } from "../pages/TransactionsCalendarPage"
+import { useTransactionsQuery } from "../../graphql/queries/transactionsQuery"
+import { TransactionsCalendarPageData } from "../../pages/transactions/TransactionsCalendarPage"
 
 const transactionsData: RouteDataFunc<unknown, TransactionsCalendarPageData> = ({ params }) => {
   const year = () => params.yearmonth.split("-")[0]
@@ -29,7 +29,7 @@ const transactionsData: RouteDataFunc<unknown, TransactionsCalendarPageData> = (
   }
 }
 
-const TransactionsCalendarPage = lazy(() => import("../pages/TransactionsCalendarPage"))
+const TransactionsCalendarPage = lazy(() => import("../../pages/transactions/TransactionsCalendarPage"))
 
 export const TransactionsCalendarRoute: Component = () => {
   return (

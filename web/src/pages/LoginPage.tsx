@@ -5,31 +5,22 @@ import { Component, createEffect } from "solid-js"
 import toast from "solid-toast"
 import { Button } from "../components/base/Button"
 import FormInput from "../components/forms/FormInput"
-import { LoginMutation, LoginMutationVariables } from "../graphql-types"
-import { useMutation } from "../graphqlClient"
+import { useLoginMutation } from "../graphql/mutations/loginMutation"
 import { isLoggedIn, setLoginToken } from "../utils/auth"
-import { gql } from "../utils/gql"
 import { usedAsDirective } from "../utils/usedAsDirective"
-
-const LOGIN_MUTATION = gql`
-  mutation Login($email: String!, $password: String!) {
-    login(email: $email, password: $password)
-  }
-`
 
 const LoginPage: Component = () => {
   const navigate = useNavigate()
   const location = useLocation<{ returnTo?: string }>()
 
-  const [login, { loading }] = useMutation<LoginMutation, LoginMutationVariables>(LOGIN_MUTATION, {
+  const [login, { loading }] = useLoginMutation({
     onSuccess: (data) => {
       setLoginToken(data.login)
       toast.success("Logged in")
     },
     onError: (error) => {
       toast.error(error.message)
-    },
-    refetchQueries: "ALL"
+    }
   })
 
   const { form } = createForm({

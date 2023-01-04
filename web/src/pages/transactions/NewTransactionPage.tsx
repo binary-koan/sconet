@@ -1,10 +1,10 @@
 import { useNavigate } from "@solidjs/router"
 import { Component } from "solid-js"
 import toast from "solid-toast"
-import FormPageWrapper from "../components/FormPageWrapper"
-import TransactionForm from "../components/transactions/TransactionForm"
-import { CreateTransactionInput } from "../graphql-types"
-import { useCreateTransaction } from "../graphql/mutations/createTransactionMutation"
+import FormPageWrapper from "../../components/FormPageWrapper"
+import TransactionForm from "../../components/transactions/TransactionForm"
+import { CreateTransactionInput } from "../../graphql-types"
+import { useCreateTransaction } from "../../graphql/mutations/createTransactionMutation"
 
 const NewTransactionPage: Component = () => {
   const navigate = useNavigate()

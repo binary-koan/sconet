@@ -15,16 +15,13 @@ import {
   string
 } from "superstruct"
 import {
-  AccountMailboxOptionsQuery,
-  CategoryOptionsQuery,
-  CreateTransactionInput,
-  CurrencyOptionsQuery,
-  GetTransactionQuery,
+  CreateTransactionInput, FullCategoryFragment, GetTransactionQuery,
   UpdateTransactionInput
 } from "../../graphql-types"
-import { useQuery } from "../../graphqlClient"
+import { useAccountMailboxesQuery } from "../../graphql/queries/accountMailboxesQuery"
+import { useCategoriesQuery } from "../../graphql/queries/categoriesQuery"
+import { useCurrenciesQuery } from "../../graphql/queries/currenciesQuery"
 import { formatDateForInput } from "../../utils/formatters"
-import { gql } from "../../utils/gql"
 import { namedIcons } from "../../utils/namedIcons"
 import { usedAsDirective } from "../../utils/usedAsDirective"
 import { Button } from "../base/Button"
@@ -33,37 +30,6 @@ import CategoryIndicator from "../CategoryIndicator"
 import FormInput from "../forms/FormInput"
 import FormOptionButtons from "../forms/FormOptionButtons"
 import FormSwitch from "../forms/FormSwitch"
-
-const categoriesQuery = gql`
-  query CategoryOptions {
-    categories {
-      id
-      name
-      color
-      icon
-    }
-  }
-`
-
-const accountMailboxesQuery = gql`
-  query AccountMailboxOptions {
-    accountMailboxes {
-      id
-      name
-    }
-  }
-`
-
-export const currenciesQuery = gql`
-  query CurrencyOptions {
-    currencies {
-      id
-      code
-      symbol
-      decimalDigits
-    }
-  }
-`
 
 type TransactionFormValues = CreateTransactionInput & { amountType: "expense" | "income" }
 
@@ -83,9 +49,9 @@ const TransactionForm: Component<{
   onSave: (input: CreateTransactionInput) => void | ((input: UpdateTransactionInput) => void)
   loading: boolean
 }> = (props) => {
-  const [categories] = useQuery<CategoryOptionsQuery>(categoriesQuery)
-  const [accountMailboxes] = useQuery<AccountMailboxOptionsQuery>(accountMailboxesQuery)
-  const [currencies] = useQuery<CurrencyOptionsQuery>(currenciesQuery)
+  const [categories] = useCategoriesQuery()
+  const [accountMailboxes] = useAccountMailboxesQuery()
+  const [currencies] = useCurrenciesQuery()
 
   const { form, data } = createForm<TransactionFormValues>({
     onSubmit: ({ amountType, amount, date, ...data }) => {
@@ -219,7 +185,7 @@ const TransactionForm: Component<{
 
 const CategorySelect: Component<{
   transaction?: any
-  categories?: CategoryOptionsQuery["categories"]
+  categories?: FullCategoryFragment[]
 }> = (props) => {
   const [showing, setShowing] = createSignal(true)
 

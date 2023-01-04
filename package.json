@@ -1,6 +1,6 @@
 {
 	"scripts": {
-		"dev": "concurrently -n api,web -c blue,magenta 'cd api && bun start' 'cd web && pnpm dev'"
+		"dev": "concurrently -n api,web,api-codegen,web-codegen -c blue,magenta,green,yellow 'cd api && bun start' 'cd web && pnpm dev' 'cd api && bun graphql-codegen --watch' 'cd web && pnpm graphql-codegen --watch'"
 	},
 	"devDependencies": {
 		"concurrently": "^7.6.0",
