@@ -8,7 +8,8 @@
     "migrate:rollback": "bun bin/migrate/rollback.ts",
     "migrate:up": "bun bin/migrate/up.ts",
     "migrate:down": "bun bin/migrate/down.ts",
-    "seed": "bun bin/seed/index.ts"
+    "seed": "bun bin/seed/index.ts",
+    "dbconsole": "bun bin/dbconsole.ts"
   },
   "dependencies": {
     "@graphql-tools/schema": "^8.5.1",
