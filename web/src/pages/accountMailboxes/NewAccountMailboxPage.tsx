@@ -8,7 +8,7 @@ import { useCreateAccountMailbox } from "../../graphql/mutations/createAccountMa
 const NewAccountMailboxPage = () => {
   const navigate = useNavigate()
 
-  const [createAccountMailbox, { loading }] = useCreateAccountMailbox({
+  const createAccountMailbox = useCreateAccountMailbox({
     onSuccess: () => {
       toast.success("AccountMailbox created")
       navigate("/settings")
@@ -22,7 +22,7 @@ const NewAccountMailboxPage = () => {
 
   return (
     <FormPageWrapper heading="New Account" backLink="/settings">
-      <AccountMailboxForm onSave={onSave} loading={loading} />
+      <AccountMailboxForm onSave={onSave} loading={createAccountMailbox.loading} />
     </FormPageWrapper>
   )
 }

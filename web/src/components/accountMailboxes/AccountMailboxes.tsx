@@ -8,7 +8,7 @@ import { Button, LinkButton } from "../base/Button"
 const AccountMailboxesList: Component<{
   data: AccountMailboxesQuery
 }> = (props) => {
-  const [deleteAccountMailbox] = useDeleteAccountMailbox({
+  const deleteAccountMailbox = useDeleteAccountMailbox({
     onSuccess: () => toast.success("AccountMailbox deleted"),
     onError: (error) => toast.error(error.message)
   })

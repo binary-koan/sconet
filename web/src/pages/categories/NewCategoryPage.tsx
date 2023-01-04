@@ -9,7 +9,7 @@ import { useCreateCategory } from "../../graphql/mutations/createCategoryMutatio
 const NewCategoryPage: Component = () => {
   const navigate = useNavigate()
 
-  const [createCategory, { loading }] = useCreateCategory({
+  const createCategory = useCreateCategory({
     onSuccess: () => {
       toast.success("Category created")
       navigate("/settings")
@@ -25,7 +25,7 @@ const NewCategoryPage: Component = () => {
 
   return (
     <FormPageWrapper heading="New Category" backLink="/settings">
-      <CategoryForm onSave={onSave} loading={loading} />
+      <CategoryForm onSave={onSave} loading={createCategory.loading} />
     </FormPageWrapper>
   )
 }

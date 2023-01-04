@@ -15,7 +15,7 @@ const EditTransactionPage: Component = () => {
   const routeData = useRouteData<EditTransactionPageData>()
   const navigate = useNavigate()
 
-  const [updateTransaction, { loading }] = useUpdateTransaction({
+  const updateTransaction = useUpdateTransaction({
     onSuccess: () => {
       toast.success("Transaction updated")
       navigate("/transactions")
@@ -31,7 +31,11 @@ const EditTransactionPage: Component = () => {
 
   return (
     <FormPageWrapper heading="Edit Transaction" backLink="/transactions">
-      <Cell data={routeData.data} success={TransactionForm} successProps={{ onSave, loading }} />
+      <Cell
+        data={routeData.data}
+        success={TransactionForm}
+        successProps={{ onSave, loading: updateTransaction.loading }}
+      />
     </FormPageWrapper>
   )
 }

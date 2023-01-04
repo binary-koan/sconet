@@ -1,7 +1,7 @@
 import { repeat } from "lodash"
 import { Component, createSignal, onMount } from "solid-js"
-import { CreateCategoryMutationVariables, CurrencyOptionsQuery } from "../../graphql-types"
-import { useQuery } from "../../graphqlClient"
+import { CreateCategoryMutationVariables, FullCurrencyFragment } from "../../graphql-types"
+import { useCurrenciesQuery } from "../../graphql/queries/currenciesQuery"
 import { Button } from "../base/Button"
 import { InputAddon, InputGroup, InputGroupInput } from "../base/InputGroup"
 import { Form } from "../forms/Form"
@@ -9,7 +9,6 @@ import FormIconPicker from "../forms/FormIconPicker"
 import FormInput from "../forms/FormInput"
 import FormOptionButtons from "../forms/FormOptionButtons"
 import FormSwitch from "../forms/FormSwitch"
-import { currenciesQuery } from "../transactions/TransactionForm"
 
 interface CategoryFormValues {
   name: string
@@ -24,10 +23,8 @@ const CategoryForm: Component<{
   onSave: (input: CreateCategoryMutationVariables["input"], id?: string) => void
   loading: boolean
 }> = (props) => {
-  const [currencies] = useQuery<CurrencyOptionsQuery>(currenciesQuery)
-  const [selectedCurrency, setSelectedCurrency] = createSignal<
-    CurrencyOptionsQuery["currencies"][number] | undefined
-  >()
+  const [currencies] = useCurrenciesQuery()
+  const [selectedCurrency, setSelectedCurrency] = createSignal<FullCurrencyFragment | undefined>()
 
   const onSave = (data: CategoryFormValues) => {
     props.onSave(

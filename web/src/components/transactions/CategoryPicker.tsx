@@ -1,23 +1,21 @@
 import { union } from "lodash"
 import { Component, For } from "solid-js"
-import { CategoryOptionsQuery } from "../../graphql-types"
+import { FullCategoryFragment } from "../../graphql-types"
 import { useCategoriesQuery } from "../../graphql/queries/categoriesQuery"
 import { namedIcons } from "../../utils/namedIcons"
 import { Button } from "../base/Button"
 import CategoryIndicator from "../CategoryIndicator"
 
-export type CategoryOption = CategoryOptionsQuery["categories"][0]
-
 export type ValueProps =
   | {
       multiple: false
-      value: CategoryOption | undefined
-      onChange: (category: CategoryOption) => void
+      value: FullCategoryFragment | undefined
+      onChange: (category: FullCategoryFragment) => void
     }
   | {
       multiple: true
-      value: CategoryOption[]
-      onChange: (categories: CategoryOption[]) => void
+      value: FullCategoryFragment[]
+      onChange: (categories: FullCategoryFragment[]) => void
     }
 
 const CategoryPicker: Component<ValueProps> = (props) => {
@@ -35,7 +33,7 @@ const CategoryPicker: Component<ValueProps> = (props) => {
 export default CategoryPicker
 
 const CategoryOption: Component<{
-  category: CategoryOption
+  category: FullCategoryFragment
   valueProps: ValueProps
 }> = (props) => {
   const onClick = () => {

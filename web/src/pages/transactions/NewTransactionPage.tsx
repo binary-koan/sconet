@@ -9,7 +9,7 @@ import { useCreateTransaction } from "../../graphql/mutations/createTransactionM
 const NewTransactionPage: Component = () => {
   const navigate = useNavigate()
 
-  const [createTransaction, { loading }] = useCreateTransaction({
+  const createTransaction = useCreateTransaction({
     onSuccess: () => {
       toast.success("Transaction created")
       navigate("/transactions")
@@ -25,7 +25,7 @@ const NewTransactionPage: Component = () => {
 
   return (
     <FormPageWrapper heading="New Transaction" backLink="/transactions">
-      <TransactionForm onSave={onSave} loading={loading} />
+      <TransactionForm onSave={onSave} loading={createTransaction.loading} />
     </FormPageWrapper>
   )
 }

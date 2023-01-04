@@ -151,10 +151,15 @@ export interface MutationOptions<Data> {
   onError?: (error: any) => void
 }
 
+export interface MutationFunction<Variables> {
+  (variables: Variables): Promise<void>
+  loading: boolean
+}
+
 export function useMutation<Data, Variables>(
   mutation: string,
   { refetchQueries, onSuccess, onError }: MutationOptions<Data> = {}
-) {
+): MutationFunction<Variables> {
   const context = useContext(gqlContext)
   const [loading, setLoading] = createSignal(false)
 
@@ -176,14 +181,13 @@ export function useMutation<Data, Variables>(
     }
   }
 
-  return [
-    mutate,
-    {
-      get loading() {
-        return loading()
-      }
+  Object.defineProperty(mutate, "loading", {
+    get() {
+      return loading()
     }
-  ] as const
+  })
+
+  return mutate as MutationFunction<Variables>
 }
 
 async function requestGraphql<Result>(query: string, serializedVariables: string): Promise<Result> {

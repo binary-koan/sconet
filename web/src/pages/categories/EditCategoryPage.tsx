@@ -14,7 +14,7 @@ const EditCategoryPage: Component = () => {
   const routeData = useRouteData<EditCategoryPageData>()
   const navigate = useNavigate()
 
-  const [updateCategory, { loading }] = useUpdateCategory({
+  const updateCategory = useUpdateCategory({
     onSuccess: () => {
       toast.success("Category updated")
       navigate("/settings")
@@ -31,7 +31,11 @@ const EditCategoryPage: Component = () => {
   return (
     <FormPageWrapper heading="Edit Category" backLink="/settings">
       <Show when={routeData.data()}>
-        <CategoryForm category={routeData.data()!.category} onSave={onSave} loading={loading} />
+        <CategoryForm
+          category={routeData.data()!.category}
+          onSave={onSave}
+          loading={updateCategory.loading}
+        />
       </Show>
     </FormPageWrapper>
   )

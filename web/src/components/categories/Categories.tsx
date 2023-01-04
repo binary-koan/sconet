@@ -24,12 +24,12 @@ const SortableProviderFixed = SortableProvider as any
 const DragOverlayFixed = DragOverlay as any
 
 const CategoriesList: Component<{ data: CategoriesQuery }> = (props) => {
-  const [deleteCategory] = useDeleteCategory({
+  const deleteCategory = useDeleteCategory({
     onSuccess: () => toast.success("Category deleted"),
     onError: (error: any) => toast.error(error.message)
   })
 
-  const [reorderCategories] = useReorderCategories({
+  const reorderCategories = useReorderCategories({
     onSuccess: () => toast.success("Categories reordered"),
     onError: (error) => toast.error(error.message)
   })

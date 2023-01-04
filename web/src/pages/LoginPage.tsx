@@ -13,7 +13,7 @@ const LoginPage: Component = () => {
   const navigate = useNavigate()
   const location = useLocation<{ returnTo?: string }>()
 
-  const [login, { loading }] = useLoginMutation({
+  const login = useLoginMutation({
     onSuccess: (data) => {
       setLoginToken(data.login)
       toast.success("Logged in")
@@ -41,14 +41,14 @@ const LoginPage: Component = () => {
     <>
       <Title>Login</Title>
 
-      <div class="min-h-screen flex flex-col justify-center pb-20">
-        <div class="bg-white m-6 rounded p-6 shadow-2xl lg:my-0 lg:mx-auto lg:w-96">
+      <div class="flex min-h-screen flex-col justify-center pb-20">
+        <div class="m-6 rounded bg-white p-6 shadow-2xl lg:my-0 lg:mx-auto lg:w-96">
           <h1 class="mb-4 flex items-center text-lg font-bold lg:text-2xl">Login</h1>
           <form use:form>
             <FormInput type="text" name="email" label="Email" />
             <FormInput type="password" name="password" label="Password" />
 
-            <Button type="submit" colorScheme="primary" disabled={loading}>
+            <Button type="submit" colorScheme="primary" disabled={login.loading}>
               Login
             </Button>
           </form>
