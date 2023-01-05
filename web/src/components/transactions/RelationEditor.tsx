@@ -1,4 +1,5 @@
 import { Component } from "solid-js"
+import { useUpdateTransaction } from "../../graphql/mutations/updateTransactionMutation"
 import RelationEditInput from "./RelationEditInput"
 
 const RelationEditor: Component<{
@@ -7,31 +8,21 @@ const RelationEditor: Component<{
   includeInReports: boolean
   isEditing: boolean
 }> = (props) => {
-  // const [updateTransaction] = useMutation(UPDATE_TRANSACTION_MUTATION)
+  const updateTransaction = useUpdateTransaction()
 
-  // const doUpdateCategory = useCallback(
-  //   async (category: { id: string }) => {
-  //     await updateTransaction({
-  //       variables: {
-  //         id: transaction.id,
-  //         input: { categoryId: category.id },
-  //       },
-  //     })
-  //   },
-  //   [transaction.id, updateTransaction]
-  // )
+  const updateCategory = async (category: { id: string }) => {
+    await updateTransaction({
+      id: props.transaction.id,
+      input: { categoryId: category.id }
+    })
+  }
 
-  // const doUpdateAccountMailbox = useCallback(
-  //   async (accountMailbox: { id: string }) => {
-  //     await updateTransaction({
-  //       variables: {
-  //         id: transaction.id,
-  //         input: { accountMailboxId: accountMailbox.id },
-  //       },
-  //     })
-  //   },
-  //   [transaction.id, updateTransaction]
-  // )
+  const updateAccountMailbox = async (accountMailbox: { id: string }) => {
+    await updateTransaction({
+      id: props.transaction.id,
+      input: { accountMailboxId: accountMailbox.id }
+    })
+  }
 
   return (
     <RelationEditInput
@@ -42,8 +33,8 @@ const RelationEditor: Component<{
       hasChildren={Boolean(props.transaction.splitTo?.length)}
       includeInReports={props.includeInReports}
       isEditing={props.isEditing}
-      onChangeCategory={() => {}}
-      onChangeAccountMailbox={() => {}}
+      onChangeCategory={updateCategory}
+      onChangeAccountMailbox={updateAccountMailbox}
     />
   )
 }

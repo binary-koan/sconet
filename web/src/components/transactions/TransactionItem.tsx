@@ -1,13 +1,17 @@
-import { Link } from "@solidjs/router"
-import { TbEdit } from "solid-icons/tb"
+import { useNavigate } from "@solidjs/router"
+import { TbDots, TbEdit } from "solid-icons/tb"
 import { Component, createEffect, createSignal, For, Show } from "solid-js"
-import { Dynamic } from "solid-js/web"
+import { FullTransactionFragment } from "../../graphql-types"
+import { Button } from "../base/Button"
 import MemoEditor from "./MemoEditor"
 import RelationEditor from "./RelationEditor"
 
-const TransactionItem: Component<{ transaction: any; parent?: any; isEditing: boolean }> = (
-  props
-) => {
+const TransactionItem: Component<{
+  transaction: FullTransactionFragment
+  parent?: FullTransactionFragment
+  isEditing: boolean
+}> = (props) => {
+  const navigate = useNavigate()
   const [editingMemo, setEditingMemo] = createSignal(false)
 
   const stopEditing = () => setEditingMemo(false)
@@ -22,33 +26,45 @@ const TransactionItem: Component<{ transaction: any; parent?: any; isEditing: bo
         props.transaction.splitTo?.some((child: any) => child.includeInReports)
     )
 
+  const navigateUnlessEditing = (event: MouseEvent) => {
+    if (props.isEditing) {
+      event.stopPropagation()
+      event.preventDefault()
+    } else {
+      navigate(`/transactions/${props.transaction.id}`)
+    }
+  }
+
   return (
     <>
-      <Dynamic
-        component={props.isEditing ? "a" : Link}
-        href={`/transactions/${props.transaction.id}`}
-        onClick={(event) => {
-          if (props.isEditing) {
-            event.stopPropagation()
-            event.preventDefault()
-          }
+      <div
+        onClick={navigateUnlessEditing}
+        class="flex items-center bg-white py-2 pr-4 shadow-sm"
+        classList={{
+          "pl-10": !!props.parent,
+          "pl-4": !props.parent,
+          "cursor-pointer": !props.isEditing
         }}
       >
-        <div
-          class="flex items-center bg-white py-2 pr-4 shadow-sm"
-          classList={{ "pl-10": props.parent, "pl-4": !props.parent }}
-        >
-          <RelationEditor
-            parent={props.parent}
-            transaction={props.transaction}
-            includeInReports={includeInReports()}
-            isEditing={props.isEditing}
-          />
+        <RelationEditor
+          parent={props.parent}
+          transaction={props.transaction}
+          includeInReports={includeInReports()}
+          isEditing={props.isEditing}
+        />
 
-          <div class="ml-4 min-w-0 flex-1">
-            {editingMemo() ? (
-              <MemoEditor transaction={props.transaction} stopEditing={stopEditing} />
-            ) : (
+        <div
+          class="ml-2 min-w-0 flex-1 border-x"
+          classList={{
+            "border-gray-200": props.isEditing && !editingMemo(),
+            "border-transparent": !props.isEditing || editingMemo(),
+            "px-2": !editingMemo(),
+            "-my-1": editingMemo()
+          }}
+        >
+          <Show
+            when={editingMemo()}
+            fallback={
               <>
                 <div
                   class="truncate leading-none"
@@ -56,9 +72,6 @@ const TransactionItem: Component<{ transaction: any; parent?: any; isEditing: bo
                   onClick={() => props.isEditing && setEditingMemo(true)}
                 >
                   {props.transaction.memo}
-                  <Show when={props.isEditing && includeInReports()}>
-                    <EditableIndicator />
-                  </Show>
                 </div>
                 <Show when={!parent && !props.isEditing}>
                   <div
@@ -72,19 +85,30 @@ const TransactionItem: Component<{ transaction: any; parent?: any; isEditing: bo
                   </div>
                 </Show>
               </>
-            )}
-          </div>
-          <div
-            class="ml-2 whitespace-nowrap"
-            classList={{ "text-gray-600 line-through": !includeInReports() }}
+            }
           >
-            {props.transaction.amount.formatted}
-          </div>
-          {/* {props.isEditing && !parent && <SplitTransactionButton transaction={props.transaction} />}
+            <MemoEditor transaction={props.transaction} stopEditing={stopEditing} />
+          </Show>
+        </div>
+        <div
+          class="ml-2 whitespace-nowrap"
+          classList={{
+            "text-gray-600 line-through": !includeInReports(),
+            "pr-2 border-r border-gray-200": props.isEditing
+          }}
+        >
+          {props.transaction.amount.formatted}
+        </div>
+        <Show when={props.isEditing && !props.parent}>
+          <Button size="sm" variant="ghost" class="ml-2">
+            <TbDots />
+          </Button>
+        </Show>
+
+        {/* {props.isEditing && !parent && <SplitTransactionButton transaction={props.transaction} />}
           {props.isEditing && <VisibilityEditor transaction={props.transaction} />}
           {props.isEditing && <DeleteTransactionButton transaction={props.transaction} />} */}
-        </div>
-      </Dynamic>
+      </div>
       <For each={props.transaction.splitTo}>
         {(child: any) => (
           <TransactionItem

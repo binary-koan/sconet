@@ -7,7 +7,7 @@ const transactionsData: RouteDataFunc<unknown, TransactionsListPageData> = ({
   params,
   location
 }) => {
-  const [data] = useTransactionsQuery(() => ({
+  const data = useTransactionsQuery(() => ({
     limit: parseInt(new URLSearchParams(location.search).get("limit") || "100"),
     filter: JSON.parse(params.filter || "{}")
   }))

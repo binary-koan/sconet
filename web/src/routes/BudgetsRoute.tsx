@@ -8,7 +8,7 @@ const budgetsRouteData: RouteDataFunc<unknown, BudgetsPageData> = ({ params }) =
   const year = () => params.yearmonth.split("-")[0]
   const month = () => params.yearmonth.split("-")[1]
 
-  const [data] = useBudgetQuery(() => ({
+  const data = useBudgetQuery(() => ({
     year: parseInt(year()),
     month: parseInt(month())
   }))

@@ -1,18 +1,19 @@
 import { Title } from "@solidjs/meta"
 import { useNavigate, useRouteData } from "@solidjs/router"
 import { TbArrowLeft, TbArrowRight } from "solid-icons/tb"
-import { createEffect, Resource } from "solid-js"
+import { createEffect } from "solid-js"
 import { Dynamic } from "solid-js/web"
 import { Button } from "../components/base/Button"
 import { PageHeader } from "../components/base/PageHeader"
 import { Budgets } from "../components/budgets/Budgets"
 import { Cell } from "../components/Cell"
-import { BudgetQuery } from "../graphql-types"
+import { BudgetQuery, BudgetQueryVariables } from "../graphql-types"
+import { QueryResource } from "../graphqlClient"
 import { decrementMonth, incrementMonth } from "../utils/date"
 import { setLastViewedBudget } from "../utils/transactions/viewPreference"
 
 export interface BudgetsPageData {
-  data: Resource<BudgetQuery>
+  data: QueryResource<BudgetQuery, BudgetQueryVariables>
   year: string
   month: string
 }

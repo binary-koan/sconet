@@ -11,7 +11,7 @@ const REORDER_CATEGORIES_MUTATION = gql`
   }
 `
 
-export const useReorderCategories = (options: MutationOptions<ReorderCategoriesMutation>) =>
+export const useReorderCategories = (options: MutationOptions<ReorderCategoriesMutation> = {}) =>
   useMutation<ReorderCategoriesMutation, ReorderCategoriesMutationVariables>(
     REORDER_CATEGORIES_MUTATION,
     {

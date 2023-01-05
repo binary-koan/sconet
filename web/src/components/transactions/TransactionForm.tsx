@@ -26,9 +26,9 @@ const TransactionForm: Component<{
   onSave: (input: CreateTransactionInput) => void | ((input: UpdateTransactionInput) => void)
   loading: boolean
 }> = (props) => {
-  const [categories] = useCategoriesQuery()
-  const [accountMailboxes] = useAccountMailboxesQuery()
-  const [currencies] = useCurrenciesQuery()
+  const categories = useCategoriesQuery()
+  const accountMailboxes = useAccountMailboxesQuery()
+  const currencies = useCurrenciesQuery()
 
   const form = createForm<TransactionFormValues>({
     initialValues: {

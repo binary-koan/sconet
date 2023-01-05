@@ -1,19 +1,27 @@
 import { Title } from "@solidjs/meta"
 import { useRouteData } from "@solidjs/router"
-import { Component, Resource } from "solid-js"
+import { Component } from "solid-js"
 import toast from "solid-toast"
 import AccountMailboxes from "../components/accountMailboxes/AccountMailboxes"
 import { Button, LinkButton } from "../components/base/Button"
 import { PageHeader } from "../components/base/PageHeader"
 import CategoriesList from "../components/categories/Categories"
 import { Cell } from "../components/Cell"
-import { AccountMailboxesQuery, CategoriesQuery, CurrentUserQuery } from "../graphql-types"
+import {
+  AccountMailboxesQuery,
+  AccountMailboxesQueryVariables,
+  CategoriesQuery,
+  CategoriesQueryVariables,
+  CurrentUserQuery,
+  CurrentUserQueryVariables
+} from "../graphql-types"
+import { QueryResource } from "../graphqlClient"
 import { setLoginToken } from "../utils/auth"
 
 export interface SettingsPageData {
-  categories: Resource<CategoriesQuery>
-  accountMailboxes: Resource<AccountMailboxesQuery>
-  currentUser: Resource<CurrentUserQuery>
+  categories: QueryResource<CategoriesQuery, CategoriesQueryVariables>
+  accountMailboxes: QueryResource<AccountMailboxesQuery, AccountMailboxesQueryVariables>
+  currentUser: QueryResource<CurrentUserQuery, CurrentUserQueryVariables>
 }
 
 const SettingsPage: Component = () => {

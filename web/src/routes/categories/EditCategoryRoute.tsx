@@ -4,7 +4,7 @@ import { useGetCategoryQuery } from "../../graphql/queries/getCategoryQuery"
 import { EditCategoryPageData } from "../../pages/categories/EditCategoryPage"
 
 const editCategoryData: RouteDataFunc<unknown, EditCategoryPageData> = ({ params }) => {
-  const [data] = useGetCategoryQuery(() => ({ id: params.id }))
+  const data = useGetCategoryQuery(() => ({ id: params.id }))
 
   return { data }
 }

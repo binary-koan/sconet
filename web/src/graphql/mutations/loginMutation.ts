@@ -8,11 +8,8 @@ const LOGIN_MUTATION = gql`
   }
 `
 
-export const useLoginMutation = (options: MutationOptions<LoginMutation>) =>
-  useMutation<LoginMutation, LoginMutationVariables>(
-    LOGIN_MUTATION,
-    {
-      refetchQueries: 'ALL',
-      ...options
-    }
-  )
+export const useLoginMutation = (options: MutationOptions<LoginMutation> = {}) =>
+  useMutation<LoginMutation, LoginMutationVariables>(LOGIN_MUTATION, {
+    refetchQueries: "ALL",
+    ...options
+  })

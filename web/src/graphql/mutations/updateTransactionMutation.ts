@@ -12,7 +12,7 @@ const UPDATE_TRANSACTION_MUTATION = gql`
   }
 `
 
-export const useUpdateTransaction = (options: MutationOptions<UpdateTransactionMutation>) =>
+export const useUpdateTransaction = (options: MutationOptions<UpdateTransactionMutation> = {}) =>
   useMutation<UpdateTransactionMutation, UpdateTransactionMutationVariables>(
     UPDATE_TRANSACTION_MUTATION,
     {

@@ -11,7 +11,7 @@ const CREATE_TRANSACTION_MUTATION = gql`
   }
 `
 
-export const useCreateTransaction = (options: MutationOptions<CreateTransactionMutation>) =>
+export const useCreateTransaction = (options: MutationOptions<CreateTransactionMutation> = {}) =>
   useMutation<CreateTransactionMutation, CreateTransactionMutationVariables>(
     CREATE_TRANSACTION_MUTATION,
     {

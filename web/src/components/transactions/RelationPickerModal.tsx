@@ -20,7 +20,7 @@ const RelationPickerModal: Component<{
           Select <ModalCloseButton onClick={props.onClose} />
         </ModalTitle>
 
-        <div classList={{ "pb-8": props.categoryProps.multiple }}>
+        <div class="mb-8">
           <Show when={!props.isIncome}>
             <h3 class="mb-4 font-semibold">
               {props.categoryProps.multiple ? "Categories" : "Category"}

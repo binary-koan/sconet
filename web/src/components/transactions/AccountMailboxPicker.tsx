@@ -9,10 +9,10 @@ export type ValueProps = {
 }
 
 const AccountMailboxPicker: Component<ValueProps> = (props) => {
-  const [data] = useAccountMailboxesQuery()
+  const data = useAccountMailboxesQuery()
 
   return (
-    <div class="flex flex-col gap-2">
+    <div class="flex flex-wrap gap-2">
       <For each={data()?.accountMailboxes}>
         {(accountMailbox) => (
           <AccountMailboxOption accountMailbox={accountMailbox} valueProps={props} />
@@ -37,7 +37,6 @@ const AccountMailboxOption: Component<{
   return (
     <Button
       size="sm"
-      class="block w-full"
       colorScheme={isCurrent ? "primary" : "neutral"}
       variant={isCurrent ? "solid" : "ghost"}
       onClick={onClick}

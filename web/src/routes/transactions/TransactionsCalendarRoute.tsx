@@ -9,7 +9,7 @@ const transactionsData: RouteDataFunc<unknown, TransactionsCalendarPageData> = (
   const lastDateOfMonth = () =>
     new Date(parseInt(year()), parseInt(month()), 0).getDate().toString().padStart(2, "0")
 
-  const [data] = useTransactionsQuery(() => ({
+  const data = useTransactionsQuery(() => ({
     filter: {
       dateFrom: `${year()}-${month()}-01`,
       dateUntil: `${year()}-${month()}-${lastDateOfMonth()}`
@@ -29,7 +29,9 @@ const transactionsData: RouteDataFunc<unknown, TransactionsCalendarPageData> = (
   }
 }
 
-const TransactionsCalendarPage = lazy(() => import("../../pages/transactions/TransactionsCalendarPage"))
+const TransactionsCalendarPage = lazy(
+  () => import("../../pages/transactions/TransactionsCalendarPage")
+)
 
 export const TransactionsCalendarRoute: Component = () => {
   return (

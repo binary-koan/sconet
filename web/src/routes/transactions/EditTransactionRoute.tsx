@@ -4,7 +4,7 @@ import { useGetTransactionQuery } from "../../graphql/queries/getTransactionQuer
 import { EditTransactionPageData } from "../../pages/transactions/EditTransactionPage"
 
 const editTransactionData: RouteDataFunc<unknown, EditTransactionPageData> = ({ params }) => {
-  const [data] = useGetTransactionQuery(() => ({ id: params.id }))
+  const data = useGetTransactionQuery(() => ({ id: params.id }))
 
   return { data }
 }

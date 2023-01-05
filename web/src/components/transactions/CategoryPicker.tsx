@@ -19,10 +19,10 @@ export type ValueProps =
     }
 
 const CategoryPicker: Component<ValueProps> = (props) => {
-  const [data] = useCategoriesQuery()
+  const data = useCategoriesQuery()
 
   return (
-    <div class="flex flex-col gap-2">
+    <div class="flex flex-wrap gap-2">
       <For each={data()?.categories}>
         {(category) => <CategoryOption category={category} valueProps={props} />}
       </For>
@@ -62,7 +62,7 @@ const CategoryOption: Component<{
   return (
     <Button
       size="sm"
-      class="block w-full gap-2"
+      class="gap-2"
       colorScheme={isCurrent() ? "primary" : "neutral"}
       variant={isCurrent() ? "solid" : "ghost"}
       onClick={onClick}

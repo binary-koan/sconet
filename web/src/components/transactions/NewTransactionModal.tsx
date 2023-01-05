@@ -4,8 +4,6 @@ import { CreateTransactionInput } from "../../graphql-types"
 import { useCreateTransaction } from "../../graphql/mutations/createTransactionMutation"
 import { Button } from "../base/Button"
 import { Modal, ModalCloseButton, ModalContent, ModalTitle } from "../base/Modal"
-import { FormDatePicker } from "../forms/FormDatePicker"
-import FormInput from "../forms/FormInput"
 
 export const NewTransactionModal: Component<{ isOpen: boolean; onClose: () => void }> = (props) => {
   const createTransaction = useCreateTransaction({
@@ -36,9 +34,9 @@ export const NewTransactionModal: Component<{ isOpen: boolean; onClose: () => vo
           <span>Test account</span>
         </div>
 
-        <FormInput label="Memo" name="memo" />
+        {/* <FormInput label="Memo" name="memo" />
         <FormDatePicker label="Date" name="date" defaultValue={new Date()} />
-        <FormInput label="Amount" name="amount" />
+        <FormInput label="Amount" name="amount" /> */}
 
         <Button
           type="submit"

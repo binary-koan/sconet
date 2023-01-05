@@ -1,16 +1,17 @@
 import { Title } from "@solidjs/meta"
 import { useNavigate, useRouteData } from "@solidjs/router"
 import { TbLayoutList } from "solid-icons/tb"
-import { Component, onMount, Resource } from "solid-js"
+import { Component, onMount } from "solid-js"
 import { Button } from "../../components/base/Button"
 import { PageHeader } from "../../components/base/PageHeader"
 import { Cell } from "../../components/Cell"
 import { TransactionsCalendar } from "../../components/transactions/TransactionsCalendar"
-import { TransactionsQuery } from "../../graphql-types"
+import { TransactionsQuery, TransactionsQueryVariables } from "../../graphql-types"
+import { QueryResource } from "../../graphqlClient"
 import { setTransactionsViewPreference } from "../../utils/transactions/viewPreference"
 
 export interface TransactionsCalendarPageData {
-  data: Resource<TransactionsQuery>
+  data: QueryResource<TransactionsQuery, TransactionsQueryVariables>
   year: string
   month: string
 }

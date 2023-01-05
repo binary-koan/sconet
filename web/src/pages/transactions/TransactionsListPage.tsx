@@ -1,15 +1,16 @@
 import { Title } from "@solidjs/meta"
 import { Link, useNavigate, useRouteData } from "@solidjs/router"
 import { TbCalendarEvent, TbEdit, TbFilter, TbPlus, TbX } from "solid-icons/tb"
-import { Component, createSignal, onMount, Resource } from "solid-js"
+import { Component, createSignal, onMount } from "solid-js"
 import { Button } from "../../components/base/Button"
 import { PageHeader } from "../../components/base/PageHeader"
 import { Cell } from "../../components/Cell"
 import TransactionFilters, {
   TransactionFilterValues
 } from "../../components/transactions/TransactionFilters"
-import { TransactionsList } from "../../components/transactions/Transactions"
-import { TransactionsQuery } from "../../graphql-types"
+import { TransactionsList } from "../../components/transactions/TransactionsList"
+import { TransactionsQuery, TransactionsQueryVariables } from "../../graphql-types"
+import { QueryResource } from "../../graphqlClient"
 import usePageFilter from "../../hooks/usePageFilter"
 import { setTransactionsViewPreference } from "../../utils/transactions/viewPreference"
 
@@ -22,7 +23,7 @@ const BLANK_FILTERS = {
 }
 
 export interface TransactionsListPageData {
-  data: Resource<TransactionsQuery>
+  data: QueryResource<TransactionsQuery, TransactionsQueryVariables>
 }
 
 const TransactionsListPage: Component = () => {

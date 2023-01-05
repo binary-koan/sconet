@@ -14,7 +14,9 @@ const DELETE_ACCOUNT_MAILBOX_MUTATION = gql`
   }
 `
 
-export const useDeleteAccountMailbox = (options: MutationOptions<DeleteAccountMailboxMutation>) =>
+export const useDeleteAccountMailbox = (
+  options: MutationOptions<DeleteAccountMailboxMutation> = {}
+) =>
   useMutation<DeleteAccountMailboxMutation, DeleteAccountMailboxMutationVariables>(
     DELETE_ACCOUNT_MAILBOX_MUTATION,
     {

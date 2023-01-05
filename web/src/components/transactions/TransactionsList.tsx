@@ -1,9 +1,9 @@
+import { TbPlus } from "solid-icons/tb"
 import { Component, createMemo, For, Show } from "solid-js"
-import { TransactionsQuery } from "../../graphql-types"
+import { FullTransactionFragment, TransactionsQuery } from "../../graphql-types"
 import { monthRange } from "../../utils/date"
 import { formatDate } from "../../utils/formatters"
 import { Button } from "../base/Button"
-import NewTransactionItem from "./NewTransactionItem"
 import { TransactionFilterValues } from "./TransactionFilters"
 import TransactionItem from "./TransactionItem"
 
@@ -25,7 +25,7 @@ export const TransactionsList: Component<{
       `${transactions.at(-1)!.date.split("T")[0]}T00:00:00+09:00`
     )
 
-    const items: Array<{ date: Date; transactions: any[] }> = []
+    const items: Array<{ date: Date; transactions: FullTransactionFragment[] }> = []
 
     for (
       let date = new Date(firstTransactionDate);
@@ -75,13 +75,20 @@ export const TransactionsList: Component<{
                 </div>
               </Show>
 
-              <div class="px-4 py-2 text-sm text-gray-600">
+              <div class="flex justify-between px-4 py-2 text-sm text-gray-600">
                 {formatDate(date, "fullDateWithoutYear")}
-              </div>
 
-              <Show when={props.isEditing}>
-                <NewTransactionItem date={newTransactionDate} />
-              </Show>
+                <Show when={props.isEditing}>
+                  <Button
+                    variant="ghost"
+                    size="custom"
+                    class="ml-2 hidden h-5 w-5 text-xs lg:flex"
+                    onClick={() => {}}
+                  >
+                    <TbPlus />
+                  </Button>
+                </Show>
+              </div>
 
               <For each={transactions}>
                 {(transaction) => (
@@ -89,7 +96,7 @@ export const TransactionsList: Component<{
                 )}
               </For>
 
-              <Show when={!props.isEditing && !transactions.length}>
+              <Show when={!transactions.length}>
                 <div class="flex items-center px-4 pb-2 italic text-gray-600">-</div>
               </Show>
             </>

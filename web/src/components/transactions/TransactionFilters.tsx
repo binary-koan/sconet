@@ -17,7 +17,7 @@ export type TransactionFilterValues = {
 const TransactionFilters: Component<{
   form: FormState<TransactionFilterValues>
 }> = (props) => {
-  const [data] = useCategoriesQuery()
+  const data = useCategoriesQuery()
 
   createEffect(() => console.log(getValues(props.form)))
 

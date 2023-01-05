@@ -7,7 +7,7 @@ const ConfirmCancelButtons: Component<{ onConfirm: () => void; onCancel: () => v
   props
 ) => {
   return (
-    <InputAddon class="w-24">
+    <InputAddon class="flex w-24">
       <Button
         size="custom"
         class="h-6 flex-1"

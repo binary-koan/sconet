@@ -1,4 +1,3 @@
-import { TbCaretDown } from "solid-icons/tb"
 import { Component, createEffect, createSignal, Show } from "solid-js"
 import { namedIcons } from "../../utils/namedIcons"
 import CategoryIndicator from "../CategoryIndicator"
@@ -33,12 +32,9 @@ const RelationEditInput: Component<{
           includeInReports={props.includeInReports}
           isIncome={props.isIncome}
         />
-        <Show when={props.isEditing && props.includeInReports && !props.hasChildren}>
-          <CategoryEditIndicator category={props.category} />
-        </Show>
       </div>
 
-      <Show when={props.isEditing}>
+      <Show when={props.isEditing && modalOpen()}>
         <RelationPickerModal
           isIncome={props.isIncome}
           categoryProps={{
@@ -50,19 +46,11 @@ const RelationEditInput: Component<{
             value: props.accountMailbox,
             onChange: props.onChangeAccountMailbox
           }}
-          isOpen={modalOpen()}
+          isOpen={true}
           onClose={() => setModalOpen(false)}
         />
       </Show>
     </>
-  )
-}
-
-const CategoryEditIndicator: Component<{ category: any }> = () => {
-  return (
-    <div class="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full border-2 border-gray-600 bg-white text-gray-600">
-      <TbCaretDown />
-    </div>
   )
 }
 

@@ -1,14 +1,19 @@
 import { useNavigate, useRouteData } from "@solidjs/router"
-import { Component, Resource } from "solid-js"
+import { Component } from "solid-js"
 import toast from "solid-toast"
 import { Cell } from "../../components/Cell"
 import FormPageWrapper from "../../components/FormPageWrapper"
 import TransactionForm from "../../components/transactions/TransactionForm"
-import { CreateTransactionInput, GetTransactionQuery } from "../../graphql-types"
+import {
+  CreateTransactionInput,
+  GetTransactionQuery,
+  GetTransactionQueryVariables
+} from "../../graphql-types"
 import { useUpdateTransaction } from "../../graphql/mutations/updateTransactionMutation"
+import { QueryResource } from "../../graphqlClient"
 
 export interface EditTransactionPageData {
-  data: Resource<GetTransactionQuery>
+  data: QueryResource<GetTransactionQuery, GetTransactionQueryVariables>
 }
 
 const EditTransactionPage: Component = () => {

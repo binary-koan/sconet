@@ -1,5 +1,6 @@
-import { Component, ErrorBoundary, JSX, Match, Resource, Switch } from "solid-js"
+import { Component, ErrorBoundary, JSX, Match, Switch } from "solid-js"
 import { Dynamic } from "solid-js/web"
+import { QueryResource } from "../graphqlClient"
 import LoadingBar from "./LoadingBar"
 
 const DefaultLoader = () => <LoadingBar />
@@ -7,8 +8,8 @@ const DefaultFailure: Component<{ error: any }> = (props) => (
   <div class="rounded bg-red-100 p-4 text-red-700">{props.error.message}</div>
 )
 
-export const Cell: <Data, OtherProps = never>(props: {
-  data: Resource<Data>
+export const Cell: <Data, Variables, OtherProps = never>(props: {
+  data: QueryResource<Data, Variables>
   loading?: Component
   failure?: Component<{ error: any }>
   success: Component<{ data: Data } & OtherProps>
@@ -22,10 +23,10 @@ export const Cell: <Data, OtherProps = never>(props: {
       }}
     >
       <Switch>
-        <Match when={props.data.state === "unresolved" || props.data.state === "pending"}>
+        <Match when={props.data.loading}>
           <Dynamic component={props.loading || DefaultLoader} />
         </Match>
-        <Match when={props.failure && props.data.state === "errored"}>
+        <Match when={props.failure && props.data.error}>
           <Dynamic component={props.failure || DefaultFailure} error={props.data.error} />
         </Match>
         <Match when={true}>

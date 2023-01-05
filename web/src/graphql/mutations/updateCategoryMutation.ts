@@ -21,7 +21,7 @@ const UPDATE_CATEGORY_MUTATION = gql`
   }
 `
 
-export const useUpdateCategory = (options: MutationOptions<UpdateCategoryMutation>) =>
+export const useUpdateCategory = (options: MutationOptions<UpdateCategoryMutation> = {}) =>
   useMutation<UpdateCategoryMutation, UpdateCategoryMutationVariables>(UPDATE_CATEGORY_MUTATION, {
     refetchQueries: [CATEGORIES_QUERY, GET_CATEGORY_QUERY],
     ...options
