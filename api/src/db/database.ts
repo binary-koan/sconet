@@ -16,11 +16,21 @@ export const db: Database = {
   },
 
   query(sqlQuery) {
-    return wrapStatement(sqlQuery, [], sqlite.query(sqlQuery))
+    try {
+      return wrapStatement(sqlQuery, [], sqlite.query(sqlQuery))
+    } catch (e) {
+      console.log(`Error in query: ${sqlQuery}`)
+      throw e
+    }
   },
 
   prepare(sqlQuery, ...params) {
-    return wrapStatement(sqlQuery, params, sqlite.prepare(sqlQuery, ...params))
+    try {
+      return wrapStatement(sqlQuery, params, sqlite.prepare(sqlQuery, ...params))
+    } catch (e) {
+      console.log(`Error in query: ${sqlQuery}`)
+      throw e
+    }
   },
 
   get inTransaction() {

@@ -5,6 +5,7 @@ export function fieldsUpdateQuery(fields: { [key: string]: any }) {
   return Object.keys(fields)
     .map(assertFieldName)
     .map((key) => `${key} = $${key}`)
+    .join(", ")
 }
 
 export function fieldsInsertQuery(id: string, fields: { [key: string]: any }) {

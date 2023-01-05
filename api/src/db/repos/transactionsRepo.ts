@@ -1,4 +1,4 @@
-import { pickBy } from "lodash"
+import { isEmpty, pickBy } from "lodash"
 import { MakeOptional } from "../../types"
 import { db } from "../database"
 import { filterTransactions } from "../queries/transaction/filterTransactions"
@@ -68,6 +68,10 @@ export const transactionsRepo = createRepo({
 
     updateSplitTransactions(fromId: string, fields: Partial<TransactionRecord>) {
       const fieldsToSet = serializeTransaction(pickBy(fields, (value) => value !== undefined))
+
+      if (isEmpty(fieldsToSet)) {
+        return fromId
+      }
 
       db.run(
         `UPDATE transactions SET ${fieldsUpdateQuery(fieldsToSet)} WHERE splitFromId = $fromId`,

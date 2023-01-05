@@ -1,5 +1,5 @@
 import ObjectID from "bson-objectid"
-import { keyBy, pickBy } from "lodash"
+import { isEmpty, keyBy, pickBy } from "lodash"
 import { db } from "./database"
 import { serializeDate } from "./utils"
 import { assertFieldName } from "./utils/assertFieldName"
@@ -72,7 +72,7 @@ export const createRepo = <
     },
 
     get(id) {
-      const result = db.query("SELECT * FROM ${tableName} WHERE id = ?").get(id)
+      const result = db.query(`SELECT * FROM ${tableName} WHERE id = ?`).get(id)
 
       return result && load(result)
     },
@@ -95,9 +95,13 @@ export const createRepo = <
     },
 
     updateOne(id, fields) {
-      const fieldsToSet = {
-        ...serialize(pickBy(fields, (value) => value !== undefined) as Partial<Record>),
+      const fieldsToSet = serialize({
+        ...(pickBy(fields, (value) => value !== undefined) as Partial<Record>),
         updatedAt: new Date()
+      })
+
+      if (isEmpty(fieldsToSet)) {
+        return id
       }
 
       db.run(

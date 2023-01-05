@@ -54,7 +54,7 @@ import {
   transaction,
   transactions,
   updateTransaction
-} from "./resolvers/transaction"
+} from "./resolvers/transactions"
 
 const resolvers: Resolvers = {
   Query: {
