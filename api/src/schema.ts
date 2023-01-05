@@ -17,7 +17,7 @@ import {
   createAccountMailbox,
   deleteAccountMailbox,
   updateAccountMailbox
-} from "./resolvers/accountMailbox"
+} from "./resolvers/accountMailboxes"
 import { budget, CategoryBudget, CategoryBudgetGroup, MonthBudget } from "./resolvers/budgets"
 import {
   categories,

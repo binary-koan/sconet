@@ -1,18 +1,17 @@
-import { jwtVerify, errors } from "jose"
 import Dataloader from "dataloader"
-import { ExecutionContext } from "graphql-helix"
-import { AccountMailboxRecord } from "./db/records/accountMailbox"
-import { findAccountMailboxesByIds } from "./db/queries/accountMailbox/findAccountMailboxesByIds"
-import { CategoryRecord } from "./db/records/category"
-import { findCategoriesByIds } from "./db/queries/category/findCategoriesByIds"
-import { TransactionRecord } from "./db/records/transaction"
-import { findTransactionsByIds } from "./db/queries/transaction/findTransactionsByIds"
-import { findTransactionsSplitToByIds } from "./db/queries/transaction/findTransactionsSplitToByIds"
 import { GraphQLError } from "graphql"
-import { findCurrenciesByIds } from "./db/queries/currency/findCurrenciesByIds"
-import { CurrencyRecord } from "./db/records/currency"
-import { findExchangeRatesByCodes } from "./db/queries/exchangeRate/findExchangeRatesByCodes"
+import { ExecutionContext } from "graphql-helix"
+import { errors, jwtVerify } from "jose"
 import { last } from "lodash"
+import { findExchangeRatesByCodes } from "./db/queries/exchangeRate/findExchangeRatesByCodes"
+import { AccountMailboxRecord } from "./db/records/accountMailbox"
+import { CategoryRecord } from "./db/records/category"
+import { CurrencyRecord } from "./db/records/currency"
+import { TransactionRecord } from "./db/records/transaction"
+import { accountMailboxesRepo } from "./db/repos/accountMailboxesRepo"
+import { categoriesRepo } from "./db/repos/categoriesRepo"
+import { currenciesRepo } from "./db/repos/currenciesRepo"
+import { transactionsRepo } from "./db/repos/transactionsRepo"
 
 export interface Context {
   auth?: {
@@ -38,11 +37,13 @@ export async function buildContext(
   return {
     auth: await getAuthDetails(request),
     data: {
-      accountMailbox: new Dataloader(async (ids) => findAccountMailboxesByIds(ids)),
-      category: new Dataloader(async (ids) => findCategoriesByIds(ids)),
-      transaction: new Dataloader(async (ids) => findTransactionsByIds(ids)),
-      transactionSplitTo: new Dataloader(async (ids) => findTransactionsSplitToByIds(ids)),
-      currency: new Dataloader(async (ids) => findCurrenciesByIds(ids)),
+      accountMailbox: new Dataloader(async (ids) => accountMailboxesRepo.findByIds(ids)),
+      category: new Dataloader(async (ids) => categoriesRepo.findByIds(ids)),
+      transaction: new Dataloader(async (ids) => transactionsRepo.findByIds(ids)),
+      transactionSplitTo: new Dataloader(async (ids) =>
+        transactionsRepo.findSplitTransactionsByIds(ids)
+      ),
+      currency: new Dataloader(async (ids) => currenciesRepo.findByIds(ids)),
       exchangeRate: new Dataloader(async (queries) => findExchangeRatesByCodes(queries))
     }
   }

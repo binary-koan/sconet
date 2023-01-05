@@ -1,7 +1,7 @@
-import { db } from "../../database"
-import { assertFieldName } from "../../../utils/assertFieldName"
 import { mapKeys, pickBy } from "lodash"
+import { db } from "../../database"
 import { UserRecord } from "../../records/user"
+import { assertFieldName } from "../../utils/assertFieldName"
 
 export function updateOneUser(id: string, fields: Partial<UserRecord>) {
   const fieldsToSet = pickBy(fields, (value) => value !== undefined)

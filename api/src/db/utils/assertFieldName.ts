@@ -3,5 +3,5 @@ export function assertFieldName(field: string) {
     throw new Error(`Invalid field name in database query: ${field}`)
   }
 
-  return true
+  return field
 }

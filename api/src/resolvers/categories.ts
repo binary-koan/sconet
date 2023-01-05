@@ -1,29 +1,24 @@
-import { findCategories } from "../db/queries/category/findCategories"
-import { getCategory } from "../db/queries/category/getCategory"
-import { insertCategory } from "../db/queries/category/insertCategory"
-import { setCategoryOrder } from "../db/queries/category/setCategoryOrder"
-import { softDeleteCategory } from "../db/queries/category/softDeleteCategory"
-import { updateOneCategory } from "../db/queries/category/updateOneCategory"
 import { CategoryRecord } from "../db/records/category"
+import { categoriesRepo } from "../db/repos/categoriesRepo"
 import { MutationResolvers, QueryResolvers, Resolvers } from "../resolvers-types"
 import { convertCurrency } from "./money"
 
 export const categories: QueryResolvers["categories"] = () => {
-  return findCategories()
+  return categoriesRepo.findAll()
 }
 
 export const category: QueryResolvers["category"] = (_, { id }) => {
-  return getCategory(id) || null
+  return categoriesRepo.get(id) || null
 }
 
 export const createCategory: MutationResolvers["createCategory"] = (_, { input }) => {
-  const id = insertCategory(input)
+  const id = categoriesRepo.insert(input)
 
-  return getCategory(id)!
+  return categoriesRepo.get(id)!
 }
 
 export const updateCategory: MutationResolvers["updateCategory"] = (_, { id, input }) => {
-  const category = getCategory(id)
+  const category = categoriesRepo.get(id)
 
   if (!category) {
     throw new Error("Not found")
@@ -37,27 +32,27 @@ export const updateCategory: MutationResolvers["updateCategory"] = (_, { id, inp
     isRegular: input.isRegular || undefined
   }
 
-  updateOneCategory(id, updates)
+  categoriesRepo.updateOne(id, updates)
 
-  return getCategory(id)!
+  return categoriesRepo.get(id)!
 }
 
 export const deleteCategory: MutationResolvers["deleteCategory"] = (_, { id }) => {
-  const category = getCategory(id)
+  const category = categoriesRepo.get(id)
 
   if (!category) {
     throw new Error("Not found")
   }
 
-  softDeleteCategory(id)
+  categoriesRepo.softDelete(id)
 
   return category
 }
 
 export const reorderCategories: MutationResolvers["reorderCategories"] = (_, { orderedIds }) => {
-  setCategoryOrder(orderedIds)
+  categoriesRepo.setOrder(orderedIds)
 
-  return findCategories()
+  return categoriesRepo.findAll()
 }
 
 export const Category: Resolvers["Category"] = {

@@ -1,8 +1,9 @@
-import { fromPairs, keyBy } from "lodash"
+import { keyBy } from "lodash"
 import { MakeOptional } from "../../../types"
 import { db } from "../../database"
 import { ExchangeRateRecord } from "../../records/exchangeRate"
-import { findCurrencies } from "../currency/findCurrencies"
+import { currenciesRepo } from "../../repos/currenciesRepo"
+import { arrayBindings, arrayQuery } from "../../utils/fields"
 
 export type ExchangeRateForInsert = MakeOptional<
   Omit<ExchangeRateRecord, "id">,
@@ -16,7 +17,7 @@ export function findExchangeRatesByCodes(
     return []
   }
 
-  const currencies = keyBy(findCurrencies(), (currency) => currency.code)
+  const currencies = keyBy(currenciesRepo.findAll(), "code")
 
   if (
     queries.some(
@@ -27,15 +28,13 @@ export function findExchangeRatesByCodes(
     throw new Error("Unknown currency code")
   }
 
-  const args = fromPairs(queries.map(({ from }, index) => [`$from${index}`, currencies[from].id]))
-
   const allRates = db
     .query(
-      `SELECT * FROM exchangeRates WHERE deletedAt IS NULL AND fromCurrencyId IN (${queries
-        .map((_, index) => `$from${index}`)
-        .join(",")})`
+      `SELECT * FROM exchangeRates WHERE deletedAt IS NULL AND fromCurrencyId IN ${arrayQuery(
+        queries
+      )}`
     )
-    .all(args)
+    .all(arrayBindings(queries.map(({ from }) => currencies[from].id)))
 
   return queries.map((query) => {
     const from = currencies[query.from].id

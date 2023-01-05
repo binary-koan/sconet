@@ -1,9 +1,9 @@
+import bcrypt from "bcryptjs"
 import ObjectID from "bson-objectid"
 import { db } from "../database"
-import bcrypt from "bcryptjs"
-import { insertCategory } from "../queries/category/insertCategory"
+import { accountMailboxesRepo } from "../repos/accountMailboxesRepo"
+import { categoriesRepo } from "../repos/categoriesRepo"
 import { serializeDate } from "../utils"
-import { insertAccountMailbox } from "../queries/accountMailbox/insertAccountMailbox"
 
 export function seed() {
   for (const email of process.env.USER_EMAILS?.split(",") || []) {
@@ -24,19 +24,19 @@ export function seed() {
     }
   }
 
-  insertCategory({
+  categoriesRepo.insert({
     name: "First",
     color: "danger",
     icon: "3d-cube-sphere"
   })
 
-  insertCategory({
+  categoriesRepo.insert({
     name: "Second",
     color: "success",
     icon: "3d-cube-sphere"
   })
 
-  insertAccountMailbox({
+  accountMailboxesRepo.insert({
     name: "Test",
     mailServerOptions: {},
     fromAddressPattern: "",

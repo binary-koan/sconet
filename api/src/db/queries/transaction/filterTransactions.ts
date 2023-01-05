@@ -2,15 +2,17 @@ import { memoize } from "lodash"
 import { Maybe } from "../../../types"
 import { db } from "../../database"
 import { TransactionRecord } from "../../records/transaction"
+import { loadTransaction } from "../../repos/transactions/loadTransaction"
 import { serializeDate } from "../../utils"
-import { loadTransaction } from "./loadTransaction"
+import { arrayBindings, arrayQuery } from "../../utils/fields"
+
 export interface FindTransactionsResult {
   data: TransactionRecord[]
   nextOffset?: string
   totalCount: number
 }
 
-export function findTransactions({
+export function filterTransactions({
   limit,
   offset,
   filter
@@ -61,15 +63,14 @@ export function findTransactions({
     const hasNullId = filter.categoryIds.some((categoryId) => !categoryId)
 
     const categoryIdsQueries = [
-      notNullIds.length &&
-        `categoryId IN (${notNullIds.map((_, index) => `$categoryId${index}`).join(",")})`,
+      notNullIds.length && `categoryId IN ${arrayQuery(notNullIds, "categoryId")}`,
       hasNullId && "categoryId IS NULL"
     ]
       .filter(Boolean)
       .join(" OR ")
 
     where += ` AND (${categoryIdsQueries})`
-    notNullIds.forEach((id, index) => (args[`$categoryId${index}`] = id))
+    args = { ...args, ...arrayBindings(notNullIds, "categoryId") }
   }
 
   if (offset) {

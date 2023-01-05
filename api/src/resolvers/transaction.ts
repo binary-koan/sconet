@@ -1,13 +1,6 @@
 import { omit, pick, sum } from "lodash"
-import { deleteSplitTransactions } from "../db/queries/transaction/deleteSplitTransactions"
-import { findTransactions } from "../db/queries/transaction/findTransactions"
-import { getTransaction } from "../db/queries/transaction/getTransaction"
-import { insertTransaction } from "../db/queries/transaction/insertTransaction"
-import { softDeleteSplitTransactions } from "../db/queries/transaction/softDeleteSplitTransactions"
-import { softDeleteTransaction } from "../db/queries/transaction/softDeleteTransaction"
-import { updateOneTransaction } from "../db/queries/transaction/updateOneTransaction"
-import { updateSplitTransactions } from "../db/queries/transaction/updateSplitTransactions"
 import { TransactionRecord } from "../db/records/transaction"
+import { transactionsRepo } from "../db/repos/transactionsRepo"
 import {
   MutationResolvers,
   QueryResolvers,
@@ -17,26 +10,26 @@ import {
 import { convertCurrency } from "./money"
 
 export const transactions: QueryResolvers["transactions"] = (_, { limit, offset, filter }) => {
-  return findTransactions({ limit, offset, filter })
+  return transactionsRepo.filter({ limit, offset, filter })
 }
 
 export const transaction: QueryResolvers["transaction"] = (_, { id }) => {
-  return getTransaction(id) || null
+  return transactionsRepo.get(id) || null
 }
 
 export const createTransaction: MutationResolvers["createTransaction"] = (_, { input }) => {
-  const id = insertTransaction({
+  const id = transactionsRepo.insert({
     ...input,
     date: input.date || new Date(),
     includeInReports: input.includeInReports || true,
     originalMemo: input.memo
   })
 
-  return getTransaction(id)!
+  return transactionsRepo.get(id)!
 }
 
 export const updateTransaction: MutationResolvers["updateTransaction"] = (_, { id, input }) => {
-  const transaction = getTransaction(id)
+  const transaction = transactionsRepo.get(id)
 
   if (!transaction) {
     throw new Error("Not found")
@@ -59,22 +52,24 @@ export const updateTransaction: MutationResolvers["updateTransaction"] = (_, { i
     accountMailboxId: updateInput.accountMailboxId || undefined
   }
 
-  updateOneTransaction(id, updates)
+  transactionsRepo.updateOne(id, updates)
+  transactionsRepo.updateSplitTransactions(
+    id,
+    pick(updates, ...parentAttributes, "includeInReports")
+  )
 
-  updateSplitTransactions(id, pick(updates, ...parentAttributes, "includeInReports"))
-
-  return getTransaction(id)!
+  return transactionsRepo.get(id)!
 }
 
 export const deleteTransaction: MutationResolvers["deleteTransaction"] = (_, { id }) => {
-  const transaction = getTransaction(id)
+  const transaction = transactionsRepo.get(id)
 
   if (!transaction) {
     throw new Error("Not found")
   }
 
-  softDeleteTransaction(id)
-  softDeleteSplitTransactions(id)
+  transactionsRepo.softDelete(id)
+  transactionsRepo.softDeleteSplitTransactions(id)
 
   return transaction
 }
@@ -83,7 +78,7 @@ export const splitTransaction: MutationResolvers["splitTransaction"] = async (
   _,
   { id, amounts }
 ) => {
-  const transaction = getTransaction(id)
+  const transaction = transactionsRepo.get(id)
 
   if (!transaction) {
     throw new Error("Not found")
@@ -97,12 +92,12 @@ export const splitTransaction: MutationResolvers["splitTransaction"] = async (
     throw new Error(`Transaction is already split from ${transaction.splitFromId}`)
   }
 
-  deleteSplitTransactions(transaction.id)
+  transactionsRepo.deleteSplitTransactions(transaction.id)
 
   const { id: _id, ...transactionAttributes } = transaction
 
   amounts.forEach((amount) => {
-    insertTransaction({
+    transactionsRepo.insert({
       ...transactionAttributes,
       splitFromId: transaction.id,
       amount

@@ -1,11 +1,11 @@
 import { fromPairs, keyBy, orderBy, sumBy, uniq, zip } from "lodash"
-import { findCategories } from "../db/queries/category/findCategories"
-import { findCurrencies } from "../db/queries/currency/findCurrencies"
 import { findExchangeRatesByCodes } from "../db/queries/exchangeRate/findExchangeRatesByCodes"
-import { findTransactions } from "../db/queries/transaction/findTransactions"
 import { CategoryRecord } from "../db/records/category"
 import { CurrencyRecord } from "../db/records/currency"
 import { TransactionRecord } from "../db/records/transaction"
+import { categoriesRepo } from "../db/repos/categoriesRepo"
+import { currenciesRepo } from "../db/repos/currenciesRepo"
+import { transactionsRepo } from "../db/repos/transactionsRepo"
 import { QueryResolvers, Resolvers } from "../resolvers-types"
 import { convertAmount } from "./money"
 
@@ -36,7 +36,7 @@ export const budget: QueryResolvers["budget"] = async (
   _,
   { year, month, timezoneOffset, currency }
 ) => {
-  const currenciesById = keyBy(findCurrencies(), "id")
+  const currenciesById = keyBy(currenciesRepo.findAll(), "id")
 
   const outputCurrency = Object.values(currenciesById).find((currencyRecord) =>
     currency ? currencyRecord.code === currency : true
@@ -57,8 +57,8 @@ export const budget: QueryResolvers["budget"] = async (
       .padStart(2, "0")}T23:59:59${timezoneOffset}`
   )
 
-  const transactions = findTransactions({ filter: { dateFrom: start, dateUntil: end } }).data
-  const categoriesById = keyBy(findCategories(), "id")
+  const transactions = transactionsRepo.filter({ filter: { dateFrom: start, dateUntil: end } }).data
+  const categoriesById = keyBy(categoriesRepo.findAll(), "id")
 
   const includedCategoryIds = orderBy(
     uniq(transactions.map((transaction) => transaction.categoryId)),

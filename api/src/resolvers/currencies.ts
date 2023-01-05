@@ -1,24 +1,20 @@
-import { CurrencyRecord } from "../db/records/currency"
-import { findCurrencies } from "../db/queries/currency/findCurrencies"
-import { getCurrency } from "../db/queries/currency/getCurrency"
-import { insertCurrency } from "../db/queries/currency/insertCurrency"
-import { softDeleteCurrency } from "../db/queries/currency/softDeleteCurrency"
-import { updateOneCurrency } from "../db/queries/currency/updateOneCurrency"
-import { MutationResolvers, QueryResolvers, Resolvers } from "../resolvers-types"
 import { insertExchangeRate } from "../db/queries/exchangeRate/insertExchangeRate"
+import { CurrencyRecord } from "../db/records/currency"
+import { currenciesRepo } from "../db/repos/currenciesRepo"
+import { MutationResolvers, QueryResolvers, Resolvers } from "../resolvers-types"
 
 export const currencies: QueryResolvers["currencies"] = () => {
-  return findCurrencies()
+  return currenciesRepo.findAll()
 }
 
 export const currency: QueryResolvers["currency"] = (_, { id }) => {
-  return getCurrency(id) || null
+  return currenciesRepo.get(id) || null
 }
 
 export const createCurrency: MutationResolvers["createCurrency"] = async (_, { input }) => {
-  const id = insertCurrency(input)
+  const id = currenciesRepo.insert(input)
 
-  const allCurrencies = findCurrencies()
+  const allCurrencies = currenciesRepo.findAll()
   const newCurrency = allCurrencies.find((currency) => currency.id === id)!
 
   await Promise.all(
@@ -48,7 +44,7 @@ export const createCurrency: MutationResolvers["createCurrency"] = async (_, { i
 }
 
 export const updateCurrency: MutationResolvers["updateCurrency"] = (_, { id, input }) => {
-  const currency = getCurrency(id)
+  const currency = currenciesRepo.get(id)
 
   if (!currency) {
     throw new Error("Not found")
@@ -56,19 +52,19 @@ export const updateCurrency: MutationResolvers["updateCurrency"] = (_, { id, inp
 
   const updates: Partial<CurrencyRecord> = input
 
-  updateOneCurrency(id, updates)
+  currenciesRepo.updateOne(id, updates)
 
-  return getCurrency(id)!
+  return currenciesRepo.get(id)!
 }
 
 export const deleteCurrency: MutationResolvers["deleteCurrency"] = (_, { id }) => {
-  const currency = getCurrency(id)
+  const currency = currenciesRepo.get(id)
 
   if (!currency) {
     throw new Error("Not found")
   }
 
-  softDeleteCurrency(id)
+  currenciesRepo.softDelete(id)
 
   return currency
 }
