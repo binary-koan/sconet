@@ -167,7 +167,6 @@ export function useMutation<Data, Variables>(
     try {
       setLoading(true)
       const data = await requestGraphql<Data>(mutation, JSON.stringify(variables))
-      setLoading(false)
       onSuccess?.(data)
 
       const refetchList = refetchQueries === "ALL" ? Object.keys(context.queries) : refetchQueries
@@ -178,6 +177,8 @@ export function useMutation<Data, Variables>(
     } catch (error) {
       console.error(error)
       onError?.(error)
+    } finally {
+      setLoading(false)
     }
   }
 

@@ -33,7 +33,7 @@ const TransactionsListPage: Component = () => {
   const [isEditing, setEditing] = createSignal(false)
   const [isFiltering, setFiltering] = createSignal(false)
 
-  const { form, hasFilterValues, filterCount, clearFilters, setFilter } =
+  const { form, hasFilterValues, filterCount, clearFilters, setFilterValue } =
     usePageFilter<TransactionFilterValues>({
       basePath: "/transactions/list",
       paramName: "filter",
@@ -100,7 +100,7 @@ const TransactionsListPage: Component = () => {
       <Cell
         data={routeData.data}
         success={TransactionsList}
-        successProps={{ isEditing: isEditing(), setFilter, fetchMore: () => {} }}
+        successProps={{ isEditing: isEditing(), setFilterValue, fetchMore: () => {} }}
       />
     </>
   )

@@ -1,10 +1,10 @@
-import { createForm } from "@felte/solid"
+import { createForm, DeepPartial, getValues, reset, setValue } from "@modular-forms/solid"
 import { debounce } from "@solid-primitives/scheduled"
 import { useNavigate, useParams } from "@solidjs/router"
 import { isArray, isEqual, isPlainObject, pickBy } from "lodash"
 import { createEffect } from "solid-js"
 
-const usePageFilter = <FilterValues extends object>({
+const usePageFilter = <FilterValues extends { [key: string]: any }>({
   basePath,
   paramName,
   localStorageKey,
@@ -13,7 +13,7 @@ const usePageFilter = <FilterValues extends object>({
   basePath: string
   paramName: string
   localStorageKey?: string
-  initialValues: FilterValues
+  initialValues: DeepPartial<FilterValues>
 }) => {
   const params = useParams()
   const navigate = useNavigate()
@@ -37,11 +37,11 @@ const usePageFilter = <FilterValues extends object>({
     return value != null && value !== ""
   }
 
-  const { form, data, setData } = createForm<FilterValues>({
-    initialValues: paramFilterValues(),
-
-    transform: (values: any) => pickBy(values, hasFilterValues) as FilterValues
+  const form = createForm<FilterValues>({
+    initialValues: paramFilterValues()
   })
+
+  const data = () => pickBy(getValues(form), hasFilterValues)
 
   const filterCount = () => {
     return Object.values(data()).filter(hasFilterValues).length
@@ -52,7 +52,9 @@ const usePageFilter = <FilterValues extends object>({
     navigate([basePath, filters].join("/"))
   }, 500)
 
-  const clearFilters = () => setData({ ...initialValues })
+  const clearFilters = () => {
+    reset(form, { initialValues })
+  }
 
   createEffect(() => {
     if (!hasFilterValues(paramFilterValues()) && !hasFilterValues(data())) {
@@ -71,7 +73,7 @@ const usePageFilter = <FilterValues extends object>({
     hasFilterValues: () => hasFilterValues(data()),
     filterCount,
     clearFilters,
-    setFilter: setData
+    setFilterValue: (name: keyof FilterValues, value: any) => setValue(form, name as any, value)
   }
 }
 

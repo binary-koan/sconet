@@ -1,34 +1,17 @@
-import { createForm } from "@felte/solid"
-import { validator } from "@felte/validator-superstruct"
+import { createForm, Form, required } from "@modular-forms/solid"
 import { Component } from "solid-js"
-import { Describe, nonempty, nullable, object, optional, string } from "superstruct"
 import { CreateAccountMailboxInput } from "../../graphql-types"
-import { usedAsDirective } from "../../utils/usedAsDirective"
 import { Button } from "../base/Button"
 import FormInput from "../forms/FormInput"
 
 type AccountMailboxFormValues = Omit<CreateAccountMailboxInput, "mailServerOptions">
-
-const accountMailboxFormStruct: Describe<AccountMailboxFormValues> = object({
-  name: nonempty(string()),
-  fromAddressPattern: optional(nullable(string())),
-  datePattern: optional(nullable(string())),
-  memoPattern: optional(nullable(string())),
-  amountPattern: optional(nullable(string()))
-})
 
 const AccountMailboxForm: Component<{
   accountMailbox?: any
   onSave: (input: CreateAccountMailboxInput, id?: string) => void
   loading: boolean
 }> = (props) => {
-  const { form } = createForm<AccountMailboxFormValues>({
-    onSubmit: (values) => {
-      props.onSave({ ...values, mailServerOptions: {} }, props?.accountMailbox?.id)
-    },
-
-    extend: validator({ struct: accountMailboxFormStruct }),
-
+  const form = createForm<AccountMailboxFormValues>({
     initialValues: {
       name: props.accountMailbox?.name,
       fromAddressPattern: props.accountMailbox?.fromAddressPattern,
@@ -38,20 +21,42 @@ const AccountMailboxForm: Component<{
     }
   })
 
-  usedAsDirective(form)
+  const onSubmit = (values: AccountMailboxFormValues) =>
+    props.onSave({ ...values, mailServerOptions: {} }, props?.accountMailbox?.id)
 
   return (
-    <form use:form>
-      <FormInput label="Name" name="name" />
-      <FormInput label="From address pattern" name="fromAddressPattern" />
-      <FormInput label="Date pattern" name="datePattern" />
-      <FormInput label="Memo pattern" name="memoPattern" />
-      <FormInput label="Amount pattern" name="amountPattern" />
+    <Form of={form} onSubmit={onSubmit}>
+      <FormInput of={form} label="Name" name="name" validate={required("Cannot be blank")} />
+
+      <FormInput
+        of={form}
+        label="From address pattern"
+        name="fromAddressPattern"
+        validate={required("Cannot be blank")}
+      />
+      <FormInput
+        of={form}
+        label="Date pattern"
+        name="datePattern"
+        validate={required("Cannot be blank")}
+      />
+      <FormInput
+        of={form}
+        label="Memo pattern"
+        name="memoPattern"
+        validate={required("Cannot be blank")}
+      />
+      <FormInput
+        of={form}
+        label="Amount pattern"
+        name="amountPattern"
+        validate={required("Cannot be blank")}
+      />
 
       <Button type="submit" colorScheme="primary" disabled={props.loading}>
         Save
       </Button>
-    </form>
+    </Form>
   )
 }
 

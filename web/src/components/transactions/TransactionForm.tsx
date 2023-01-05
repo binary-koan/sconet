@@ -1,21 +1,9 @@
-import { createForm } from "@felte/solid"
-import { validator } from "@felte/validator-superstruct"
+import { createForm, Form, getValue, minNumber, required } from "@modular-forms/solid"
 import { repeat } from "lodash"
-import { Component, createSignal, onCleanup, onMount, Show } from "solid-js"
+import { Component, Show } from "solid-js"
 import {
-  boolean,
-  Describe,
-  enums,
-  min,
-  nonempty,
-  nullable,
-  number,
-  object,
-  optional,
-  string
-} from "superstruct"
-import {
-  CreateTransactionInput, FullCategoryFragment, GetTransactionQuery,
+  CreateTransactionInput,
+  GetTransactionQuery,
   UpdateTransactionInput
 } from "../../graphql-types"
 import { useAccountMailboxesQuery } from "../../graphql/queries/accountMailboxesQuery"
@@ -23,26 +11,15 @@ import { useCategoriesQuery } from "../../graphql/queries/categoriesQuery"
 import { useCurrenciesQuery } from "../../graphql/queries/currenciesQuery"
 import { formatDateForInput } from "../../utils/formatters"
 import { namedIcons } from "../../utils/namedIcons"
-import { usedAsDirective } from "../../utils/usedAsDirective"
 import { Button } from "../base/Button"
-import { InputAddon, InputGroup, InputGroupInput } from "../base/InputGroup"
+import { InputAddon } from "../base/InputGroup"
 import CategoryIndicator from "../CategoryIndicator"
 import FormInput from "../forms/FormInput"
+import FormInputGroup from "../forms/FormInputGroup"
 import FormOptionButtons from "../forms/FormOptionButtons"
 import FormSwitch from "../forms/FormSwitch"
 
 type TransactionFormValues = CreateTransactionInput & { amountType: "expense" | "income" }
-
-const transactionFormStruct: Describe<TransactionFormValues> = object({
-  accountMailboxId: nonempty(string()),
-  amount: min(number(), 0),
-  categoryId: optional(nullable(nonempty(string()))),
-  currencyId: nonempty(string()),
-  date: optional(nullable(string())),
-  includeInReports: optional(nullable(boolean())),
-  memo: nonempty(string()),
-  amountType: enums(["expense", "income"])
-})
 
 const TransactionForm: Component<{
   data?: GetTransactionQuery
@@ -53,38 +30,60 @@ const TransactionForm: Component<{
   const [accountMailboxes] = useAccountMailboxesQuery()
   const [currencies] = useCurrenciesQuery()
 
-  const { form, data } = createForm<TransactionFormValues>({
-    onSubmit: ({ amountType, amount, date, ...data }) => {
-      const integerAmount = Math.floor(amount * 10 ** (selectedCurrency()?.decimalDigits || 0))
+  const form = createForm<TransactionFormValues>({
+    initialValues: {
+      amountType:
+        props.data?.transaction?.amount && props.data?.transaction.amount.decimalAmount > 0
+          ? "income"
+          : "expense",
 
-      const coercedData = {
-        ...data,
-        amount: amountType === "expense" ? -integerAmount : integerAmount,
-        date: new Date(date).toISOString(),
-        includeInReports: Boolean(data.includeInReports)
-      }
+      currencyId: props.data?.transaction?.currencyId,
 
-      props.onSave(coercedData)
-    },
+      amount:
+        props.data?.transaction?.amount.decimalAmount &&
+        Math.abs(props.data?.transaction.amount.decimalAmount),
 
-    extend: validator({ struct: transactionFormStruct })
+      memo: props.data?.transaction?.memo,
+
+      date: formatDateForInput(
+        props.data?.transaction?.date ? new Date(props.data?.transaction?.date) : new Date()
+      ),
+
+      accountMailboxId: props.data?.transaction?.accountMailbox?.id,
+
+      includeInReports:
+        props.data?.transaction?.includeInReports != null
+          ? props.data?.transaction.includeInReports
+          : true,
+
+      categoryId: props.data?.transaction?.category?.id
+    }
   })
 
-  const selectedCurrency = () =>
-    currencies()?.currencies.find((currency) => currency.id === data("currencyId"))
+  const onSubmit = ({ amountType, amount, date, ...data }: TransactionFormValues) => {
+    const integerAmount = Math.floor(amount * 10 ** (selectedCurrency()?.decimalDigits || 0))
 
-  usedAsDirective(form)
+    const coercedData = {
+      ...data,
+      amount: amountType === "expense" ? -integerAmount : integerAmount,
+      date: new Date(date).toISOString(),
+      includeInReports: Boolean(data.includeInReports)
+    }
+
+    props.onSave(coercedData)
+  }
+
+  const selectedCurrency = () =>
+    currencies()?.currencies.find((currency) => currency.id === getValue(form, "currencyId"))
+
+  const isIncome = () => getValue(form, "amountType") === "income"
 
   return (
-    <form use:form>
+    <Form of={form} onSubmit={onSubmit}>
       <Show when={!props.data?.transaction?.splitFromId}>
         <FormOptionButtons
+          of={form}
           name="amountType"
-          defaultValue={
-            props.data?.transaction?.amount && props.data?.transaction.amount.decimalAmount > 0
-              ? "income"
-              : "expense"
-          }
           options={[
             {
               value: "expense",
@@ -102,9 +101,10 @@ const TransactionForm: Component<{
         />
 
         <FormOptionButtons
+          of={form}
           label="Currency"
           name="currencyId"
-          defaultValue={props.data?.transaction?.currencyId}
+          validate={required("Cannot be blank")}
           options={
             currencies()?.currencies?.map((currency) => ({
               value: currency.id,
@@ -113,50 +113,62 @@ const TransactionForm: Component<{
           }
         />
 
-        <FormInput
+        <FormInputGroup
+          of={form}
           label="Amount"
           name="amount"
           type="number"
-          defaultValue={
-            props.data?.transaction?.amount.decimalAmount &&
-            Math.abs(props.data?.transaction.amount.decimalAmount)
+          validate={minNumber(0, "Must be zero or more")}
+          before={<InputAddon>{selectedCurrency()?.symbol}</InputAddon>}
+          step={
+            selectedCurrency()?.decimalDigits
+              ? `0.${repeat("0", selectedCurrency()!.decimalDigits - 1)}1`
+              : "1"
           }
-          render={(props) => (
-            <InputGroup>
-              <InputAddon>{selectedCurrency()?.symbol}</InputAddon>
-              <InputGroupInput
-                {...props}
-                step={
-                  selectedCurrency()?.decimalDigits
-                    ? `0.${repeat("0", selectedCurrency()!.decimalDigits - 1)}1`
-                    : "1"
-                }
-              />
-            </InputGroup>
-          )}
         />
       </Show>
 
-      <FormInput label="Memo" name="memo" defaultValue={props.data?.transaction?.memo} />
+      <FormInput of={form} label="Memo" name="memo" validate={required("Cannot be blank")} />
 
       <Show when={!props.data?.transaction?.splitFromId}>
         <FormInput
+          of={form}
           label="Date"
           name="date"
           type="date"
-          defaultValue={formatDateForInput(
-            props.data?.transaction?.date ? new Date(props.data?.transaction?.date) : new Date()
-          )}
+          validate={required("Cannot be blank")}
         />
       </Show>
 
-      <CategorySelect transaction={props.data?.transaction} categories={categories()?.categories} />
+      <Show when={!isIncome()}>
+        <FormOptionButtons
+          of={form}
+          label="Category"
+          name="categoryId"
+          options={
+            categories()?.categories.map((category) => ({
+              value: category.id,
+              content: (
+                <div class="flex items-center gap-2">
+                  <CategoryIndicator
+                    class="h-6 w-6"
+                    icon={namedIcons[category.icon]}
+                    color={category.color}
+                  />
+                  {category.name}
+                </div>
+              )
+            })) || []
+          }
+        />
+      </Show>
 
       <Show when={!props.data?.transaction?.splitFromId}>
         <FormOptionButtons
+          of={form}
           label="Account"
           name="accountMailboxId"
-          defaultValue={props.data?.transaction?.accountMailbox?.id}
+          validate={required("Cannot be blank")}
           options={
             accountMailboxes()?.accountMailboxes?.map((account) => ({
               value: account.id,
@@ -166,71 +178,12 @@ const TransactionForm: Component<{
         />
       </Show>
 
-      <FormSwitch
-        label="Include in reports"
-        name="includeInReports"
-        defaultValue={
-          props.data?.transaction?.includeInReports != null
-            ? props.data?.transaction.includeInReports
-            : true
-        }
-      />
+      <FormSwitch of={form} label="Include in reports" name="includeInReports" />
 
       <Button type="submit" colorScheme="primary" class="w-full" disabled={props.loading}>
         Save
       </Button>
-    </form>
-  )
-}
-
-const CategorySelect: Component<{
-  transaction?: any
-  categories?: FullCategoryFragment[]
-}> = (props) => {
-  const [showing, setShowing] = createSignal(true)
-
-  let ref: HTMLDivElement | undefined
-
-  onMount(() => {
-    const onInput = (event: Event) => {
-      if (!(event.target instanceof HTMLInputElement)) {
-        return
-      }
-
-      if (event.target.name === "amountType") {
-        setShowing(event.target.value !== "income")
-      }
-    }
-
-    ref?.closest("form")?.addEventListener("input", onInput)
-
-    onCleanup(() => ref?.closest("form")?.removeEventListener("input", onInput))
-  })
-
-  return (
-    <Show when={showing}>
-      <FormOptionButtons
-        ref={ref}
-        label="Category"
-        name="categoryId"
-        defaultValue={props.transaction?.categoryId}
-        options={
-          props.categories?.map((category) => ({
-            value: category.id,
-            content: (
-              <div class="flex items-center gap-2">
-                <CategoryIndicator
-                  class="h-6 w-6"
-                  icon={namedIcons[category.icon]}
-                  color={category.color}
-                />
-                {category.name}
-              </div>
-            )
-          })) || []
-        }
-      />
-    </Show>
+    </Form>
   )
 }
 

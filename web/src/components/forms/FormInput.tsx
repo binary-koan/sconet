@@ -1,28 +1,26 @@
-import { Component, JSX } from "solid-js"
+import { Field, FormState, ValidateField } from "@modular-forms/solid"
+import { Component, JSX, splitProps } from "solid-js"
 import { FormControl, FormLabel } from "../base/FormControl"
 import { Input, InputProps } from "../base/Input"
 
-const FormInput: Component<{
-  label: JSX.Element
-  name: string
-  type?: string
-  defaultValue?: string | number
-  render?: (inputProps: any) => JSX.Element
-}> = (props) => {
+const FormInput: Component<
+  InputProps & {
+    of: FormState<any>
+    label: JSX.Element
+    name: string
+    validate?: ValidateField<any> | ValidateField<any>[]
+  }
+> = (allProps) => {
+  const [props, inputProps] = splitProps(allProps, ["of", "label", "name", "validate"])
+
   return (
     <FormControl>
       <FormLabel>{props.label}</FormLabel>
-      {(props.render || defaultRender)({
-        type: props.type,
-        defaultValue: props.defaultValue,
-        name: props.name
-      })}
+      <Field name={props.name} of={props.of} validate={props.validate}>
+        {(field) => <Input class="w-full" {...inputProps} value={field.value} {...field.props} />}
+      </Field>
     </FormControl>
   )
-}
-
-const defaultRender: Component<InputProps & { defaultValue: any }> = (props) => {
-  return <Input value={props.defaultValue} class="w-full" {...props} />
 }
 
 export default FormInput

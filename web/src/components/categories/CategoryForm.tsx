@@ -7,6 +7,7 @@ import { InputAddon, InputGroup, InputGroupInput } from "../base/InputGroup"
 import { Form } from "../forms/Form"
 import FormIconPicker from "../forms/FormIconPicker"
 import FormInput from "../forms/FormInput"
+import FormInputGroup from "../forms/FormInputGroup"
 import FormOptionButtons from "../forms/FormOptionButtons"
 import FormSwitch from "../forms/FormSwitch"
 
@@ -87,7 +88,7 @@ const CategoryForm: Component<{
         }
       />
 
-      <FormInput
+      <FormInputGroup
         label="Budget"
         name="budget"
         type="number"

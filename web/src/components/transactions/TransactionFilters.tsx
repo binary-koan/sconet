@@ -1,13 +1,12 @@
-import { Component } from "solid-js"
+import { Form, FormState, getValues } from "@modular-forms/solid"
+import { Component, createEffect } from "solid-js"
 import { useCategoriesQuery } from "../../graphql/queries/categoriesQuery"
-import { Directive } from "../../types"
 import { namedIcons } from "../../utils/namedIcons"
-import { usedAsDirective } from "../../utils/usedAsDirective"
 import CategoryIndicator from "../CategoryIndicator"
 import FormInput from "../forms/FormInput"
 import FormOptionButtons from "../forms/FormOptionButtons"
 
-export interface TransactionFilterValues {
+export type TransactionFilterValues = {
   dateFrom?: string
   dateUntil?: string
   keyword?: string
@@ -16,25 +15,26 @@ export interface TransactionFilterValues {
 }
 
 const TransactionFilters: Component<{
-  form: Directive
+  form: FormState<TransactionFilterValues>
 }> = (props) => {
   const [data] = useCategoriesQuery()
-  const { form } = props
 
-  usedAsDirective(form)
+  createEffect(() => console.log(getValues(props.form)))
 
   return (
     <div class="mb-4 bg-white p-4 shadow-sm lg:rounded">
-      <form use:form>
-        <FormInput name="keyword" type="search" label="Filter" />
+      <Form of={props.form} onSubmit={() => {}}>
+        <FormInput of={props.form} name="keyword" type="search" label="Filter" />
 
-        <FormInput name="dateFrom" type="date" label="Show from" />
+        <FormInput of={props.form} name="dateFrom" type="date" label="Show from" />
 
-        <FormInput name="dateUntil" type="date" label="Show until" />
+        <FormInput of={props.form} name="dateUntil" type="date" label="Show until" />
 
         <FormOptionButtons
-          name="categories"
+          of={props.form}
+          name="categoryIds"
           label="Categories"
+          multiple={true}
           options={
             data()?.categories?.map((category) => ({
               value: category.id,
@@ -51,7 +51,7 @@ const TransactionFilters: Component<{
             })) || []
           }
         />
-      </form>
+      </Form>
     </div>
   )
 }

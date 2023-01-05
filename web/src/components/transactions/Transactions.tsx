@@ -1,16 +1,16 @@
-import { ObjectSetter } from "@felte/common"
 import { Component, createMemo, For, Show } from "solid-js"
 import { TransactionsQuery } from "../../graphql-types"
 import { monthRange } from "../../utils/date"
 import { formatDate } from "../../utils/formatters"
 import { Button } from "../base/Button"
 import NewTransactionItem from "./NewTransactionItem"
+import { TransactionFilterValues } from "./TransactionFilters"
 import TransactionItem from "./TransactionItem"
 
 export const TransactionsList: Component<{
   data: TransactionsQuery
   fetchMore?: (variables: any) => void
-  setFilter: ObjectSetter<any>
+  setFilterValue: (name: keyof TransactionFilterValues, value: any) => void
   isEditing: boolean
 }> = (props) => {
   const items = createMemo(() => {
@@ -64,13 +64,10 @@ export const TransactionsList: Component<{
                   <div class="absolute top-1/2 left-4 right-4 border-b border-gray-200" />
                   <button
                     type="button"
-                    onClick={() =>
-                      props.setFilter((filters: any) => ({
-                        ...filters,
-                        dateFrom: dateFrom.toISOString(),
-                        dateUntil: dateUntil.toISOString()
-                      }))
-                    }
+                    onClick={() => {
+                      props.setFilterValue("dateFrom", dateFrom.toISOString())
+                      props.setFilterValue("dateUntil", dateUntil.toISOString())
+                    }}
                     class="relative mx-2 inline-block rounded bg-gray-50 py-1 pl-2 pr-4 text-base font-semibold text-gray-700"
                   >
                     {formatDate(date, "monthYear")}
