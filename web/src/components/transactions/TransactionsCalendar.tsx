@@ -1,23 +1,30 @@
 import { useNavigate } from "@solidjs/router"
 import { sumBy } from "lodash"
 import { TbArrowLeft, TbArrowRight, TbPlus } from "solid-icons/tb"
-import { Component, For, Show } from "solid-js"
+import { Component, createSignal, For, Show } from "solid-js"
 import { FullTransactionFragment, TransactionsQuery } from "../../graphql-types"
+import { buildMonthDates } from "../../utils/buildMonthDates"
+import { isSameDate } from "../../utils/date"
 import { Button } from "../base/Button"
+import { NewTransactionModal } from "./NewTransactionModal"
 
 export const TransactionsCalendar: Component<{
   data: TransactionsQuery
   year: string
   month: string
 }> = (props) => {
+  const [modalOpen, setModalOpen] = createSignal(false)
+
   const navigate = useNavigate()
 
   const monthStart = new Date(parseInt(props.year), parseInt(props.month) - 1, 1)
 
-  const dates = () => buildMonthDates(props.year, props.month, props.data.transactions.data)
+  const dates = () =>
+    monthDates(parseInt(props.year), parseInt(props.month), props.data.transactions.data)
 
   return (
     <>
+      <NewTransactionModal isOpen={modalOpen()} onClose={() => setModalOpen(false)} />
       <div class="mx-auto mb-4 flex items-center rounded bg-gray-200">
         <Button size="square" aria-label="List" onClick={() => navigate("/transactions/list")}>
           <TbArrowLeft size="1.25em" />
@@ -61,6 +68,7 @@ export const TransactionsCalendar: Component<{
                       variant="ghost"
                       size="custom"
                       class="ml-2 hidden h-5 w-5 text-xs lg:flex"
+                      onClick={() => setModalOpen(true)}
                     >
                       <TbPlus />
                     </Button>
@@ -86,61 +94,17 @@ export const TransactionsCalendar: Component<{
   )
 }
 
-const buildMonthDates = (year: string, month: string, transactions: FullTransactionFragment[]) => {
-  const monthStart = new Date(parseInt(year), parseInt(month) - 1, 1)
-  const monthEnd = new Date(parseInt(year), parseInt(month), 0)
-
-  const lastDate = new Date(monthEnd)
-  lastDate.setDate(lastDate.getDate() + daysAfterToShow(monthEnd.getDay()))
-
-  let date = new Date(monthStart)
-  date.setDate(date.getDate() - daysBeforeToShow(monthStart.getDay()))
-
-  let dates: Array<{
-    date: Date
-    isCurrentMonth: boolean
-    expenses: FullTransactionFragment[]
-    incomes: FullTransactionFragment[]
-  }> = []
-
-  while (date.getTime() <= lastDate.getTime()) {
-    dates.push({
-      date: new Date(date),
-      isCurrentMonth: date.getMonth() === parseInt(month) - 1,
-      expenses: transactions.filter(
-        (transaction) =>
-          isSameDate(new Date(transaction.date), date) && transaction.amount.decimalAmount < 0
-      ),
-      incomes: transactions.filter(
-        (transaction) =>
-          isSameDate(new Date(transaction.date), date) && transaction.amount.decimalAmount > 0
-      )
-    })
-
-    date.setDate(date.getDate() + 1)
-  }
-
-  return dates
-}
-
-const daysBeforeToShow = (dayOfWeek: number) => {
-  if (dayOfWeek === 0) {
-    return 6
-  } else if (dayOfWeek === 1) {
-    return 7
-  } else {
-    return dayOfWeek - 1
-  }
-}
-
-const daysAfterToShow = (dayOfWeek: number) => {
-  return 7 - dayOfWeek
-}
-
-const isSameDate = (first: Date, second: Date) => {
-  return (
-    first.getFullYear() === second.getFullYear() &&
-    first.getMonth() === second.getMonth() &&
-    first.getDate() === second.getDate()
-  )
+const monthDates = (year: number, month: number, transactions: FullTransactionFragment[]) => {
+  return buildMonthDates(year, month).map(({ date, isCurrentMonth }) => ({
+    date,
+    isCurrentMonth,
+    expenses: transactions.filter(
+      (transaction) =>
+        isSameDate(new Date(transaction.date), date) && transaction.amount.decimalAmount < 0
+    ),
+    incomes: transactions.filter(
+      (transaction) =>
+        isSameDate(new Date(transaction.date), date) && transaction.amount.decimalAmount > 0
+    )
+  }))
 }

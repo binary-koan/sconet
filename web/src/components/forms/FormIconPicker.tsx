@@ -1,20 +1,16 @@
-import { JSX } from "solid-js"
+import { Component, JSX } from "solid-js"
 import { FormControl, FormLabel } from "../base/FormControl"
 import IconPicker from "../IconPicker"
 
-const FormIconPicker = ({
-  label,
-  name,
-  defaultValue
-}: {
+const FormIconPicker: Component<{
   label: JSX.Element
   name: string
   defaultValue?: string
-}) => {
+}> = (props) => {
   return (
     <FormControl>
-      <FormLabel>{label}</FormLabel>
-      <IconPicker name={name} defaultValue={defaultValue} />
+      <FormLabel>{props.label}</FormLabel>
+      <IconPicker name={props.name} defaultValue={props.defaultValue} />
     </FormControl>
   )
 }

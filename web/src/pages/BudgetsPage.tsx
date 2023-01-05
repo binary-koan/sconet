@@ -8,6 +8,7 @@ import { PageHeader } from "../components/base/PageHeader"
 import { Budgets } from "../components/budgets/Budgets"
 import { Cell } from "../components/Cell"
 import { BudgetQuery } from "../graphql-types"
+import { decrementMonth, incrementMonth } from "../utils/date"
 import { setLastViewedBudget } from "../utils/transactions/viewPreference"
 
 export interface BudgetsPageData {
@@ -22,24 +23,18 @@ const BudgetsPage = () => {
 
   createEffect(() => setLastViewedBudget(`${routeData.year}-${routeData.month}`))
 
-  const setParams = ({ year, month }: { year: string | number; month: string | number }) => {
-    navigate(`/budgets/${year}-${month.toString().padStart(2, "0")}`)
-  }
-
-  const incrementMonth = () => {
-    if (routeData.month === "12") {
-      setParams({ month: 1, year: parseInt(routeData.year) + 1 })
-    } else {
-      setParams({ month: parseInt(routeData.month) + 1, year: routeData.year })
+  const setParams = (
+    setter: (options: { year: number; monthNumber: number }) => {
+      year: number
+      monthNumber: number
     }
-  }
+  ) => {
+    const { year, monthNumber } = setter({
+      year: parseInt(routeData.year),
+      monthNumber: parseInt(routeData.month)
+    })
 
-  const decrementMonth = () => {
-    if (routeData.month === "1") {
-      setParams({ month: 12, year: parseInt(routeData.year) - 1 })
-    } else {
-      setParams({ month: parseInt(routeData.month) - 1, year: routeData.year })
-    }
+    navigate(`/budgets/${year}-${monthNumber.toString().padStart(2, "0")}`)
   }
 
   const date = () => new Date(parseInt(routeData.year), parseInt(routeData.month) - 1, 1)
@@ -56,11 +51,16 @@ const BudgetsPage = () => {
           colorScheme="neutral"
           variant="ghost"
           class="ml-auto"
-          onClick={decrementMonth}
+          onClick={() => setParams(decrementMonth)}
         >
           <Dynamic component={TbArrowLeft} />
         </Button>
-        <Button size="sm" colorScheme="neutral" variant="ghost" onClick={incrementMonth}>
+        <Button
+          size="sm"
+          colorScheme="neutral"
+          variant="ghost"
+          onClick={() => setParams(incrementMonth)}
+        >
           <Dynamic component={TbArrowRight} />
         </Button>
       </PageHeader>
