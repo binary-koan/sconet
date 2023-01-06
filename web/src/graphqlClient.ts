@@ -1,4 +1,4 @@
-import { createContext, createMemo, createSignal, useContext } from "solid-js"
+import { createContext, createEffect, createMemo, createSignal, useContext } from "solid-js"
 import { createStore, reconcile } from "solid-js/store"
 import { loginToken } from "./utils/auth"
 
@@ -36,7 +36,7 @@ const getQuery = <Data>(context: GraphQLContext, query: string, serializedVariab
 
   const [store, setStore] = createStore<{ data?: Data; loading: boolean; error?: any }>({
     data: undefined,
-    loading: false,
+    loading: true,
     error: undefined
   })
 
@@ -54,6 +54,7 @@ const getQuery = <Data>(context: GraphQLContext, query: string, serializedVariab
 
     async fetch() {
       if (!storedQuery.inflightRequest) {
+        setStore("loading", true)
         storedQuery.inflightRequest = requestGraphql<Data>(query, serializedVariables)
           .then((data) => {
             delete storedQuery.inflightRequest
@@ -62,6 +63,9 @@ const getQuery = <Data>(context: GraphQLContext, query: string, serializedVariab
           })
           .catch((error) => {
             setStore("error", error)
+          })
+          .finally(() => {
+            setStore("loading", false)
           })
       }
 
@@ -76,9 +80,11 @@ const getQuery = <Data>(context: GraphQLContext, query: string, serializedVariab
   }
 
   context.queries[query] ??= {}
-  context.queries[query][serializedVariables] ??= storedQuery
+  context.queries[query][serializedVariables] = storedQuery
 
-  return context.queries[query][serializedVariables]
+  storedQuery.fetch()
+
+  return storedQuery
 }
 
 export interface QueryResource<Data, Variables> {
@@ -100,9 +106,8 @@ export function useQuery<Data, Variables = {}>(
   const variablesParam = () => JSON.stringify(variables?.() || {})
 
   const storedQuery = createMemo(() => getQuery(context, queryParam(), variablesParam()))
-  const data = createMemo(() => storedQuery().get())
 
-  if (!storedQuery().get()) storedQuery().fetch()
+  const data = createMemo(() => storedQuery().get())
 
   const resource = () => data()
 
@@ -115,6 +120,8 @@ export function useQuery<Data, Variables = {}>(
       get: () => storedQuery().error
     }
   })
+
+  createEffect(() => console.log("stored query", storedQuery(), storedQuery().loading))
 
   resource.refetch = () => storedQuery().refetch()
 
