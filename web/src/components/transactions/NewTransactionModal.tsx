@@ -21,7 +21,7 @@ export const NewTransactionModal: Component<{ isOpen: boolean; onClose: () => vo
   }
 
   return (
-    <Modal isOpen={props.isOpen} onClose={props.onClose}>
+    <Modal isOpen={props.isOpen} onClickOutside={props.onClose}>
       <ModalContent>
         <ModalTitle>
           New Transaction <ModalCloseButton onClick={props.onClose} />

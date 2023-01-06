@@ -5,7 +5,7 @@ import { AsProp, BasicElementProps } from "../../types"
 import { Button, ButtonProps } from "./Button"
 
 export const Modal = <T extends AsProp = "div">(
-  allProps: BasicElementProps<T, { isOpen: boolean; onClose: () => void }>
+  allProps: BasicElementProps<T, { isOpen: boolean; onClickOutside?: () => void }>
 ) => {
   const [props, elementProps] = splitProps(allProps, [
     "as",
@@ -14,7 +14,7 @@ export const Modal = <T extends AsProp = "div">(
     "classList",
     "children",
     "isOpen",
-    "onClose"
+    "onClickOutside"
   ])
 
   return (
@@ -33,7 +33,7 @@ export const Modal = <T extends AsProp = "div">(
         <div
           class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0"
           onClick={(e) => {
-            if (e.target === e.currentTarget) props.onClose()
+            if (e.target === e.currentTarget) props.onClickOutside?.()
           }}
         >
           {props.children}

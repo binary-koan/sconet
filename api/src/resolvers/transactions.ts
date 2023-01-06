@@ -44,12 +44,12 @@ export const updateTransaction: MutationResolvers["updateTransaction"] = (_, { i
 
   const updates: Partial<TransactionRecord> = {
     ...updateInput,
-    memo: updateInput.memo || undefined,
-    amount: updateInput.amount || undefined,
-    currencyId: updateInput.currencyId || undefined,
-    date: updateInput.date || undefined,
-    includeInReports: updateInput.includeInReports || undefined,
-    accountMailboxId: updateInput.accountMailboxId || undefined
+    memo: updateInput.memo ?? undefined,
+    amount: updateInput.amount ?? undefined,
+    currencyId: updateInput.currencyId ?? undefined,
+    date: updateInput.date ?? undefined,
+    includeInReports: updateInput.includeInReports ?? undefined,
+    accountMailboxId: updateInput.accountMailboxId ?? undefined
   }
 
   transactionsRepo.updateOne(id, updates)

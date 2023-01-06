@@ -29,7 +29,7 @@ export const updateAccountMailbox: MutationResolvers["updateAccountMailbox"] = (
 
   const updates: Partial<AccountMailboxRecord> = {
     ...input,
-    name: input.name || undefined
+    name: input.name ?? undefined
   }
 
   accountMailboxesRepo.updateOne(id, updates)

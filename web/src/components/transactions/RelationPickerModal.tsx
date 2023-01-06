@@ -14,7 +14,7 @@ const RelationPickerModal: Component<{
   onClose: () => void
 }> = (props) => {
   return (
-    <Modal isOpen={props.isOpen} onClose={props.onClose}>
+    <Modal isOpen={props.isOpen} onClickOutside={props.onClose}>
       <ModalContent>
         <ModalTitle>
           Select <ModalCloseButton onClick={props.onClose} />

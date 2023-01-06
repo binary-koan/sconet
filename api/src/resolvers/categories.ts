@@ -26,10 +26,10 @@ export const updateCategory: MutationResolvers["updateCategory"] = (_, { id, inp
 
   const updates: Partial<CategoryRecord> = {
     ...input,
-    name: input.name || undefined,
-    color: input.color || undefined,
-    icon: input.icon || undefined,
-    isRegular: input.isRegular || undefined
+    name: input.name ?? undefined,
+    color: input.color ?? undefined,
+    icon: input.icon ?? undefined,
+    isRegular: input.isRegular ?? undefined
   }
 
   categoriesRepo.updateOne(id, updates)

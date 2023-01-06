@@ -43,7 +43,7 @@ const IconPicker: Component<{ name: string; defaultValue?: string }> = (props) =
         <Button onClick={[setOpen, true]}>Pick icon</Button>
       </div>
 
-      <Modal isOpen={open()} onClose={() => setOpen(false)}>
+      <Modal isOpen={open()} onClickOutside={() => setOpen(false)}>
         <ModalContent>
           <ModalTitle>
             Pick Icon <ModalCloseButton onClick={() => setOpen(false)} />

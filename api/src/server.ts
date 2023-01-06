@@ -1,4 +1,3 @@
-import "./polyfills"
 import {
   getGraphQLParameters,
   processRequest,
@@ -6,6 +5,7 @@ import {
   shouldRenderGraphiQL
 } from "graphql-helix"
 import { buildContext } from "./context"
+import "./polyfills"
 import { schema } from "./schema"
 
 const corsHeaders: Array<[string, string]> = [
@@ -17,9 +17,9 @@ Bun.serve({
   port: 4444,
 
   async fetch(req) {
-    req.headers // fixes segfault
-
     const url = new URL(req.url)
+
+    console.log(`[HTTP] ${req.method} ${url.pathname}${url.search}${url.hash}`)
 
     if (url.pathname !== "/graphql") {
       return new Response("Not found", {
