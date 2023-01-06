@@ -1,6 +1,8 @@
-import { createContext, createEffect, createMemo, createSignal, useContext } from "solid-js"
+import { createContext, createMemo, createSignal, useContext } from "solid-js"
 import { createStore, reconcile } from "solid-js/store"
 import { loginToken } from "./utils/auth"
+
+const BASE_URL = import.meta.env.MODE === "development" ? "http://localhost:4444" : ""
 
 type FetchMore<Data, Variables> = (
   variables: Variables,
@@ -156,8 +158,6 @@ export function useQuery<Data, Variables = {}>(
     }
   })
 
-  createEffect(() => console.log("stored query", storedQuery(), storedQuery().loading))
-
   resource.fetchMore = (...args: Parameters<FetchMore<Data, Variables>>) =>
     storedQuery().fetchMore(...args)
   resource.refetch = () => storedQuery().refetch()
@@ -214,7 +214,7 @@ export function useMutation<Data, Variables>(
 async function requestGraphql<Result>(query: string, serializedVariables: string): Promise<Result> {
   const token = loginToken()
 
-  const response = await fetch("http://localhost:4444/graphql", {
+  const response = await fetch(`${BASE_URL}/graphql`, {
     method: "POST",
     body: `{"query":${JSON.stringify(query)},"variables":${serializedVariables}}`,
     headers: {

@@ -1,6 +1,6 @@
 import { Database, Statement } from "bun:sqlite"
 
-const sqlite = new Database("data.sqlite")
+const sqlite = new Database("data/db.sqlite")
 
 export const db: Database = {
   run(sqlQuery, ...bindings): void {

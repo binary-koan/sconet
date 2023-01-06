@@ -1,3 +1,5 @@
+import { file } from "bun"
+import { existsSync, statSync } from "fs"
 import {
   getGraphQLParameters,
   processRequest,
@@ -13,8 +15,10 @@ const corsHeaders: Array<[string, string]> = [
   ["Access-Control-Allow-Headers", "Authorization, Content-Type"]
 ]
 
+const port = process.env.PORT || 4444
+
 Bun.serve({
-  port: 4444,
+  port,
 
   async fetch(req) {
     const url = new URL(req.url)
@@ -22,6 +26,16 @@ Bun.serve({
     console.log(`[HTTP] ${req.method} ${url.pathname}${url.search}${url.hash}`)
 
     if (url.pathname !== "/graphql") {
+      if (process.env.STATIC_PATH) {
+        const path = `${process.env.STATIC_PATH}${url.pathname}`
+
+        if (existsSync(path) && statSync(path).isFile()) {
+          return new Response(file(path))
+        } else {
+          return new Response(file(`${process.env.STATIC_PATH}/index.html`))
+        }
+      }
+
       return new Response("Not found", {
         status: 404
       })
@@ -78,4 +92,4 @@ Bun.serve({
   }
 })
 
-console.log("Listening on port 4444")
+console.log(`Listening on port ${port}`)

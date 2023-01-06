@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "start": "nodemon --exec 'bun run src/server.ts'",
+    "dev": "nodemon --exec 'bun start'",
+    "start": "bun run src/server.ts",
     "codegen": "graphql-codegen",
     "typecheck": "tsc --noEmit",
     "migrate": "bun bin/migrate/index.ts",
