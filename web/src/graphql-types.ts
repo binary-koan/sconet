@@ -430,6 +430,14 @@ export type ReorderCategoriesMutationVariables = Exact<{
 
 export type ReorderCategoriesMutation = { __typename?: 'Mutation', reorderCategories: Array<{ __typename?: 'Category', id: string }> };
 
+export type SplitTransactionMutationVariables = Exact<{
+  id: Scalars['String'];
+  amounts: Array<Scalars['Int']> | Scalars['Int'];
+}>;
+
+
+export type SplitTransactionMutation = { __typename?: 'Mutation', splitTransaction: { __typename?: 'Transaction', id: string, memo: string, date: any, originalMemo: string, includeInReports: boolean, currencyId: string, splitFromId?: string | null, amount: { __typename?: 'Money', decimalAmount: number, formatted: string }, category?: { __typename?: 'Category', id: string, name: string, color: string, icon: string } | null, accountMailbox: { __typename?: 'AccountMailbox', id: string, name: string }, splitTo: Array<{ __typename?: 'Transaction', id: string, memo: string, includeInReports: boolean, amount: { __typename?: 'Money', decimalAmount: number, formatted: string }, category?: { __typename?: 'Category', id: string, name: string, icon: string, color: string } | null }> } };
+
 export type UpdateCategoryMutationVariables = Exact<{
   id: Scalars['String'];
   input: UpdateCategoryInput;

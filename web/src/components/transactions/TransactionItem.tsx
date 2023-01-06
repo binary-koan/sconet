@@ -1,9 +1,6 @@
 import { useNavigate } from "@solidjs/router"
-import { TbDots } from "solid-icons/tb"
 import { Component, createEffect, createSignal, For, Show } from "solid-js"
 import { FullTransactionFragment } from "../../graphql-types"
-import { Button } from "../base/Button"
-import { Dropdown } from "../Dropdown"
 import MemoEditor from "./MemoEditor"
 import RelationEditor from "./RelationEditor"
 import { TransactionActions } from "./TransactionActions"
@@ -102,14 +99,7 @@ const TransactionItem: Component<{
           {props.transaction.amount.formatted}
         </div>
         <Show when={props.isEditing && !props.parent}>
-          <Dropdown
-            placement="bottomRight"
-            content={<TransactionActions transaction={props.transaction} />}
-          >
-            <Button size="sm" variant="ghost" class="ml-2">
-              <TbDots />
-            </Button>
-          </Dropdown>
+          <TransactionActions transaction={props.transaction} />
         </Show>
 
         {/* {props.isEditing && !parent && <SplitTransactionButton transaction={props.transaction} />}

@@ -18,19 +18,31 @@ const placementClasses: { [key in DropdownPlacement]: string } = {
 }
 
 export const Dropdown: Component<{
+  isOpen?: boolean
+  onToggle?: (isOpen: boolean) => void
   children: JSX.Element
   content: JSX.Element
   placement?: DropdownPlacement
 }> = (props) => {
   props = mergeProps({ placement: "bottomLeft" } as const, props)
 
-  const [isOpen, setIsOpen] = createSignal(false)
+  const [internalIsOpen, setInternalIsOpen] = createSignal(false)
+
+  const setOpen = (setter: (current: boolean | undefined) => boolean) => {
+    if (props.onToggle) {
+      props.onToggle(setter(props.isOpen))
+    } else {
+      setInternalIsOpen(setter)
+    }
+  }
+
+  const isOpen = () => internalIsOpen() || props.isOpen
 
   const toggle = children(() => props.children)
 
   createEffect(() => {
     const listener = () => {
-      setIsOpen((isOpen) => !isOpen)
+      setOpen((isOpen) => !isOpen)
     }
 
     const elements = toggle.toArray()
@@ -57,7 +69,7 @@ export const Dropdown: Component<{
 
     const documentListener = (event: MouseEvent) => {
       if (!container?.contains(event.target as Node)) {
-        setIsOpen(false)
+        setOpen(() => false)
       }
     }
 

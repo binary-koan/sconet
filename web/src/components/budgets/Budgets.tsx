@@ -14,17 +14,13 @@ export const Budgets: Component<{
   const isPastMonth = () => new Date() > range()[1]
 
   const filteredTransactions = (filters: any = {}) => {
-    const searchParams = new URLSearchParams()
-    searchParams.set(
-      "filters",
-      JSON.stringify({
-        dateFrom: range()[0].toISOString(),
-        dateUntil: range()[1].toISOString(),
-        ...filters
-      })
-    )
+    const filter = JSON.stringify({
+      dateFrom: range()[0].toISOString().split("T")[0],
+      dateUntil: range()[1].toISOString().split("T")[0],
+      ...filters
+    })
 
-    return `/transactions?${searchParams.toString()}`
+    return `/transactions/list/${encodeURIComponent(filter)}`
   }
 
   return (

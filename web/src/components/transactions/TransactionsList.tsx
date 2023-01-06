@@ -58,7 +58,7 @@ export const TransactionsList: Component<{
             <>
               <Show when={newMonth}>
                 <div
-                  class="z-docked sticky top-0 bg-gray-50 py-2 lg:top-14"
+                  class="z-docked sticky top-0 bg-gray-50 pt-2 lg:top-14"
                   classList={{ "-mt-2": index() === 0, "mt-6": index() !== 0 }}
                 >
                   <div class="absolute top-1/2 left-4 right-4 border-b border-gray-200" />
@@ -75,17 +75,17 @@ export const TransactionsList: Component<{
                 </div>
               </Show>
 
-              <div class="flex justify-between px-4 py-2 text-sm text-gray-600">
+              <div class="flex justify-between px-4 pt-4 pb-2 text-sm text-gray-600">
                 {formatDate(date, "fullDateWithoutYear")}
 
                 <Show when={props.isEditing}>
                   <Button
                     variant="ghost"
                     size="custom"
-                    class="ml-2 hidden h-5 w-5 text-xs lg:flex"
+                    class="ml-2 h-5 gap-1 px-2 text-xs text-gray-800"
                     onClick={() => {}}
                   >
-                    <TbPlus />
+                    <TbPlus /> Add
                   </Button>
                 </Show>
               </div>
