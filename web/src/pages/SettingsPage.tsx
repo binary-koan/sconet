@@ -26,8 +26,6 @@ export interface SettingsPageData {
 
 const SettingsPage: Component = () => {
   const data = useRouteData<SettingsPageData>()
-  // TODO:
-  const toggleColorMode = () => {}
 
   const logOut = () => {
     setLoginToken(null)
@@ -44,12 +42,9 @@ const SettingsPage: Component = () => {
           class="ml-auto"
           size="sm"
           variant="ghost"
-          colorScheme="neutral"
-          onClick={() => toggleColorMode()}
+          colorScheme="danger"
+          onClick={() => logOut()}
         >
-          Change Theme
-        </Button>
-        <Button size="sm" variant="ghost" colorScheme="danger" onClick={() => logOut()}>
           Sign Out
         </Button>
       </PageHeader>
