@@ -8,10 +8,11 @@ import { Modal, ModalCloseButton, ModalContent, ModalTitle } from "./base/Modal"
 
 const PAGE_SIZE = 40
 
-const IconPicker: Component<{ name: string; defaultValue?: string }> = (props) => {
+const IconPicker: Component<{ name: string; value?: string; setValue: (value: string) => void }> = (
+  props
+) => {
   const [open, setOpen] = createSignal(false)
   const [query, setQuery] = createSignal("")
-  const [value, setValue] = createSignal(props.defaultValue)
   const [page, setPage] = createSignal(0)
 
   const icons = createMemo(() =>
@@ -32,12 +33,12 @@ const IconPicker: Component<{ name: string; defaultValue?: string }> = (props) =
 
   return (
     <>
-      <input name={props.name} value={value()} style={{ display: "none" }} />
+      <input name={props.name} value={props.value} style={{ display: "none" }} />
 
       <div class="flex items-center">
-        <Show when={value()}>
+        <Show when={props.value}>
           <div class="mr-2">
-            <Dynamic component={namedIcons[value()!]} size="2em" />
+            <Dynamic component={namedIcons[props.value!]} size="2em" />
           </div>
         </Show>
         <Button onClick={[setOpen, true]}>Pick icon</Button>
@@ -71,11 +72,11 @@ const IconPicker: Component<{ name: string; defaultValue?: string }> = (props) =
               <For each={pageInfo().icons}>
                 {([icon, component]) => (
                   <Button
-                    colorScheme={value() === icon ? "primary" : "neutral"}
+                    colorScheme={props.value === icon ? "primary" : "neutral"}
                     class="flex-col"
                     size="xs"
                     onClick={() => {
-                      setValue(icon)
+                      props.setValue(icon)
                       setOpen(false)
                     }}
                   >

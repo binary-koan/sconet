@@ -105,7 +105,9 @@ export const TransactionsList: Component<{
       </For>
 
       <Show when={props.fetchMore && props.data.transactions.nextOffset}>
-        <Button onClick={props.fetchMore}>Fetch more</Button>
+        <Button variant="ghost" class="mt-2" onClick={props.fetchMore}>
+          Fetch more
+        </Button>
       </Show>
     </>
   )

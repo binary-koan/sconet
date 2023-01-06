@@ -1,8 +1,9 @@
 import { Field, FormState, ValidateField } from "@modular-forms/solid"
-import { Component, JSX, splitProps } from "solid-js"
+import { Component, JSX, Show, splitProps } from "solid-js"
 import { FormControl, FormLabel } from "../base/FormControl"
 import { InputProps } from "../base/Input"
 import { InputGroup, InputGroupInput } from "../base/InputGroup"
+import { FieldError } from "./FieldError"
 
 const FormInputGroup: Component<
   InputProps & {
@@ -28,11 +29,16 @@ const FormInputGroup: Component<
       <FormLabel>{props.label}</FormLabel>
       <Field name={props.name} of={props.of} validate={props.validate}>
         {(field) => (
-          <InputGroup>
-            {props.before}
-            <InputGroupInput {...inputProps} value={field.value} {...field.props} />
-            {props.after}
-          </InputGroup>
+          <>
+            <InputGroup>
+              {props.before}
+              <InputGroupInput {...inputProps} value={field.value} {...field.props} />
+              {props.after}
+            </InputGroup>
+            <Show when={field.error}>
+              <FieldError error={field.error} />
+            </Show>
+          </>
         )}
       </Field>
     </FormControl>

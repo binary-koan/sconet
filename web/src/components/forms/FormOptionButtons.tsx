@@ -3,6 +3,7 @@ import { Component, For, JSX, Show, splitProps } from "solid-js"
 import { RefProp } from "../../types"
 import { Button } from "../base/Button"
 import { FormControl, FormLabel } from "../base/FormControl"
+import { FieldError } from "./FieldError"
 
 const FormOptionButtons: Component<{
   of: FormState<any>
@@ -55,6 +56,10 @@ const FormOptionButtons: Component<{
               )}
             </For>
           </div>
+
+          <Show when={field.error}>
+            <FieldError error={field.error} />
+          </Show>
         </FormControl>
       )}
     </Field>

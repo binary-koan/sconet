@@ -28,30 +28,10 @@ const AccountMailboxForm: Component<{
     <Form of={form} onSubmit={onSubmit}>
       <FormInput of={form} label="Name" name="name" validate={required("Cannot be blank")} />
 
-      <FormInput
-        of={form}
-        label="From address pattern"
-        name="fromAddressPattern"
-        validate={required("Cannot be blank")}
-      />
-      <FormInput
-        of={form}
-        label="Date pattern"
-        name="datePattern"
-        validate={required("Cannot be blank")}
-      />
-      <FormInput
-        of={form}
-        label="Memo pattern"
-        name="memoPattern"
-        validate={required("Cannot be blank")}
-      />
-      <FormInput
-        of={form}
-        label="Amount pattern"
-        name="amountPattern"
-        validate={required("Cannot be blank")}
-      />
+      <FormInput of={form} label="From address pattern" name="fromAddressPattern" />
+      <FormInput of={form} label="Date pattern" name="datePattern" />
+      <FormInput of={form} label="Memo pattern" name="memoPattern" />
+      <FormInput of={form} label="Amount pattern" name="amountPattern" />
 
       <Button type="submit" colorScheme="primary" disabled={props.loading}>
         Save
