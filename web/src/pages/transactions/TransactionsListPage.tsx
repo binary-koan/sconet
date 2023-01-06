@@ -24,6 +24,7 @@ const BLANK_FILTERS = {
 
 export interface TransactionsListPageData {
   data: QueryResource<TransactionsQuery, TransactionsQueryVariables>
+  variables: TransactionsQueryVariables
 }
 
 const TransactionsListPage: Component = () => {
@@ -101,7 +102,24 @@ const TransactionsListPage: Component = () => {
       <Cell
         data={routeData.data}
         success={TransactionsList}
-        successProps={{ isEditing: isEditing(), setFilterValue, fetchMore: () => {} }}
+        successProps={{
+          isEditing: isEditing(),
+          setFilterValue,
+          fetchMore: () =>
+            routeData.data.fetchMore(
+              {
+                ...routeData.variables,
+                offset: routeData.data()?.transactions.nextOffset
+              },
+              (existingData, newData) => ({
+                ...newData,
+                transactions: {
+                  ...newData.transactions,
+                  data: existingData.transactions.data.concat(newData.transactions.data)
+                }
+              })
+            )
+        }}
       />
     </>
   )

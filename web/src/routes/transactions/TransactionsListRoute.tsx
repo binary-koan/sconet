@@ -7,12 +7,19 @@ const transactionsData: RouteDataFunc<unknown, TransactionsListPageData> = ({
   params,
   location
 }) => {
-  const data = useTransactionsQuery(() => ({
+  const variables = () => ({
     limit: parseInt(new URLSearchParams(location.search).get("limit") || "100"),
     filter: JSON.parse(params.filter || "{}")
-  }))
+  })
 
-  return { data }
+  const data = useTransactionsQuery(variables)
+
+  return {
+    data,
+    get variables() {
+      return variables()
+    }
+  }
 }
 
 const TransactionsListPage = lazy(() => import("../../pages/transactions/TransactionsListPage"))

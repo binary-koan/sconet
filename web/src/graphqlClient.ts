@@ -2,6 +2,11 @@ import { createContext, createEffect, createMemo, createSignal, useContext } fro
 import { createStore, reconcile } from "solid-js/store"
 import { loginToken } from "./utils/auth"
 
+type FetchMore<Data, Variables> = (
+  variables: Variables,
+  merge: (existingData: Data, newData: Data) => Data
+) => void
+
 interface StoredQuery<Data> {
   inflightRequest?: Promise<any>
 
@@ -12,6 +17,7 @@ interface StoredQuery<Data> {
   error: any
 
   fetch(): Promise<any>
+  fetchMore: FetchMore<any, any>
   refetch(): void
 }
 
@@ -54,7 +60,10 @@ const getQuery = <Data>(context: GraphQLContext, query: string, serializedVariab
 
     async fetch() {
       if (!storedQuery.inflightRequest) {
-        setStore("loading", true)
+        if (!store.data) {
+          setStore("loading", true)
+        }
+
         storedQuery.inflightRequest = requestGraphql<Data>(query, serializedVariables)
           .then((data) => {
             delete storedQuery.inflightRequest
@@ -70,6 +79,31 @@ const getQuery = <Data>(context: GraphQLContext, query: string, serializedVariab
       }
 
       return await storedQuery!.inflightRequest
+    },
+
+    async fetchMore(variables, merge) {
+      if (!store.data) {
+        throw new Error("Cannot fetchMore when the first result is not yet loaded")
+      }
+
+      storedQuery.inflightRequest = requestGraphql<Data>(query, JSON.stringify(variables))
+        .then((newData) => {
+          if (!storedQuery.inflightRequest) {
+            // Something has changed in the meantime, we should cancel this
+            return
+          }
+
+          if (!store.data) {
+            throw new Error("Cannot fetchMore when the first result is not yet loaded")
+          }
+
+          delete storedQuery.inflightRequest
+
+          storedQuery.set(merge(store.data, newData))
+        })
+        .catch((error) => {
+          setStore("error", error)
+        })
     },
 
     async refetch() {
@@ -93,7 +127,7 @@ export interface QueryResource<Data, Variables> {
   error?: any
 
   refetch: () => void
-  fetchMore: (variables: Variables, merge: (existingData: Data, newData: Data) => Data) => void
+  fetchMore: FetchMore<Data, Variables>
 }
 
 export function useQuery<Data, Variables = {}>(
@@ -105,6 +139,7 @@ export function useQuery<Data, Variables = {}>(
   const queryParam = () => queryContent
   const variablesParam = () => JSON.stringify(variables?.() || {})
 
+  // Memory leak: This creates a new store for each variable change and probably never cleans up the old ones ...
   const storedQuery = createMemo(() => getQuery(context, queryParam(), variablesParam()))
 
   const data = createMemo(() => storedQuery().get())
@@ -123,40 +158,9 @@ export function useQuery<Data, Variables = {}>(
 
   createEffect(() => console.log("stored query", storedQuery(), storedQuery().loading))
 
+  resource.fetchMore = (...args: Parameters<FetchMore<Data, Variables>>) =>
+    storedQuery().fetchMore(...args)
   resource.refetch = () => storedQuery().refetch()
-
-  resource.fetchMore = () => {}
-
-  // return [
-  //   data,
-
-  //   {
-  //     refetch: () => {
-  //       storedQuery().refetch()
-  //     },
-
-  //     fetchMore: (variables, merge) => {
-  //       // const { state } = queryState(context, queryParam(), variablesParam())
-  //       // if (!state.cache) {
-  //       //   throw new Error("Cannot fetchMore when the first result is not yet loaded")
-  //       // }
-  //       // state.inflightRequest = requestGraphql<Data>(queryParam(), JSON.stringify(variables)).then(
-  //       //   (newData) => {
-  //       //     if (!state.inflightRequest) {
-  //       //       // Something has changed in the meantime, we should cancel this
-  //       //       return
-  //       //     }
-  //       //     if (!state.cache) {
-  //       //       throw new Error("Cannot fetchMore when the first result is not yet loaded")
-  //       //     }
-  //       //     state.cache = merge(state.cache, newData)
-  //       //     delete state.inflightRequest
-  //       //     return state.cache
-  //       //   }
-  //       // )
-  //     }
-  //   }
-  // ]
 
   return resource as any
 }

@@ -74,10 +74,10 @@ export function filterTransactions({
   }
 
   if (offset) {
-    const date = JSON.parse(atob(offset)).date
+    const date = new Date(JSON.parse(atob(offset)).date)
 
-    where += " AND date < $offsetDate"
-    args.$offsetDate = date
+    where += " AND date <= $offsetDate"
+    args.$offsetDate = serializeDate(date)
   }
 
   let limitClause = ""
