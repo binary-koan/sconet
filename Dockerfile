@@ -1,6 +1,9 @@
-FROM node:18 AS web-builder
+FROM node:18 AS builder
 
 WORKDIR /app
+
+RUN curl https://dl.min.io/client/mc/release/linux-amd64/mc -o /usr/local/bin/mc && \
+  chmod +x /usr/local/bin/mc
 
 RUN npm install -g pnpm
 
@@ -10,19 +13,25 @@ COPY web/package.json ./
 RUN pnpm install --offline
 
 COPY web ./
-RUN ls && pnpm build
+RUN pnpm build
 
 FROM jarredsumner/bun:0.4.0
 
 WORKDIR /app
 
 COPY api/package.json api/bun.lockb ./
+
+# This fails with --production on Fly builders for some reason (error linking - FileNotFound)
+# RUN bun install --production
 RUN bun install
+
+COPY --from=builder /usr/local/bin/mc /usr/local/bin/mc
 
 COPY api ./
 
-RUN mkdir static
-COPY --from=web-builder /app/dist static
 ENV STATIC_PATH=static
 
-CMD ["bun", "start"]
+RUN mkdir static
+COPY --from=builder /app/dist static
+
+CMD bun start
