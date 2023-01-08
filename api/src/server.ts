@@ -7,6 +7,7 @@ import {
   shouldRenderGraphiQL
 } from "graphql-helix"
 import { buildContext } from "./context"
+import { backupDatabase } from "./db/backup"
 import "./polyfills"
 import { schema } from "./schema"
 
@@ -16,6 +17,8 @@ const corsHeaders: Array<[string, string]> = [
 ]
 
 const port = process.env.PORT || 4444
+
+setInterval(backupDatabase, 5 * 60 * 1000)
 
 Bun.serve({
   port,

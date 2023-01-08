@@ -1,6 +1,9 @@
 import { Database, Statement } from "bun:sqlite"
 
-const sqlite = new Database("data/db.sqlite")
+const sqlite = new Database(process.env.DB_PATH || "data/db.sqlite")
+
+// Support semi-concurrency to prevent locked database errors
+sqlite.run("pragma journal_mode = wal")
 
 export const db: Database = {
   run(sqlQuery, ...bindings): void {

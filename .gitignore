@@ -1,5 +1,5 @@
 node_modules
 .env
-*.sqlite
+api/data
 api/scratch.ts
 .vscode
