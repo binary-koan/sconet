@@ -2,6 +2,19 @@ import { file, write } from "bun"
 import { exec } from "child_process"
 import { existsSync, statSync } from "fs"
 import { db } from "./database"
+import { accountMailboxesRepo } from "./repos/accountMailboxesRepo"
+import { categoriesRepo } from "./repos/categoriesRepo"
+import { currenciesRepo } from "./repos/currenciesRepo"
+import { transactionsRepo } from "./repos/transactionsRepo"
+
+interface BackupDetails {
+  lastBackupAt?: string
+  backupIndex: number
+}
+
+const BACKUPS_TO_KEEP: number = 3
+
+const REPOS_TO_BACKUP = [transactionsRepo, categoriesRepo, accountMailboxesRepo, currenciesRepo]
 
 export const backupDatabase = async () => {
   if (
@@ -14,46 +27,55 @@ export const backupDatabase = async () => {
     return
   }
 
-  const filesToBackup = [db.filename, `${db.filename}-shm`, `${db.filename}-wal`].filter(
-    (path) => existsSync(path) && statSync(path).size > 0
-  )
+  const backupDetails: BackupDetails = existsSync("data/backup-details.json")
+    ? JSON.parse(await file("data/backup-details.json").text())
+    : { backupIndex: 0 }
 
-  let alreadyBackedUp = true
-
-  for (const path of filesToBackup) {
-    const lastBackedUpAt =
-      existsSync(`${path}.backupat`) && new Date(await file(`${path}.backupat`).text())
-
-    if (!lastBackedUpAt || statSync(path).mtime >= lastBackedUpAt) {
-      alreadyBackedUp = false
-    }
-  }
-
-  if (alreadyBackedUp) {
+  const databaseFiles = [db.filename, `${db.filename}-shm`, `${db.filename}-wal`]
+  if (
+    databaseFiles.every(
+      (path) =>
+        backupDetails.lastBackupAt && statSync(path).mtime >= new Date(backupDetails.lastBackupAt)
+    )
+  ) {
     console.log(`[BACKUP] Database not modified, skipping`)
     return
   }
-
-  const backupStartedAt = new Date()
 
   // Minio Node has bugs with Bun, so just use the command-line client instead
   await execCommand(
     `mc alias set backup https://${process.env.BUCKET_ENDPOINT} ${process.env.ACCESS_KEY_ID} ${process.env.SECRET_ACCESS_KEY}`
   )
 
-  for (const path of filesToBackup) {
-    await execCommand(
-      `mc od if=${path} of=backup/${
-        process.env.BUCKET_NAME
-      }/backup-${backupStartedAt.toISOString()}/${path}`
-    )
+  backupDetails.backupIndex = (backupDetails.backupIndex + 1) % BACKUPS_TO_KEEP
+  backupDetails.lastBackupAt = new Date().toISOString()
+
+  await execCommand(
+    `mc od if=data/backup-details.json of=backup/${process.env.BUCKET_NAME}/backup-${backupDetails.backupIndex}/backup-details.json`
+  )
+
+  for (const repo of REPOS_TO_BACKUP) {
+    let offset = 0
+
+    while (true) {
+      const rows = repo.findAll({ limit: 1000, offset })
+      const path = `data/backup-${repo.tableName}-${offset}.json`
+
+      await write(path, JSON.stringify(rows))
+
+      await execCommand(
+        `mc od if=${path} of=backup/${process.env.BUCKET_NAME}/backup-${backupDetails.backupIndex}/${path}`
+      )
+
+      if (rows.length < 1000) break
+
+      offset += 1000
+    }
   }
 
   console.log("[BACKUP] Success")
 
-  for (const path of filesToBackup) {
-    await write(`${path}.backupat`, backupStartedAt.toISOString())
-  }
+  await write("data/backup-details.json", JSON.stringify(backupDetails))
 }
 
 const execCommand = (command: string) => {

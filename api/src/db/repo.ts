@@ -12,7 +12,8 @@ import {
 } from "./utils/fields"
 
 export type Repo<Record, RecordForInsert, Methods> = Methods & {
-  findAll: () => Record[]
+  tableName: string
+  findAll: (options?: { limit?: number; offset?: number }) => Record[]
   findByIds: (ids: readonly string[]) => Record[]
   get: (id: string) => Record | undefined
   insert: (recordForInsert: RecordForInsert) => string
@@ -46,17 +47,21 @@ export const createRepo = <
   Object.values(defaultOrder).forEach(assertFieldName)
 
   return {
+    tableName,
+
     ...methods,
 
-    findAll() {
+    findAll({ limit, offset }: { limit?: number; offset?: number } = {}) {
       const order = Object.entries(defaultOrder)
         .map(([name, value]) => [name, value].join(" "))
         .join(", ")
 
-      return db
-        .query(`SELECT * FROM ${tableName} WHERE deletedAt IS NULL ORDER BY ${order}`)
-        .all()
-        .map(load)
+      let query = `SELECT * FROM ${tableName} WHERE deletedAt IS NULL ORDER BY ${order}`
+
+      if (limit) query += ` LIMIT ${parseInt(limit.toString())}`
+      if (offset) query += ` OFFSET ${parseInt(offset.toString())}`
+
+      return db.query(query).all().map(load)
     },
 
     findByIds(ids) {
