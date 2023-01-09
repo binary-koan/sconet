@@ -1,9 +1,12 @@
 {
   "scripts": {
-    "dev": "concurrently -n api,web,api-codegen,web-codegen -c blue,magenta,green,yellow 'cd api && bun run dev' 'cd web && pnpm dev' 'cd api && bun graphql-codegen --watch' 'cd web && pnpm graphql-codegen --watch'"
+    "dev": "concurrently -n api,web,api-codegen,web-codegen -c blue,magenta,green,yellow 'cd api && bun run dev' 'cd web && pnpm dev' 'cd api && bun graphql-codegen --watch' 'cd web && pnpm graphql-codegen --watch'",
+    "deploy": "dotenv -e web/.env pnpm run deploy:perform",
+    "deploy:perform": "fly deploy --build-arg \"VITE_TURNSTILE_SITEKEY=$VITE_TURNSTILE_SITEKEY\""
   },
   "devDependencies": {
     "concurrently": "^7.6.0",
+    "dotenv-cli": "^6.0.0",
     "prettier": "^2.7.1",
     "prettier-plugin-tailwindcss": "^0.1.13"
   }

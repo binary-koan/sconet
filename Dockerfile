@@ -13,6 +13,10 @@ COPY web/package.json ./
 RUN pnpm install --offline
 
 COPY web ./
+
+ARG VITE_TURNSTILE_SITEKEY
+RUN test -n "$VITE_TURNSTILE_SITEKEY" || (echo "VITE_TURNSTILE_SITEKEY not set" && false)
+
 RUN pnpm build
 
 FROM jarredsumner/bun:0.4.0
