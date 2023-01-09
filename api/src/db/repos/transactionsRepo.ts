@@ -16,7 +16,7 @@ export type TransactionForInsert = MakeOptional<
 
 export const transactionsRepo = createRepo({
   tableName: "transactions",
-  defaultOrder: { date: "DESC", id: "DESC" },
+  defaultOrder: { date: "DESC", amount: "DESC", id: "ASC" },
   load: loadTransaction,
   serialize: serializeTransaction,
 

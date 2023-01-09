@@ -89,7 +89,9 @@ export function filterTransactions({
 
   const data = memoize(() =>
     db
-      .query(`SELECT * FROM transactions ${where} ORDER BY date DESC, id DESC ${limitClause}`)
+      .query(
+        `SELECT * FROM transactions ${where} ORDER BY date DESC, amount DESC, id ASC ${limitClause}`
+      )
       .all(args)
       .map(loadTransaction)
   )
