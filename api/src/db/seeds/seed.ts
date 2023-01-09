@@ -31,7 +31,7 @@ export function seed() {
     categoriesRepo.insert({
       name: "First",
       color: "red",
-      icon: "3d-cube-sphere"
+      icon: "ShoppingCart"
     })
   }
 
@@ -39,7 +39,7 @@ export function seed() {
     categoriesRepo.insert({
       name: "Second",
       color: "green",
-      icon: "3d-cube-sphere"
+      icon: "ShoppingCart"
     })
   }
 
