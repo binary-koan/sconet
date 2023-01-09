@@ -1,8 +1,7 @@
+import { file, write } from "bun"
 import { exec } from "child_process"
-import { statSync } from "fs"
+import { existsSync, statSync } from "fs"
 import { db } from "./database"
-
-let lastBackedUpAt: Date | undefined
 
 export const backupDatabase = async () => {
   if (
@@ -15,8 +14,23 @@ export const backupDatabase = async () => {
     return
   }
 
-  if (lastBackedUpAt && statSync(db.filename).mtime < lastBackedUpAt) {
-    console.log("[BACKUP] Database not modified, skipping")
+  const filesToBackup = [db.filename, `${db.filename}-shm`, `${db.filename}-wal`].filter(
+    (path) => existsSync(path) && statSync(path).size > 0
+  )
+
+  let alreadyBackedUp = true
+
+  for (const path of filesToBackup) {
+    const lastBackedUpAt =
+      existsSync(`${path}.backupat`) && new Date(await file(`${path}.backupat`).text())
+
+    if (!lastBackedUpAt || statSync(path).mtime >= lastBackedUpAt) {
+      alreadyBackedUp = false
+    }
+  }
+
+  if (alreadyBackedUp) {
+    console.log(`[BACKUP] Database not modified, skipping`)
     return
   }
 
@@ -27,21 +41,29 @@ export const backupDatabase = async () => {
     `mc alias set backup https://${process.env.BUCKET_ENDPOINT} ${process.env.ACCESS_KEY_ID} ${process.env.SECRET_ACCESS_KEY}`
   )
 
-  await execCommand(`mc od if=${db.filename} of=backup/${process.env.BUCKET_NAME}/db-backup.sqlite`)
+  for (const path of filesToBackup) {
+    await execCommand(
+      `mc od if=${path} of=backup/${
+        process.env.BUCKET_NAME
+      }/backup-${backupStartedAt.toISOString()}/${path}`
+    )
+  }
 
   console.log("[BACKUP] Success")
 
-  lastBackedUpAt = backupStartedAt
+  for (const path of filesToBackup) {
+    await write(`${path}.backupat`, backupStartedAt.toISOString())
+  }
 }
 
 const execCommand = (command: string) => {
-  return new Promise<void>((resolve, reject) =>
-    exec(command, (error, stdout, stderr) => {
-      if (stdout) console.log(stdout)
-      if (stderr) console.error(stderr)
+  console.log(`[BACKUP] Executing ${command}`)
+  return new Promise<void>((resolve, reject) => {
+    const process = exec(command)
 
-      if (error) reject(error)
+    process.addListener("exit", (code) => {
+      if (code !== 0) reject(`Command '${command}' exited with code ${code}`)
       resolve()
     })
-  )
+  })
 }
