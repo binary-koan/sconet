@@ -1,5 +1,5 @@
 type Mutation {
-  login(email: String!, password: String!): String!
+  login(email: String!, password: String!, turnstileToken: String!): String!
 
   changePassword(oldPassword: String!, newPassword: String!): Boolean!
 

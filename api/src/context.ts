@@ -14,6 +14,7 @@ import { currenciesRepo } from "./db/repos/currenciesRepo"
 import { transactionsRepo } from "./db/repos/transactionsRepo"
 
 export interface Context {
+  remoteIp?: string
   auth?: {
     userId: string
   }
@@ -35,6 +36,7 @@ export async function buildContext(
   _executionContext: ExecutionContext
 ): Promise<Context> {
   return {
+    remoteIp: getRemoteIp(request) ?? undefined,
     auth: await getAuthDetails(request),
     data: {
       accountMailbox: new Dataloader(async (ids) => accountMailboxesRepo.findByIds(ids)),
@@ -79,4 +81,9 @@ async function getAuthDetails(request: Request) {
     console.log("headers", [...request.headers.entries()])
     throw e
   }
+}
+
+function getRemoteIp(request: Request) {
+  // Bun currently can't get the request IP directly: https://github.com/oven-sh/bun/issues/518
+  return request.headers.get("CF-Connecting-IP") || request.headers.get("X-Forwarded-For")
 }

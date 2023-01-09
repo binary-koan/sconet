@@ -7,7 +7,15 @@ import { updateOneUser } from "../db/queries/user/updateOneUser"
 import { UserRecord } from "../db/records/user"
 import { MutationResolvers, QueryResolvers, Resolvers } from "../resolvers-types"
 
-export const login: MutationResolvers["login"] = async (_, { email, password }) => {
+export const login: MutationResolvers["login"] = async (
+  _,
+  { email, password, turnstileToken },
+  context
+) => {
+  if (!checkTurnstile(turnstileToken, context.remoteIp)) {
+    throw new GraphQLError("Browser verification failed")
+  }
+
   const user = getUserByEmail(email)
 
   if (!user) {
@@ -66,8 +74,31 @@ export const CurrentUser: Resolvers["CurrentUser"] = {
 
 const createToken = (user: UserRecord) => {
   return new SignJWT({})
-    .setProtectedHeader({ alg: 'HS256' })
+    .setProtectedHeader({ alg: "HS256" })
     .setSubject(user.id)
     .setExpirationTime("14d")
     .sign(Buffer.from(process.env.JWT_SECRET!))
+}
+
+const checkTurnstile = async (token: string, ip?: string) => {
+  const url = "https://challenges.cloudflare.com/turnstile/v0/siteverify"
+  const result = await fetch(url, {
+    body: JSON.stringify({
+      secret: process.env.TURNSTILE_SECRET_KEY,
+      response: token,
+      remoteip: ip
+    }),
+    headers: {
+      "Content-Type": "application/json"
+    },
+    method: "POST"
+  })
+
+  const outcome: { success: boolean } = await result.json()
+
+  if (!outcome.success) {
+    console.log("CloudFlare verification failed", outcome)
+  }
+
+  return outcome.success
 }

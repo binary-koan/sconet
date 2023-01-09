@@ -206,6 +206,7 @@ export type MutationDeleteTransactionArgs = {
 export type MutationLoginArgs = {
   email: Scalars['String'];
   password: Scalars['String'];
+  turnstileToken: Scalars['String'];
 };
 
 
@@ -418,6 +419,7 @@ export type DeleteTransactionMutation = { __typename?: 'Mutation', deleteTransac
 export type LoginMutationVariables = Exact<{
   email: Scalars['String'];
   password: Scalars['String'];
+  turnstileToken: Scalars['String'];
 }>;
 
 

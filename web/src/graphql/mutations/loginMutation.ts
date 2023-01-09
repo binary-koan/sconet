@@ -3,8 +3,8 @@ import { MutationOptions, useMutation } from "../../graphqlClient"
 import { gql } from "../../utils/gql"
 
 const LOGIN_MUTATION = gql`
-  mutation Login($email: String!, $password: String!) {
-    login(email: $email, password: $password)
+  mutation Login($email: String!, $password: String!, $turnstileToken: String!) {
+    login(email: $email, password: $password, turnstileToken: $turnstileToken)
   }
 `
 

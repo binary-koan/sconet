@@ -1,8 +1,9 @@
+import devtoolsPlugin from "@solid-devtools/transform"
 import { defineConfig } from "vite"
 import solidPlugin from "vite-plugin-solid"
-import devtoolsPlugin from "@solid-devtools/transform"
 
 export default defineConfig({
+  envDir: ".",
   plugins: [
     solidPlugin(),
     devtoolsPlugin({
