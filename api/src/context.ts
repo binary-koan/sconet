@@ -78,7 +78,6 @@ async function getAuthDetails(request: Request) {
     }
 
     console.error(e)
-    console.log("headers", [...request.headers.entries()])
     throw e
   }
 }

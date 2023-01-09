@@ -1,5 +1,5 @@
-import { Form, FormState, getValues } from "@modular-forms/solid"
-import { Component, createEffect } from "solid-js"
+import { Form, FormState } from "@modular-forms/solid"
+import { Component } from "solid-js"
 import { useCategoriesQuery } from "../../graphql/queries/categoriesQuery"
 import { namedIcons } from "../../utils/namedIcons"
 import CategoryIndicator from "../CategoryIndicator"
@@ -18,8 +18,6 @@ const TransactionFilters: Component<{
   form: FormState<TransactionFilterValues>
 }> = (props) => {
   const data = useCategoriesQuery()
-
-  createEffect(() => console.log(getValues(props.form)))
 
   return (
     <div class="mb-4 bg-white p-4 shadow-sm lg:rounded">
