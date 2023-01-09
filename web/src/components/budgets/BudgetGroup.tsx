@@ -2,6 +2,7 @@ import { TbListSearch } from "solid-icons/tb"
 import { Component, For, Show } from "solid-js"
 import { BudgetQuery } from "../../graphql-types"
 import { getCssValue } from "../../utils/getCssValue"
+import { namedIcons } from "../../utils/namedIcons"
 import { LinkButton } from "../base/Button"
 import CategoryIndicator, { CategoryColor, CATEGORY_BACKGROUND_COLORS } from "../CategoryIndicator"
 import { PieChart } from "./PieChart"
@@ -51,7 +52,7 @@ const BudgetGroup: Component<{
                 <CategoryIndicator
                   class="mr-3 h-8 w-8"
                   color={category?.color}
-                  icon={category?.icon as any}
+                  icon={category?.icon ? namedIcons[category.icon] : undefined}
                 />
                 <div class="min-w-0 flex-1">
                   <div class="mt-1 flex">

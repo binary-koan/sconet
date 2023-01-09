@@ -3,6 +3,7 @@ import ObjectID from "bson-objectid"
 import { db } from "../database"
 import { accountMailboxesRepo } from "../repos/accountMailboxesRepo"
 import { categoriesRepo } from "../repos/categoriesRepo"
+import { currenciesRepo } from "../repos/currenciesRepo"
 import { serializeDate } from "../utils"
 
 export function seed() {
@@ -24,24 +25,44 @@ export function seed() {
     }
   }
 
-  categoriesRepo.insert({
-    name: "First",
-    color: "danger",
-    icon: "3d-cube-sphere"
-  })
+  const existingCategories = db.query("SELECT * FROM categories").all()
 
-  categoriesRepo.insert({
-    name: "Second",
-    color: "success",
-    icon: "3d-cube-sphere"
-  })
+  if (!existingCategories.some((category) => category.name === "First")) {
+    categoriesRepo.insert({
+      name: "First",
+      color: "red",
+      icon: "3d-cube-sphere"
+    })
+  }
 
-  accountMailboxesRepo.insert({
-    name: "Test",
-    mailServerOptions: {},
-    fromAddressPattern: "",
-    memoPattern: "",
-    datePattern: "",
-    amountPattern: ""
-  })
+  if (!existingCategories.some((category) => category.name === "Second")) {
+    categoriesRepo.insert({
+      name: "Second",
+      color: "green",
+      icon: "3d-cube-sphere"
+    })
+  }
+
+  const existingAccounts = db.query("SELECT * FROM accountMailboxes").all()
+
+  if (!existingAccounts.some((account) => account.name === "Test")) {
+    accountMailboxesRepo.insert({
+      name: "Test",
+      mailServerOptions: {},
+      fromAddressPattern: "",
+      memoPattern: "",
+      datePattern: "",
+      amountPattern: ""
+    })
+  }
+
+  const existingCurrencies = db.query("SELECT * FROM currencies").all()
+
+  if (!existingCurrencies.some((currency) => currency.code === "JPY")) {
+    currenciesRepo.insert({
+      code: "JPY",
+      decimalDigits: 0,
+      symbol: "¥"
+    })
+  }
 }

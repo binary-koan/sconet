@@ -1,4 +1,4 @@
-import { fromPairs, keyBy, orderBy, sumBy, uniq, zip } from "lodash"
+import { chunk, fromPairs, keyBy, orderBy, sumBy, uniq, zip } from "lodash"
 import { findExchangeRatesByCodes } from "../db/queries/exchangeRate/findExchangeRatesByCodes"
 import { CategoryRecord } from "../db/records/category"
 import { CurrencyRecord } from "../db/records/currency"
@@ -57,7 +57,22 @@ export const budget: QueryResolvers["budget"] = async (
       .padStart(2, "0")}T23:59:59${timezoneOffset}`
   )
 
-  const transactions = transactionsRepo.filter({ filter: { dateFrom: start, dateUntil: end } }).data
+  const parentTransactions = transactionsRepo.filter({
+    filter: { dateFrom: start, dateUntil: end }
+  }).data
+
+  const transactions = chunk(parentTransactions, 100).flatMap((transactions) => {
+    const split = transactionsRepo.findSplitTransactionsByIds(transactions.map((t) => t.id))
+
+    return transactions.flatMap((transaction, index) => {
+      if (split[index].length) {
+        return split[index]
+      } else {
+        return [transaction]
+      }
+    })
+  })
+
   const categoriesById = keyBy(categoriesRepo.findAll(), "id")
 
   const includedCategoryIds = orderBy(
