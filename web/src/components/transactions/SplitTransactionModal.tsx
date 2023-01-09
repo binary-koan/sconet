@@ -1,4 +1,4 @@
-import { sum } from "lodash"
+import { evaluate, sum } from "mathjs"
 import { Component, createSignal, Index } from "solid-js"
 import { FullTransactionFragment } from "../../graphql-types"
 import { useSplitTransaction } from "../../graphql/mutations/splitTransactionMutation"
@@ -19,20 +19,28 @@ export const SplitTransactionModal: Component<{
 
   const numericAmounts = () =>
     amounts().map((amount) => {
-      const parsed = parseInt(amount)
-
-      return isNaN(parsed) ? 0 : parsed
+      try {
+        const evaluated = evaluate(amount)
+        return typeof evaluated === "number" ? evaluated : 0
+      } catch (e) {
+        return 0
+      }
     })
 
-  const remainder = () => Math.abs(props.transaction.amount.decimalAmount) - sum(numericAmounts())
+  const remainder = () =>
+    parseFloat(
+      (Math.abs(props.transaction.amount.decimalAmount) - sum(numericAmounts())).toFixed(
+        currencyData()?.currency?.decimalDigits || 0
+      )
+    )
 
   const doUpdate = async () => {
     await splitTransaction({
       id: props.transaction.id,
       amounts: numericAmounts()
-        .map((amount) => Math.floor(amount * 10 ** (currencyData()?.currency?.decimalDigits || 0)))
         .filter((amount) => amount > 0)
         .concat(remainder())
+        .map((amount) => Math.floor(amount * 10 ** (currencyData()?.currency?.decimalDigits || 0)))
         .map((amount) => (props.transaction.amount.decimalAmount < 0 ? -amount : amount))
     })
     props.onFinish()
