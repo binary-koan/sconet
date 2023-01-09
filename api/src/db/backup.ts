@@ -50,10 +50,6 @@ export const backupDatabase = async () => {
   backupDetails.backupIndex = (backupDetails.backupIndex + 1) % BACKUPS_TO_KEEP
   backupDetails.lastBackupAt = new Date().toISOString()
 
-  await execCommand(
-    `mc od if=data/backup-details.json of=backup/${process.env.BUCKET_NAME}/backup-${backupDetails.backupIndex}/backup-details.json`
-  )
-
   for (const repo of REPOS_TO_BACKUP) {
     let offset = 0
 
@@ -76,6 +72,9 @@ export const backupDatabase = async () => {
   console.log("[BACKUP] Success")
 
   await write("data/backup-details.json", JSON.stringify(backupDetails))
+  await execCommand(
+    `mc od if=data/backup-details.json of=backup/${process.env.BUCKET_NAME}/backup-${backupDetails.backupIndex}/backup-details.json`
+  )
 }
 
 const execCommand = (command: string) => {
