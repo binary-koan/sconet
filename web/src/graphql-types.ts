@@ -491,6 +491,13 @@ export type GetCategoryQueryVariables = Exact<{
 
 export type GetCategoryQuery = { __typename?: 'Query', category?: { __typename?: 'Category', id: string, name: string, color: string, icon: string, createdAt: any, updatedAt: any, budget?: { __typename?: 'Money', decimalAmount: number, formatted: string } | null } | null };
 
+export type GetCurrencyQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type GetCurrencyQuery = { __typename?: 'Query', currency?: { __typename?: 'Currency', id: string, code: any, symbol: string, decimalDigits: number } | null };
+
 export type GetTransactionQueryVariables = Exact<{
   id: Scalars['String'];
 }>;

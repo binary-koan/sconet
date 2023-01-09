@@ -2,6 +2,7 @@ import { sum } from "lodash"
 import { Component, createSignal, Index } from "solid-js"
 import { FullTransactionFragment } from "../../graphql-types"
 import { useSplitTransaction } from "../../graphql/mutations/splitTransactionMutation"
+import { useGetCurrencyQuery } from "../../graphql/queries/getCurrencyQuery"
 import { Button } from "../base/Button"
 import { Input } from "../base/Input"
 import { Modal, ModalCloseButton, ModalContent, ModalTitle } from "../base/Modal"
@@ -13,6 +14,7 @@ export const SplitTransactionModal: Component<{
   onFinish: () => void
 }> = (props) => {
   const splitTransaction = useSplitTransaction()
+  const currencyData = useGetCurrencyQuery(() => ({ id: props.transaction.currencyId }))
   const [amounts, setAmounts] = createSignal([""])
 
   const numericAmounts = () =>
@@ -28,6 +30,7 @@ export const SplitTransactionModal: Component<{
     await splitTransaction({
       id: props.transaction.id,
       amounts: numericAmounts()
+        .map((amount) => Math.floor(amount * 10 ** (currencyData()?.currency?.decimalDigits || 0)))
         .filter((amount) => amount > 0)
         .concat(remainder())
         .map((amount) => (props.transaction.amount.decimalAmount < 0 ? -amount : amount))
