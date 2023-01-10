@@ -61,17 +61,19 @@ export const TransactionsList: Component<{
                   class="z-docked sticky top-0 bg-gray-50 pt-2 lg:top-14"
                   classList={{ "-mt-2": index() === 0, "mt-6": index() !== 0 }}
                 >
-                  <div class="absolute top-1/2 left-4 right-4 border-b border-gray-200" />
-                  <button
-                    type="button"
-                    onClick={() => {
-                      props.setFilterValue("dateFrom", dateFrom.toISOString().split("T")[0])
-                      props.setFilterValue("dateUntil", dateUntil.toISOString().split("T")[0])
-                    }}
-                    class="relative mx-2 inline-block rounded bg-gray-50 py-1 pl-2 pr-4 text-base font-semibold text-gray-700"
-                  >
-                    {formatDate(date, "monthYear")}
-                  </button>
+                  <div class="relative">
+                    <div class="absolute top-1/2 left-4 right-4 border-b border-gray-200" />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        props.setFilterValue("dateFrom", dateFrom.toISOString().split("T")[0])
+                        props.setFilterValue("dateUntil", dateUntil.toISOString().split("T")[0])
+                      }}
+                      class="relative mx-2 inline-block rounded bg-gray-50 py-1 pl-2 pr-4 text-base font-semibold text-gray-700"
+                    >
+                      {formatDate(date, "monthYear")}
+                    </button>
+                  </div>
                 </div>
               </Show>
 

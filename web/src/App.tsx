@@ -3,6 +3,7 @@ import type { Component, JSX } from "solid-js"
 import { Toaster } from "solid-toast"
 import { MainLayout } from "./components/MainLayout"
 import { useRequireLogin } from "./hooks/useRequireLogin"
+import { EditAccountMailboxRoute } from "./routes/accountMailboxes/EditAccountMailboxRoute"
 import { NewAccountMailboxRoute } from "./routes/accountMailboxes/NewAccountMailboxRoute"
 import { BudgetsRoute } from "./routes/BudgetsRoute"
 import { EditCategoryRoute } from "./routes/categories/EditCategoryRoute"
@@ -61,6 +62,7 @@ const App: Component = () => {
           <EditCategoryRoute />
 
           <NewAccountMailboxRoute />
+          <EditAccountMailboxRoute />
 
           <BudgetsRoute />
 

@@ -151,6 +151,7 @@ const Category: Component<{
       <LinkButton
         href={`/categories/${props.category.id}`}
         size="sm"
+        variant="ghost"
         class="ml-auto mr-2"
         title={"Edit category " + props.category.id}
       >
