@@ -14,7 +14,8 @@ generates:
         Currency: ./db/records/currency#CurrencyRecord
         Transaction: ./db/records/transaction#TransactionRecord
         AccountMailbox: ./db/records/accountMailbox#AccountMailboxRecord
-        PaginatedTransactions: ./db/queries/transaction/findTransactions#FindTransactionsResult
+        PaginatedTransactions: ./db/queries/transaction/filterTransactions#FindTransactionsResult
+        DailyTransactions: ./resolvers/transactions#DailyTransactionsResult
         MonthBudget: ./resolvers/budgets#MonthBudgetResult
         CategoryBudgetGroup: ./resolvers/budgets#CategoryBudgetGroupResult
         CategoryBudget: ./resolvers/budgets#CategoryBudgetResult

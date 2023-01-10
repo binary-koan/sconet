@@ -6,12 +6,12 @@ import { Button } from "../../components/base/Button"
 import { PageHeader } from "../../components/base/PageHeader"
 import { Cell } from "../../components/Cell"
 import { TransactionsCalendar } from "../../components/transactions/TransactionsCalendar"
-import { TransactionsQuery, TransactionsQueryVariables } from "../../graphql-types"
+import { TransactionsByDayQuery, TransactionsByDayQueryVariables } from "../../graphql-types"
 import { QueryResource } from "../../graphqlClient"
 import { setTransactionsViewPreference } from "../../utils/transactions/viewPreference"
 
 export interface TransactionsCalendarPageData {
-  data: QueryResource<TransactionsQuery, TransactionsQueryVariables>
+  data: QueryResource<TransactionsByDayQuery, TransactionsByDayQueryVariables>
   year: string
   month: string
 }

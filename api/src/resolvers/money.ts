@@ -1,3 +1,5 @@
+import { GraphQLError } from "graphql"
+import { isError, sum } from "lodash"
 import { Context } from "../context"
 import { CurrencyRecord } from "../db/records/currency"
 import { Resolvers } from "../resolvers-types"
@@ -23,6 +25,56 @@ export const convertCurrency = async (
 
   return {
     amount: convertAmount(options.amount, options.currency, rate),
+    currency: otherCurrency
+  }
+}
+
+export const sumCurrency = async (options: {
+  amounts: MoneyOptions[]
+  targetCurrencyCode?: string | null
+  context: Context
+}): Promise<MoneyOptions> => {
+  if (!options.amounts.length) {
+    return {
+      amount: 0,
+      currency: await options.context.data.currency.load(options.context.defaultCurrencyId)
+    }
+  }
+
+  const targetCurrencyCode =
+    options.targetCurrencyCode ||
+    (await options.context.data.currency.load(options.context.defaultCurrencyId)).code
+
+  const rates = await options.context.data.exchangeRate.loadMany(
+    options.amounts.map(({ currency }) => ({
+      from: currency.code,
+      to: targetCurrencyCode
+    }))
+  )
+
+  if (rates.some((rate) => isError(rate))) {
+    throw new GraphQLError(`Error fetching exchange rates: ${JSON.stringify(rates)}`)
+  }
+
+  const total = sum(
+    options.amounts.map(({ amount, currency }, index) => {
+      const rate = rates[index]
+
+      if (isError(rate)) {
+        throw new GraphQLError(
+          `Error fetching exchange rate for ${amount} in ${currency.code}: ${rate}`
+        )
+      }
+      return convertAmount(amount, currency, rate.rate)
+    })
+  )
+
+  const otherCurrency = await options.context.data.currency.load(
+    (rates[0] as { toId: string }).toId
+  )
+
+  return {
+    amount: total,
     currency: otherCurrency
   }
 }

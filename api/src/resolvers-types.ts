@@ -3,7 +3,8 @@ import { CategoryRecord } from './db/records/category';
 import { CurrencyRecord } from './db/records/currency';
 import { TransactionRecord } from './db/records/transaction';
 import { AccountMailboxRecord } from './db/records/accountMailbox';
-import { FindTransactionsResult } from './db/queries/transaction/findTransactions';
+import { FindTransactionsResult } from './db/queries/transaction/filterTransactions';
+import { DailyTransactionsResult } from './resolvers/transactions';
 import { MonthBudgetResult, CategoryBudgetGroupResult, CategoryBudgetResult } from './resolvers/budgets';
 import { MoneyOptions } from './resolvers/money';
 import { UserRecord } from './db/records/user';
@@ -102,7 +103,7 @@ export type CreateTransactionInput = {
   amount: Scalars['Int'];
   categoryId: InputMaybe<Scalars['String']>;
   currencyId: Scalars['String'];
-  date: InputMaybe<Scalars['DateTime']>;
+  date: InputMaybe<Scalars['Date']>;
   includeInReports: InputMaybe<Scalars['Boolean']>;
   memo: Scalars['String'];
 };
@@ -125,6 +126,18 @@ export type CurrentUser = {
   __typename?: 'CurrentUser';
   email: Scalars['String'];
   id: Scalars['String'];
+};
+
+export type DailyTransactions = {
+  __typename?: 'DailyTransactions';
+  date: Maybe<Scalars['Date']>;
+  totalSpent: Money;
+  transactions: Array<Transaction>;
+};
+
+
+export type DailyTransactionsTotalSpentArgs = {
+  currency: InputMaybe<Scalars['CurrencyCode']>;
 };
 
 export type Money = {
@@ -274,6 +287,7 @@ export type Query = {
   currentUser: Maybe<CurrentUser>;
   transaction: Maybe<Transaction>;
   transactions: PaginatedTransactions;
+  transactionsByDay: Array<DailyTransactions>;
 };
 
 
@@ -311,6 +325,12 @@ export type QueryTransactionsArgs = {
   offset: InputMaybe<Scalars['String']>;
 };
 
+
+export type QueryTransactionsByDayArgs = {
+  dateFrom: Scalars['Date'];
+  dateUntil: Scalars['Date'];
+};
+
 export type Transaction = {
   __typename?: 'Transaction';
   accountMailbox: AccountMailbox;
@@ -320,7 +340,7 @@ export type Transaction = {
   categoryId: Maybe<Scalars['String']>;
   currency: Currency;
   currencyId: Scalars['String'];
-  date: Scalars['DateTime'];
+  date: Scalars['Date'];
   id: Scalars['String'];
   includeInReports: Scalars['Boolean'];
   memo: Scalars['String'];
@@ -370,7 +390,7 @@ export type UpdateTransactionInput = {
   amount: InputMaybe<Scalars['Int']>;
   categoryId: InputMaybe<Scalars['String']>;
   currencyId: InputMaybe<Scalars['String']>;
-  date: InputMaybe<Scalars['DateTime']>;
+  date: InputMaybe<Scalars['Date']>;
   includeInReports: InputMaybe<Scalars['Boolean']>;
   memo: InputMaybe<Scalars['String']>;
 };
@@ -456,6 +476,7 @@ export type ResolversTypes = {
   Currency: ResolverTypeWrapper<CurrencyRecord>;
   CurrencyCode: ResolverTypeWrapper<Scalars['CurrencyCode']>;
   CurrentUser: ResolverTypeWrapper<UserRecord>;
+  DailyTransactions: ResolverTypeWrapper<DailyTransactionsResult>;
   Date: ResolverTypeWrapper<Scalars['Date']>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
   Float: ResolverTypeWrapper<Scalars['Float']>;
@@ -490,6 +511,7 @@ export type ResolversParentTypes = {
   Currency: CurrencyRecord;
   CurrencyCode: Scalars['CurrencyCode'];
   CurrentUser: UserRecord;
+  DailyTransactions: DailyTransactionsResult;
   Date: Scalars['Date'];
   DateTime: Scalars['DateTime'];
   Float: Scalars['Float'];
@@ -573,6 +595,13 @@ export type CurrentUserResolvers<ContextType = Context, ParentType extends Resol
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type DailyTransactionsResolvers<ContextType = Context, ParentType extends ResolversParentTypes['DailyTransactions'] = ResolversParentTypes['DailyTransactions']> = {
+  date: Resolver<Maybe<ResolversTypes['Date']>, ParentType, ContextType>;
+  totalSpent: Resolver<ResolversTypes['Money'], ParentType, ContextType, Partial<DailyTransactionsTotalSpentArgs>>;
+  transactions: Resolver<Array<ResolversTypes['Transaction']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export interface DateScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Date'], any> {
   name: 'Date';
 }
@@ -642,6 +671,7 @@ export type QueryResolvers<ContextType = Context, ParentType extends ResolversPa
   currentUser: Resolver<Maybe<ResolversTypes['CurrentUser']>, ParentType, ContextType>;
   transaction: Resolver<Maybe<ResolversTypes['Transaction']>, ParentType, ContextType, RequireFields<QueryTransactionArgs, 'id'>>;
   transactions: Resolver<ResolversTypes['PaginatedTransactions'], ParentType, ContextType, RequireFields<QueryTransactionsArgs, 'limit'>>;
+  transactionsByDay: Resolver<Array<ResolversTypes['DailyTransactions']>, ParentType, ContextType, RequireFields<QueryTransactionsByDayArgs, 'dateFrom' | 'dateUntil'>>;
 };
 
 export type TransactionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Transaction'] = ResolversParentTypes['Transaction']> = {
@@ -652,7 +682,7 @@ export type TransactionResolvers<ContextType = Context, ParentType extends Resol
   categoryId: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   currency: Resolver<ResolversTypes['Currency'], ParentType, ContextType>;
   currencyId: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  date: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  date: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
   id: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   includeInReports: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   memo: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -675,6 +705,7 @@ export type Resolvers<ContextType = Context> = {
   Currency: CurrencyResolvers<ContextType>;
   CurrencyCode: GraphQLScalarType;
   CurrentUser: CurrentUserResolvers<ContextType>;
+  DailyTransactions: DailyTransactionsResolvers<ContextType>;
   Date: GraphQLScalarType;
   DateTime: GraphQLScalarType;
   JSON: GraphQLScalarType;

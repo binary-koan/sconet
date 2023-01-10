@@ -60,7 +60,11 @@ Bun.serve({
     }
 
     if (shouldRenderGraphiQL(request)) {
-      return new Response(renderGraphiQL())
+      return new Response(renderGraphiQL(), {
+        headers: {
+          "Content-Type": "text/html"
+        }
+      })
     } else {
       const { operationName, query, variables } = getGraphQLParameters(request)
 

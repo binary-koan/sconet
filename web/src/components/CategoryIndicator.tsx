@@ -2,22 +2,7 @@ import { TbBox, TbCurrencyPound, TbMinus, TbSeparator } from "solid-icons/tb"
 import { Component, mergeProps } from "solid-js"
 import { Dynamic } from "solid-js/web"
 import { ClassProps } from "../types"
-
-export const CATEGORY_BACKGROUND_COLORS = {
-  gray: "bg-gray-500",
-  red: "bg-red-500",
-  orange: "bg-orange-500",
-  yellow: "bg-yellow-500",
-  green: "bg-green-500",
-  teal: "bg-teal-500",
-  blue: "bg-blue-500",
-  cyan: "bg-cyan-500",
-  purple: "bg-indigo-500",
-  pink: "bg-pink-500"
-}
-
-export const CATEGORY_COLORS = Object.keys(CATEGORY_BACKGROUND_COLORS)
-export type CategoryColor = keyof typeof CATEGORY_BACKGROUND_COLORS
+import { CategoryColor, CATEGORY_BACKGROUND_COLORS } from "../utils/categoryColors"
 
 const CategoryIndicator: Component<
   ClassProps & {

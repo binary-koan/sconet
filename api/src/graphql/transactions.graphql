@@ -1,6 +1,6 @@
 type Transaction {
   id: String!
-  date: DateTime!
+  date: Date!
   memo: String!
   originalMemo: String!
   amount(currency: CurrencyCode): Money!
@@ -29,12 +29,21 @@ input TransactionFilter {
   categoryIds: [String]
 }
 
+type DailyTransactions {
+  date: Date
+  totalSpent(currency: CurrencyCode): Money!
+  transactions: [Transaction!]!
+}
+
 type Query {
   transactions(
     limit: Int = 1000
     offset: String
     filter: TransactionFilter
   ): PaginatedTransactions! @authenticated
+
+  transactionsByDay(dateFrom: Date!, dateUntil: Date!): [DailyTransactions!]! @authenticated
+
   transaction(id: String!): Transaction @authenticated
 }
 
@@ -44,7 +53,7 @@ input CreateTransactionInput {
   currencyId: String!
   categoryId: String
   accountMailboxId: String!
-  date: DateTime
+  date: Date
   includeInReports: Boolean
 }
 
@@ -54,7 +63,7 @@ input UpdateTransactionInput {
   currencyId: String
   categoryId: String
   accountMailboxId: String
-  date: DateTime
+  date: Date
   includeInReports: Boolean
 }
 

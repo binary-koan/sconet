@@ -1,15 +1,15 @@
 import { useNavigate } from "@solidjs/router"
-import { sumBy } from "lodash"
 import { TbArrowLeft, TbArrowRight, TbPlus } from "solid-icons/tb"
 import { Component, createSignal, For, Show } from "solid-js"
-import { FullTransactionFragment, TransactionsQuery } from "../../graphql-types"
+import { TransactionsByDayQuery } from "../../graphql-types"
 import { buildMonthDates } from "../../utils/buildMonthDates"
+import { CategoryColor, CATEGORY_PALE_BACKGROUND_COLORS } from "../../utils/categoryColors"
 import { isSameDate } from "../../utils/date"
 import { Button } from "../base/Button"
 import { NewTransactionModal } from "./NewTransactionModal"
 
 export const TransactionsCalendar: Component<{
-  data: TransactionsQuery
+  data: TransactionsByDayQuery
   year: string
   month: string
 }> = (props) => {
@@ -19,8 +19,7 @@ export const TransactionsCalendar: Component<{
 
   const monthStart = new Date(parseInt(props.year), parseInt(props.month) - 1, 1)
 
-  const dates = () =>
-    monthDates(parseInt(props.year), parseInt(props.month), props.data.transactions.data)
+  const dates = () => monthDates(parseInt(props.year), parseInt(props.month), props.data)
 
   return (
     <>
@@ -48,20 +47,17 @@ export const TransactionsCalendar: Component<{
             )}
           </For>
           <For each={dates()}>
-            {({ date, isCurrentMonth, expenses, incomes }) => (
+            {({ date, isCurrentMonth, totalSpent, expenses, incomes }) => (
               <div
                 class="[&:nth-child(7n)]:border-r-0 flex h-16 flex-col border-t border-r border-gray-200 p-1 text-center text-sm lg:h-32 lg:text-left"
                 classList={{
-                  "text-gray-400": !isCurrentMonth,
-                  "bg-indigo-800 text-white": !!expenses.length
+                  "text-gray-300": !isCurrentMonth
                 }}
               >
                 <div class="flex flex-col lg:flex-row lg:pl-1">
                   <span class="font-semibold lg:mr-auto">{date.getDate()}</span>
                   <Show when={expenses.length}>
-                    <div class="my-auto text-xs">
-                      {sumBy(expenses, (transaction) => transaction.amount.decimalAmount)}
-                    </div>
+                    <div class="my-auto text-xs font-bold">{totalSpent}</div>
                   </Show>
                   <Show when={isCurrentMonth}>
                     <Button
@@ -78,7 +74,16 @@ export const TransactionsCalendar: Component<{
                 <div class="mt-1 hidden flex-col gap-0.5 lg:flex">
                   <For each={expenses.concat(incomes).slice(0, 3)}>
                     {(transaction) => (
-                      <div class="flex rounded bg-white px-1 py-0.5 text-xs text-gray-900">
+                      <div
+                        class="flex rounded px-1 py-0.5 text-xs text-gray-900"
+                        classList={{
+                          [transaction.category
+                            ? CATEGORY_PALE_BACKGROUND_COLORS[
+                                transaction.category.color as CategoryColor
+                              ]
+                            : "bg-gray-100"]: true
+                        }}
+                      >
                         {transaction.memo}
                         <span class="ml-auto">{transaction.amount.formatted}</span>
                       </div>
@@ -94,17 +99,22 @@ export const TransactionsCalendar: Component<{
   )
 }
 
-const monthDates = (year: number, month: number, transactions: FullTransactionFragment[]) => {
-  return buildMonthDates(year, month).map(({ date, isCurrentMonth }) => ({
-    date,
-    isCurrentMonth,
-    expenses: transactions.filter(
-      (transaction) =>
-        isSameDate(new Date(transaction.date), date) && transaction.amount.decimalAmount < 0
-    ),
-    incomes: transactions.filter(
-      (transaction) =>
-        isSameDate(new Date(transaction.date), date) && transaction.amount.decimalAmount > 0
+const monthDates = (year: number, month: number, result: TransactionsByDayQuery) => {
+  return buildMonthDates(year, month).map(({ date, isCurrentMonth }) => {
+    const day = result.transactionsByDay.find(({ date: transactionsDate }) =>
+      isSameDate(date, new Date(transactionsDate))
     )
-  }))
+
+    return {
+      date,
+      isCurrentMonth,
+
+      totalSpent: day?.totalSpent.formatted,
+
+      expenses:
+        day?.transactions.filter((transaction) => transaction.amount.decimalAmount < 0) || [],
+
+      incomes: day?.transactions.filter((transaction) => transaction.amount.decimalAmount > 0) || []
+    }
+  })
 }

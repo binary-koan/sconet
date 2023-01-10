@@ -2,7 +2,7 @@ import Dataloader from "dataloader"
 import { GraphQLError } from "graphql"
 import { ExecutionContext } from "graphql-helix"
 import { errors, jwtVerify } from "jose"
-import { last } from "lodash"
+import { last, memoize } from "lodash"
 import { findExchangeRatesByCodes } from "./db/queries/exchangeRate/findExchangeRatesByCodes"
 import { AccountMailboxRecord } from "./db/records/accountMailbox"
 import { CategoryRecord } from "./db/records/category"
@@ -18,6 +18,7 @@ export interface Context {
   auth?: {
     userId: string
   }
+  defaultCurrencyId: string
   data: {
     accountMailbox: Dataloader<string, AccountMailboxRecord>
     category: Dataloader<string, CategoryRecord>
@@ -35,9 +36,19 @@ export async function buildContext(
   request: Request,
   _executionContext: ExecutionContext
 ): Promise<Context> {
+  const defaultCurrencyId = memoize(
+    () => request.headers.get("x-default-currency-id") || currenciesRepo.findAll()[0].id
+  )
+
   return {
     remoteIp: getRemoteIp(request) ?? undefined,
+
     auth: await getAuthDetails(request),
+
+    get defaultCurrencyId() {
+      return defaultCurrencyId()
+    },
+
     data: {
       accountMailbox: new Dataloader(async (ids) => accountMailboxesRepo.findByIds(ids)),
       category: new Dataloader(async (ids) => categoriesRepo.findByIds(ids)),

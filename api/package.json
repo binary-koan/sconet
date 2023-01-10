@@ -1,16 +1,16 @@
 {
   "scripts": {
     "dev": "nodemon --exec 'bun start'",
-    "start": "bun run src/server.ts",
+    "start": "TZ=UTC bun run src/server.ts",
     "codegen": "graphql-codegen",
     "typecheck": "tsc --noEmit",
-    "migrate": "bun bin/migrate/index.ts",
-    "migrate:create": "bun bin/migrate/create.ts",
-    "migrate:rollback": "bun bin/migrate/rollback.ts",
-    "migrate:up": "bun bin/migrate/up.ts",
-    "migrate:down": "bun bin/migrate/down.ts",
-    "seed": "bun bin/seed/index.ts",
-    "dbconsole": "bun bin/dbconsole.ts"
+    "migrate": "TZ=UTC bun bin/migrate/index.ts",
+    "migrate:create": "TZ=UTC bun bin/migrate/create.ts",
+    "migrate:rollback": "TZ=UTC bun bin/migrate/rollback.ts",
+    "migrate:up": "TZ=UTC bun bin/migrate/up.ts",
+    "migrate:down": "TZ=UTC bun bin/migrate/down.ts",
+    "seed": "TZ=UTC bun bin/seed/index.ts",
+    "dbconsole": "TZ=UTC bun bin/dbconsole.ts"
   },
   "dependencies": {
     "@graphql-tools/schema": "^8.5.1",

@@ -47,12 +47,14 @@ import {
 } from "./resolvers/sessions"
 import {
   createTransaction,
+  DailyTransactions,
   deleteTransaction,
   PaginatedTransactions,
   splitTransaction,
   Transaction,
   transaction,
   transactions,
+  transactionsByDay,
   updateTransaction
 } from "./resolvers/transactions"
 
@@ -60,6 +62,7 @@ const resolvers: Resolvers = {
   Query: {
     transaction,
     transactions,
+    transactionsByDay,
     accountMailbox,
     accountMailboxes,
     category,
@@ -90,6 +93,7 @@ const resolvers: Resolvers = {
   },
   Transaction,
   PaginatedTransactions,
+  DailyTransactions,
   Currency,
   Category,
   AccountMailbox,

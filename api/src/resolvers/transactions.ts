@@ -7,10 +7,39 @@ import {
   Resolvers,
   UpdateTransactionInput
 } from "../resolvers-types"
-import { convertCurrency } from "./money"
+import { convertCurrency, sumCurrency } from "./money"
+
+export interface DailyTransactionsResult {
+  date: Date
+  transactions: TransactionRecord[]
+}
 
 export const transactions: QueryResolvers["transactions"] = (_, { limit, offset, filter }) => {
   return transactionsRepo.filter({ limit, offset, filter })
+}
+
+export const transactionsByDay: QueryResolvers["transactionsByDay"] = (
+  _,
+  { dateFrom, dateUntil }
+) => {
+  const transactions = transactionsRepo.filter({ filter: { dateFrom, dateUntil } }).data
+
+  const dates: DailyTransactionsResult[] = []
+
+  let date = new Date(dateFrom)
+
+  while (date.getTime() <= dateUntil.getTime()) {
+    dates.push({
+      date: new Date(date),
+      transactions: transactions.filter(
+        (transaction) => transaction.date.getTime() === date.getTime()
+      )
+    })
+
+    date.setDate(date.getDate() + 1)
+  }
+
+  return dates
 }
 
 export const transaction: QueryResolvers["transaction"] = (_, { id }) => {
@@ -147,4 +176,22 @@ export const PaginatedTransactions: Resolvers["PaginatedTransactions"] = {
   data: (result) => result.data,
   nextOffset: (result) => result.nextOffset || null,
   totalCount: (result) => result.totalCount
+}
+
+export const DailyTransactions: Resolvers["DailyTransactions"] = {
+  date: (result) => result.date,
+
+  totalSpent: async (result, { currency }, context) =>
+    sumCurrency({
+      amounts: await Promise.all(
+        result.transactions.map(async (transaction) => ({
+          amount: transaction.amount,
+          currency: await context.data.currency.load(transaction.currencyId)
+        }))
+      ),
+      targetCurrencyCode: currency,
+      context
+    }),
+
+  transactions: (result) => result.transactions
 }

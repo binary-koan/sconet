@@ -66,7 +66,7 @@ const TransactionForm: Component<{
     const coercedData = {
       ...data,
       amount: amountType === "expense" ? -integerAmount : integerAmount,
-      date: new Date(date).toISOString(),
+      date: new Date(date).toISOString().split("T")[0],
       includeInReports: Boolean(data.includeInReports)
     }
 
