@@ -5,7 +5,7 @@ const LoadingBar: Component = () => {
     <div role="status" class="mx-auto mb-4">
       <svg
         aria-hidden="true"
-        class="mr-2 h-8 w-8 animate-spin fill-violet-600 text-gray-200"
+        class="mr-2 h-8 w-8 animate-spin fill-indigo-600 text-gray-200"
         viewBox="0 0 100 101"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"

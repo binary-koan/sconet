@@ -12,7 +12,7 @@ export const CATEGORY_BACKGROUND_COLORS = {
   teal: "bg-teal-500",
   blue: "bg-blue-500",
   cyan: "bg-cyan-500",
-  purple: "bg-violet-500",
+  purple: "bg-indigo-500",
   pink: "bg-pink-500"
 }
 

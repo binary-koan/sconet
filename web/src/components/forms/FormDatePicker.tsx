@@ -73,7 +73,7 @@ export const FormDatePicker: Component<{
                   classList={{
                     "text-gray-400": !isCurrentMonth,
                     "hover:bg-gray-200": !isSelected(),
-                    "bg-violet-600 text-white hover:bg-violet-700": isSelected()
+                    "bg-indigo-600 text-white hover:bg-indigo-700": isSelected()
                   }}
                   onClick={() => setValue(date)}
                 >

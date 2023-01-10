@@ -3,6 +3,7 @@ import { Title } from "@solidjs/meta"
 import { useLocation, useNavigate } from "@solidjs/router"
 import { Component, createEffect, createSignal, Show } from "solid-js"
 import toast from "solid-toast"
+import logoImage from "../assets/logo.svg"
 import { Button } from "../components/base/Button"
 import { FieldError } from "../components/forms/FieldError"
 import FormInput from "../components/forms/FormInput"
@@ -66,8 +67,10 @@ const LoginPage: Component = () => {
     <>
       <Title>Login</Title>
 
-      <div class="flex min-h-screen flex-col justify-center pb-20">
-        <div class="m-6 rounded bg-white p-6 shadow-2xl lg:my-0 lg:mx-auto lg:w-96">
+      <div class="flex min-h-screen flex-col pb-20">
+        <img class="mx-auto mt-8 mb-auto w-36" src={logoImage} />
+
+        <div class="mx-6 mt-2 mb-16 rounded bg-white p-6 shadow-2xl lg:mx-auto lg:w-96">
           <h1 class="mb-4 flex items-center text-lg font-bold lg:text-2xl">Login</h1>
           <Form
             of={form}
@@ -93,6 +96,8 @@ const LoginPage: Component = () => {
             </Show>
           </Form>
         </div>
+
+        <div class="mt-auto" />
       </div>
     </>
   )

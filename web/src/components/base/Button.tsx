@@ -13,12 +13,12 @@ export type ButtonSize = keyof typeof SIZES
 
 const CLASSES = {
   ghost: {
-    primary: "text-violet-600 hover:bg-gray-200 focus:bg-gray-200",
+    primary: "text-indigo-600 hover:bg-gray-200 focus:bg-gray-200",
     danger: "text-red-600 hover:bg-gray-200 focus:bg-gray-200",
     neutral: "hover:bg-gray-200 focus:bg-gray-200"
   },
   solid: {
-    primary: "bg-violet-600 hover:bg-violet-800  focus:bg-violet-800 text-white",
+    primary: "bg-indigo-600 hover:bg-indigo-800  focus:bg-indigo-800 text-white",
     danger: "bg-red-600 hover:bg-red-800  focus:bg-red-800 text-white",
     neutral: "bg-gray-200 hover:bg-gray-300 focus:bg-gray-300"
   }

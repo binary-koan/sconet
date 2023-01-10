@@ -53,7 +53,7 @@ export const TransactionsCalendar: Component<{
                 class="[&:nth-child(7n)]:border-r-0 flex h-16 flex-col border-t border-r border-gray-200 p-1 text-center text-sm lg:h-32 lg:text-left"
                 classList={{
                   "text-gray-400": !isCurrentMonth,
-                  "bg-violet-800 text-white": !!expenses.length
+                  "bg-indigo-800 text-white": !!expenses.length
                 }}
               >
                 <div class="flex flex-col lg:flex-row lg:pl-1">

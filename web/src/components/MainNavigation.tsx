@@ -3,12 +3,16 @@ import { IconProps } from "solid-icons"
 import { TbAdjustmentsHorizontal, TbChartPie, TbReportMoney } from "solid-icons/tb"
 import { Component, JSX } from "solid-js"
 import { Dynamic } from "solid-js/web"
+import logoImage from "../assets/logo.svg"
 
 const MainNavigation: Component = () => {
   return (
     <div class="z-navbar fixed bottom-0 top-auto left-0 right-0 bg-white pb-[env(safe-area-inset-bottom)] shadow lg:bottom-auto lg:top-0 lg:pl-4 lg:pb-0">
       <div class="flex items-center lg:mx-auto lg:max-w-5xl lg:px-2">
-        <div class="mr-4 hidden text-lg font-semibold lg:block">Sconet</div>
+        {/* <div class="mr-4 hidden text-lg font-semibold lg:block">Sconet</div> */}
+        <Link href="/" class="mr-4 hidden lg:block">
+          <img class="w-24" src={logoImage} />
+        </Link>
         <NavigationItem icon={TbReportMoney} text="History" to="/transactions" />
         <NavigationItem icon={TbChartPie} text="Budgets" to="/budgets" />
         <NavigationItem icon={TbAdjustmentsHorizontal} text="Settings" to="/settings" />

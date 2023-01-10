@@ -10,7 +10,7 @@ interface InputCustomProps {
 }
 
 export const inputClasses = (props: InputCustomProps) =>
-  `border rounded border-gray-200 ring-0 ring-violet-200 transition focus:border-violet-400 focus:outline-0 focus:ring disabled:pointer-events-none disabled:opacity-50 ${
+  `border rounded border-gray-200 ring-0 ring-indigo-200 transition focus:border-indigo-400 focus:outline-0 focus:ring disabled:pointer-events-none disabled:opacity-50 ${
     INPUT_SIZES[props.size || "md"]
   }`
 

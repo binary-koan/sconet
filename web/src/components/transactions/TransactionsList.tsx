@@ -65,8 +65,8 @@ export const TransactionsList: Component<{
                   <button
                     type="button"
                     onClick={() => {
-                      props.setFilterValue("dateFrom", dateFrom.toISOString())
-                      props.setFilterValue("dateUntil", dateUntil.toISOString())
+                      props.setFilterValue("dateFrom", dateFrom.toISOString().split("T")[0])
+                      props.setFilterValue("dateUntil", dateUntil.toISOString().split("T")[0])
                     }}
                     class="relative mx-2 inline-block rounded bg-gray-50 py-1 pl-2 pr-4 text-base font-semibold text-gray-700"
                   >
