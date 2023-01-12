@@ -61,12 +61,12 @@ export const Category: Resolvers["Category"] = {
   color: (category) => category.color,
   icon: (category) => category.icon,
 
-  budget: async (category, { currency }, context) =>
+  budget: async (category, { currencyId }, context) =>
     category.budget != null && category.budgetCurrencyId
       ? convertCurrency({
           amount: category.budget,
           currency: await context.data.currency.load(category.budgetCurrencyId),
-          targetCurrencyCode: currency,
+          targetCurrencyId: currencyId,
           context
         })
       : null,

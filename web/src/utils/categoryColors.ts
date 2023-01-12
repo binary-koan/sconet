@@ -24,16 +24,16 @@ export const CATEGORY_BACKGROUND_COLORS: { [key in CategoryColor]: string } = {
 }
 
 export const CATEGORY_PALE_BACKGROUND_COLORS: { [key in CategoryColor]: string } = {
-  gray: "bg-gray-100",
-  red: "bg-red-100",
-  orange: "bg-orange-100",
-  yellow: "bg-yellow-100",
-  green: "bg-green-100",
-  teal: "bg-teal-100",
-  blue: "bg-blue-100",
-  cyan: "bg-cyan-100",
-  purple: "bg-indigo-100",
-  pink: "bg-pink-100"
+  gray: "bg-gray-200",
+  red: "bg-red-200",
+  orange: "bg-orange-200",
+  yellow: "bg-yellow-200",
+  green: "bg-green-200",
+  teal: "bg-teal-200",
+  blue: "bg-blue-200",
+  cyan: "bg-cyan-200",
+  purple: "bg-indigo-200",
+  pink: "bg-pink-200"
 }
 
 export const CATEGORY_COLORS = Object.keys(CATEGORY_BACKGROUND_COLORS)

@@ -1,5 +1,5 @@
-import { useNavigate } from "@solidjs/router"
-import { TbArrowLeft, TbArrowRight, TbPlus } from "solid-icons/tb"
+import { Link, useNavigate } from "@solidjs/router"
+import { TbArrowLeft, TbArrowRight, TbDots, TbPlus } from "solid-icons/tb"
 import { Component, createSignal, For, Show } from "solid-js"
 import { TransactionsByDayQuery } from "../../graphql-types"
 import { buildMonthDates } from "../../utils/buildMonthDates"
@@ -63,7 +63,7 @@ export const TransactionsCalendar: Component<{
                 class="[&:nth-child(7n)]:border-r-0 flex h-16 flex-col border-t border-r border-gray-200 p-1 text-center text-sm lg:h-32 lg:text-left"
                 classList={{
                   "text-gray-300": !isCurrentMonth,
-                  "bg-gray-200": !!expenses.length
+                  "bg-gray-100": !!expenses.length
                 }}
               >
                 <div class="flex flex-col lg:flex-row lg:pl-1">
@@ -98,26 +98,47 @@ export const TransactionsCalendar: Component<{
                       ></div>
                     )}
                   </For>
+
+                  <Show when={expenses.concat(incomes).length > 3}>
+                    <TbDots size="0.5rem" />
+                  </Show>
                 </div>
 
                 <div class="mt-1 hidden flex-col gap-0.5 lg:flex">
                   <For each={expenses.concat(incomes).slice(0, 3)}>
                     {(transaction) => (
-                      <div
-                        class="flex rounded px-1 py-0.5 text-xs text-gray-900"
+                      <Link
+                        href={`/transactions/${transaction.id}`}
+                        class="flex rounded px-1 py-0.5 text-xs text-gray-900 transition hover:shadow"
                         classList={{
                           [transaction.category
                             ? CATEGORY_PALE_BACKGROUND_COLORS[
                                 transaction.category.color as CategoryColor
                               ]
-                            : "bg-gray-100"]: true
+                            : "bg-gray-200"]: true
                         }}
                       >
-                        {transaction.memo}
-                        <span class="ml-auto">{transaction.amount.formatted}</span>
-                      </div>
+                        <span class="truncate">{transaction.memo}</span>
+                        <span class="ml-auto whitespace-nowrap">
+                          {transaction.amount.formatted}
+                        </span>
+                      </Link>
                     )}
                   </For>
+
+                  <Show when={expenses.concat(incomes).length > 3}>
+                    <Link
+                      href={`/transactions/list/${encodeURIComponent(
+                        JSON.stringify({
+                          dateFrom: date.toISOString().split("T")[0],
+                          dateUntil: date.toISOString().split("T")[0]
+                        })
+                      )}`}
+                      class="rounded py-0.5 text-center text-xs text-gray-700 hover:text-gray-900"
+                    >
+                      {expenses.concat(incomes).length - 3} more
+                    </Link>
+                  </Show>
                 </div>
               </div>
             )}
@@ -138,7 +159,7 @@ const monthDates = (year: number, month: number, result: TransactionsByDayQuery)
       date,
       isCurrentMonth,
 
-      totalSpent: day?.totalSpent.formatted,
+      totalSpent: day?.totalSpent.formattedShort,
 
       expenses:
         day?.transactions.filter((transaction) => transaction.amount.decimalAmount < 0) || [],

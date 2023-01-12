@@ -1,8 +1,6 @@
-import { keyBy } from "lodash"
 import { MakeOptional } from "../../../types"
 import { db } from "../../database"
 import { ExchangeRateRecord } from "../../records/exchangeRate"
-import { currenciesRepo } from "../../repos/currenciesRepo"
 import { arrayBindings, arrayQuery } from "../../utils/fields"
 
 export type ExchangeRateForInsert = MakeOptional<
@@ -10,22 +8,11 @@ export type ExchangeRateForInsert = MakeOptional<
   "deletedAt" | "createdAt" | "updatedAt"
 >
 
-export function findExchangeRatesByCodes(
+export function findExchangeRatesByCurrencyIds(
   queries: ReadonlyArray<{ from: string; to: string }>
 ): Array<{ rate: number; fromId: string; toId: string }> {
   if (!queries.length) {
     return []
-  }
-
-  const currencies = keyBy(currenciesRepo.findAll(), "code")
-
-  if (
-    queries.some(
-      (query) =>
-        !Object.keys(currencies).includes(query.from) || !Object.keys(currencies).includes(query.to)
-    )
-  ) {
-    throw new Error("Unknown currency code")
   }
 
   const allRates = db
@@ -34,12 +21,9 @@ export function findExchangeRatesByCodes(
         queries
       )}`
     )
-    .all(arrayBindings(queries.map(({ from }) => currencies[from].id)))
+    .all(arrayBindings(queries.map(({ from }) => from)))
 
-  return queries.map((query) => {
-    const from = currencies[query.from].id
-    const to = currencies[query.to].id
-
+  return queries.map(({ from, to }) => {
     if (from === to) {
       return {
         fromId: from,

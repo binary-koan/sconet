@@ -3,7 +3,7 @@ type Transaction {
   date: Date!
   memo: String!
   originalMemo: String!
-  amount(currency: CurrencyCode): Money!
+  amount(currencyId: String): Money!
   currency: Currency!
   currencyId: String!
   category: Category
@@ -31,7 +31,7 @@ input TransactionFilter {
 
 type DailyTransactions {
   date: Date
-  totalSpent(currency: CurrencyCode): Money!
+  totalSpent(currencyId: String): Money!
   transactions: [Transaction!]!
 }
 

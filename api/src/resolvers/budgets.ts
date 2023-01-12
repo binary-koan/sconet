@@ -1,5 +1,5 @@
 import { chunk, fromPairs, keyBy, orderBy, sumBy, uniq, zip } from "lodash"
-import { findExchangeRatesByCodes } from "../db/queries/exchangeRate/findExchangeRatesByCodes"
+import { findExchangeRatesByCurrencyIds } from "../db/queries/exchangeRate/findExchangeRatesByCurrencyIds"
 import { CategoryRecord } from "../db/records/category"
 import { CurrencyRecord } from "../db/records/currency"
 import { TransactionRecord } from "../db/records/transaction"
@@ -34,13 +34,11 @@ export interface CategoryBudgetResult {
 // TODO: Optimise some of this nicely in SQL so it works well for larger numbers of transactions
 export const budget: QueryResolvers["budget"] = async (
   _,
-  { year, month, timezoneOffset, currency }
+  { year, month, timezoneOffset, currencyId }
 ) => {
   const currenciesById = keyBy(currenciesRepo.findAll(), "id")
 
-  const outputCurrency = Object.values(currenciesById).find((currencyRecord) =>
-    currency ? currencyRecord.code === currency : true
-  )!
+  const outputCurrency = currencyId ? currenciesById[currencyId] : Object.values(currenciesById)[0]
 
   const start = new Date(
     `${year}-${month.toString().padStart(2, "0")}-01T00:00:00${timezoneOffset}`
@@ -84,8 +82,8 @@ export const budget: QueryResolvers["budget"] = async (
     (currency) => currency.id !== outputCurrency.id
   )
 
-  const exchangeRates = findExchangeRatesByCodes(
-    otherCurrencies.map(({ code }) => ({ from: code, to: outputCurrency.code }))
+  const exchangeRates = findExchangeRatesByCurrencyIds(
+    otherCurrencies.map(({ id }) => ({ from: id, to: outputCurrency.id }))
   )
 
   const exchangeRateByCurrencyId = fromPairs(
@@ -100,6 +98,7 @@ export const budget: QueryResolvers["budget"] = async (
     convertAmount(
       transaction.amount,
       currenciesById[transaction.currencyId],
+      outputCurrency,
       exchangeRateByCurrencyId[transaction.currencyId]
     )
 

@@ -1,6 +1,6 @@
 import { Title } from "@solidjs/meta"
 import { useNavigate, useRouteData } from "@solidjs/router"
-import { TbLayoutList } from "solid-icons/tb"
+import { TbList } from "solid-icons/tb"
 import { Component, onMount } from "solid-js"
 import { Button } from "../../components/base/Button"
 import { PageHeader } from "../../components/base/PageHeader"
@@ -36,7 +36,7 @@ const TransactionsCalendarPage: Component = () => {
           aria-label="List"
           onClick={() => navigate("/transactions/list")}
         >
-          <TbLayoutList size="1.25em" />
+          <TbList size="1.25em" />
         </Button>
       </PageHeader>
       <Cell

@@ -10,28 +10,38 @@ export interface MoneyOptions {
 }
 
 export const convertCurrency = async (
-  options: MoneyOptions & { targetCurrencyCode?: string | null; context: Context }
+  options: MoneyOptions & { targetCurrencyId?: string | null; context: Context }
 ): Promise<MoneyOptions> => {
-  if (!options.targetCurrencyCode) {
+  if (!options.targetCurrencyId) {
     return { amount: options.amount, currency: options.currency }
   }
 
   const { rate, toId } = await options.context.data.exchangeRate.load({
-    from: options.currency.code,
-    to: options.targetCurrencyCode
+    from: options.currency.id,
+    to: options.targetCurrencyId
   })
 
   const otherCurrency = await options.context.data.currency.load(toId)
 
+  console.log(
+    "converting",
+    options.amount,
+    options.currency.code,
+    "to",
+    otherCurrency.code,
+    "=",
+    convertAmount(options.amount, options.currency, otherCurrency, rate)
+  )
+
   return {
-    amount: convertAmount(options.amount, options.currency, rate),
+    amount: convertAmount(options.amount, options.currency, otherCurrency, rate),
     currency: otherCurrency
   }
 }
 
 export const sumCurrency = async (options: {
   amounts: MoneyOptions[]
-  targetCurrencyCode?: string | null
+  targetCurrencyId?: string | null
   context: Context
 }): Promise<MoneyOptions> => {
   if (!options.amounts.length) {
@@ -41,14 +51,14 @@ export const sumCurrency = async (options: {
     }
   }
 
-  const targetCurrencyCode =
-    options.targetCurrencyCode ||
-    (await options.context.data.currency.load(options.context.defaultCurrencyId)).code
+  const targetCurrency = await options.context.data.currency.load(
+    options.targetCurrencyId || options.context.defaultCurrencyId
+  )
 
   const rates = await options.context.data.exchangeRate.loadMany(
     options.amounts.map(({ currency }) => ({
-      from: currency.code,
-      to: targetCurrencyCode
+      from: currency.id,
+      to: targetCurrency.id
     }))
   )
 
@@ -65,7 +75,7 @@ export const sumCurrency = async (options: {
           `Error fetching exchange rate for ${amount} in ${currency.code}: ${rate}`
         )
       }
-      return convertAmount(amount, currency, rate.rate)
+      return convertAmount(amount, currency, targetCurrency, rate.rate)
     })
   )
 
@@ -79,8 +89,23 @@ export const sumCurrency = async (options: {
   }
 }
 
-export const convertAmount = (amount: number, currency: CurrencyRecord, exchangeRate: number) => {
-  return decimalAmount({ amount, currency }) * exchangeRate
+export const convertAmount = (
+  amount: number,
+  originalCurrency: CurrencyRecord,
+  convertedCurrency: CurrencyRecord,
+  exchangeRate: number
+) => {
+  const convertedDecimal = decimalAmount({ amount, currency: originalCurrency }) * exchangeRate
+
+  console.log(
+    "converting",
+    amount,
+    originalCurrency.code,
+    "=",
+    convertedDecimal * 10 ** convertedCurrency.decimalDigits
+  )
+
+  return convertedDecimal * 10 ** convertedCurrency.decimalDigits
 }
 
 const decimalAmount = ({ amount, currency }: MoneyOptions) => {
@@ -92,9 +117,27 @@ const decimalAmount = ({ amount, currency }: MoneyOptions) => {
 export const Money: Resolvers["Money"] = {
   formatted: (options) => {
     const formattedValue = Math.abs(decimalAmount(options)).toFixed(options.currency.decimalDigits)
+    const withCommas = formattedValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
 
-    return `${options.amount < 0 ? "-" : ""}${options.currency.symbol}${formattedValue}`
+    return `${options.amount < 0 ? "-" : ""}${options.currency.symbol}${withCommas}`
   },
+
+  formattedShort: (options) => {
+    const absoluteAmount = Math.round(Math.abs(decimalAmount(options)))
+    let amount = absoluteAmount
+    let suffix = ""
+
+    if (absoluteAmount > 1_000_000) {
+      amount = Math.round(absoluteAmount / 1_000_000)
+      suffix = "M"
+    } else if (absoluteAmount > 10_000) {
+      amount = Math.round(absoluteAmount / 1_000)
+      suffix = "K"
+    }
+
+    return `${options.amount < 0 ? "-" : ""}${options.currency.symbol}${amount}${suffix}`
+  },
+
   integerAmount: (options) => options.amount,
   decimalAmount: (options) => decimalAmount(options)
 }

@@ -57,7 +57,7 @@ export type Category = {
 
 
 export type CategoryBudgetArgs = {
-  currency: InputMaybe<Scalars['CurrencyCode']>;
+  currencyId: InputMaybe<Scalars['String']>;
 };
 
 export type CategoryBudget = {
@@ -119,7 +119,7 @@ export type Currency = {
 
 
 export type CurrencyExchangeRateArgs = {
-  to: Scalars['CurrencyCode'];
+  toId: Scalars['String'];
 };
 
 export type CurrentUser = {
@@ -137,13 +137,14 @@ export type DailyTransactions = {
 
 
 export type DailyTransactionsTotalSpentArgs = {
-  currency: InputMaybe<Scalars['CurrencyCode']>;
+  currencyId: InputMaybe<Scalars['String']>;
 };
 
 export type Money = {
   __typename?: 'Money';
   decimalAmount: Scalars['Float'];
   formatted: Scalars['String'];
+  formattedShort: Scalars['String'];
   integerAmount: Scalars['Int'];
 };
 
@@ -297,7 +298,7 @@ export type QueryAccountMailboxArgs = {
 
 
 export type QueryBudgetArgs = {
-  currency: InputMaybe<Scalars['CurrencyCode']>;
+  currencyId: InputMaybe<Scalars['String']>;
   month: Scalars['Int'];
   timezoneOffset?: InputMaybe<Scalars['UtcOffset']>;
   year: Scalars['Int'];
@@ -352,7 +353,7 @@ export type Transaction = {
 
 
 export type TransactionAmountArgs = {
-  currency: InputMaybe<Scalars['CurrencyCode']>;
+  currencyId: InputMaybe<Scalars['String']>;
 };
 
 export type TransactionFilter = {
@@ -579,7 +580,7 @@ export type CategoryBudgetGroupResolvers<ContextType = Context, ParentType exten
 export type CurrencyResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Currency'] = ResolversParentTypes['Currency']> = {
   code: Resolver<ResolversTypes['CurrencyCode'], ParentType, ContextType>;
   decimalDigits: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  exchangeRate: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType, RequireFields<CurrencyExchangeRateArgs, 'to'>>;
+  exchangeRate: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType, RequireFields<CurrencyExchangeRateArgs, 'toId'>>;
   id: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   symbol: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -617,6 +618,7 @@ export interface JsonScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes
 export type MoneyResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Money'] = ResolversParentTypes['Money']> = {
   decimalAmount: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   formatted: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  formattedShort: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   integerAmount: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };

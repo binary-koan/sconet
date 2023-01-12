@@ -2,6 +2,7 @@ import { Navigate, Route, RouteDataFunc } from "@solidjs/router"
 import { Component, lazy } from "solid-js"
 import { useBudgetQuery } from "../graphql/queries/budgetQuery"
 import type { BudgetsPageData } from "../pages/BudgetsPage"
+import { preferredCurrency } from "../utils/settings"
 import { lastViewedBudget } from "../utils/transactions/viewPreference"
 
 const budgetsRouteData: RouteDataFunc<unknown, BudgetsPageData> = ({ params }) => {
@@ -9,6 +10,7 @@ const budgetsRouteData: RouteDataFunc<unknown, BudgetsPageData> = ({ params }) =
   const month = () => params.yearmonth.split("-")[1]
 
   const data = useBudgetQuery(() => ({
+    currencyId: preferredCurrency(),
     year: parseInt(year()),
     month: parseInt(month())
   }))

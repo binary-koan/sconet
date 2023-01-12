@@ -139,11 +139,11 @@ export const splitTransaction: MutationResolvers["splitTransaction"] = async (
 export const Transaction: Resolvers["Transaction"] = {
   id: (transaction) => transaction.id,
 
-  amount: async (transaction, { currency }, context) =>
+  amount: async (transaction, { currencyId }, context) =>
     convertCurrency({
       amount: transaction.amount,
       currency: await context.data.currency.load(transaction.currencyId),
-      targetCurrencyCode: currency,
+      targetCurrencyId: currencyId,
       context
     }),
 
@@ -181,7 +181,7 @@ export const PaginatedTransactions: Resolvers["PaginatedTransactions"] = {
 export const DailyTransactions: Resolvers["DailyTransactions"] = {
   date: (result) => result.date,
 
-  totalSpent: async (result, { currency }, context) =>
+  totalSpent: async (result, { currencyId }, context) =>
     sumCurrency({
       amounts: await Promise.all(
         result.transactions.map(async (transaction) => ({
@@ -189,7 +189,7 @@ export const DailyTransactions: Resolvers["DailyTransactions"] = {
           currency: await context.data.currency.load(transaction.currencyId)
         }))
       ),
-      targetCurrencyCode: currency,
+      targetCurrencyId: currencyId,
       context
     }),
 

@@ -49,6 +49,13 @@ const TransactionsListPage: Component = () => {
 
       <PageHeader size="lg">
         <span class="mr-auto">Transactions</span>
+        <Link
+          class="z-navbar fixed bottom-[calc(66px+1rem+env(safe-area-inset-bottom))] right-4 flex items-center rounded-full border border-gray-200 bg-white py-2 px-5 text-lg text-indigo-600 shadow-lg lg:static lg:z-0 lg:-my-1 lg:mr-2 lg:shadow-none"
+          href="/transactions/new"
+        >
+          <TbPlus size="1.25em" class="mr-2 -ml-1" />
+          Add
+        </Link>
         <Button
           class="mr-2"
           classList={{ hidden: !hasFilterValues() }}
@@ -88,13 +95,6 @@ const TransactionsListPage: Component = () => {
         >
           <TbCalendarEvent size="1.25em" />
         </Button>
-        <Link
-          class="z-navbar fixed bottom-[calc(66px+1rem+env(safe-area-inset-bottom))] right-4 flex items-center rounded-full border border-gray-200 bg-white py-2 px-5 text-lg text-indigo-600 shadow-lg lg:static lg:z-0 lg:ml-2 lg:shadow-none"
-          href="/transactions/new"
-        >
-          <TbPlus size="1.25em" class="mr-2 -ml-1" />
-          Add
-        </Link>
       </PageHeader>
       <div classList={{ block: isFiltering(), hidden: !isFiltering() }}>
         <TransactionFilters form={form} />

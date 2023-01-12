@@ -6,11 +6,11 @@ import { FullTransactionFragment } from "../fragments/transactionFragments"
 export const TRANSACTIONS_BY_DAY_QUERY = gql`
   ${FullTransactionFragment}
 
-  query TransactionsByDay($dateFrom: Date!, $dateUntil: Date!) {
+  query TransactionsByDay($currencyId: String, $dateFrom: Date!, $dateUntil: Date!) {
     transactionsByDay(dateFrom: $dateFrom, dateUntil: $dateUntil) {
       date
-      totalSpent {
-        formatted
+      totalSpent(currencyId: $currencyId) {
+        formattedShort
       }
       transactions {
         ...FullTransaction

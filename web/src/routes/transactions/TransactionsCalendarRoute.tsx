@@ -2,6 +2,7 @@ import { Route, RouteDataFunc } from "@solidjs/router"
 import { Component, lazy } from "solid-js"
 import { useTransactionsByDayQuery } from "../../graphql/queries/transactionsByDayQuery"
 import { TransactionsCalendarPageData } from "../../pages/transactions/TransactionsCalendarPage"
+import { preferredCurrency } from "../../utils/settings"
 
 const transactionsData: RouteDataFunc<unknown, TransactionsCalendarPageData> = ({ params }) => {
   const year = () => params.yearmonth.split("-")[0]
@@ -10,6 +11,7 @@ const transactionsData: RouteDataFunc<unknown, TransactionsCalendarPageData> = (
     new Date(parseInt(year()), parseInt(month()), 0).getDate().toString().padStart(2, "0")
 
   const data = useTransactionsByDayQuery(() => ({
+    currencyId: preferredCurrency(),
     dateFrom: `${year()}-${month()}-01`,
     dateUntil: `${year()}-${month()}-${lastDateOfMonth()}`
   }))

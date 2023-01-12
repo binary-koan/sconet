@@ -3,7 +3,7 @@ import { GraphQLError } from "graphql"
 import { ExecutionContext } from "graphql-helix"
 import { errors, jwtVerify } from "jose"
 import { last, memoize } from "lodash"
-import { findExchangeRatesByCodes } from "./db/queries/exchangeRate/findExchangeRatesByCodes"
+import { findExchangeRatesByCurrencyIds } from "./db/queries/exchangeRate/findExchangeRatesByCurrencyIds"
 import { AccountMailboxRecord } from "./db/records/accountMailbox"
 import { CategoryRecord } from "./db/records/category"
 import { CurrencyRecord } from "./db/records/currency"
@@ -57,7 +57,7 @@ export async function buildContext(
         transactionsRepo.findSplitTransactionsByIds(ids)
       ),
       currency: new Dataloader(async (ids) => currenciesRepo.findByIds(ids)),
-      exchangeRate: new Dataloader(async (queries) => findExchangeRatesByCodes(queries))
+      exchangeRate: new Dataloader(async (queries) => findExchangeRatesByCurrencyIds(queries))
     }
   }
 }
