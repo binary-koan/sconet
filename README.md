@@ -1,6 +1,7 @@
 ![Sconet](https://user-images.githubusercontent.com/1077405/211963456-00d8ccd9-f635-48e1-8a44-1ad125594481.png)
 
-**Sconet** (our "*scon*es and tea budg*et*") is a simple little personal finance app that lets you record your spending, categorise and set budgets, etc.
+**Sconet** (our "*scon*es and tea budg*et*") is a simple little personal finance app that lets you record your income and expenses,
+setup categories and budgets, and break down your spending, all in multiple currencies.
 
 It's 🚧 **super WIP and incomplete** 🚧 so expect to find broken things everywhere - more of a testing ground for me to experiment with [Bun](https://bun.sh/) and [SolidJS](https://www.solidjs.com/) at the moment!
 
