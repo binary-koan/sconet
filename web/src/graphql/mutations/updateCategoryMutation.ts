@@ -6,9 +6,9 @@ import { CATEGORIES_QUERY } from "../queries/categoriesQuery"
 import { GET_CATEGORY_QUERY } from "../queries/getCategoryQuery"
 
 const UPDATE_CATEGORY_MUTATION = gql`
-  mutation UpdateCategory($id: String!, $input: UpdateCategoryInput!) {
-    ${FullCategoryFragment}
+  ${FullCategoryFragment}
 
+  mutation UpdateCategory($id: String!, $input: UpdateCategoryInput!) {
     updateCategory(id: $id, input: $input) {
       ...FullCategory
     }

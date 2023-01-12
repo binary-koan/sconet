@@ -115,6 +115,9 @@ const getQuery = <Data>(context: GraphQLContext, query: string, serializedVariab
     }
   }
 
+  // TODO: There's a fairly major performance problem here where queries are created but never cleaned up when dependent components are unmounted
+  // This means if various filters are done and then a transaction is edited, all those filter queries will be refetched at once
+  // In general we should check if there are current listeners for a query before refetching
   context.queries[query] ??= {}
   context.queries[query][serializedVariables] = storedQuery
 

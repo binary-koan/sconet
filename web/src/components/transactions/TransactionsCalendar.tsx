@@ -3,7 +3,11 @@ import { TbArrowLeft, TbArrowRight, TbPlus } from "solid-icons/tb"
 import { Component, createSignal, For, Show } from "solid-js"
 import { TransactionsByDayQuery } from "../../graphql-types"
 import { buildMonthDates } from "../../utils/buildMonthDates"
-import { CategoryColor, CATEGORY_PALE_BACKGROUND_COLORS } from "../../utils/categoryColors"
+import {
+  CategoryColor,
+  CATEGORY_BACKGROUND_COLORS,
+  CATEGORY_PALE_BACKGROUND_COLORS
+} from "../../utils/categoryColors"
 import { isSameDate } from "../../utils/date"
 import { Button } from "../base/Button"
 import { NewTransactionModal } from "./NewTransactionModal"
@@ -13,7 +17,7 @@ export const TransactionsCalendar: Component<{
   year: string
   month: string
 }> = (props) => {
-  const [modalOpen, setModalOpen] = createSignal(false)
+  const [newTransactionDate, setNewTransactionDate] = createSignal<Date>()
 
   const navigate = useNavigate()
 
@@ -23,7 +27,14 @@ export const TransactionsCalendar: Component<{
 
   return (
     <>
-      <NewTransactionModal isOpen={modalOpen()} onClose={() => setModalOpen(false)} />
+      <Show when={!!newTransactionDate()}>
+        <NewTransactionModal
+          isOpen={true}
+          initialDate={newTransactionDate()}
+          onClose={() => setNewTransactionDate(undefined)}
+        />
+      </Show>
+
       <div class="mx-auto mb-4 flex items-center rounded bg-gray-200">
         <Button size="square" aria-label="List" onClick={() => navigate("/transactions/list")}>
           <TbArrowLeft size="1.25em" />
@@ -51,24 +62,42 @@ export const TransactionsCalendar: Component<{
               <div
                 class="[&:nth-child(7n)]:border-r-0 flex h-16 flex-col border-t border-r border-gray-200 p-1 text-center text-sm lg:h-32 lg:text-left"
                 classList={{
-                  "text-gray-300": !isCurrentMonth
+                  "text-gray-300": !isCurrentMonth,
+                  "bg-gray-200": !!expenses.length
                 }}
               >
                 <div class="flex flex-col lg:flex-row lg:pl-1">
-                  <span class="font-semibold lg:mr-auto">{date.getDate()}</span>
+                  <span class="lg:mr-auto lg:font-semibold">{date.getDate()}</span>
                   <Show when={expenses.length}>
-                    <div class="my-auto text-xs font-bold">{totalSpent}</div>
+                    <div class="my-auto text-xs font-bold">{totalSpent?.replace("-", "")}</div>
                   </Show>
                   <Show when={isCurrentMonth}>
                     <Button
                       variant="ghost"
                       size="custom"
                       class="ml-2 hidden h-5 w-5 text-xs lg:flex"
-                      onClick={() => setModalOpen(true)}
+                      onClick={() => setNewTransactionDate(date)}
                     >
                       <TbPlus />
                     </Button>
                   </Show>
+                </div>
+
+                <div class="mt-1 flex justify-center gap-1 lg:hidden">
+                  <For each={expenses.concat(incomes).slice(0, 3)}>
+                    {(transaction) => (
+                      <div
+                        class="h-2 w-2 rounded-full"
+                        classList={{
+                          [transaction.category
+                            ? CATEGORY_BACKGROUND_COLORS[
+                                transaction.category.color as CategoryColor
+                              ]
+                            : "bg-gray-500"]: true
+                        }}
+                      ></div>
+                    )}
+                  </For>
                 </div>
 
                 <div class="mt-1 hidden flex-col gap-0.5 lg:flex">

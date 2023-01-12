@@ -4,9 +4,9 @@ import { gql } from "../../utils/gql"
 import { FullCategoryFragment } from "../fragments/categoryFragments"
 
 export const GET_CATEGORY_QUERY = gql`
-  query GetCategory($id: String!) {
-    ${FullCategoryFragment}
+  ${FullCategoryFragment}
 
+  query GetCategory($id: String!) {
     category(id: $id) {
       ...FullCategory
     }

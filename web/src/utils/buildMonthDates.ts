@@ -1,6 +1,6 @@
 export const buildMonthDates = (year: number, monthNumber: number) => {
-  const monthStart = new Date(year, monthNumber - 1, 1)
-  const monthEnd = new Date(year, monthNumber, 0)
+  const monthStart = new Date(Date.UTC(year, monthNumber - 1, 1))
+  const monthEnd = new Date(Date.UTC(year, monthNumber, 0))
 
   const lastDate = new Date(monthEnd)
   lastDate.setDate(lastDate.getDate() + daysAfterToShow(monthEnd.getDay()))

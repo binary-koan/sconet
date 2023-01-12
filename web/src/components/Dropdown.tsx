@@ -23,6 +23,7 @@ export const Dropdown: Component<{
   children: JSX.Element
   content: JSX.Element
   placement?: DropdownPlacement
+  class?: string
 }> = (props) => {
   props = mergeProps({ placement: "bottomLeft" } as const, props)
 
@@ -79,7 +80,7 @@ export const Dropdown: Component<{
   })
 
   return (
-    <div class="relative" ref={container}>
+    <div class={`relative ${props.class}`} ref={container}>
       {toggle()}
       <Show when={isOpen()}>
         <div
@@ -99,6 +100,7 @@ export const DropdownMenuItem: Component<JSX.IntrinsicElements["button"]> = (all
 
   return (
     <button
+      type="button"
       class={`flex w-full items-center gap-2 px-4 py-2 text-left hover:bg-gray-100 ${
         props.class || ""
       }`}

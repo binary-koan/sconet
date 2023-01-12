@@ -31,7 +31,7 @@ export const Modal = <T extends AsProp = "div">(
 
       <div class="z-modal fixed inset-0 overflow-y-auto">
         <div
-          class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0"
+          class="flex min-h-full items-end justify-center text-center sm:items-center"
           onClick={(e) => {
             if (e.target === e.currentTarget) props.onClickOutside?.()
           }}
@@ -56,11 +56,11 @@ export const ModalContent = <T extends AsProp = "div">(allProps: BasicElementPro
     <Dynamic
       component={props.as || "div"}
       ref={props.ref}
-      class={`relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl sm:my-8 sm:w-full sm:max-w-lg ${props.class}`}
+      class={`relative w-full transform rounded-t-lg bg-white p-5 pt-4 text-left shadow-xl sm:my-8 sm:max-w-lg sm:rounded-t-lg sm:py-5 sm:px-6 ${props.class}`}
       classList={props.classList}
       {...elementProps}
     >
-      <div class="bg-white px-6 py-5">{props.children}</div>
+      {props.children}
     </Dynamic>
   )
 }
@@ -88,7 +88,7 @@ export const ModalTitle = <T extends AsProp = "div">(allProps: BasicElementProps
 }
 
 export const ModalCloseButton = (props: ButtonProps) => (
-  <Button type="button" variant="ghost" size="square" class="ml-auto" {...props}>
+  <Button type="button" variant="ghost" size="square" class="ml-auto -mr-1" {...props}>
     <TbX />
   </Button>
 )
