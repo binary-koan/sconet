@@ -3,7 +3,7 @@
 **Sconet** (our "*scon*es and tea budg*et*") is a simple little personal finance app that lets you record your income and expenses,
 setup categories and budgets, and break down your spending, all in multiple currencies.
 
-It's 🚧 **super WIP and incomplete** 🚧 so expect to find broken things everywhere - more of a testing ground for me to experiment with [Bun](https://bun.sh/) and [SolidJS](https://www.solidjs.com/) at the moment!
+It's 🚧 **super WIP and incomplete** 🚧 so expect to find broken things everywhere - at the moment this is more of a testing ground for me to experiment with using [Bun](https://bun.sh/) and [SolidJS](https://www.solidjs.com/), creating a semi-custom GraphQL client and server, etc rather than something I recommend actually using!
 
 ## Local development
 
