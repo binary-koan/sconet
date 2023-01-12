@@ -1,11 +1,11 @@
 import { TbListSearch } from "solid-icons/tb"
 import { Component, For, Show } from "solid-js"
 import { BudgetQuery } from "../../graphql-types"
-import { CATEGORY_BACKGROUND_COLORS } from "../../utils/categoryColors"
+import { CategoryColor, CATEGORY_BACKGROUND_COLORS } from "../../utils/categoryColors"
 import { getCssValue } from "../../utils/getCssValue"
 import { namedIcons } from "../../utils/namedIcons"
 import { LinkButton } from "../base/Button"
-import CategoryIndicator, { CategoryColor } from "../CategoryIndicator"
+import CategoryIndicator from "../CategoryIndicator"
 import { PieChart } from "./PieChart"
 
 const BudgetGroup: Component<{

@@ -29,4 +29,4 @@ jobs:
         run: pnpm install
 
       - name: Run type checks
-        run: yarn typecheck
+        run: pnpm typecheck
