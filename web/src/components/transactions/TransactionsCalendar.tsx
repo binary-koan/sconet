@@ -69,7 +69,17 @@ export const TransactionsCalendar: Component<{
                 <div class="flex flex-col lg:flex-row lg:pl-1">
                   <span class="lg:mr-auto lg:font-semibold">{date.getDate()}</span>
                   <Show when={expenses.length}>
-                    <div class="my-auto text-xs font-bold">{totalSpent?.replace("-", "")}</div>
+                    <Link
+                      href={`/transactions/list/${encodeURIComponent(
+                        JSON.stringify({
+                          dateFrom: date.toISOString().split("T")[0],
+                          dateUntil: date.toISOString().split("T")[0]
+                        })
+                      )}`}
+                      class="my-auto text-xs font-bold"
+                    >
+                      {totalSpent?.replace("-", "")}
+                    </Link>
                   </Show>
                   <Show when={isCurrentMonth}>
                     <Button

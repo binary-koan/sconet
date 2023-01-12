@@ -20,6 +20,7 @@ const placementClasses: { [key in DropdownPlacement]: string } = {
 export const Dropdown: Component<{
   isOpen?: boolean
   onToggle?: (isOpen: boolean) => void
+  closeOnItemClick?: boolean
   children: JSX.Element
   content: JSX.Element
   placement?: DropdownPlacement
@@ -69,12 +70,12 @@ export const Dropdown: Component<{
     if (!isOpen()) return
 
     const documentListener = (event: MouseEvent) => {
-      if (!container?.contains(event.target as Node)) {
+      if (props.closeOnItemClick || !container?.contains(event.target as Node)) {
         setOpen(() => false)
       }
     }
 
-    document.body.addEventListener("click", documentListener)
+    setTimeout(() => document.body.addEventListener("click", documentListener))
 
     onCleanup(() => document.body.removeEventListener("click", documentListener))
   })

@@ -1,6 +1,7 @@
 import { Navigate, Route, RouteDataFunc } from "@solidjs/router"
 import { Component, lazy } from "solid-js"
 import { useBudgetQuery } from "../graphql/queries/budgetQuery"
+import { useCurrenciesQuery } from "../graphql/queries/currenciesQuery"
 import type { BudgetsPageData } from "../pages/BudgetsPage"
 import { preferredCurrency } from "../utils/settings"
 import { lastViewedBudget } from "../utils/transactions/viewPreference"
@@ -15,8 +16,11 @@ const budgetsRouteData: RouteDataFunc<unknown, BudgetsPageData> = ({ params }) =
     month: parseInt(month())
   }))
 
+  const currencies = useCurrenciesQuery()
+
   return {
     data,
+    currencies,
 
     get year() {
       return year()

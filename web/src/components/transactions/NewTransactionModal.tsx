@@ -7,12 +7,7 @@ import { useCreateTransaction } from "../../graphql/mutations/createTransactionM
 import { useAccountMailboxesQuery } from "../../graphql/queries/accountMailboxesQuery"
 import { useCategoriesQuery } from "../../graphql/queries/categoriesQuery"
 import { useCurrenciesQuery } from "../../graphql/queries/currenciesQuery"
-import {
-  preferredAccount,
-  preferredCurrency,
-  setPreferredAccount,
-  setPreferredCurrency
-} from "../../utils/settings"
+import { preferredAccount, preferredCurrency } from "../../utils/settings"
 import { Button } from "../base/Button"
 import { Modal, ModalCloseButton, ModalContent, ModalTitle } from "../base/Modal"
 import { Dropdown, DropdownMenuItem } from "../Dropdown"
@@ -67,12 +62,6 @@ export const NewTransactionModal: Component<{
   })
 
   createEffect(() => {
-    if (getValue(form, "currencyId")) {
-      setPreferredCurrency(getValue(form, "currencyId")!)
-    }
-  })
-
-  createEffect(() => {
     if (accountMailboxes()?.accountMailboxes && !getValue(form, "accountMailboxId")) {
       setValue(
         form,
@@ -81,12 +70,6 @@ export const NewTransactionModal: Component<{
           (accountMailbox) => accountMailbox.id === preferredAccount()
         )?.id || accountMailboxes()!.accountMailboxes[0]!.id
       )
-    }
-  })
-
-  createEffect(() => {
-    if (getValue(form, "accountMailboxId")) {
-      setPreferredAccount(getValue(form, "accountMailboxId")!)
     }
   })
 
@@ -169,6 +152,7 @@ export const NewTransactionModal: Component<{
                 <Field of={form} name="categoryId">
                   {(field) => (
                     <Dropdown
+                      closeOnItemClick
                       class="min-w-0"
                       content={
                         <For each={categories()?.categories}>
@@ -201,6 +185,7 @@ export const NewTransactionModal: Component<{
               <Field of={form} name="currencyId">
                 {(field) => (
                   <Dropdown
+                    closeOnItemClick
                     content={
                       <For each={currencies()?.currencies}>
                         {(currency) => (
@@ -227,6 +212,7 @@ export const NewTransactionModal: Component<{
               <Field of={form} name="accountMailboxId">
                 {(field) => (
                   <Dropdown
+                    closeOnItemClick
                     content={
                       <For each={accountMailboxes()?.accountMailboxes}>
                         {(accountMailbox) => (
