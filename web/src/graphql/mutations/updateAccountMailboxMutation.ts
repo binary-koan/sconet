@@ -2,8 +2,8 @@ import {
   UpdateAccountMailboxMutation,
   UpdateAccountMailboxMutationVariables
 } from "../../graphql-types"
-import { MutationOptions, useMutation } from "../../graphqlClient"
 import { gql } from "../../utils/gql"
+import { MutationOptions, useMutation } from "../../utils/graphqlClient/useMutation"
 import { FullAccountMailboxFragment } from "../fragments/accountMailboxFragments"
 import { ACCOUNT_MAILBOXES_QUERY } from "../queries/accountMailboxesQuery"
 import { GET_ACCOUNT_MAILBOX_QUERY } from "../queries/getAccountMailboxQuery"

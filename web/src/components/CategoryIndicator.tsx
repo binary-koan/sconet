@@ -1,4 +1,4 @@
-import { TbBox, TbCurrencyPound, TbMinus, TbSeparator } from "solid-icons/tb"
+import { TbCurrencyPound, TbMinus, TbQuestionMark, TbSeparator } from "solid-icons/tb"
 import { Component, mergeProps } from "solid-js"
 import { Dynamic } from "solid-js/web"
 import { ClassProps } from "../types"
@@ -34,7 +34,7 @@ const CategoryIndicator: Component<
     if (props.isIncome) return TbCurrencyPound
     if (props.isSplit) return TbSeparator
     if (!props.includeInReports) return TbMinus
-    if (!props.icon) return TbBox
+    if (!props.icon) return TbQuestionMark
     return props.icon
   }
 

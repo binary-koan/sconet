@@ -13,7 +13,7 @@ import {
   TransactionsByDayQuery,
   TransactionsByDayQueryVariables
 } from "../../graphql-types"
-import { QueryResource } from "../../graphqlClient"
+import { QueryResource } from "../../utils/graphqlClient/useQuery"
 import { setTransactionsViewPreference } from "../../utils/transactions/viewPreference"
 
 export interface TransactionsCalendarPageData {

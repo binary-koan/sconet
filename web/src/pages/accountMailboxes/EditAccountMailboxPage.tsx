@@ -9,7 +9,7 @@ import {
   UpdateAccountMailboxMutationVariables
 } from "../../graphql-types"
 import { useUpdateAccountMailbox } from "../../graphql/mutations/updateAccountMailboxMutation"
-import { QueryResource } from "../../graphqlClient"
+import { QueryResource } from "../../utils/graphqlClient/useQuery"
 
 export interface EditAccountMailboxPageData {
   data: QueryResource<GetAccountMailboxQuery, GetAccountMailboxQueryVariables>

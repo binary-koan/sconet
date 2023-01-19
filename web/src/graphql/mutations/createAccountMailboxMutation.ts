@@ -2,8 +2,8 @@ import {
   CreateAccountMailboxMutation,
   CreateAccountMailboxMutationVariables
 } from "../../graphql-types"
-import { MutationOptions, useMutation } from "../../graphqlClient"
 import { gql } from "../../utils/gql"
+import { MutationOptions, useMutation } from "../../utils/graphqlClient/useMutation"
 import { ACCOUNT_MAILBOXES_QUERY } from "../queries/accountMailboxesQuery"
 
 const CREATE_ACCOUNT_MAILBOX_MUTATION = gql`

@@ -1,6 +1,6 @@
 import { Component, ErrorBoundary, JSX, Match, Switch } from "solid-js"
 import { Dynamic } from "solid-js/web"
-import { QueryResource } from "../graphqlClient"
+import { QueryResource } from "../utils/graphqlClient/useQuery"
 import LoadingBar from "./LoadingBar"
 
 const DefaultLoader = () => <LoadingBar />

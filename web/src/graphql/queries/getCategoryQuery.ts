@@ -1,6 +1,6 @@
 import { GetCategoryQuery, GetCategoryQueryVariables } from "../../graphql-types"
-import { useQuery } from "../../graphqlClient"
 import { gql } from "../../utils/gql"
+import { useQuery } from "../../utils/graphqlClient/useQuery"
 import { FullCategoryFragment } from "../fragments/categoryFragments"
 
 export const GET_CATEGORY_QUERY = gql`

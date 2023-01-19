@@ -1,6 +1,6 @@
 import { TransactionsByDayQuery, TransactionsByDayQueryVariables } from "../../graphql-types"
-import { useQuery } from "../../graphqlClient"
 import { gql } from "../../utils/gql"
+import { useQuery } from "../../utils/graphqlClient/useQuery"
 import { FullTransactionFragment } from "../fragments/transactionFragments"
 
 export const TRANSACTIONS_BY_DAY_QUERY = gql`

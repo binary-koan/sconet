@@ -10,7 +10,7 @@ import {
   GetTransactionQueryVariables
 } from "../../graphql-types"
 import { useUpdateTransaction } from "../../graphql/mutations/updateTransactionMutation"
-import { QueryResource } from "../../graphqlClient"
+import { QueryResource } from "../../utils/graphqlClient/useQuery"
 
 export interface EditTransactionPageData {
   data: QueryResource<GetTransactionQuery, GetTransactionQueryVariables>

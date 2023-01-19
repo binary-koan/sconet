@@ -1,6 +1,6 @@
 import { GetAccountMailboxQuery, GetAccountMailboxQueryVariables } from "../../graphql-types"
-import { useQuery } from "../../graphqlClient"
 import { gql } from "../../utils/gql"
+import { useQuery } from "../../utils/graphqlClient/useQuery"
 import { FullAccountMailboxFragment } from "../fragments/accountMailboxFragments"
 
 export const GET_ACCOUNT_MAILBOX_QUERY = gql`

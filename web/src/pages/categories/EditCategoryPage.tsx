@@ -9,7 +9,7 @@ import {
   UpdateCategoryMutationVariables
 } from "../../graphql-types"
 import { useUpdateCategory } from "../../graphql/mutations/updateCategoryMutation"
-import { QueryResource } from "../../graphqlClient"
+import { QueryResource } from "../../utils/graphqlClient/useQuery"
 
 export interface EditCategoryPageData {
   data: QueryResource<GetCategoryQuery, GetCategoryQueryVariables>

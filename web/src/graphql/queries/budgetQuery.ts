@@ -1,6 +1,6 @@
 import { BudgetQuery, BudgetQueryVariables } from "../../graphql-types"
-import { useQuery } from "../../graphqlClient"
 import { gql } from "../../utils/gql"
+import { useQuery } from "../../utils/graphqlClient/useQuery"
 
 export const BUDGET_QUERY = gql`
   query Budget($currencyId: String, $year: Int!, $month: Int!) {

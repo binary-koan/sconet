@@ -1,6 +1,6 @@
 import { DeleteTransactionMutation, DeleteTransactionMutationVariables } from "../../graphql-types"
-import { MutationOptions, useMutation } from "../../graphqlClient"
 import { gql } from "../../utils/gql"
+import { MutationOptions, useMutation } from "../../utils/graphqlClient/useMutation"
 import { GET_TRANSACTION_QUERY } from "../queries/getTransactionQuery"
 import { TRANSACTIONS_QUERY } from "../queries/transactionsQuery"
 

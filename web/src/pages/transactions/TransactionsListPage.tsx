@@ -10,8 +10,8 @@ import TransactionFilters, {
 } from "../../components/transactions/TransactionFilters"
 import { TransactionsList } from "../../components/transactions/TransactionsList"
 import { TransactionsQuery, TransactionsQueryVariables } from "../../graphql-types"
-import { QueryResource } from "../../graphqlClient"
 import usePageFilter from "../../hooks/usePageFilter"
+import { QueryResource } from "../../utils/graphqlClient/useQuery"
 import { setTransactionsViewPreference } from "../../utils/transactions/viewPreference"
 
 const FILTERS_KEY = "sconet.transactionFilters"

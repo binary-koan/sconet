@@ -1,6 +1,6 @@
 import { UpdateCategoryMutation, UpdateCategoryMutationVariables } from "../../graphql-types"
-import { MutationOptions, useMutation } from "../../graphqlClient"
 import { gql } from "../../utils/gql"
+import { MutationOptions, useMutation } from "../../utils/graphqlClient/useMutation"
 import { FullCategoryFragment } from "../fragments/categoryFragments"
 import { CATEGORIES_QUERY } from "../queries/categoriesQuery"
 import { GET_CATEGORY_QUERY } from "../queries/getCategoryQuery"

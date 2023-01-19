@@ -1,6 +1,6 @@
 import { CurrentUserQuery, CurrentUserQueryVariables } from "../../graphql-types"
-import { useQuery } from "../../graphqlClient"
 import { gql } from "../../utils/gql"
+import { useQuery } from "../../utils/graphqlClient/useQuery"
 import { FullCurrentUserFragment } from "../fragments/currentUserFragments"
 
 export const CURRENT_USER_QUERY = gql`

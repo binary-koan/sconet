@@ -14,8 +14,8 @@ import {
   CurrenciesQuery,
   CurrenciesQueryVariables
 } from "../graphql-types"
-import { QueryResource } from "../graphqlClient"
 import { decrementMonth, incrementMonth } from "../utils/date"
+import { QueryResource } from "../utils/graphqlClient/useQuery"
 import { setLastViewedBudget } from "../utils/transactions/viewPreference"
 
 export interface BudgetsPageData {

@@ -15,8 +15,8 @@ import {
   CurrentUserQuery,
   CurrentUserQueryVariables
 } from "../graphql-types"
-import { QueryResource } from "../graphqlClient"
 import { setLoginToken } from "../utils/auth"
+import { QueryResource } from "../utils/graphqlClient/useQuery"
 
 export interface SettingsPageData {
   categories: QueryResource<CategoriesQuery, CategoriesQueryVariables>
