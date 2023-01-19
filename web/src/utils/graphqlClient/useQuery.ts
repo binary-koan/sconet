@@ -1,6 +1,6 @@
-import { createEffect, createMemo, useContext } from "solid-js"
+import { createEffect, createMemo, createSignal, onCleanup, useContext } from "solid-js"
 import { gqlContext } from "./context"
-import { FetchMore, listenToQuery } from "./listenToQuery"
+import { FetchMore, listenToQuery, StoredQuery } from "./listenToQuery"
 
 export interface QueryResource<Data, Variables> {
   (): Data | undefined
@@ -20,31 +20,34 @@ export function useQuery<Data, Variables = {}>(
   const queryParam = () => queryContent
   const variablesParam = () => JSON.stringify(variables?.() || {})
 
-  // Memory leak: This creates a new store for each variable change and probably never cleans up the old ones ...
-  const storedQuery = createMemo(() => listenToQuery(context, queryParam(), variablesParam()))
-
-  const data = createMemo(() => storedQuery().get())
+  const [storedQuery, setStoredQuery] = createSignal<StoredQuery<Data>>()
+  const data = createMemo(() => storedQuery()?.get())
 
   createEffect(() => {
-    const query = storedQuery()
-    return () => query.removeListener()
+    const query = listenToQuery<Data>(context, queryParam(), variablesParam())
+
+    setStoredQuery(query)
+
+    onCleanup(() => {
+      query.removeListener()
+    })
   })
 
   const resource = () => data()
 
   Object.defineProperties(resource, {
     loading: {
-      get: () => storedQuery().loading
+      get: () => storedQuery()?.loading ?? true
     },
 
     error: {
-      get: () => storedQuery().error
+      get: () => storedQuery()?.error ?? undefined
     }
   })
 
   resource.fetchMore = (...args: Parameters<FetchMore<Data, Variables>>) =>
-    storedQuery().fetchMore(...args)
-  resource.refetch = () => storedQuery().refetch()
+    storedQuery()?.fetchMore(...args)
+  resource.refetch = () => storedQuery()?.refetch()
 
   return resource as any
 }

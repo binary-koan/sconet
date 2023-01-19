@@ -1,3 +1,4 @@
+import { untrack } from "solid-js"
 import { createStore, reconcile } from "solid-js/store"
 import { requestGraphql } from "./requestGraphql"
 
@@ -39,6 +40,7 @@ export const listenToQuery = <Data>(
   let existing: StoredQuery<Data> | undefined = context.queries[query]?.[serializedVariables]
 
   if (existing) {
+    // console.trace("adding listener", query, serializedVariables)
     existing.listenerCount += 1
 
     return existing
@@ -50,6 +52,7 @@ export const listenToQuery = <Data>(
     error: undefined
   })
 
+  // console.trace("initializing listener", query, serializedVariables)
   const storedQuery: StoredQuery<Data> = {
     listenerCount: 1,
 
@@ -130,7 +133,7 @@ export const listenToQuery = <Data>(
   context.queries[query] ??= {}
   context.queries[query][serializedVariables] = storedQuery
 
-  storedQuery.fetch()
+  untrack(() => storedQuery.fetch())
 
   return storedQuery
 }
