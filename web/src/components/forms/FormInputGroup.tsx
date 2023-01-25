@@ -13,6 +13,7 @@ const FormInputGroup: Component<
     validate?: ValidateField<any> | ValidateField<any>[]
     before?: JSX.Element
     after?: JSX.Element
+    placeholderLabel?: boolean
   }
 > = (allProps) => {
   const [props, inputProps] = splitProps(allProps, [
@@ -21,18 +22,26 @@ const FormInputGroup: Component<
     "name",
     "before",
     "after",
-    "validate"
+    "validate",
+    "placeholderLabel"
   ])
 
   return (
     <FormControl>
-      <FormLabel>{props.label}</FormLabel>
+      <FormLabel classList={{ "sr-only": props.placeholderLabel }}>{props.label}</FormLabel>
       <Field name={props.name} of={props.of} validate={props.validate}>
         {(field) => (
           <>
             <InputGroup>
               {props.before}
-              <InputGroupInput {...inputProps} value={field.value} {...field.props} />
+              <InputGroupInput
+                {...inputProps}
+                value={field.value}
+                placeholder={
+                  props.placeholderLabel && typeof props.label === "string" ? props.label : ""
+                }
+                {...field.props}
+              />
               {props.after}
             </InputGroup>
             <Show when={field.error}>

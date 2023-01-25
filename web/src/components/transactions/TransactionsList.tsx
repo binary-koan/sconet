@@ -1,9 +1,10 @@
 import { TbPlus } from "solid-icons/tb"
-import { Component, createMemo, For, Show } from "solid-js"
+import { Component, createMemo, createSignal, For, Show } from "solid-js"
 import { FullTransactionFragment, TransactionsQuery } from "../../graphql-types"
 import { monthRange } from "../../utils/date"
 import { formatDate } from "../../utils/formatters"
 import { Button } from "../base/Button"
+import { NewTransactionModal } from "./NewTransactionModal"
 import { TransactionFilterValues } from "./TransactionFilters"
 import TransactionItem from "./TransactionItem"
 
@@ -13,6 +14,8 @@ export const TransactionsList: Component<{
   setFilterValue: (name: keyof TransactionFilterValues, value: any) => void
   isEditing: boolean
 }> = (props) => {
+  const [showingModalForDate, setShowingModalForDate] = createSignal<Date>()
+
   const items = createMemo(() => {
     const transactions = props.data.transactions.data
 
@@ -44,6 +47,13 @@ export const TransactionsList: Component<{
 
   return (
     <>
+      <Show when={showingModalForDate()}>
+        <NewTransactionModal
+          initialDate={showingModalForDate()}
+          isOpen={true}
+          onClose={() => setShowingModalForDate(undefined)}
+        />
+      </Show>
       <For each={items()}>
         {({ date, transactions }, index) => {
           const newMonth =
@@ -85,7 +95,7 @@ export const TransactionsList: Component<{
                     variant="ghost"
                     size="custom"
                     class="ml-2 h-5 gap-1 px-2 text-xs text-gray-800"
-                    onClick={() => {}}
+                    onClick={() => setShowingModalForDate(date)}
                   >
                     <TbPlus /> Add
                   </Button>

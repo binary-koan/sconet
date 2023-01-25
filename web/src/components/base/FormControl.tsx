@@ -13,5 +13,7 @@ const formLabelClasses = () => "block font-medium text-sm mb-1"
 export const FormLabel = (allProps: JSX.IntrinsicElements["label"]) => {
   const [props, elementProps] = splitProps(allProps, ["class"])
 
+  console.log({...elementProps})
+
   return <label class={`${formLabelClasses()} ${props.class}`} {...elementProps} />
 }

@@ -1,4 +1,5 @@
-import { createForm, Field, Form, getValue, setValue } from "@modular-forms/solid"
+import { createForm, Field, Form, getValue, minNumber, setValue } from "@modular-forms/solid"
+import { repeat } from "lodash"
 import { TbCalendarEvent, TbChevronDown, TbSwitch3 } from "solid-icons/tb"
 import { Component, createEffect, For, Show } from "solid-js"
 import toast from "solid-toast"
@@ -9,10 +10,12 @@ import { useCategoriesQuery } from "../../graphql/queries/categoriesQuery"
 import { useCurrenciesQuery } from "../../graphql/queries/currenciesQuery"
 import { preferredAccount, preferredCurrency } from "../../utils/settings"
 import { Button } from "../base/Button"
+import { InputAddon } from "../base/InputGroup"
 import { Modal, ModalCloseButton, ModalContent, ModalTitle } from "../base/Modal"
 import { Dropdown, DropdownMenuItem } from "../Dropdown"
 import { FormDatePicker } from "../forms/FormDatePicker"
 import FormInput from "../forms/FormInput"
+import FormInputGroup from "../forms/FormInputGroup"
 
 type NewTransactionModalValues = CreateTransactionInput & { amountType: "expense" | "income" }
 
@@ -91,6 +94,9 @@ export const NewTransactionModal: Component<{
     return getValue(form, "date")
   }
 
+  const selectedCurrency = () =>
+    currencies()?.currencies.find((currency) => currency.id === getValue(form, "currencyId"))
+
   return (
     <Modal isOpen={props.isOpen} onClickOutside={props.onClose}>
       <ModalContent class="flex h-[26rem] flex-col">
@@ -121,12 +127,19 @@ export const NewTransactionModal: Component<{
 
           <div classList={{ hidden: !isDateSelected() }} class="flex flex-1 flex-col">
             <div class="mt-auto flex flex-col gap-4">
-              <FormInput
-                placeholderLabel={true}
-                ref={amountInput}
+              <FormInputGroup
                 of={form}
                 label="Amount"
                 name="amount"
+                type="number"
+                placeholderLabel={true}
+                validate={minNumber(0, "Must be zero or more")}
+                before={<InputAddon>{selectedCurrency()?.symbol}</InputAddon>}
+                step={
+                  selectedCurrency()?.decimalDigits
+                    ? `0.${repeat("0", selectedCurrency()!.decimalDigits - 1)}1`
+                    : "1"
+                }
               />
               <FormInput placeholderLabel={true} of={form} label="Memo" name="memo" />
             </div>
