@@ -8,6 +8,7 @@ import { useCreateTransaction } from "../../graphql/mutations/createTransactionM
 import { useAccountMailboxesQuery } from "../../graphql/queries/accountMailboxesQuery"
 import { useCategoriesQuery } from "../../graphql/queries/categoriesQuery"
 import { useCurrenciesQuery } from "../../graphql/queries/currenciesQuery"
+import { CategoryColor, CATEGORY_BACKGROUND_COLORS } from "../../utils/categoryColors"
 import { preferredAccount, preferredCurrency } from "../../utils/settings"
 import { Button } from "../base/Button"
 import { InputAddon } from "../base/InputGroup"
@@ -99,6 +100,9 @@ export const NewTransactionModal: Component<{
   const selectedCurrency = () =>
     currencies()?.currencies.find((currency) => currency.id === getValue(form, "currencyId"))
 
+  const selectedCategory = () =>
+    categories()?.categories.find((category) => category.id === getValue(form, "categoryId"))
+
   return (
     <Modal isOpen={props.isOpen} onClickOutside={props.onClose}>
       <ModalContent class="flex h-[26rem] flex-col">
@@ -117,7 +121,7 @@ export const NewTransactionModal: Component<{
           />
 
           <div classList={{ hidden: !isDateSelected() }} class="flex flex-1 flex-col gap-4">
-            <div class="my-auto flex flex-col gap-4">
+            <div class="my-auto flex flex-col gap-2">
               <FormInputGroup
                 of={form}
                 ref={amountInput}
@@ -137,13 +141,13 @@ export const NewTransactionModal: Component<{
               <FormInput placeholderLabel={true} of={form} label="Memo" name="memo" />
             </div>
 
-            <div class="mb-2 flex gap-4">
+            <div class="flex gap-4">
               <Field of={form} name="amountType">
                 {(field) => (
                   <Button
                     size="custom"
                     variant="ghost"
-                    class="px-2 py-1 text-xs text-gray-700"
+                    class="rounded border border-gray-100 px-4 py-2 text-xs text-gray-700"
                     onClick={() =>
                       setValue(form, "amountType", field.value === "income" ? "expense" : "income")
                     }
@@ -164,8 +168,14 @@ export const NewTransactionModal: Component<{
                         <For each={categories()?.categories}>
                           {(category) => (
                             <DropdownMenuItem
+                              class="text-sm"
                               onClick={() => setValue(form, "categoryId", category.id)}
                             >
+                              <div
+                                class={`h-2 w-2 rounded-full ${
+                                  CATEGORY_BACKGROUND_COLORS[category.color as CategoryColor]
+                                }`}
+                              />
                               {category.name}
                             </DropdownMenuItem>
                           )}
@@ -175,11 +185,17 @@ export const NewTransactionModal: Component<{
                       <Button
                         size="custom"
                         variant="ghost"
-                        class="w-full px-2 py-1 text-xs text-gray-700"
+                        class="w-full rounded border border-gray-100 px-4 py-2 text-xs text-gray-700"
                       >
+                        <Show when={selectedCategory()}>
+                          <div
+                            class={`mr-2 h-2 w-2 rounded-full ${
+                              CATEGORY_BACKGROUND_COLORS[selectedCategory()!.color as CategoryColor]
+                            }`}
+                          />
+                        </Show>
                         <span class="min-w-0 truncate">
-                          {categories()?.categories.find((category) => category.id === field.value)
-                            ?.name || "No category"}
+                          {selectedCategory()?.name || "No category"}
                         </span>
                         <TbChevronDown class="ml-1" />
                       </Button>
@@ -191,7 +207,7 @@ export const NewTransactionModal: Component<{
               <Button
                 size="custom"
                 variant="ghost"
-                class="ml-auto px-2 py-1 text-xs text-gray-700"
+                class="rounded border border-gray-100 px-4 py-2 text-xs text-gray-700"
                 onClick={() => setValue(form, "date", "")}
               >
                 <TbCalendarEvent class="mr-1" />
@@ -208,6 +224,7 @@ export const NewTransactionModal: Component<{
                       <For each={currencies()?.currencies}>
                         {(currency) => (
                           <DropdownMenuItem
+                            class="text-sm"
                             onClick={() => setValue(form, "currencyId", currency.id)}
                           >
                             {currency.code}
@@ -216,7 +233,11 @@ export const NewTransactionModal: Component<{
                       </For>
                     }
                   >
-                    <Button size="custom" variant="ghost" class="px-2 py-1 text-xs text-gray-700">
+                    <Button
+                      size="custom"
+                      variant="ghost"
+                      class="rounded border border-gray-100 px-4 py-2 text-xs text-gray-700"
+                    >
                       {
                         currencies()?.currencies.find((currency) => currency.id === field.value)
                           ?.code
@@ -235,6 +256,7 @@ export const NewTransactionModal: Component<{
                       <For each={accountMailboxes()?.accountMailboxes}>
                         {(accountMailbox) => (
                           <DropdownMenuItem
+                            class="text-sm"
                             onClick={() => setValue(form, "accountMailboxId", accountMailbox.id)}
                           >
                             {accountMailbox.name}
@@ -243,7 +265,11 @@ export const NewTransactionModal: Component<{
                       </For>
                     }
                   >
-                    <Button size="custom" variant="ghost" class="px-2 py-1 text-xs text-gray-700">
+                    <Button
+                      size="custom"
+                      variant="ghost"
+                      class="rounded border border-gray-100 px-4 py-2 text-xs text-gray-700"
+                    >
                       {
                         accountMailboxes()?.accountMailboxes.find(
                           (accountMailbox) => accountMailbox.id === field.value
@@ -259,7 +285,7 @@ export const NewTransactionModal: Component<{
             <Button
               type="submit"
               colorScheme="primary"
-              class="w-full"
+              class="mt-auto w-full"
               disabled={createTransaction.loading}
             >
               Save

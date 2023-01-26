@@ -1,10 +1,11 @@
 import { Title } from "@solidjs/meta"
-import { Link, useNavigate, useRouteData } from "@solidjs/router"
+import { useNavigate, useRouteData } from "@solidjs/router"
 import { TbCalendarEvent, TbEdit, TbFilter, TbPlus, TbX } from "solid-icons/tb"
-import { Component, createSignal, onMount } from "solid-js"
+import { Component, createSignal, onMount, Show } from "solid-js"
 import { Button } from "../../components/base/Button"
 import { PageHeader } from "../../components/base/PageHeader"
 import { Cell } from "../../components/Cell"
+import { NewTransactionModal } from "../../components/transactions/NewTransactionModal"
 import TransactionFilters, {
   TransactionFilterValues
 } from "../../components/transactions/TransactionFilters"
@@ -34,6 +35,7 @@ const TransactionsListPage: Component = () => {
   const routeData = useRouteData<TransactionsListPageData>()
   const [isEditing, setEditing] = createSignal(false)
   const [isFiltering, setFiltering] = createSignal(false)
+  const [creatingTransaction, setCreatingTransaction] = createSignal(false)
 
   const { form, hasFilterValues, filterCount, clearFilters, setFilterValue } =
     usePageFilter<TransactionFilterValues>({
@@ -49,13 +51,13 @@ const TransactionsListPage: Component = () => {
 
       <PageHeader size="lg">
         <span class="mr-auto">Transactions</span>
-        <Link
+        <button
           class="z-navbar fixed bottom-[calc(66px+1rem+env(safe-area-inset-bottom))] right-4 flex items-center rounded-full border border-gray-200 bg-white py-2 px-5 text-lg text-indigo-600 shadow-lg lg:static lg:z-0 lg:-my-1 lg:mr-2 lg:shadow-none"
-          href="/transactions/new"
+          onClick={() => setCreatingTransaction(true)}
         >
           <TbPlus size="1.25em" class="mr-2 -ml-1" />
           Add
-        </Link>
+        </button>
         <Button
           class="mr-2"
           classList={{ hidden: !hasFilterValues() }}
@@ -96,9 +98,15 @@ const TransactionsListPage: Component = () => {
           <TbCalendarEvent size="1.25em" />
         </Button>
       </PageHeader>
+
+      <Show when={creatingTransaction()}>
+        <NewTransactionModal isOpen={true} onClose={() => setCreatingTransaction(false)} />
+      </Show>
+
       <div classList={{ block: isFiltering(), hidden: !isFiltering() }}>
         <TransactionFilters form={form} />
       </div>
+
       <Cell
         data={routeData.data}
         success={TransactionsList}
