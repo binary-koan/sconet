@@ -8,7 +8,6 @@ const FormIconPicker: Component<{
   of: FormState<any>
   label: JSX.Element
   name: string
-  defaultValue?: string
 }> = (props) => {
   return (
     <FormControl>

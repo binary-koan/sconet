@@ -19,11 +19,5 @@ export type InputProps = JSX.IntrinsicElements["input"] & InputCustomProps
 export const Input = (allProps: InputProps) => {
   const [props, elementProps] = splitProps(allProps, ["size", "class"])
 
-  return (
-    <input
-      class={`${inputClasses(props)} ${props.class}`}
-      {...elementProps}
-      ref={elementProps.ref}
-    />
-  )
+  return <input class={`${inputClasses(props)} ${props.class}`} {...elementProps} />
 }

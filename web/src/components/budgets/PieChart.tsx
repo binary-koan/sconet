@@ -25,7 +25,6 @@ export const PieChart: Component<{
       radius: "60%",
       center: ["50%", "50%"],
       data: chartData,
-      roseType: "area",
       animation: false
     }
 

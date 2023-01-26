@@ -10,6 +10,9 @@ export default defineConfig({
       autoname: true
     })
   ],
+  optimizeDeps: {
+    extensions: ["jsx"]
+  },
   server: {
     port: 1234
   },

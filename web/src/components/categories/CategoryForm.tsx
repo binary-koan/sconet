@@ -30,6 +30,7 @@ const CategoryForm: Component<{
     initialValues: {
       name: props.category?.name,
       color: props.category?.color,
+      icon: props.category?.icon,
       budget: props.category?.budget?.decimalAmount,
       budgetCurrencyId: props.category?.budgetCurrencyId,
       isRegular: props.category?.isRegular != null ? props.category.isRegular : true
@@ -74,7 +75,7 @@ const CategoryForm: Component<{
         ]}
       />
 
-      <FormIconPicker of={form} name="icon" label="Icon" defaultValue={props.category?.icon} />
+      <FormIconPicker of={form} name="icon" label="Icon" />
 
       <FormOptionButtons
         of={form}
