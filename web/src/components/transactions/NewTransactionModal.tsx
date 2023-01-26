@@ -28,6 +28,8 @@ export const NewTransactionModal: Component<{
   const currencies = useCurrenciesQuery()
   const accountMailboxes = useAccountMailboxesQuery()
 
+  console.log("initial date", props.initialDate)
+
   const createTransaction = useCreateTransaction({
     onSuccess: () => {
       toast.success("Transaction created")
@@ -102,17 +104,6 @@ export const NewTransactionModal: Component<{
       <ModalContent class="flex h-[26rem] flex-col">
         <ModalTitle>
           New Transaction
-          <Show when={isDateSelected()}>
-            <Button
-              size="custom"
-              variant="ghost"
-              class="ml-2 -mb-1 px-2 py-1 text-xs text-gray-700"
-              onClick={() => setValue(form, "date", "")}
-            >
-              <TbCalendarEvent class="mr-1" />
-              {getValue(form, "date")}
-            </Button>
-          </Show>
           <ModalCloseButton onClick={props.onClose} />
         </ModalTitle>
 
@@ -125,10 +116,11 @@ export const NewTransactionModal: Component<{
             class={isDateSelected() ? "hidden" : ""}
           />
 
-          <div classList={{ hidden: !isDateSelected() }} class="flex flex-1 flex-col">
-            <div class="mt-auto flex flex-col gap-4">
+          <div classList={{ hidden: !isDateSelected() }} class="flex flex-1 flex-col gap-4">
+            <div class="my-auto flex flex-col gap-4">
               <FormInputGroup
                 of={form}
+                ref={amountInput}
                 label="Amount"
                 name="amount"
                 type="number"
@@ -141,10 +133,11 @@ export const NewTransactionModal: Component<{
                     : "1"
                 }
               />
+
               <FormInput placeholderLabel={true} of={form} label="Memo" name="memo" />
             </div>
 
-            <div class="-ml-2 mt-auto mb-6 flex items-center gap-2">
+            <div class="mb-2 flex gap-4">
               <Field of={form} name="amountType">
                 {(field) => (
                   <Button
@@ -195,6 +188,18 @@ export const NewTransactionModal: Component<{
                 </Field>
               </Show>
 
+              <Button
+                size="custom"
+                variant="ghost"
+                class="ml-auto px-2 py-1 text-xs text-gray-700"
+                onClick={() => setValue(form, "date", "")}
+              >
+                <TbCalendarEvent class="mr-1" />
+                {getValue(form, "date")}
+              </Button>
+            </div>
+
+            <div class="mb-2 flex gap-4">
               <Field of={form} name="currencyId">
                 {(field) => (
                   <Dropdown

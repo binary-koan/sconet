@@ -23,16 +23,6 @@ export const convertCurrency = async (
 
   const otherCurrency = await options.context.data.currency.load(toId)
 
-  console.log(
-    "converting",
-    options.amount,
-    options.currency.code,
-    "to",
-    otherCurrency.code,
-    "=",
-    convertAmount(options.amount, options.currency, otherCurrency, rate)
-  )
-
   return {
     amount: convertAmount(options.amount, options.currency, otherCurrency, rate),
     currency: otherCurrency
@@ -96,14 +86,6 @@ export const convertAmount = (
   exchangeRate: number
 ) => {
   const convertedDecimal = decimalAmount({ amount, currency: originalCurrency }) * exchangeRate
-
-  console.log(
-    "converting",
-    amount,
-    originalCurrency.code,
-    "=",
-    convertedDecimal * 10 ** convertedCurrency.decimalDigits
-  )
 
   return convertedDecimal * 10 ** convertedCurrency.decimalDigits
 }

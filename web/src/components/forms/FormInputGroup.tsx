@@ -23,12 +23,13 @@ const FormInputGroup: Component<
     "before",
     "after",
     "validate",
-    "placeholderLabel"
+    "placeholderLabel",
+    "ref"
   ])
 
   return (
     <FormControl>
-      <FormLabel classList={{ "sr-only": props.placeholderLabel }}>{props.label}</FormLabel>
+      <FormLabel class={props.placeholderLabel ? "sr-only" : ""}>{props.label}</FormLabel>
       <Field name={props.name} of={props.of} validate={props.validate}>
         {(field) => (
           <>
@@ -41,6 +42,7 @@ const FormInputGroup: Component<
                   props.placeholderLabel && typeof props.label === "string" ? props.label : ""
                 }
                 {...field.props}
+                ref={props.ref}
               />
               {props.after}
             </InputGroup>

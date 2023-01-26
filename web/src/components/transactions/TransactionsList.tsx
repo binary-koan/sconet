@@ -21,12 +21,8 @@ export const TransactionsList: Component<{
 
     if (!transactions.length) return []
 
-    const firstTransactionDate = new Date(
-      `${transactions.at(0)!.date.split("T")[0]}T00:00:00+09:00`
-    )
-    const lastTransactionDate = new Date(
-      `${transactions.at(-1)!.date.split("T")[0]}T00:00:00+09:00`
-    )
+    const firstTransactionDate = new Date(`${transactions.at(0)!.date.split("T")[0]}T00:00:00Z`)
+    const lastTransactionDate = new Date(`${transactions.at(-1)!.date.split("T")[0]}T00:00:00Z`)
 
     const items: Array<{ date: Date; transactions: FullTransactionFragment[] }> = []
 

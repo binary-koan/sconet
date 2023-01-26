@@ -11,9 +11,7 @@ export const FormControl = (allProps: JSX.IntrinsicElements["div"]) => {
 const formLabelClasses = () => "block font-medium text-sm mb-1"
 
 export const FormLabel = (allProps: JSX.IntrinsicElements["label"]) => {
-  const [props, elementProps] = splitProps(allProps, ["class"])
+  const [props, elementProps] = splitProps(allProps, ["class", "ref"])
 
-  console.log({...elementProps})
-
-  return <label class={`${formLabelClasses()} ${props.class}`} {...elementProps} />
+  return <label class={`${formLabelClasses()} ${props.class}`} {...elementProps} ref={props.ref} />
 }
