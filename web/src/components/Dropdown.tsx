@@ -85,7 +85,7 @@ export const Dropdown: Component<{
       {toggle()}
       <Show when={isOpen()}>
         <div
-          class={`absolute mt-1 overflow-hidden whitespace-nowrap rounded border border-gray-100 bg-white shadow-lg ${
+          class={`z-dropdown absolute mt-1 overflow-hidden whitespace-nowrap rounded border border-gray-100 bg-white shadow-lg ${
             placementClasses[props.placement!]
           }`}
         >
