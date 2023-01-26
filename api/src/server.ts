@@ -1,24 +1,27 @@
 import { file } from "bun"
 import { existsSync, statSync } from "fs"
-import {
-  getGraphQLParameters,
-  processRequest,
-  renderGraphiQL,
-  shouldRenderGraphiQL
-} from "graphql-helix"
+import { createYoga } from "graphql-yoga"
 import { buildContext } from "./context"
 import { backupDatabase } from "./db/backup"
 import "./polyfills"
 import { schema } from "./schema"
 
-const corsHeaders: Array<[string, string]> = [
-  ["Access-Control-Allow-Origin", "http://localhost:1234"],
-  ["Access-Control-Allow-Headers", "Authorization, Content-Type"]
-]
-
 const port = process.env.PORT || 4444
 
 setInterval(backupDatabase, 5 * 60 * 1000)
+
+const yoga = createYoga({
+  schema,
+  context: ({ request }) => buildContext(request),
+
+  cors:
+    process.env.NODE_ENV === "production"
+      ? undefined
+      : {
+          origin: "http://localhost:1234",
+          allowedHeaders: ["Authorization", "Content-Type"]
+        }
+})
 
 Bun.serve({
   port,
@@ -44,58 +47,7 @@ Bun.serve({
       })
     }
 
-    if (req.method === "OPTIONS") {
-      return new Response("", {
-        headers: corsHeaders
-      })
-    }
-
-    const body = await req.json()
-
-    const request = {
-      body,
-      headers: req.headers,
-      method: req.method,
-      query: url.search
-    }
-
-    if (shouldRenderGraphiQL(request)) {
-      return new Response(renderGraphiQL(), {
-        headers: {
-          "Content-Type": "text/html"
-        }
-      })
-    } else {
-      const { operationName, query, variables } = getGraphQLParameters(request)
-
-      console.log(`[GRAPHQL] ${operationName || "unnamed operation"}`)
-
-      const result = await processRequest({
-        contextFactory: (executionContext) => buildContext(req, executionContext),
-        operationName,
-        query,
-        variables,
-        request,
-        schema
-      })
-
-      if (result.type === "RESPONSE") {
-        result.payload.errors?.forEach((error) => console.error(error.originalError || error))
-
-        const data = JSON.stringify(result.payload)
-
-        console.log(`[GRAPHQL] Done`)
-
-        return new Response(data, {
-          status: result.status,
-          headers: result.headers
-            .map<[string, string]>(({ name, value }) => [name, value])
-            .concat(corsHeaders)
-        })
-      }
-
-      throw new Error(`Unhandled result type: ${result.type}`)
-    }
+    return yoga.fetch(req)
   }
 })
 

@@ -1,6 +1,5 @@
 import Dataloader from "dataloader"
 import { GraphQLError } from "graphql"
-import { ExecutionContext } from "graphql-helix"
 import { errors, jwtVerify } from "jose"
 import { last, memoize } from "lodash"
 import { findExchangeRatesByCurrencyIds } from "./db/queries/exchangeRate/findExchangeRatesByCurrencyIds"
@@ -32,10 +31,7 @@ export interface Context {
   }
 }
 
-export async function buildContext(
-  request: Request,
-  _executionContext: ExecutionContext
-): Promise<Context> {
+export async function buildContext(request: Request): Promise<Context> {
   const defaultCurrencyId = memoize(
     () => request.headers.get("x-default-currency-id") || currenciesRepo.findAll()[0].id
   )

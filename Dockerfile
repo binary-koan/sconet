@@ -19,7 +19,7 @@ RUN test -n "$VITE_TURNSTILE_SITEKEY" || (echo "VITE_TURNSTILE_SITEKEY not set" 
 
 RUN pnpm build
 
-FROM jarredsumner/bun:0.4.0
+FROM jarredsumner/bun:0.5.1
 
 WORKDIR /app
 

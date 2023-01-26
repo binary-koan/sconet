@@ -23,7 +23,7 @@ jobs:
       - name: Setup Bun Runtime
         uses: antongolub/action-setup-bun@v1
         with:
-          bun-version: 0.4.0
+          bun-version: 0.5.1
 
       - name: Install dependencies
         run: pnpm install
