@@ -25,7 +25,7 @@ const BudgetGroup: Component<{
           formattedValue: amountSpent.formatted
         }))}
       />
-      <div class="flex-none lg:flex-1">
+      <div class="min-w-0 flex-none lg:flex-1">
         <h2 class="mb-2 flex items-center px-4 font-semibold">
           {props.title}
           <span class="ml-auto">{props.group.totalSpending.formatted}</span>
@@ -57,7 +57,7 @@ const BudgetGroup: Component<{
                 />
                 <div class="min-w-0 flex-1">
                   <div class="mt-1 flex">
-                    <div class="truncate">{category?.name || "Uncategorized"}</div>
+                    <div class="min-w-0 truncate">{category?.name || "Uncategorized"}</div>
                     <div class="ml-auto pl-2">{amountSpent.formatted}</div>
                   </div>
 
