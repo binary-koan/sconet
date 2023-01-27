@@ -10,7 +10,8 @@
     "migrate:up": "TZ=UTC bun bin/migrate/up.ts",
     "migrate:down": "TZ=UTC bun bin/migrate/down.ts",
     "seed": "TZ=UTC bun bin/seed/index.ts",
-    "dbconsole": "TZ=UTC bun bin/dbconsole.ts"
+    "dbconsole": "TZ=UTC bun bin/dbconsole.ts",
+    "job": "TZ=UTC bun bin/job.ts"
   },
   "dependencies": {
     "@graphql-tools/schema": "^9.0.13",

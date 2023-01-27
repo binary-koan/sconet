@@ -8,6 +8,9 @@ processes = []
 [env]
   PORT = 8080
 
+[deploy]
+  release_command = "bun migrate"
+
 [experimental]
   allowed_public_ports = []
   auto_rollback = true

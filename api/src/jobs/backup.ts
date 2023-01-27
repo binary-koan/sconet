@@ -1,12 +1,12 @@
 import { file, write } from "bun"
 import { exec } from "child_process"
 import { existsSync, statSync } from "fs"
-import { db } from "./database"
-import { Repo } from "./repo"
-import { accountMailboxesRepo } from "./repos/accountMailboxesRepo"
-import { categoriesRepo } from "./repos/categoriesRepo"
-import { currenciesRepo } from "./repos/currenciesRepo"
-import { transactionsRepo } from "./repos/transactionsRepo"
+import { db } from "../db/database"
+import { Repo } from "../db/repo"
+import { accountMailboxesRepo } from "../db/repos/accountMailboxesRepo"
+import { categoriesRepo } from "../db/repos/categoriesRepo"
+import { currenciesRepo } from "../db/repos/currenciesRepo"
+import { transactionsRepo } from "../db/repos/transactionsRepo"
 
 interface BackupDetails {
   lastBackupAt?: string
@@ -17,7 +17,9 @@ const BACKUPS_TO_KEEP: number = 3
 
 const REPOS_TO_BACKUP = [transactionsRepo, categoriesRepo, accountMailboxesRepo, currenciesRepo]
 
-export const backupDatabase = async () => {
+export const startBackupSchedule = () => setInterval(runBackup, 5 * 60 * 1000)
+
+export const runBackup = async () => {
   if (
     !process.env.ACCESS_KEY_ID ||
     !process.env.SECRET_ACCESS_KEY ||

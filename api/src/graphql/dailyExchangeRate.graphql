@@ -1,0 +1,13 @@
+type DailyExchangeRate {
+  id: String!
+  fromCurrencyId: String!
+  fromCurrency: Currency!
+  toCurrencyId: String!
+  toCurrency: Currency!
+  rate: Float!
+  date: Date!
+}
+
+type Query {
+  currentExchangeRates: [DailyExchangeRate!]! @authenticated
+}

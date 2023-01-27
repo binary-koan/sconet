@@ -3,6 +3,7 @@ import { CategoryRecord } from './db/records/category';
 import { CurrencyRecord } from './db/records/currency';
 import { TransactionRecord } from './db/records/transaction';
 import { AccountMailboxRecord } from './db/records/accountMailbox';
+import { DailyExchangeRateRecord } from './db/records/dailyExchangeRate';
 import { FindTransactionsResult } from './db/queries/transaction/filterTransactions';
 import { DailyTransactionsResult } from './resolvers/transactions';
 import { MonthBudgetResult, CategoryBudgetGroupResult, CategoryBudgetResult } from './resolvers/budgets';
@@ -126,6 +127,17 @@ export type CurrentUser = {
   __typename?: 'CurrentUser';
   email: Scalars['String'];
   id: Scalars['String'];
+};
+
+export type DailyExchangeRate = {
+  __typename?: 'DailyExchangeRate';
+  date: Scalars['Date'];
+  fromCurrency: Currency;
+  fromCurrencyId: Scalars['String'];
+  id: Scalars['String'];
+  rate: Scalars['Float'];
+  toCurrency: Currency;
+  toCurrencyId: Scalars['String'];
 };
 
 export type DailyTransactions = {
@@ -285,6 +297,7 @@ export type Query = {
   category: Maybe<Category>;
   currencies: Array<Currency>;
   currency: Maybe<Currency>;
+  currentExchangeRates: Array<DailyExchangeRate>;
   currentUser: Maybe<CurrentUser>;
   transaction: Maybe<Transaction>;
   transactions: PaginatedTransactions;
@@ -477,6 +490,7 @@ export type ResolversTypes = {
   Currency: ResolverTypeWrapper<CurrencyRecord>;
   CurrencyCode: ResolverTypeWrapper<Scalars['CurrencyCode']>;
   CurrentUser: ResolverTypeWrapper<UserRecord>;
+  DailyExchangeRate: ResolverTypeWrapper<DailyExchangeRateRecord>;
   DailyTransactions: ResolverTypeWrapper<DailyTransactionsResult>;
   Date: ResolverTypeWrapper<Scalars['Date']>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
@@ -512,6 +526,7 @@ export type ResolversParentTypes = {
   Currency: CurrencyRecord;
   CurrencyCode: Scalars['CurrencyCode'];
   CurrentUser: UserRecord;
+  DailyExchangeRate: DailyExchangeRateRecord;
   DailyTransactions: DailyTransactionsResult;
   Date: Scalars['Date'];
   DateTime: Scalars['DateTime'];
@@ -596,6 +611,17 @@ export type CurrentUserResolvers<ContextType = Context, ParentType extends Resol
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type DailyExchangeRateResolvers<ContextType = Context, ParentType extends ResolversParentTypes['DailyExchangeRate'] = ResolversParentTypes['DailyExchangeRate']> = {
+  date: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
+  fromCurrency: Resolver<ResolversTypes['Currency'], ParentType, ContextType>;
+  fromCurrencyId: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  rate: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  toCurrency: Resolver<ResolversTypes['Currency'], ParentType, ContextType>;
+  toCurrencyId: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type DailyTransactionsResolvers<ContextType = Context, ParentType extends ResolversParentTypes['DailyTransactions'] = ResolversParentTypes['DailyTransactions']> = {
   date: Resolver<Maybe<ResolversTypes['Date']>, ParentType, ContextType>;
   totalSpent: Resolver<ResolversTypes['Money'], ParentType, ContextType, Partial<DailyTransactionsTotalSpentArgs>>;
@@ -670,6 +696,7 @@ export type QueryResolvers<ContextType = Context, ParentType extends ResolversPa
   category: Resolver<Maybe<ResolversTypes['Category']>, ParentType, ContextType, RequireFields<QueryCategoryArgs, 'id'>>;
   currencies: Resolver<Array<ResolversTypes['Currency']>, ParentType, ContextType>;
   currency: Resolver<Maybe<ResolversTypes['Currency']>, ParentType, ContextType, RequireFields<QueryCurrencyArgs, 'id'>>;
+  currentExchangeRates: Resolver<Array<ResolversTypes['DailyExchangeRate']>, ParentType, ContextType>;
   currentUser: Resolver<Maybe<ResolversTypes['CurrentUser']>, ParentType, ContextType>;
   transaction: Resolver<Maybe<ResolversTypes['Transaction']>, ParentType, ContextType, RequireFields<QueryTransactionArgs, 'id'>>;
   transactions: Resolver<ResolversTypes['PaginatedTransactions'], ParentType, ContextType, RequireFields<QueryTransactionsArgs, 'limit'>>;
@@ -707,6 +734,7 @@ export type Resolvers<ContextType = Context> = {
   Currency: CurrencyResolvers<ContextType>;
   CurrencyCode: GraphQLScalarType;
   CurrentUser: CurrentUserResolvers<ContextType>;
+  DailyExchangeRate: DailyExchangeRateResolvers<ContextType>;
   DailyTransactions: DailyTransactionsResolvers<ContextType>;
   Date: GraphQLScalarType;
   DateTime: GraphQLScalarType;

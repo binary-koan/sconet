@@ -7,11 +7,14 @@ import { Button, LinkButton } from "../components/base/Button"
 import { PageHeader } from "../components/base/PageHeader"
 import CategoriesList from "../components/categories/Categories"
 import { Cell } from "../components/Cell"
+import { CurrentExchangeRates } from "../components/exchangeRates/CurrentExchangeRates"
 import {
   AccountMailboxesQuery,
   AccountMailboxesQueryVariables,
   CategoriesQuery,
   CategoriesQueryVariables,
+  CurrentExchangeRatesQuery,
+  CurrentExchangeRatesQueryVariables,
   CurrentUserQuery,
   CurrentUserQueryVariables
 } from "../graphql-types"
@@ -22,6 +25,7 @@ export interface SettingsPageData {
   categories: QueryResource<CategoriesQuery, CategoriesQueryVariables>
   accountMailboxes: QueryResource<AccountMailboxesQuery, AccountMailboxesQueryVariables>
   currentUser: QueryResource<CurrentUserQuery, CurrentUserQueryVariables>
+  currentExchangeRates: QueryResource<CurrentExchangeRatesQuery, CurrentExchangeRatesQueryVariables>
 }
 
 const SettingsPage: Component = () => {
@@ -67,6 +71,10 @@ const SettingsPage: Component = () => {
       </PageHeader>
 
       <Cell data={data.accountMailboxes} success={AccountMailboxes} />
+
+      <PageHeader size="lg">Current Exchange Rates</PageHeader>
+
+      <Cell data={data.currentExchangeRates} success={CurrentExchangeRates} />
     </>
   )
 }

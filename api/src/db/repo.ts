@@ -22,7 +22,7 @@ export type Repo<Record, RecordForInsert, Methods> = Methods & {
 }
 
 export const createRepo = <
-  Record extends { id: string; createdAt: Date; updatedAt: Date; deletedAt: Date | null },
+  Record extends { id: string; createdAt: Date; updatedAt: Date; deletedAt?: Date | null },
   RecordForInsert,
   Methods extends object
 >({

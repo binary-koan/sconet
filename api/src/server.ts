@@ -2,13 +2,15 @@ import { file } from "bun"
 import { existsSync, statSync } from "fs"
 import { createYoga } from "graphql-yoga"
 import { buildContext } from "./context"
-import { backupDatabase } from "./db/backup"
+import { startBackupSchedule } from "./jobs/backup"
+import { startExchangeRateSchedule } from "./jobs/exchangeRates"
 import "./polyfills"
 import { schema } from "./schema"
 
 const port = process.env.PORT || 4444
 
-setInterval(backupDatabase, 5 * 60 * 1000)
+startBackupSchedule()
+startExchangeRateSchedule()
 
 const yoga = createYoga({
   schema,
