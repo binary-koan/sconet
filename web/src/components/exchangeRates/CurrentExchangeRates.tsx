@@ -20,8 +20,10 @@ export const CurrentExchangeRates: Component<{
         <For each={props.data.currentExchangeRates}>
           {(exchangeRate) => (
             <div class="font-mono">
-              1 {exchangeRate.fromCurrency.code} = {exchangeRate.rate}{" "}
-              {exchangeRate.toCurrency.code}
+              1 {exchangeRate.fromCurrency.code} ={" "}
+              {exchangeRate.rates
+                .map(({ toCurrency, rate }) => `${rate} ${toCurrency.code}`)
+                .join(" / ")}
             </div>
           )}
         </For>

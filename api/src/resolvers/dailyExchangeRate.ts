@@ -1,4 +1,5 @@
 import { dailyExchangeRatesRepo } from "../db/repos/dailyExchangeRatesRepo"
+import { exchangeRateValuesRepo } from "../db/repos/exchangeRateValuesRepo"
 import { QueryResolvers, Resolvers } from "../resolvers-types"
 import { startOfDayUTC } from "../utils/date"
 
@@ -11,9 +12,14 @@ export const DailyExchangeRate: Resolvers["DailyExchangeRate"] = {
   fromCurrencyId: (dailyExchangeRate) => dailyExchangeRate.fromCurrencyId,
   fromCurrency: (dailyExchangeRate, _, context) =>
     context.data.currency.load(dailyExchangeRate.fromCurrencyId),
-  toCurrencyId: (dailyExchangeRate) => dailyExchangeRate.toCurrencyId,
-  toCurrency: (dailyExchangeRate, _, context) =>
-    context.data.currency.load(dailyExchangeRate.toCurrencyId),
-  rate: (dailyExchangeRate) => dailyExchangeRate.rate,
-  date: (dailyExchangeRate) => dailyExchangeRate.date
+  date: (dailyExchangeRate) => dailyExchangeRate.date,
+  rates: (dailyExchangeRate) => exchangeRateValuesRepo.findForRate(dailyExchangeRate)
+}
+
+export const ExchangeRateValue: Resolvers["ExchangeRateValue"] = {
+  id: (exchangeRateValue) => exchangeRateValue.id,
+  toCurrencyId: (exchangeRateValue) => exchangeRateValue.toCurrencyId,
+  toCurrency: (exchangeRateValue, _, context) =>
+    context.data.currency.load(exchangeRateValue.toCurrencyId),
+  rate: (exchangeRateValue) => exchangeRateValue.rate
 }

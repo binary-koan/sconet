@@ -5,9 +5,20 @@ export function up() {
     CREATE TABLE dailyExchangeRates (
       id TEXT PRIMARY KEY,
       fromCurrencyId TEXT NOT NULL,
+      date INTEGER NOT NULL,
+
+      deletedAt INTEGER,
+      createdAt INTEGER,
+      updatedAt INTEGER
+    )
+  `)
+
+  db.run(`
+    CREATE TABLE exchangeRateValues (
+      id TEXT PRIMARY KEY,
+      dailyExchangeRateId TEXT NOT NULL,
       toCurrencyId TEXT NOT NULL,
       rate REAL NOT NULL,
-      date INTEGER NOT NULL,
 
       deletedAt INTEGER,
       createdAt INTEGER,
@@ -22,5 +33,6 @@ export function up() {
 
 export function down() {
   db.run(`DROP TABLE dailyExchangeRates`)
+  db.run(`DROP TABLE exchangeRateValues`)
   db.run(`ALTER TABLE transactions DROP COLUMN dailyExchangeRateId`)
 }

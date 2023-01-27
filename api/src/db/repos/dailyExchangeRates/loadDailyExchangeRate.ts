@@ -5,8 +5,6 @@ export function loadDailyExchangeRate(row: any): DailyExchangeRateRecord {
   return {
     id: row.id,
     fromCurrencyId: row.fromCurrencyId,
-    toCurrencyId: row.toCurrencyId,
-    rate: row.rate,
     date: loadDate(row.date as number),
 
     createdAt: loadDate(row.createdAt as number),

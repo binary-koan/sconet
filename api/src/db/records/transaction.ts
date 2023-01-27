@@ -7,6 +7,7 @@ export interface TransactionRecord {
   includeInReports: boolean
 
   currencyId: string
+  dailyExchangeRateId: string
   categoryId: string | null
 
   accountMailboxId: string

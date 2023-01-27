@@ -2,10 +2,15 @@ type DailyExchangeRate {
   id: String!
   fromCurrencyId: String!
   fromCurrency: Currency!
+  date: Date!
+  rates: [ExchangeRateValue!]!
+}
+
+type ExchangeRateValue {
+  id: String!
   toCurrencyId: String!
   toCurrency: Currency!
   rate: Float!
-  date: Date!
 }
 
 type Query {

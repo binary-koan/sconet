@@ -122,9 +122,7 @@ export type DailyExchangeRate = {
   fromCurrency: Currency;
   fromCurrencyId: Scalars['String'];
   id: Scalars['String'];
-  rate: Scalars['Float'];
-  toCurrency: Currency;
-  toCurrencyId: Scalars['String'];
+  rates: Array<ExchangeRateValue>;
 };
 
 export type DailyTransactions = {
@@ -137,6 +135,14 @@ export type DailyTransactions = {
 
 export type DailyTransactionsTotalSpentArgs = {
   currencyId?: InputMaybe<Scalars['String']>;
+};
+
+export type ExchangeRateValue = {
+  __typename?: 'ExchangeRateValue';
+  id: Scalars['String'];
+  rate: Scalars['Float'];
+  toCurrency: Currency;
+  toCurrencyId: Scalars['String'];
 };
 
 export type Money = {
@@ -523,7 +529,7 @@ export type CurrenciesQuery = { __typename?: 'Query', currencies: Array<{ __type
 export type CurrentExchangeRatesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type CurrentExchangeRatesQuery = { __typename?: 'Query', currentExchangeRates: Array<{ __typename?: 'DailyExchangeRate', date: any, rate: number, fromCurrency: { __typename?: 'Currency', code: any }, toCurrency: { __typename?: 'Currency', code: any } }> };
+export type CurrentExchangeRatesQuery = { __typename?: 'Query', currentExchangeRates: Array<{ __typename?: 'DailyExchangeRate', date: any, fromCurrency: { __typename?: 'Currency', code: any }, rates: Array<{ __typename?: 'ExchangeRateValue', rate: number, toCurrency: { __typename?: 'Currency', code: any } }> }> };
 
 export type CurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 

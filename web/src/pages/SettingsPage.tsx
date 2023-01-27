@@ -7,12 +7,15 @@ import { Button, LinkButton } from "../components/base/Button"
 import { PageHeader } from "../components/base/PageHeader"
 import CategoriesList from "../components/categories/Categories"
 import { Cell } from "../components/Cell"
+import Currencies from "../components/currencies/Currencies"
 import { CurrentExchangeRates } from "../components/exchangeRates/CurrentExchangeRates"
 import {
   AccountMailboxesQuery,
   AccountMailboxesQueryVariables,
   CategoriesQuery,
   CategoriesQueryVariables,
+  CurrenciesQuery,
+  CurrenciesQueryVariables,
   CurrentExchangeRatesQuery,
   CurrentExchangeRatesQueryVariables,
   CurrentUserQuery,
@@ -25,6 +28,7 @@ export interface SettingsPageData {
   categories: QueryResource<CategoriesQuery, CategoriesQueryVariables>
   accountMailboxes: QueryResource<AccountMailboxesQuery, AccountMailboxesQueryVariables>
   currentUser: QueryResource<CurrentUserQuery, CurrentUserQueryVariables>
+  currencies: QueryResource<CurrenciesQuery, CurrenciesQueryVariables>
   currentExchangeRates: QueryResource<CurrentExchangeRatesQuery, CurrentExchangeRatesQueryVariables>
 }
 
@@ -71,6 +75,10 @@ const SettingsPage: Component = () => {
       </PageHeader>
 
       <Cell data={data.accountMailboxes} success={AccountMailboxes} />
+
+      <PageHeader size="lg">Currencies</PageHeader>
+
+      <Cell data={data.currencies} success={Currencies} />
 
       <PageHeader size="lg">Current Exchange Rates</PageHeader>
 

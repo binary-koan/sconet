@@ -4,6 +4,7 @@ import { CurrencyRecord } from './db/records/currency';
 import { TransactionRecord } from './db/records/transaction';
 import { AccountMailboxRecord } from './db/records/accountMailbox';
 import { DailyExchangeRateRecord } from './db/records/dailyExchangeRate';
+import { ExchangeRateValueRecord } from './db/records/exchangeRateValue';
 import { FindTransactionsResult } from './db/queries/transaction/filterTransactions';
 import { DailyTransactionsResult } from './resolvers/transactions';
 import { MonthBudgetResult, CategoryBudgetGroupResult, CategoryBudgetResult } from './resolvers/budgets';
@@ -135,9 +136,7 @@ export type DailyExchangeRate = {
   fromCurrency: Currency;
   fromCurrencyId: Scalars['String'];
   id: Scalars['String'];
-  rate: Scalars['Float'];
-  toCurrency: Currency;
-  toCurrencyId: Scalars['String'];
+  rates: Array<ExchangeRateValue>;
 };
 
 export type DailyTransactions = {
@@ -150,6 +149,14 @@ export type DailyTransactions = {
 
 export type DailyTransactionsTotalSpentArgs = {
   currencyId: InputMaybe<Scalars['String']>;
+};
+
+export type ExchangeRateValue = {
+  __typename?: 'ExchangeRateValue';
+  id: Scalars['String'];
+  rate: Scalars['Float'];
+  toCurrency: Currency;
+  toCurrencyId: Scalars['String'];
 };
 
 export type Money = {
@@ -494,6 +501,7 @@ export type ResolversTypes = {
   DailyTransactions: ResolverTypeWrapper<DailyTransactionsResult>;
   Date: ResolverTypeWrapper<Scalars['Date']>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
+  ExchangeRateValue: ResolverTypeWrapper<ExchangeRateValueRecord>;
   Float: ResolverTypeWrapper<Scalars['Float']>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
   JSON: ResolverTypeWrapper<Scalars['JSON']>;
@@ -530,6 +538,7 @@ export type ResolversParentTypes = {
   DailyTransactions: DailyTransactionsResult;
   Date: Scalars['Date'];
   DateTime: Scalars['DateTime'];
+  ExchangeRateValue: ExchangeRateValueRecord;
   Float: Scalars['Float'];
   Int: Scalars['Int'];
   JSON: Scalars['JSON'];
@@ -616,9 +625,7 @@ export type DailyExchangeRateResolvers<ContextType = Context, ParentType extends
   fromCurrency: Resolver<ResolversTypes['Currency'], ParentType, ContextType>;
   fromCurrencyId: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  rate: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
-  toCurrency: Resolver<ResolversTypes['Currency'], ParentType, ContextType>;
-  toCurrencyId: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  rates: Resolver<Array<ResolversTypes['ExchangeRateValue']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -636,6 +643,14 @@ export interface DateScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes
 export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateTime'], any> {
   name: 'DateTime';
 }
+
+export type ExchangeRateValueResolvers<ContextType = Context, ParentType extends ResolversParentTypes['ExchangeRateValue'] = ResolversParentTypes['ExchangeRateValue']> = {
+  id: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  rate: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  toCurrency: Resolver<ResolversTypes['Currency'], ParentType, ContextType>;
+  toCurrencyId: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
 
 export interface JsonScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['JSON'], any> {
   name: 'JSON';
@@ -738,6 +753,7 @@ export type Resolvers<ContextType = Context> = {
   DailyTransactions: DailyTransactionsResolvers<ContextType>;
   Date: GraphQLScalarType;
   DateTime: GraphQLScalarType;
+  ExchangeRateValue: ExchangeRateValueResolvers<ContextType>;
   JSON: GraphQLScalarType;
   Money: MoneyResolvers<ContextType>;
   MonthBudget: MonthBudgetResolvers<ContextType>;

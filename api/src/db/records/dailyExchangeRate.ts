@@ -1,8 +1,6 @@
 export interface DailyExchangeRateRecord {
   id: string
   fromCurrencyId: string
-  toCurrencyId: string
-  rate: number
   date: Date
 
   createdAt: Date

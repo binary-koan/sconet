@@ -5,14 +5,16 @@ import { useQuery } from "../../utils/graphqlClient/useQuery"
 export const CURRENT_EXCHANGE_RATES_QUERY = gql`
   query CurrentExchangeRates {
     currentExchangeRates {
+      date
       fromCurrency {
         code
       }
-      toCurrency {
-        code
+      rates {
+        toCurrency {
+          code
+        }
+        rate
       }
-      date
-      rate
     }
   }
 `

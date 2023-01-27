@@ -36,7 +36,11 @@ import {
   deleteCurrency,
   updateCurrency
 } from "./resolvers/currencies"
-import { currentExchangeRates, DailyExchangeRate } from "./resolvers/dailyExchangeRate"
+import {
+  currentExchangeRates,
+  DailyExchangeRate,
+  ExchangeRateValue
+} from "./resolvers/dailyExchangeRate"
 import { applyAuthenticatedDirective } from "./resolvers/directives/authenticated"
 import { Money } from "./resolvers/money"
 import {
@@ -100,6 +104,7 @@ const resolvers: Resolvers = {
   Category,
   AccountMailbox,
   DailyExchangeRate,
+  ExchangeRateValue,
   MonthBudget,
   CategoryBudget,
   CategoryBudgetGroup,
