@@ -21,7 +21,9 @@ const usePageFilter = <FilterValues extends { [key: string]: any }>({
   const paramFilterValues = () => ({
     ...initialValues,
     ...JSON.parse(
-      params[paramName] || (localStorageKey && localStorage.getItem(localStorageKey)) || "{}"
+      (params[paramName] && decodeURIComponent(params[paramName])) ||
+        (localStorageKey && localStorage.getItem(localStorageKey)) ||
+        "{}"
     )
   })
 

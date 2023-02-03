@@ -9,7 +9,7 @@ const transactionsData: RouteDataFunc<unknown, TransactionsListPageData> = ({
 }) => {
   const variables = () => ({
     limit: parseInt(new URLSearchParams(location.search).get("limit") || "100"),
-    filter: JSON.parse(params.filter || "{}")
+    filter: JSON.parse(params.filter ? decodeURIComponent(params.filter) : "{}")
   })
 
   const data = useTransactionsQuery(variables)
