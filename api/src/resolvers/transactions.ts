@@ -1,5 +1,6 @@
 import { omit, pick, sum } from "lodash"
 import { TransactionRecord } from "../db/records/transaction"
+import { dailyExchangeRatesRepo } from "../db/repos/dailyExchangeRatesRepo"
 import { transactionsRepo } from "../db/repos/transactionsRepo"
 import {
   MutationResolvers,
@@ -50,6 +51,7 @@ export const createTransaction: MutationResolvers["createTransaction"] = (_, { i
   const id = transactionsRepo.insert({
     ...input,
     date: input.date || new Date(),
+    dailyExchangeRateId: dailyExchangeRatesRepo.findClosest(input.date, input.currencyId)!.id,
     includeInReports: input.includeInReports || true,
     originalMemo: input.memo
   })
