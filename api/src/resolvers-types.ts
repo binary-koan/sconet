@@ -282,8 +282,8 @@ export type MutationReorderCategoriesArgs = {
 
 
 export type MutationSplitTransactionArgs = {
-  amounts: Array<Scalars['Int']>;
   id: Scalars['String'];
+  splits: Array<SplitTransactionItem>;
 };
 
 
@@ -378,6 +378,11 @@ export type QueryTransactionsArgs = {
 export type QueryTransactionsByDayArgs = {
   dateFrom: Scalars['Date'];
   dateUntil: Scalars['Date'];
+};
+
+export type SplitTransactionItem = {
+  amount: Scalars['Int'];
+  memo: InputMaybe<Scalars['String']>;
 };
 
 export type Transaction = {
@@ -545,6 +550,7 @@ export type ResolversTypes = {
   Mutation: ResolverTypeWrapper<{}>;
   PaginatedTransactions: ResolverTypeWrapper<FindTransactionsResult>;
   Query: ResolverTypeWrapper<{}>;
+  SplitTransactionItem: SplitTransactionItem;
   String: ResolverTypeWrapper<Scalars['String']>;
   Transaction: ResolverTypeWrapper<TransactionRecord>;
   TransactionFilter: TransactionFilter;
@@ -583,6 +589,7 @@ export type ResolversParentTypes = {
   Mutation: {};
   PaginatedTransactions: FindTransactionsResult;
   Query: {};
+  SplitTransactionItem: SplitTransactionItem;
   String: Scalars['String'];
   Transaction: TransactionRecord;
   TransactionFilter: TransactionFilter;
@@ -731,7 +738,7 @@ export type MutationResolvers<ContextType = Context, ParentType extends Resolver
   loginViaCredential: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationLoginViaCredentialArgs, 'response'>>;
   registerCredential: Resolver<ResolversTypes['JSON'], ParentType, ContextType>;
   reorderCategories: Resolver<Array<ResolversTypes['Category']>, ParentType, ContextType, RequireFields<MutationReorderCategoriesArgs, 'orderedIds'>>;
-  splitTransaction: Resolver<ResolversTypes['Transaction'], ParentType, ContextType, RequireFields<MutationSplitTransactionArgs, 'amounts' | 'id'>>;
+  splitTransaction: Resolver<ResolversTypes['Transaction'], ParentType, ContextType, RequireFields<MutationSplitTransactionArgs, 'id' | 'splits'>>;
   updateAccountMailbox: Resolver<ResolversTypes['AccountMailbox'], ParentType, ContextType, RequireFields<MutationUpdateAccountMailboxArgs, 'id' | 'input'>>;
   updateCategory: Resolver<ResolversTypes['Category'], ParentType, ContextType, RequireFields<MutationUpdateCategoryArgs, 'id' | 'input'>>;
   updateCurrency: Resolver<ResolversTypes['Currency'], ParentType, ContextType, RequireFields<MutationUpdateCurrencyArgs, 'id' | 'input'>>;

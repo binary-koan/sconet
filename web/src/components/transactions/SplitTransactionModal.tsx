@@ -1,5 +1,5 @@
 import { evaluate, sum } from "mathjs"
-import { Component, createSignal, Index } from "solid-js"
+import { Component, createSignal, For } from "solid-js"
 import { FullTransactionFragment } from "../../graphql-types"
 import { useSplitTransaction } from "../../graphql/mutations/splitTransactionMutation"
 import { useGetCurrencyQuery } from "../../graphql/queries/getCurrencyQuery"
@@ -15,48 +15,64 @@ export const SplitTransactionModal: Component<{
 }> = (props) => {
   const splitTransaction = useSplitTransaction()
   const currencyData = useGetCurrencyQuery(() => ({ id: props.transaction.currencyId }))
-  const [amounts, setAmounts] = createSignal([""])
+  const [splits, setSplits] = createSignal([{ amount: "", memo: "", numericAmount: 0 }])
 
-  const numericAmounts = () =>
-    amounts().map((amount) => {
-      try {
-        const evaluated = evaluate(amount)
-        return typeof evaluated === "number" ? evaluated : 0
-      } catch (e) {
-        return 0
-      }
-    })
+  const parseNumericAmount = (amount: string) => {
+    try {
+      const evaluated = evaluate(amount)
+      return typeof evaluated === "number" ? evaluated : 0
+    } catch (e) {
+      return 0
+    }
+  }
 
   const remainder = () =>
     parseFloat(
-      (Math.abs(props.transaction.amount.decimalAmount) - sum(numericAmounts())).toFixed(
-        currencyData()?.currency?.decimalDigits || 0
-      )
+      (
+        Math.abs(props.transaction.amount.decimalAmount) -
+        sum(splits().map((split) => split.numericAmount))
+      ).toFixed(currencyData()?.currency?.decimalDigits || 0)
     )
 
   const doUpdate = async () => {
+    let splitsToSend = splits().filter((split) => split.numericAmount > 0)
+
+    if (remainder() > 0) {
+      splitsToSend.push({ amount: "", memo: "", numericAmount: remainder() })
+    }
+
+    if (props.transaction.amount.decimalAmount < 0) {
+      splitsToSend = splitsToSend.map((split) => ({
+        ...split,
+        numericAmount: -split.numericAmount
+      }))
+    }
+
     await splitTransaction({
       id: props.transaction.id,
-      amounts: numericAmounts()
-        .filter((amount) => amount > 0)
-        .concat(remainder())
-        .map((amount) => Math.floor(amount * 10 ** (currencyData()?.currency?.decimalDigits || 0)))
-        .map((amount) => (props.transaction.amount.decimalAmount < 0 ? -amount : amount))
+      splits: splitsToSend.map(({ memo, numericAmount }) => ({
+        memo,
+        amount: Math.round(numericAmount * 10 ** (currencyData()?.currency?.decimalDigits || 0))
+      }))
     })
     props.onFinish()
   }
 
-  const setAmount = (updateIndex: number, newAmount: string) => {
-    setAmounts((amounts) => {
-      const newAmounts = amounts.map((amount, index) =>
-        index === updateIndex ? newAmount : amount
-      )
+  const setField = (updateIndex: number, field: "amount" | "memo", newValue: string) => {
+    setSplits((splits) => {
+      const newSplits = splits.map((split, index) => {
+        if (index === updateIndex) {
+          split[field] = newValue
+          split.numericAmount = parseNumericAmount(splits[updateIndex].amount)
+        }
+        return split
+      })
 
-      if (newAmounts[newAmounts.length - 1]) {
-        newAmounts.push("")
+      if (newSplits[newSplits.length - 1]?.amount) {
+        newSplits.push({ amount: "", memo: "", numericAmount: 0 })
       }
 
-      return newAmounts
+      return newSplits
     })
   }
 
@@ -67,16 +83,25 @@ export const SplitTransactionModal: Component<{
           Split Transaction <ModalCloseButton onClick={props.onClose} />
         </ModalTitle>
         <div class="flex flex-col gap-2">
-          <Index each={amounts()}>
-            {(amount, index) => (
-              <Input
-                value={amount()}
-                placeholder="Enter amount"
-                onInput={(e) => setAmount(index, e.currentTarget.value)}
-              />
+          <For each={splits()}>
+            {({ amount, memo }, index) => (
+              <div class="flex gap-2">
+                <Input
+                  class="flex-1"
+                  value={amount}
+                  placeholder="Amount"
+                  onInput={(e) => setField(index(), "amount", e.currentTarget.value)}
+                />
+                <Input
+                  class="flex-1"
+                  value={memo}
+                  placeholder="Memo"
+                  onInput={(e) => setField(index(), "memo", e.currentTarget.value)}
+                />
+              </div>
             )}
-          </Index>
-          <div class="mb-6">Remainder: {remainder}</div>
+          </For>
+          <div class="mb-6">Remainder: {remainder()}</div>
         </div>
 
         <Button colorScheme="primary" onClick={doUpdate}>

@@ -67,9 +67,14 @@ input UpdateTransactionInput {
   includeInReports: Boolean
 }
 
+input SplitTransactionItem {
+  amount: Int!
+  memo: String
+}
+
 type Mutation {
   createTransaction(input: CreateTransactionInput!): Transaction! @authenticated
   updateTransaction(id: String!, input: UpdateTransactionInput!): Transaction! @authenticated
   deleteTransaction(id: String!): Transaction! @authenticated
-  splitTransaction(id: String!, amounts: [Int!]!): Transaction! @authenticated
+  splitTransaction(id: String!, splits: [SplitTransactionItem!]!): Transaction! @authenticated
 }

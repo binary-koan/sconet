@@ -267,8 +267,8 @@ export type MutationReorderCategoriesArgs = {
 
 
 export type MutationSplitTransactionArgs = {
-  amounts: Array<Scalars['Int']>;
   id: Scalars['String'];
+  splits: Array<SplitTransactionItem>;
 };
 
 
@@ -363,6 +363,11 @@ export type QueryTransactionsArgs = {
 export type QueryTransactionsByDayArgs = {
   dateFrom: Scalars['Date'];
   dateUntil: Scalars['Date'];
+};
+
+export type SplitTransactionItem = {
+  amount: Scalars['Int'];
+  memo?: InputMaybe<Scalars['String']>;
 };
 
 export type Transaction = {
@@ -539,7 +544,7 @@ export type ReorderCategoriesMutation = { __typename?: 'Mutation', reorderCatego
 
 export type SplitTransactionMutationVariables = Exact<{
   id: Scalars['String'];
-  amounts: Array<Scalars['Int']> | Scalars['Int'];
+  splits: Array<SplitTransactionItem> | SplitTransactionItem;
 }>;
 
 

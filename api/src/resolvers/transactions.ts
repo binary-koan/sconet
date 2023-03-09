@@ -107,7 +107,7 @@ export const deleteTransaction: MutationResolvers["deleteTransaction"] = (_, { i
 
 export const splitTransaction: MutationResolvers["splitTransaction"] = async (
   _,
-  { id, amounts }
+  { id, splits }
 ) => {
   const transaction = transactionsRepo.get(id)
 
@@ -115,7 +115,7 @@ export const splitTransaction: MutationResolvers["splitTransaction"] = async (
     throw new Error("Not found")
   }
 
-  if (sum(amounts) !== transaction.amount) {
+  if (sum(splits.map((split) => split.amount)) !== transaction.amount) {
     throw new Error("Transaction amounts do not match")
   }
 
@@ -127,11 +127,12 @@ export const splitTransaction: MutationResolvers["splitTransaction"] = async (
 
   const { id: _id, ...transactionAttributes } = transaction
 
-  amounts.forEach((amount) => {
+  splits.forEach((split) => {
     transactionsRepo.insert({
       ...transactionAttributes,
       splitFromId: transaction.id,
-      amount
+      amount: split.amount,
+      memo: split.memo || transaction.memo
     })
   })
 

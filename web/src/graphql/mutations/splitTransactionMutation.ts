@@ -5,21 +5,18 @@ import { FullTransactionFragment } from "../fragments/transactionFragments"
 import { GET_TRANSACTION_QUERY } from "../queries/getTransactionQuery"
 import { TRANSACTIONS_QUERY } from "../queries/transactionsQuery"
 
-const SPLIT_TRANSACTION_MUTATION = gql`
+const MUTATION = gql`
   ${FullTransactionFragment}
 
-  mutation SplitTransaction($id: String!, $amounts: [Int!]!) {
-    splitTransaction(id: $id, amounts: $amounts) {
+  mutation SplitTransaction($id: String!, $splits: [SplitTransactionItem!]!) {
+    splitTransaction(id: $id, splits: $splits) {
       ...FullTransaction
     }
   }
 `
 
 export const useSplitTransaction = (options: MutationOptions<SplitTransactionMutation> = {}) =>
-  useMutation<SplitTransactionMutation, SplitTransactionMutationVariables>(
-    SPLIT_TRANSACTION_MUTATION,
-    {
-      refetchQueries: [TRANSACTIONS_QUERY, GET_TRANSACTION_QUERY],
-      ...options
-    }
-  )
+  useMutation<SplitTransactionMutation, SplitTransactionMutationVariables>(MUTATION, {
+    refetchQueries: [TRANSACTIONS_QUERY, GET_TRANSACTION_QUERY],
+    ...options
+  })
