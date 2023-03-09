@@ -1,11 +1,20 @@
+import {
+  generateAuthenticationOptions,
+  generateRegistrationOptions,
+  verifyAuthenticationResponse,
+  verifyRegistrationResponse
+} from "@simplewebauthn/server"
 import bcrypt from "bcryptjs"
 import { GraphQLError } from "graphql"
 import { SignJWT } from "jose"
+import { isEqual } from "lodash"
 import { getUser } from "../db/queries/user/getUser"
 import { getUserByEmail } from "../db/queries/user/getUserByEmail"
 import { updateOneUser } from "../db/queries/user/updateOneUser"
 import { UserRecord } from "../db/records/user"
+import { userCredentialsRepo } from "../db/repos/userCredentialsRepo"
 import { MutationResolvers, QueryResolvers, Resolvers } from "../resolvers-types"
+import { origin, rpID, rpName } from "../utils/webauthn"
 
 export const login: MutationResolvers["login"] = async (
   _,
@@ -63,13 +72,174 @@ export const generateNewToken: MutationResolvers["generateNewToken"] = async (
   return await createToken(user)
 }
 
+export const registerCredential: MutationResolvers["registerCredential"] = async (
+  _,
+  _args,
+  context
+) => {
+  const user = getUser(context.auth!.userId)
+
+  if (!user) {
+    throw new GraphQLError("No such user")
+  }
+
+  const credentials = userCredentialsRepo.findForUser(user.id)
+
+  const options = generateRegistrationOptions({
+    rpName,
+    rpID,
+    userID: user.id,
+    userName: user.email,
+    attestationType: "none",
+    excludeCredentials: credentials.map((credential) => ({
+      id: credential.credentialId,
+      type: "public-key"
+    }))
+  })
+
+  updateOneUser(user.id, { webauthnChallenge: options.challenge })
+
+  return options
+}
+
+export const verifyCredentialRegistration: MutationResolvers["verifyCredentialRegistration"] =
+  async (_, { response, device }, context) => {
+    const user = getUser(context.auth!.userId)
+
+    if (!user) {
+      throw new GraphQLError("No such user")
+    }
+
+    const verification = await verifyRegistrationResponse({
+      response,
+      expectedChallenge: user.webauthnChallenge!,
+      expectedOrigin: origin,
+      expectedRPID: rpID
+    })
+
+    if (verification.verified && verification.registrationInfo) {
+      userCredentialsRepo.insert({
+        userId: user.id,
+        device,
+        credentialId: verification.registrationInfo.credentialID,
+        credentialPublicKey: verification.registrationInfo.credentialPublicKey,
+        counter: verification.registrationInfo.counter
+      })
+    }
+
+    return verification.verified
+  }
+
+export const generateCredentialLoginOptions: MutationResolvers["generateCredentialLoginOptions"] =
+  async (_, { userId }, _context) => {
+    const user = getUser(userId)
+
+    if (!user) {
+      throw new GraphQLError("No such user")
+    }
+
+    const credentials = userCredentialsRepo.findForUser(user.id)
+
+    const options = generateAuthenticationOptions({
+      allowCredentials: credentials.map((credential) => ({
+        id: credential.credentialId,
+        type: "public-key"
+      })),
+      userVerification: "preferred"
+    })
+
+    updateOneUser(user.id, { webauthnChallenge: options.challenge })
+
+    // Conflicts with GraphQL JSON's special extensions field
+    delete options.extensions
+
+    return options
+  }
+
+export const loginViaCredential: MutationResolvers["loginViaCredential"] = async (
+  _,
+  { response },
+  _context
+) => {
+  const user = getUser(response.response.userHandle)
+
+  if (!user) {
+    throw new GraphQLError("No such user")
+  }
+
+  const credentialId = [...Buffer.from(response.id, "base64")]
+
+  const credential = userCredentialsRepo
+    .findForUser(user.id)
+    .find((credential) => isEqual([...credential.credentialId], credentialId))
+
+  if (!credential) {
+    throw new GraphQLError("Unknown credential")
+  }
+
+  const verification = await verifyAuthenticationResponse({
+    response,
+    expectedChallenge: user.webauthnChallenge!,
+    expectedOrigin: origin,
+    expectedRPID: rpID,
+    authenticator: {
+      credentialPublicKey: credential.credentialPublicKey,
+      credentialID: credential.credentialId,
+      counter: credential.counter
+    }
+  })
+
+  if (verification.verified && verification.authenticationInfo) {
+    userCredentialsRepo.updateOne(credential.id, {
+      counter: verification.authenticationInfo.newCounter
+    })
+  }
+
+  if (verification.verified) {
+    return await createToken(user)
+  } else {
+    throw new GraphQLError("Authentication failed")
+  }
+}
+
+export const deleteCredential: MutationResolvers["deleteCredential"] = async (
+  _,
+  { id },
+  context
+) => {
+  const user = getUser(context.auth!.userId)
+
+  if (!user) {
+    throw new GraphQLError("No such user")
+  }
+
+  const credential = userCredentialsRepo
+    .findForUser(user.id)
+    .find((credential) => credential.id === id)
+
+  if (!credential) {
+    throw new GraphQLError("Unknown credential")
+  }
+
+  userCredentialsRepo.softDelete(credential.id)
+
+  return credential
+}
+
 export const currentUser: QueryResolvers["currentUser"] = (_, _args, context) => {
   return (context.auth?.userId && getUser(context.auth.userId)) || null
 }
 
 export const CurrentUser: Resolvers["CurrentUser"] = {
   id: (user) => user.id,
-  email: (user) => user.email
+  email: (user) => user.email,
+  registeredCredentials: (user) => userCredentialsRepo.findForUser(user.id)
+}
+
+export const UserCredential: Resolvers["UserCredential"] = {
+  id: (credential) => credential.id,
+  device: (credential) => credential.device,
+  createdAt: (credential) => credential.createdAt
 }
 
 const createToken = (user: UserRecord) => {

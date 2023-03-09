@@ -1,9 +1,17 @@
 type Mutation {
   login(email: String!, password: String!, turnstileToken: String!): String!
 
+  generateCredentialLoginOptions(userId: String!): JSON!
+  loginViaCredential(response: JSON!): String!
+
   changePassword(oldPassword: String!, newPassword: String!): Boolean!
 
   generateNewToken: String! @authenticated
+
+  registerCredential: JSON! @authenticated
+  verifyCredentialRegistration(response: JSON!, device: String!): Boolean! @authenticated
+
+  deleteCredential(id: String!): UserCredential! @authenticated
 }
 
 type Query {
@@ -13,4 +21,11 @@ type Query {
 type CurrentUser {
   id: String!
   email: String!
+  registeredCredentials: [UserCredential!]!
+}
+
+type UserCredential {
+  id: String!
+  device: String!
+  createdAt: Date!
 }

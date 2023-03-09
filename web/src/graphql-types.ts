@@ -114,6 +114,7 @@ export type CurrentUser = {
   __typename?: 'CurrentUser';
   email: Scalars['String'];
   id: Scalars['String'];
+  registeredCredentials: Array<UserCredential>;
 };
 
 export type DailyExchangeRate = {
@@ -174,16 +175,21 @@ export type Mutation = {
   createTransaction: Transaction;
   deleteAccountMailbox: AccountMailbox;
   deleteCategory: Category;
+  deleteCredential: UserCredential;
   deleteCurrency: Currency;
   deleteTransaction: Transaction;
+  generateCredentialLoginOptions: Scalars['JSON'];
   generateNewToken: Scalars['String'];
   login: Scalars['String'];
+  loginViaCredential: Scalars['String'];
+  registerCredential: Scalars['JSON'];
   reorderCategories: Array<Category>;
   splitTransaction: Transaction;
   updateAccountMailbox: AccountMailbox;
   updateCategory: Category;
   updateCurrency: Currency;
   updateTransaction: Transaction;
+  verifyCredentialRegistration: Scalars['Boolean'];
 };
 
 
@@ -223,6 +229,11 @@ export type MutationDeleteCategoryArgs = {
 };
 
 
+export type MutationDeleteCredentialArgs = {
+  id: Scalars['String'];
+};
+
+
 export type MutationDeleteCurrencyArgs = {
   id: Scalars['String'];
 };
@@ -233,10 +244,20 @@ export type MutationDeleteTransactionArgs = {
 };
 
 
+export type MutationGenerateCredentialLoginOptionsArgs = {
+  userId: Scalars['String'];
+};
+
+
 export type MutationLoginArgs = {
   email: Scalars['String'];
   password: Scalars['String'];
   turnstileToken: Scalars['String'];
+};
+
+
+export type MutationLoginViaCredentialArgs = {
+  response: Scalars['JSON'];
 };
 
 
@@ -272,6 +293,12 @@ export type MutationUpdateCurrencyArgs = {
 export type MutationUpdateTransactionArgs = {
   id: Scalars['String'];
   input: UpdateTransactionInput;
+};
+
+
+export type MutationVerifyCredentialRegistrationArgs = {
+  device: Scalars['String'];
+  response: Scalars['JSON'];
 };
 
 export type PaginatedTransactions = {
@@ -402,13 +429,20 @@ export type UpdateTransactionInput = {
   memo?: InputMaybe<Scalars['String']>;
 };
 
+export type UserCredential = {
+  __typename?: 'UserCredential';
+  createdAt: Scalars['Date'];
+  device: Scalars['String'];
+  id: Scalars['String'];
+};
+
 export type FullAccountMailboxFragment = { __typename?: 'AccountMailbox', id: string, name: string, mailServerOptions: any, fromAddressPattern?: string | null, datePattern?: string | null, memoPattern?: string | null, amountPattern?: string | null };
 
 export type FullCategoryFragment = { __typename?: 'Category', id: string, name: string, color: string, icon: string, isRegular: boolean, sortOrder?: number | null, createdAt: any, updatedAt: any, budget?: { __typename?: 'Money', formatted: string } | null };
 
 export type FullCurrencyFragment = { __typename?: 'Currency', id: string, code: any, symbol: string, decimalDigits: number };
 
-export type FullCurrentUserFragment = { __typename?: 'CurrentUser', id: string, email: string };
+export type FullCurrentUserFragment = { __typename?: 'CurrentUser', id: string, email: string, registeredCredentials: Array<{ __typename?: 'UserCredential', id: string, device: string, createdAt: any }> };
 
 export type FullTransactionFragment = { __typename?: 'Transaction', id: string, memo: string, date: any, originalMemo: string, includeInReports: boolean, currencyId: string, splitFromId?: string | null, amount: { __typename?: 'Money', decimalAmount: number, formatted: string }, category?: { __typename?: 'Category', id: string, name: string, color: string, icon: string } | null, accountMailbox: { __typename?: 'AccountMailbox', id: string, name: string }, splitTo: Array<{ __typename?: 'Transaction', id: string, memo: string, includeInReports: boolean, amount: { __typename?: 'Money', decimalAmount: number, formatted: string }, category?: { __typename?: 'Category', id: string, name: string, icon: string, color: string } | null }> };
 
@@ -447,12 +481,26 @@ export type DeleteCategoryMutationVariables = Exact<{
 
 export type DeleteCategoryMutation = { __typename?: 'Mutation', deleteCategory: { __typename?: 'Category', id: string } };
 
+export type DeleteCredentialMutationVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type DeleteCredentialMutation = { __typename?: 'Mutation', deleteCredential: { __typename?: 'UserCredential', id: string } };
+
 export type DeleteTransactionMutationVariables = Exact<{
   id: Scalars['String'];
 }>;
 
 
 export type DeleteTransactionMutation = { __typename?: 'Mutation', deleteTransaction: { __typename?: 'Transaction', id: string } };
+
+export type GenerateCredentialLoginOptionsMutationVariables = Exact<{
+  userId: Scalars['String'];
+}>;
+
+
+export type GenerateCredentialLoginOptionsMutation = { __typename?: 'Mutation', generateCredentialLoginOptions: any };
 
 export type LoginMutationVariables = Exact<{
   email: Scalars['String'];
@@ -462,6 +510,18 @@ export type LoginMutationVariables = Exact<{
 
 
 export type LoginMutation = { __typename?: 'Mutation', login: string };
+
+export type LoginViaCredentialMutationVariables = Exact<{
+  response: Scalars['JSON'];
+}>;
+
+
+export type LoginViaCredentialMutation = { __typename?: 'Mutation', loginViaCredential: string };
+
+export type RegisterCredentialMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type RegisterCredentialMutation = { __typename?: 'Mutation', registerCredential: any };
 
 export type ReorderCategoriesMutationVariables = Exact<{
   orderedIds: Array<Scalars['String']> | Scalars['String'];
@@ -502,6 +562,14 @@ export type UpdateTransactionMutationVariables = Exact<{
 
 export type UpdateTransactionMutation = { __typename?: 'Mutation', updateTransaction: { __typename?: 'Transaction', id: string } };
 
+export type VerifyCredentialRegistrationMutationVariables = Exact<{
+  response: Scalars['JSON'];
+  device: Scalars['String'];
+}>;
+
+
+export type VerifyCredentialRegistrationMutation = { __typename?: 'Mutation', verifyCredentialRegistration: boolean };
+
 export type AccountMailboxesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -534,7 +602,7 @@ export type CurrentExchangeRatesQuery = { __typename?: 'Query', currentExchangeR
 export type CurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type CurrentUserQuery = { __typename?: 'Query', currentUser?: { __typename?: 'CurrentUser', id: string, email: string } | null };
+export type CurrentUserQuery = { __typename?: 'Query', currentUser?: { __typename?: 'CurrentUser', id: string, email: string, registeredCredentials: Array<{ __typename?: 'UserCredential', id: string, device: string, createdAt: any }> } | null };
 
 export type GetAccountMailboxQueryVariables = Exact<{
   id: Scalars['String'];

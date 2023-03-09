@@ -6,6 +6,7 @@ export function loadUser(row: any): UserRecord {
     id: row.id,
     email: row.email,
     encryptedPassword: row.encryptedPassword,
+    webauthnChallenge: row.webauthnChallenge,
 
     createdAt: loadDate(row.createdAt as number),
     updatedAt: loadDate(row.updatedAt as number)

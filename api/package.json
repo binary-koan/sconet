@@ -16,6 +16,7 @@
   "dependencies": {
     "@graphql-tools/schema": "^9.0.13",
     "@graphql-tools/utils": "^9.1.4",
+    "@simplewebauthn/server": "^7.0.1",
     "bcryptjs": "^2.4.3",
     "bson-objectid": "^2.0.4",
     "dataloader": "^2.1.0",
@@ -29,6 +30,7 @@
     "@graphql-codegen/cli": "^2.16.4",
     "@graphql-codegen/typescript": "^2.8.7",
     "@graphql-codegen/typescript-resolvers": "^2.7.12",
+    "@simplewebauthn/typescript-types": "^7.0.0",
     "@types/bcryptjs": "^2.4.2",
     "@types/cookie": "^0.5.1",
     "@types/lodash": "^4.14.182",

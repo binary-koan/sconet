@@ -10,6 +10,7 @@ import { DailyTransactionsResult } from './resolvers/transactions';
 import { MonthBudgetResult, CategoryBudgetGroupResult, CategoryBudgetResult } from './resolvers/budgets';
 import { MoneyOptions } from './resolvers/money';
 import { UserRecord } from './db/records/user';
+import { UserCredentialRecord } from './db/records/userCredential';
 import { Context } from './context';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -128,6 +129,7 @@ export type CurrentUser = {
   __typename?: 'CurrentUser';
   email: Scalars['String'];
   id: Scalars['String'];
+  registeredCredentials: Array<UserCredential>;
 };
 
 export type DailyExchangeRate = {
@@ -188,16 +190,21 @@ export type Mutation = {
   createTransaction: Transaction;
   deleteAccountMailbox: AccountMailbox;
   deleteCategory: Category;
+  deleteCredential: UserCredential;
   deleteCurrency: Currency;
   deleteTransaction: Transaction;
+  generateCredentialLoginOptions: Scalars['JSON'];
   generateNewToken: Scalars['String'];
   login: Scalars['String'];
+  loginViaCredential: Scalars['String'];
+  registerCredential: Scalars['JSON'];
   reorderCategories: Array<Category>;
   splitTransaction: Transaction;
   updateAccountMailbox: AccountMailbox;
   updateCategory: Category;
   updateCurrency: Currency;
   updateTransaction: Transaction;
+  verifyCredentialRegistration: Scalars['Boolean'];
 };
 
 
@@ -237,6 +244,11 @@ export type MutationDeleteCategoryArgs = {
 };
 
 
+export type MutationDeleteCredentialArgs = {
+  id: Scalars['String'];
+};
+
+
 export type MutationDeleteCurrencyArgs = {
   id: Scalars['String'];
 };
@@ -247,10 +259,20 @@ export type MutationDeleteTransactionArgs = {
 };
 
 
+export type MutationGenerateCredentialLoginOptionsArgs = {
+  userId: Scalars['String'];
+};
+
+
 export type MutationLoginArgs = {
   email: Scalars['String'];
   password: Scalars['String'];
   turnstileToken: Scalars['String'];
+};
+
+
+export type MutationLoginViaCredentialArgs = {
+  response: Scalars['JSON'];
 };
 
 
@@ -286,6 +308,12 @@ export type MutationUpdateCurrencyArgs = {
 export type MutationUpdateTransactionArgs = {
   id: Scalars['String'];
   input: UpdateTransactionInput;
+};
+
+
+export type MutationVerifyCredentialRegistrationArgs = {
+  device: Scalars['String'];
+  response: Scalars['JSON'];
 };
 
 export type PaginatedTransactions = {
@@ -416,6 +444,13 @@ export type UpdateTransactionInput = {
   memo: InputMaybe<Scalars['String']>;
 };
 
+export type UserCredential = {
+  __typename?: 'UserCredential';
+  createdAt: Scalars['Date'];
+  device: Scalars['String'];
+  id: Scalars['String'];
+};
+
 
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
@@ -517,6 +552,7 @@ export type ResolversTypes = {
   UpdateCategoryInput: UpdateCategoryInput;
   UpdateCurrencyInput: UpdateCurrencyInput;
   UpdateTransactionInput: UpdateTransactionInput;
+  UserCredential: ResolverTypeWrapper<UserCredentialRecord>;
   UtcOffset: ResolverTypeWrapper<Scalars['UtcOffset']>;
 };
 
@@ -554,6 +590,7 @@ export type ResolversParentTypes = {
   UpdateCategoryInput: UpdateCategoryInput;
   UpdateCurrencyInput: UpdateCurrencyInput;
   UpdateTransactionInput: UpdateTransactionInput;
+  UserCredential: UserCredentialRecord;
   UtcOffset: Scalars['UtcOffset'];
 };
 
@@ -617,6 +654,7 @@ export interface CurrencyCodeScalarConfig extends GraphQLScalarTypeConfig<Resolv
 export type CurrentUserResolvers<ContextType = Context, ParentType extends ResolversParentTypes['CurrentUser'] = ResolversParentTypes['CurrentUser']> = {
   email: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  registeredCredentials: Resolver<Array<ResolversTypes['UserCredential']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -684,16 +722,21 @@ export type MutationResolvers<ContextType = Context, ParentType extends Resolver
   createTransaction: Resolver<ResolversTypes['Transaction'], ParentType, ContextType, RequireFields<MutationCreateTransactionArgs, 'input'>>;
   deleteAccountMailbox: Resolver<ResolversTypes['AccountMailbox'], ParentType, ContextType, RequireFields<MutationDeleteAccountMailboxArgs, 'id'>>;
   deleteCategory: Resolver<ResolversTypes['Category'], ParentType, ContextType, RequireFields<MutationDeleteCategoryArgs, 'id'>>;
+  deleteCredential: Resolver<ResolversTypes['UserCredential'], ParentType, ContextType, RequireFields<MutationDeleteCredentialArgs, 'id'>>;
   deleteCurrency: Resolver<ResolversTypes['Currency'], ParentType, ContextType, RequireFields<MutationDeleteCurrencyArgs, 'id'>>;
   deleteTransaction: Resolver<ResolversTypes['Transaction'], ParentType, ContextType, RequireFields<MutationDeleteTransactionArgs, 'id'>>;
+  generateCredentialLoginOptions: Resolver<ResolversTypes['JSON'], ParentType, ContextType, RequireFields<MutationGenerateCredentialLoginOptionsArgs, 'userId'>>;
   generateNewToken: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   login: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'email' | 'password' | 'turnstileToken'>>;
+  loginViaCredential: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationLoginViaCredentialArgs, 'response'>>;
+  registerCredential: Resolver<ResolversTypes['JSON'], ParentType, ContextType>;
   reorderCategories: Resolver<Array<ResolversTypes['Category']>, ParentType, ContextType, RequireFields<MutationReorderCategoriesArgs, 'orderedIds'>>;
   splitTransaction: Resolver<ResolversTypes['Transaction'], ParentType, ContextType, RequireFields<MutationSplitTransactionArgs, 'amounts' | 'id'>>;
   updateAccountMailbox: Resolver<ResolversTypes['AccountMailbox'], ParentType, ContextType, RequireFields<MutationUpdateAccountMailboxArgs, 'id' | 'input'>>;
   updateCategory: Resolver<ResolversTypes['Category'], ParentType, ContextType, RequireFields<MutationUpdateCategoryArgs, 'id' | 'input'>>;
   updateCurrency: Resolver<ResolversTypes['Currency'], ParentType, ContextType, RequireFields<MutationUpdateCurrencyArgs, 'id' | 'input'>>;
   updateTransaction: Resolver<ResolversTypes['Transaction'], ParentType, ContextType, RequireFields<MutationUpdateTransactionArgs, 'id' | 'input'>>;
+  verifyCredentialRegistration: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationVerifyCredentialRegistrationArgs, 'device' | 'response'>>;
 };
 
 export type PaginatedTransactionsResolvers<ContextType = Context, ParentType extends ResolversParentTypes['PaginatedTransactions'] = ResolversParentTypes['PaginatedTransactions']> = {
@@ -737,6 +780,13 @@ export type TransactionResolvers<ContextType = Context, ParentType extends Resol
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type UserCredentialResolvers<ContextType = Context, ParentType extends ResolversParentTypes['UserCredential'] = ResolversParentTypes['UserCredential']> = {
+  createdAt: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
+  device: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export interface UtcOffsetScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['UtcOffset'], any> {
   name: 'UtcOffset';
 }
@@ -761,6 +811,7 @@ export type Resolvers<ContextType = Context> = {
   PaginatedTransactions: PaginatedTransactionsResolvers<ContextType>;
   Query: QueryResolvers<ContextType>;
   Transaction: TransactionResolvers<ContextType>;
+  UserCredential: UserCredentialResolvers<ContextType>;
   UtcOffset: GraphQLScalarType;
 };
 

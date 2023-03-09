@@ -14,6 +14,7 @@ export function loadTransaction(row: any): TransactionRecord {
     accountMailboxId: row.accountMailboxId,
     remoteId: row.remoteId,
     splitFromId: row.splitFromId,
+    dailyExchangeRateId: row.dailyExchangeRateId,
     deletedAt: loadDate(row.deletedAt),
     createdAt: loadDate(row.createdAt as number),
     updatedAt: loadDate(row.updatedAt as number)

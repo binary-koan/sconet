@@ -47,8 +47,14 @@ import {
   changePassword,
   currentUser,
   CurrentUser,
+  deleteCredential,
+  generateCredentialLoginOptions,
   generateNewToken,
-  login
+  login,
+  loginViaCredential,
+  registerCredential,
+  UserCredential,
+  verifyCredentialRegistration
 } from "./resolvers/sessions"
 import {
   createTransaction,
@@ -95,7 +101,12 @@ const resolvers: Resolvers = {
     deleteCurrency,
     login,
     changePassword,
-    generateNewToken
+    generateNewToken,
+    registerCredential,
+    verifyCredentialRegistration,
+    generateCredentialLoginOptions,
+    loginViaCredential,
+    deleteCredential
   },
   Transaction,
   PaginatedTransactions,
@@ -110,6 +121,7 @@ const resolvers: Resolvers = {
   CategoryBudgetGroup,
   Money,
   CurrentUser,
+  UserCredential,
 
   Date: DateResolver,
   DateTime: DateTimeResolver,

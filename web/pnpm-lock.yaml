@@ -6,6 +6,8 @@ specifiers:
   '@graphql-codegen/typescript': ^2.8.7
   '@graphql-codegen/typescript-operations': ^2.5.12
   '@modular-forms/solid': ^0.10.0
+  '@simplewebauthn/browser': ^7.1.0
+  '@simplewebauthn/typescript-types': ^7.0.0
   '@solid-primitives/scheduled': ^1.2.1
   '@solidjs/meta': ^0.28.2
   '@solidjs/router': ^0.7.0
@@ -15,6 +17,7 @@ specifiers:
   '@types/node': ^18.7.14
   autoprefixer: ^10.4.13
   cosmiconfig-toml-loader: ^1.0.0
+  device-detector-js: ^3.0.3
   echarts: ^5.4.1
   graphql: ^16.6.0
   jose: ^4.11.2
@@ -38,6 +41,8 @@ dependencies:
   '@graphql-codegen/typescript': 2.8.7_graphql@16.6.0
   '@graphql-codegen/typescript-operations': 2.5.12_graphql@16.6.0
   '@modular-forms/solid': 0.10.0_solid-js@1.6.9
+  '@simplewebauthn/browser': 7.1.0
+  '@simplewebauthn/typescript-types': 7.0.0
   '@solid-primitives/scheduled': 1.2.1_solid-js@1.6.9
   '@solidjs/meta': 0.28.2_solid-js@1.6.9
   '@solidjs/router': 0.7.0_solid-js@1.6.9
@@ -47,6 +52,7 @@ dependencies:
   '@types/node': 18.7.14
   autoprefixer: 10.4.13_postcss@8.4.21
   cosmiconfig-toml-loader: 1.0.0
+  device-detector-js: 3.0.3
   echarts: 5.4.1
   graphql: 16.6.0
   jose: 4.11.2
@@ -2527,6 +2533,14 @@ packages:
     dev: false
     optional: true
 
+  /@simplewebauthn/browser/7.1.0:
+    resolution: {integrity: sha512-SEwRBBpz/g3AbFvTrsoMbrn8b+HqCIiKE/0lmOywrZu/4ktfKxSDFVwG9U1QM4BdGrvm8kXPO0xv2xj/AqhsUw==}
+    dev: false
+
+  /@simplewebauthn/typescript-types/7.0.0:
+    resolution: {integrity: sha512-bV+xACCFTsrLR/23ozHO06ZllHZaxC8LlI5YCo79GvU2BrN+rePDU2yXwZIYndNWcMQwRdndRdAhpafOh9AC/g==}
+    dev: false
+
   /@solid-devtools/debugger/0.19.0_solid-js@1.6.9:
     resolution: {integrity: sha512-R29qyfP3plONkHwaEza27GSrlB3uOW19QN9TAbCxE34Nm20GbXTjCo9XO8r67yAWh2H+qR/c2R8nxvuWVtMdnw==}
     peerDependencies:
@@ -3604,6 +3618,11 @@ packages:
       acorn-node: 1.8.2
       defined: 1.0.1
       minimist: 1.2.7
+    dev: false
+
+  /device-detector-js/3.0.3:
+    resolution: {integrity: sha512-jM89LJAvP6uOd84at8OlD9dWP8KeYCCHUde0RT0HQo/stdoRH4b54Xl/fntx2nEXCmqiFhmo+/cJetS2VGUHPw==}
+    engines: {node: '>= 8.11.4'}
     dev: false
 
   /didyoumean/1.2.2:

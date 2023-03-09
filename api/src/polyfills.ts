@@ -21,4 +21,12 @@ Buffer.prototype.toString = function (encoding: any, ...args: any[]) {
   return oldToString.call(this, encoding, ...args)
 }
 
+// Makes cbor-x work, which is required by @simplewebauthn/server
+
+const oldBufferAllocateUnsafeSlow = Buffer.allocUnsafeSlow
+
+Buffer.allocUnsafeSlow = function (...args) {
+  return oldBufferAllocateUnsafeSlow(...args)
+}
+
 export {}

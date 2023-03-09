@@ -23,3 +23,4 @@ generates:
         CategoryBudget: ./resolvers/budgets#CategoryBudgetResult
         Money: ./resolvers/money#MoneyOptions
         CurrentUser: ./db/records/user#UserRecord
+        UserCredential: ./db/records/userCredential#UserCredentialRecord
