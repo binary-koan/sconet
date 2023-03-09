@@ -79,7 +79,7 @@ export const NewTransactionModal: Component<{
 
   const onSave = ({ amount, amountType, date, ...data }: NewTransactionModalValues) => {
     const currency = currencies()?.currencies.find((currency) => currency.id === data.currencyId)
-    const integerAmount = Math.floor(amount * 10 ** (currency?.decimalDigits || 0))
+    const integerAmount = Math.round(amount * 10 ** (currency?.decimalDigits || 0))
 
     const coercedData = {
       ...data,
