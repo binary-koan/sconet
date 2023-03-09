@@ -1,6 +1,7 @@
 import { insertExchangeRate } from "../db/queries/exchangeRate/insertExchangeRate"
 import { CurrencyRecord } from "../db/records/currency"
 import { currenciesRepo } from "../db/repos/currenciesRepo"
+import { updateExchangeRates } from "../jobs/exchangeRates"
 import { MutationResolvers, QueryResolvers, Resolvers } from "../resolvers-types"
 
 export const currencies: QueryResolvers["currencies"] = () => {
@@ -37,6 +38,8 @@ export const createCurrency: MutationResolvers["createCurrency"] = async (_, { i
         toCurrencyId: currency.id,
         rate: 1 / data[input.code.toLowerCase()]
       })
+
+      await updateExchangeRates()
     })
   )
 

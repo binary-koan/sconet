@@ -460,6 +460,13 @@ export type CreateCategoryMutationVariables = Exact<{
 
 export type CreateCategoryMutation = { __typename?: 'Mutation', createCategory: { __typename?: 'Category', id: string } };
 
+export type CreateCurrencyMutationVariables = Exact<{
+  input: CreateCurrencyInput;
+}>;
+
+
+export type CreateCurrencyMutation = { __typename?: 'Mutation', createCurrency: { __typename?: 'Currency', id: string } };
+
 export type CreateTransactionMutationVariables = Exact<{
   input: CreateTransactionInput;
 }>;

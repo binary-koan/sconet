@@ -10,6 +10,7 @@ import { Button, LinkButton } from "../components/base/Button"
 import { PageHeader } from "../components/base/PageHeader"
 import CategoriesList from "../components/categories/Categories"
 import { Cell } from "../components/Cell"
+import { AddCurrencyButton } from "../components/currencies/AddCurrencyButton"
 import Currencies from "../components/currencies/Currencies"
 import { CurrentExchangeRates } from "../components/exchangeRates/CurrentExchangeRates"
 import {
@@ -151,7 +152,9 @@ const SettingsPage: Component = () => {
 
       <Cell data={data.accountMailboxes} success={AccountMailboxes} />
 
-      <PageHeader size="lg">Currencies</PageHeader>
+      <PageHeader size="lg">
+        Currencies <AddCurrencyButton />
+      </PageHeader>
 
       <Cell data={data.currencies} success={Currencies} />
 
