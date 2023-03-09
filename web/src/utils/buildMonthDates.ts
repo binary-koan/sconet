@@ -3,7 +3,6 @@ export const buildMonthDates = (year: number, monthNumber: number) => {
   const monthEnd = new Date(Date.UTC(year, monthNumber, 0))
 
   const lastDate = new Date(monthEnd)
-  lastDate.setDate(lastDate.getDate() + daysAfterToShow(monthEnd.getDay()))
 
   let date = new Date(monthStart)
   date.setDate(date.getDate() - daysBeforeToShow(monthStart.getDay()))
@@ -22,6 +21,15 @@ export const buildMonthDates = (year: number, monthNumber: number) => {
     date.setDate(date.getDate() + 1)
   }
 
+  while (dates.length < 6 * 7) {
+    dates.push({
+      date: new Date(date),
+      isCurrentMonth: false
+    })
+
+    date.setDate(date.getDate() + 1)
+  }
+
   return dates
 }
 
@@ -33,8 +41,4 @@ const daysBeforeToShow = (dayOfWeek: number) => {
   } else {
     return dayOfWeek - 1
   }
-}
-
-const daysAfterToShow = (dayOfWeek: number) => {
-  return 7 - dayOfWeek
 }

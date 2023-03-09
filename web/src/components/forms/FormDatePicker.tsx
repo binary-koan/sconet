@@ -2,7 +2,7 @@ import { Field, FormState, getValue, setValue } from "@modular-forms/solid"
 import { TbArrowLeft, TbArrowRight } from "solid-icons/tb"
 import { Component, createSignal, For, JSX, Show } from "solid-js"
 import { buildMonthDates } from "../../utils/buildMonthDates"
-import { isSameDate } from "../../utils/date"
+import { decrementMonth, incrementMonth, isSameDate } from "../../utils/date"
 import { Button } from "../base/Button"
 import { FormControl, FormLabel } from "../base/FormControl"
 
@@ -48,7 +48,12 @@ export const FormDatePicker: Component<{
 
             <div class="flex flex-col items-center">
               <div class="mx-auto mb-4 flex items-center justify-center rounded">
-                <Button size="square" variant="ghost" aria-label="Previous Month">
+                <Button
+                  size="square"
+                  variant="ghost"
+                  aria-label="Previous Month"
+                  onClick={() => setDisplayedMonth(decrementMonth(displayedMonth()))}
+                >
                   <TbArrowLeft size="1.25em" />
                 </Button>
 
@@ -59,7 +64,12 @@ export const FormDatePicker: Component<{
                   })}
                 </span>
 
-                <Button size="square" variant="ghost" aria-label="Next Month">
+                <Button
+                  size="square"
+                  variant="ghost"
+                  aria-label="Next Month"
+                  onClick={() => setDisplayedMonth(incrementMonth(displayedMonth()))}
+                >
                   <TbArrowRight size="1.25em" />
                 </Button>
               </div>

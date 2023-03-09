@@ -29,8 +29,6 @@ export const NewTransactionModal: Component<{
   const currencies = useCurrenciesQuery()
   const accountMailboxes = useAccountMailboxesQuery()
 
-  console.log("initial date", props.initialDate)
-
   const createTransaction = useCreateTransaction({
     onSuccess: () => {
       toast.success("Transaction created")
@@ -207,7 +205,7 @@ export const NewTransactionModal: Component<{
               <Button
                 size="custom"
                 variant="ghost"
-                class="rounded border border-gray-100 px-4 py-2 text-xs text-gray-700"
+                class="whitespace-nowrap rounded border border-gray-100 px-4 py-2 text-xs text-gray-700"
                 onClick={() => setValue(form, "date", "")}
               >
                 <TbCalendarEvent class="mr-1" />
