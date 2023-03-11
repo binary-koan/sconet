@@ -66,7 +66,7 @@ export const updateTransaction: MutationResolvers["updateTransaction"] = (_, { i
     throw new Error("Not found")
   }
 
-  const parentAttributes = ["date", "accountMailboxId"]
+  const parentAttributes = ["date", "accountMailboxId", "currencyId"]
 
   let updateInput: Partial<UpdateTransactionInput> = input
   if (transaction.splitFromId) {
@@ -80,7 +80,14 @@ export const updateTransaction: MutationResolvers["updateTransaction"] = (_, { i
     currencyId: updateInput.currencyId ?? undefined,
     date: updateInput.date ?? undefined,
     includeInReports: updateInput.includeInReports ?? undefined,
-    accountMailboxId: updateInput.accountMailboxId ?? undefined
+    accountMailboxId: updateInput.accountMailboxId ?? undefined,
+    dailyExchangeRateId:
+      updateInput.date || updateInput.currencyId
+        ? dailyExchangeRatesRepo.findClosest(
+            updateInput.date || transaction.date,
+            updateInput.currencyId || transaction.currencyId
+          )?.id ?? undefined
+        : undefined
   }
 
   transactionsRepo.updateOne(id, updates)
