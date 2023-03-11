@@ -85,7 +85,7 @@ export const sumCurrency = async (options: {
 const decimalAmount = ({ amount, currency }: MoneyOptions) => {
   if (amount === 0) return 0
 
-  return amount / 10 ** currency.decimalDigits
+  return parseFloat((amount / 10 ** currency.decimalDigits).toFixed(currency.decimalDigits))
 }
 
 export const Money: Resolvers["Money"] = {
@@ -112,6 +112,6 @@ export const Money: Resolvers["Money"] = {
     return `${options.amount < 0 ? "-" : ""}${options.currency.symbol}${amount}${suffix}`
   },
 
-  integerAmount: (options) => options.amount,
+  integerAmount: (options) => Math.round(options.amount),
   decimalAmount: (options) => decimalAmount(options)
 }
