@@ -6,6 +6,8 @@ import { Repo } from "../db/repo"
 import { accountMailboxesRepo } from "../db/repos/accountMailboxesRepo"
 import { categoriesRepo } from "../db/repos/categoriesRepo"
 import { currenciesRepo } from "../db/repos/currenciesRepo"
+import { dailyExchangeRatesRepo } from "../db/repos/dailyExchangeRatesRepo"
+import { exchangeRateValuesRepo } from "../db/repos/exchangeRateValuesRepo"
 import { transactionsRepo } from "../db/repos/transactionsRepo"
 
 interface BackupDetails {
@@ -15,7 +17,14 @@ interface BackupDetails {
 
 const BACKUPS_TO_KEEP: number = 3
 
-const REPOS_TO_BACKUP = [transactionsRepo, categoriesRepo, accountMailboxesRepo, currenciesRepo]
+const REPOS_TO_BACKUP = [
+  transactionsRepo,
+  categoriesRepo,
+  accountMailboxesRepo,
+  currenciesRepo,
+  dailyExchangeRatesRepo,
+  exchangeRateValuesRepo
+]
 
 export const startBackupSchedule = () => setInterval(runBackup, 5 * 60 * 1000)
 
