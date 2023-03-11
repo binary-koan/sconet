@@ -153,7 +153,12 @@ export const Transaction: Resolvers["Transaction"] = {
     convertCurrency({
       amount: transaction.amount,
       currency: await context.data.currency.load(transaction.currencyId),
-      targetCurrencyId: currencyId,
+      target: currencyId
+        ? {
+            currencyId,
+            date: transaction.date
+          }
+        : undefined,
       context
     }),
 
@@ -199,7 +204,7 @@ export const DailyTransactions: Resolvers["DailyTransactions"] = {
           currency: await context.data.currency.load(transaction.currencyId)
         }))
       ),
-      targetCurrencyId: currencyId,
+      target: currencyId ? { currencyId, date: result.date } : undefined,
       context
     }),
 

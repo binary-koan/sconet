@@ -66,7 +66,7 @@ export const Category: Resolvers["Category"] = {
       ? convertCurrency({
           amount: category.budget,
           currency: await context.data.currency.load(category.budgetCurrencyId),
-          targetCurrencyId: currencyId,
+          target: currencyId ? { currencyId } : undefined,
           context
         })
       : null,

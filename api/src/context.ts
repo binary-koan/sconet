@@ -1,15 +1,19 @@
 import Dataloader from "dataloader"
 import { GraphQLError } from "graphql"
 import { errors, jwtVerify } from "jose"
-import { last, memoize } from "lodash"
-import { findExchangeRatesByCurrencyIds } from "./db/queries/exchangeRate/findExchangeRatesByCurrencyIds"
+import { fromPairs, last, memoize, uniqBy } from "lodash"
+import { convertAmounts } from "./db/queries/exchangeRateValues/convertAmounts"
 import { AccountMailboxRecord } from "./db/records/accountMailbox"
 import { CategoryRecord } from "./db/records/category"
 import { CurrencyRecord } from "./db/records/currency"
+import { DailyExchangeRateRecord } from "./db/records/dailyExchangeRate"
+import { ExchangeRateValueRecord } from "./db/records/exchangeRateValue"
 import { TransactionRecord } from "./db/records/transaction"
 import { accountMailboxesRepo } from "./db/repos/accountMailboxesRepo"
 import { categoriesRepo } from "./db/repos/categoriesRepo"
 import { currenciesRepo } from "./db/repos/currenciesRepo"
+import { dailyExchangeRatesRepo } from "./db/repos/dailyExchangeRatesRepo"
+import { exchangeRateValuesRepo } from "./db/repos/exchangeRateValuesRepo"
 import { transactionsRepo } from "./db/repos/transactionsRepo"
 
 export interface Context {
@@ -24,9 +28,14 @@ export interface Context {
     transaction: Dataloader<string, TransactionRecord>
     transactionSplitTo: Dataloader<string, TransactionRecord[]>
     currency: Dataloader<string, CurrencyRecord>
-    exchangeRate: Dataloader<
-      { from: string; to: string },
-      { rate: number; fromId: string; toId: string }
+    dailyExchangeRate: Dataloader<{ fromCurrencyId: string; date?: Date }, DailyExchangeRateRecord>
+    exchangeRateValue: Dataloader<
+      { dailyExchangeRateId: string; toCurrencyId: string },
+      ExchangeRateValueRecord
+    >
+    amountInCurrency: Dataloader<
+      { fromCurrencyId: string; toCurrencyId: string; dailyExchangeRateId: string; amount: number },
+      number
     >
   }
 }
@@ -53,7 +62,38 @@ export async function buildContext(request: Request): Promise<Context> {
         transactionsRepo.findSplitTransactionsByIds(ids)
       ),
       currency: new Dataloader(async (ids) => currenciesRepo.findByIds(ids)),
-      exchangeRate: new Dataloader(async (queries) => findExchangeRatesByCurrencyIds(queries))
+
+      dailyExchangeRate: new Dataloader(async (queries) => {
+        const queriesWithId = queries.map((query) => ({
+          id: `${query.fromCurrencyId}-${query.date}`,
+          ...query
+        }))
+        const resultsById = fromPairs(
+          uniqBy(queriesWithId, "id").map(({ id, fromCurrencyId, date }) => [
+            id,
+            dailyExchangeRatesRepo.findClosest(date || new Date(), fromCurrencyId)
+          ])
+        )
+
+        return queriesWithId.map(({ id }) => resultsById[id]!)
+      }),
+
+      exchangeRateValue: new Dataloader(async (queries) => {
+        const all = exchangeRateValuesRepo.findForRates(
+          queries.map((query) => query.dailyExchangeRateId)
+        )
+
+        return queries.map(
+          (query) =>
+            all.find(
+              (value) =>
+                value.dailyExchangeRateId === query.dailyExchangeRateId &&
+                value.toCurrencyId === query.toCurrencyId
+            )!
+        )
+      }),
+
+      amountInCurrency: new Dataloader(async (queries) => convertAmounts(queries))
     }
   }
 }

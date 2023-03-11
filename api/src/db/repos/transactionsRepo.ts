@@ -2,6 +2,7 @@ import { isEmpty, pickBy } from "lodash"
 import { MakeOptional } from "../../types"
 import { db } from "../database"
 import { filterTransactions } from "../queries/transaction/filterTransactions"
+import { CurrencyRecord } from "../records/currency"
 import { TransactionRecord } from "../records/transaction"
 import { createRepo } from "../repo"
 import { serializeDate } from "../utils"
@@ -29,6 +30,42 @@ export const transactionsRepo = createRepo({
 
   methods: {
     filter: filterTransactions,
+
+    findValuesInCurrency: (ids: string[], currency: CurrencyRecord) => {
+      const values = db
+        .query(
+          `
+            SELECT
+              transactions.id AS id,
+              (CASE
+                WHEN exchangeRateValues.rate IS NOT NULL THEN transactions.amount * exchangeRateValues.rate
+                ELSE transactions.amount
+              END) AS value,
+              currencies.decimalDigits AS fromDecimalDigits
+            FROM transactions
+            INNER JOIN currencies ON transactions.currencyId = currencies.id
+            LEFT OUTER JOIN dailyExchangeRates ON transactions.dailyExchangeRateId = dailyExchangeRates.id
+            LEFT OUTER JOIN exchangeRateValues ON exchangeRateValues.toCurrencyId = $currencyId AND exchangeRateValues.dailyExchangeRateId = dailyExchangeRates.id
+            WHERE transactions.id IN ${arrayQuery(ids)}
+          `
+        )
+        .all({ ...arrayBindings(ids), $currencyId: currency.id }) as Array<{
+        id: string
+        value: number
+        fromDecimalDigits: number
+      }>
+
+      const toMultiplier = 10 ** currency.decimalDigits
+
+      return values.map(({ id, value, fromDecimalDigits }) => {
+        const fromMultiplier = 10 ** fromDecimalDigits
+
+        return {
+          id,
+          value: (value / fromMultiplier) * toMultiplier
+        }
+      })
+    },
 
     deleteSplitTransactions(fromId: string) {
       db.run(`DELETE FROM transactions WHERE splitFromId = $id`, {

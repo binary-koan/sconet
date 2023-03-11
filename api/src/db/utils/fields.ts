@@ -26,3 +26,30 @@ export function arrayBindings(values: readonly string[], prefix: string = "") {
 export function arrayQuery(values: readonly any[], prefix: string = "") {
   return `(${values.map((_, index) => `$${prefix}${index}`).join(",")})`
 }
+
+export function commonTableExpressionBindings(
+  values: ReadonlyArray<Record<string, any>>,
+  prefix: string = ""
+) {
+  return fromPairs(
+    values.flatMap((value, index) =>
+      Object.entries(value).map(([key, value]) => [`$${prefix}${index}_${key}`, value])
+    )
+  )
+}
+
+export function commonTableExpressionQuery(
+  values: ReadonlyArray<Record<string, any>>,
+  prefix: string = ""
+) {
+  return values
+    .map(
+      (value, index) =>
+        "(" +
+        Object.keys(value)
+          .map((key) => `$${prefix}${index}_${key}`)
+          .join(",") +
+        ")"
+    )
+    .join(", ")
+}

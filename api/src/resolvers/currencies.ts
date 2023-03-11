@@ -79,5 +79,12 @@ export const Currency: Resolvers["Currency"] = {
   decimalDigits: (currency) => currency.decimalDigits,
 
   exchangeRate: async (currency, { toId }, context) =>
-    (await context.data.exchangeRate.load({ from: currency.id, to: toId })).rate
+    (
+      await context.data.exchangeRateValue.load({
+        dailyExchangeRateId: (
+          await context.data.dailyExchangeRate.load({ fromCurrencyId: currency.id })
+        ).id,
+        toCurrencyId: toId
+      })
+    ).rate
 }

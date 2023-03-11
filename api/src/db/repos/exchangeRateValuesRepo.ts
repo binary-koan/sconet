@@ -3,6 +3,7 @@ import { MakeOptional } from "../../types"
 import { db } from "../database"
 import { ExchangeRateValueRecord } from "../records/exchangeRateValue"
 import { createRepo } from "../repo"
+import { arrayBindings, arrayQuery } from "../utils/fields"
 import { loadExchangeRateValue } from "./exchangeRateValues/loadExchangeRateValue"
 import { serializeExchangeRateValue } from "./exchangeRateValues/serializeExchangeRateValue"
 
@@ -24,6 +25,13 @@ export const exchangeRateValuesRepo = createRepo({
       return db
         .query("SELECT * FROM exchangeRateValues WHERE dailyExchangeRateId = ?")
         .all(dailyExchangeRate.id)
+        .map(loadExchangeRateValue)
+    },
+
+    findForRates: (ids: string[]) => {
+      return db
+        .query(`SELECT * FROM exchangeRateValues WHERE dailyExchangeRateId IN ${arrayQuery(ids)}`)
+        .all(arrayBindings(ids))
         .map(loadExchangeRateValue)
     }
   }

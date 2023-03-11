@@ -1,13 +1,10 @@
-import { chunk, fromPairs, keyBy, orderBy, sumBy, uniq, zip } from "lodash"
-import { findExchangeRatesByCurrencyIds } from "../db/queries/exchangeRate/findExchangeRatesByCurrencyIds"
+import { chunk, keyBy, orderBy, sumBy, uniq } from "lodash"
 import { CategoryRecord } from "../db/records/category"
 import { CurrencyRecord } from "../db/records/currency"
-import { TransactionRecord } from "../db/records/transaction"
 import { categoriesRepo } from "../db/repos/categoriesRepo"
 import { currenciesRepo } from "../db/repos/currenciesRepo"
 import { transactionsRepo } from "../db/repos/transactionsRepo"
 import { QueryResolvers, Resolvers } from "../resolvers-types"
-import { convertAmount } from "./money"
 
 export interface MonthBudgetResult {
   id: string
@@ -78,29 +75,13 @@ export const budget: QueryResolvers["budget"] = async (
     (id) => (id ? categoriesById[id].sortOrder : -1)
   )
 
-  const otherCurrencies = Object.values(currenciesById).filter(
-    (currency) => currency.id !== outputCurrency.id
+  const transactionValues = keyBy(
+    transactionsRepo.findValuesInCurrency(
+      transactions.map((transaction) => transaction.id),
+      outputCurrency
+    ),
+    "id"
   )
-
-  const exchangeRates = findExchangeRatesByCurrencyIds(
-    otherCurrencies.map(({ id }) => ({ from: id, to: outputCurrency.id }))
-  )
-
-  const exchangeRateByCurrencyId = fromPairs(
-    zip(
-      otherCurrencies.map(({ id }) => id),
-      exchangeRates.map(({ rate }) => rate)
-    )
-  )
-  exchangeRateByCurrencyId[outputCurrency.id] = 1
-
-  const transactionAmount = (transaction: TransactionRecord) =>
-    convertAmount(
-      transaction.amount,
-      currenciesById[transaction.currencyId],
-      outputCurrency,
-      exchangeRateByCurrencyId[transaction.currencyId]
-    )
 
   const allCategories = includedCategoryIds.map((id) => ({
     id: `${year}-${month}-${id || "uncategorized"}`,
@@ -110,7 +91,7 @@ export const budget: QueryResolvers["budget"] = async (
         transactions.filter(
           (transaction) => transaction.amount < 0 && transaction.categoryId === id
         ),
-        transactionAmount
+        (transaction) => transactionValues[transaction.id].value
       )
     ),
     currency: outputCurrency
@@ -122,12 +103,12 @@ export const budget: QueryResolvers["budget"] = async (
     month,
     income: sumBy(
       transactions.filter((transaction) => transaction.amount > 0),
-      transactionAmount
+      (transaction) => transactionValues[transaction.id].value
     ),
     totalSpending: Math.abs(
       sumBy(
         transactions.filter((transaction) => transaction.amount < 0),
-        transactionAmount
+        (transaction) => transactionValues[transaction.id].value
       )
     ),
     currency: outputCurrency,
