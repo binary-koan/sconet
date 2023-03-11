@@ -2,7 +2,7 @@ import { useNavigate } from "@solidjs/router"
 import { Component } from "solid-js"
 import toast from "solid-toast"
 import CategoryForm from "../../components/categories/CategoryForm"
-import FormPageWrapper from "../../components/FormPageWrapper"
+import InnerPageWrapper from "../../components/InnerPageWrapper"
 import { CreateCategoryMutationVariables } from "../../graphql-types"
 import { useCreateCategory } from "../../graphql/mutations/createCategoryMutation"
 
@@ -24,9 +24,9 @@ const NewCategoryPage: Component = () => {
   }
 
   return (
-    <FormPageWrapper heading="New Category" backLink="/settings">
+    <InnerPageWrapper heading="New Category" backLink="/settings">
       <CategoryForm onSave={onSave} loading={createCategory.loading} />
-    </FormPageWrapper>
+    </InnerPageWrapper>
   )
 }
 

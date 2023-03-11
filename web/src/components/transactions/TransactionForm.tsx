@@ -80,9 +80,12 @@ const TransactionForm: Component<{
 
   return (
     <Form of={form} onSubmit={onSubmit}>
+      <FormInput of={form} label="Memo" name="memo" validate={required("Cannot be blank")} />
+
       <Show when={!props.data?.transaction?.splitFromId}>
         <FormOptionButtons
           of={form}
+          label="Type"
           name="amountType"
           options={[
             {
@@ -127,8 +130,6 @@ const TransactionForm: Component<{
           }
         />
       </Show>
-
-      <FormInput of={form} label="Memo" name="memo" validate={required("Cannot be blank")} />
 
       <Show when={!props.data?.transaction?.splitFromId}>
         <FormInput

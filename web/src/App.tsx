@@ -11,6 +11,7 @@ import { NewCategoryRoute } from "./routes/categories/NewCategoryRoute"
 import { LoginRoute } from "./routes/LoginRoute"
 import { SettingsRoute } from "./routes/SettingsRoute"
 import { EditTransactionRoute } from "./routes/transactions/EditTransactionRoute"
+import { ShowTransactionRoute } from "./routes/transactions/ShowTransactionRoute"
 import { TransactionsCalendarRoute } from "./routes/transactions/TransactionsCalendarRoute"
 import { TransactionsListRoute } from "./routes/transactions/TransactionsListRoute"
 import { transactionsViewPreference } from "./utils/transactions/viewPreference"
@@ -52,6 +53,7 @@ const App: Component = () => {
 
           <TransactionsListRoute />
           <TransactionsCalendarRoute />
+          <ShowTransactionRoute />
           <EditTransactionRoute />
 
           <SettingsRoute />

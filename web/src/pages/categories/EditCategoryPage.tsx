@@ -2,7 +2,7 @@ import { useNavigate, useRouteData } from "@solidjs/router"
 import { Component, Show } from "solid-js"
 import toast from "solid-toast"
 import CategoryForm from "../../components/categories/CategoryForm"
-import FormPageWrapper from "../../components/FormPageWrapper"
+import InnerPageWrapper from "../../components/InnerPageWrapper"
 import {
   GetCategoryQuery,
   GetCategoryQueryVariables,
@@ -34,7 +34,7 @@ const EditCategoryPage: Component = () => {
   }
 
   return (
-    <FormPageWrapper heading="Edit Category" backLink="/settings">
+    <InnerPageWrapper heading="Edit Category" backLink="/settings">
       <Show when={routeData.data()}>
         <CategoryForm
           category={routeData.data()!.category}
@@ -42,7 +42,7 @@ const EditCategoryPage: Component = () => {
           loading={updateCategory.loading}
         />
       </Show>
-    </FormPageWrapper>
+    </InnerPageWrapper>
   )
 }
 

@@ -13,6 +13,10 @@ const EditTransactionPage = lazy(() => import("../../pages/transactions/EditTran
 
 export const EditTransactionRoute: Component = () => {
   return (
-    <Route path="/transactions/:id" component={EditTransactionPage} data={editTransactionData} />
+    <Route
+      path="/transactions/:id/edit"
+      component={EditTransactionPage}
+      data={editTransactionData}
+    />
   )
 }

@@ -2,7 +2,7 @@ import { useNavigate, useRouteData } from "@solidjs/router"
 import { Show } from "solid-js"
 import toast from "solid-toast"
 import AccountMailboxForm from "../../components/accountMailboxes/AccountMailboxForm"
-import FormPageWrapper from "../../components/FormPageWrapper"
+import InnerPageWrapper from "../../components/InnerPageWrapper"
 import {
   GetAccountMailboxQuery,
   GetAccountMailboxQueryVariables,
@@ -32,7 +32,7 @@ const EditAccountMailboxPage = () => {
   }
 
   return (
-    <FormPageWrapper heading="Edit Account" backLink="/settings">
+    <InnerPageWrapper heading="Edit Account" backLink="/settings">
       <Show when={routeData.data()}>
         <AccountMailboxForm
           accountMailbox={routeData.data()!.accountMailbox}
@@ -40,7 +40,7 @@ const EditAccountMailboxPage = () => {
           loading={updateAccountMailbox.loading}
         />
       </Show>
-    </FormPageWrapper>
+    </InnerPageWrapper>
   )
 }
 

@@ -1,7 +1,7 @@
 import { useNavigate } from "@solidjs/router"
 import toast from "solid-toast"
 import AccountMailboxForm from "../../components/accountMailboxes/AccountMailboxForm"
-import FormPageWrapper from "../../components/FormPageWrapper"
+import InnerPageWrapper from "../../components/InnerPageWrapper"
 import { CreateAccountMailboxMutationVariables } from "../../graphql-types"
 import { useCreateAccountMailbox } from "../../graphql/mutations/createAccountMailboxMutation"
 
@@ -21,9 +21,9 @@ const NewAccountMailboxPage = () => {
   }
 
   return (
-    <FormPageWrapper heading="New Account" backLink="/settings">
+    <InnerPageWrapper heading="New Account" backLink="/settings">
       <AccountMailboxForm onSave={onSave} loading={createAccountMailbox.loading} />
-    </FormPageWrapper>
+    </InnerPageWrapper>
   )
 }
 

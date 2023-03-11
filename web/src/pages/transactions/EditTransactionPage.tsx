@@ -2,7 +2,7 @@ import { useNavigate, useRouteData } from "@solidjs/router"
 import { Component } from "solid-js"
 import toast from "solid-toast"
 import { Cell } from "../../components/Cell"
-import FormPageWrapper from "../../components/FormPageWrapper"
+import InnerPageWrapper from "../../components/InnerPageWrapper"
 import TransactionForm from "../../components/transactions/TransactionForm"
 import {
   CreateTransactionInput,
@@ -35,13 +35,16 @@ const EditTransactionPage: Component = () => {
   }
 
   return (
-    <FormPageWrapper heading="Edit Transaction" backLink="/transactions">
+    <InnerPageWrapper
+      heading="Edit Transaction"
+      backLink={`/transactions/${routeData.data()?.transaction?.id}`}
+    >
       <Cell
         data={routeData.data}
         success={TransactionForm}
         successProps={{ onSave, loading: updateTransaction.loading }}
       />
-    </FormPageWrapper>
+    </InnerPageWrapper>
   )
 }
 

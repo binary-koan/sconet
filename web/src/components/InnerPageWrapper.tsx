@@ -4,7 +4,7 @@ import { Dynamic } from "solid-js/web"
 import { LinkButton } from "./base/Button"
 import { PageHeader } from "./base/PageHeader"
 
-const FormPageWrapper: Component<{
+const InnerPageWrapper: Component<{
   heading: JSX.Element
   backLink: string
   children: JSX.Element
@@ -26,4 +26,4 @@ const FormPageWrapper: Component<{
   )
 }
 
-export default FormPageWrapper
+export default InnerPageWrapper
