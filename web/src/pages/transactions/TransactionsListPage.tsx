@@ -49,7 +49,7 @@ const TransactionsListPage: Component = () => {
     <>
       <Title>Transactions</Title>
 
-      <PageHeader size="lg">
+      <PageHeader size="lg" class="z-docked sticky top-0 bg-gray-50 lg:top-9">
         <span class="mr-auto">Transactions</span>
         <button
           class="z-navbar fixed bottom-[calc(66px+1rem+env(safe-area-inset-bottom))] right-4 flex items-center rounded-full border border-gray-200 bg-white py-2 px-5 text-lg text-indigo-600 shadow-lg lg:static lg:z-0 lg:-my-1 lg:mr-2 lg:shadow-none"
