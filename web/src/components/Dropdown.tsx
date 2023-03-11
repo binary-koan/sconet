@@ -19,7 +19,7 @@ const placementClasses: { [key in DropdownPlacement]: string } = {
 
 export const Dropdown: Component<{
   isOpen?: boolean
-  onToggle?: (isOpen: boolean) => void
+  onToggle?: (isOpen: boolean, e?: Event) => void
   closeOnItemClick?: boolean
   children: JSX.Element
   content: JSX.Element
@@ -30,9 +30,9 @@ export const Dropdown: Component<{
 
   const [internalIsOpen, setInternalIsOpen] = createSignal(false)
 
-  const setOpen = (setter: (current: boolean | undefined) => boolean) => {
+  const setOpen = (setter: (current: boolean | undefined) => boolean, event?: Event) => {
     if (props.onToggle) {
-      props.onToggle(setter(props.isOpen))
+      props.onToggle(setter(props.isOpen), event)
     } else {
       setInternalIsOpen(setter)
     }
@@ -43,8 +43,8 @@ export const Dropdown: Component<{
   const toggle = children(() => props.children)
 
   createEffect(() => {
-    const listener = () => {
-      setOpen((isOpen) => !isOpen)
+    const listener = (event: Event) => {
+      setOpen((isOpen) => !isOpen, event)
     }
 
     const elements = toggle.toArray()
@@ -71,7 +71,7 @@ export const Dropdown: Component<{
 
     const documentListener = (event: MouseEvent) => {
       if (props.closeOnItemClick || !container?.contains(event.target as Node)) {
-        setOpen(() => false)
+        setOpen(() => false, event)
       }
     }
 

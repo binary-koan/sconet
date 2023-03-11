@@ -1,6 +1,9 @@
 import { useNavigate } from "@solidjs/router"
-import { Component, createEffect, createSignal, For, Show } from "solid-js"
+import { groupBy } from "lodash"
+import { Component, createEffect, createSignal, Index, Show } from "solid-js"
 import { FullTransactionFragment } from "../../graphql-types"
+import { namedIcons } from "../../utils/namedIcons"
+import CategoryIndicator from "../CategoryIndicator"
 import MemoEditor from "./MemoEditor"
 import RelationEditor from "./RelationEditor"
 import { TransactionActions } from "./TransactionActions"
@@ -34,6 +37,19 @@ const TransactionItem: Component<{
     }
   }
 
+  const splitTo = () =>
+    Object.values(groupBy(props.transaction.splitTo, (child) => child.category?.id)).map(
+      (children) => ({
+        category: children[0].category,
+        count: children.length,
+        memos:
+          children
+            .slice(0, 5)
+            .map((child) => child.memo)
+            .join(", ") + (children.length > 5 ? " ..." : "")
+      })
+    )
+
   return (
     <>
       <div
@@ -49,11 +65,10 @@ const TransactionItem: Component<{
           parent={props.parent}
           transaction={props.transaction}
           includeInReports={includeInReports()}
-          isEditing={props.isEditing}
         />
 
         <div
-          class="ml-2 min-w-0 flex-1 border-x"
+          class="ml-2 min-w-0 flex-1 border-l"
           classList={{
             "border-gray-200": props.isEditing && !editingMemo(),
             "border-transparent": !props.isEditing || editingMemo(),
@@ -92,29 +107,38 @@ const TransactionItem: Component<{
         <div
           class="ml-2 whitespace-nowrap"
           classList={{
-            "text-gray-600 line-through": !includeInReports(),
-            "pr-2 border-r border-gray-200": props.isEditing
+            "text-gray-600 line-through": !includeInReports()
           }}
         >
           {props.transaction.amount.formatted}
         </div>
-        <Show when={props.isEditing && !props.parent}>
+        <Show when={!props.parent} fallback={<div class="w-10" />}>
           <TransactionActions transaction={props.transaction} />
         </Show>
-
-        {/* {props.isEditing && !parent && <SplitTransactionButton transaction={props.transaction} />}
-          {props.isEditing && <VisibilityEditor transaction={props.transaction} />}
-          {props.isEditing && <DeleteTransactionButton transaction={props.transaction} />} */}
       </div>
-      <For each={props.transaction.splitTo}>
-        {(child: any) => (
-          <TransactionItem
-            transaction={child}
-            parent={props.transaction}
-            isEditing={props.isEditing}
-          />
+      <Index each={splitTo()}>
+        {(child) => (
+          <div
+            onClick={navigateUnlessEditing}
+            class="flex items-center bg-white py-2 pr-4 pl-10 shadow-sm"
+          >
+            <CategoryIndicator
+              class="mr-4 h-8 w-8 flex-none"
+              iconSize="1.25em"
+              icon={child().category?.icon ? namedIcons[child().category?.icon!] : undefined}
+              color={child().category?.color}
+              includeInReports={props.transaction.includeInReports}
+              isIncome={props.transaction.amount.decimalAmount > 0}
+            />
+
+            <div class="mr-2 min-w-0 truncate text-xs">{child().memos}</div>
+
+            <div class="ml-auto ml-auto mr-1 flex h-6 w-6 flex-none items-center justify-center rounded-full bg-gray-200 text-xs">
+              {child().count}
+            </div>
+          </div>
         )}
-      </For>
+      </Index>
     </>
   )
 }

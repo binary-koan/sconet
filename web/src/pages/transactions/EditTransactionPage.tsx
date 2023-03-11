@@ -5,9 +5,9 @@ import { Cell } from "../../components/Cell"
 import InnerPageWrapper from "../../components/InnerPageWrapper"
 import TransactionForm from "../../components/transactions/TransactionForm"
 import {
-  CreateTransactionInput,
   GetTransactionQuery,
-  GetTransactionQueryVariables
+  GetTransactionQueryVariables,
+  UpdateTransactionInput
 } from "../../graphql-types"
 import { useUpdateTransaction } from "../../graphql/mutations/updateTransactionMutation"
 import { QueryResource } from "../../utils/graphqlClient/useQuery"
@@ -30,14 +30,16 @@ const EditTransactionPage: Component = () => {
     }
   })
 
-  const onSave = (input: CreateTransactionInput) => {
+  const onSave = (input: UpdateTransactionInput) => {
     updateTransaction({ id: routeData.data()!.transaction!.id, input })
   }
 
   return (
     <InnerPageWrapper
       heading="Edit Transaction"
-      backLink={`/transactions/${routeData.data()?.transaction?.id}`}
+      backLink={`/transactions/${
+        routeData.data()?.transaction?.splitFromId || routeData.data()?.transaction?.id
+      }`}
     >
       <Cell
         data={routeData.data}

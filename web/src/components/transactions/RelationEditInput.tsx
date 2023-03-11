@@ -1,4 +1,4 @@
-import { Component, createEffect, createSignal, Show } from "solid-js"
+import { Component, createSignal, Show } from "solid-js"
 import { namedIcons } from "../../utils/namedIcons"
 import CategoryIndicator from "../CategoryIndicator"
 import RelationPickerModal from "./RelationPickerModal"
@@ -10,19 +10,21 @@ const RelationEditInput: Component<{
   accountMailbox: any
   hasChildren: boolean
   includeInReports: boolean
-  isEditing: boolean
   onChangeCategory: (category: any) => void
   onChangeAccountMailbox: (accountMailbox: any) => void
 }> = (props) => {
   const [modalOpen, setModalOpen] = createSignal(false)
 
-  createEffect(() => {
-    if (!props.isEditing) setModalOpen(false)
-  })
+  const onClick = (e: MouseEvent) => {
+    e.stopPropagation()
+    e.preventDefault()
+
+    setModalOpen(true)
+  }
 
   return (
     <>
-      <div class="relative" onClick={() => props.isEditing && setModalOpen(true)}>
+      <div class="relative" onClick={onClick}>
         <CategoryIndicator
           class={props.hasParent ? "h-8 w-8" : "h-10 w-10"}
           iconSize="1.25em"
@@ -34,7 +36,7 @@ const RelationEditInput: Component<{
         />
       </div>
 
-      <Show when={props.isEditing && modalOpen()}>
+      <Show when={modalOpen()}>
         <RelationPickerModal
           isIncome={props.isIncome}
           categoryProps={{

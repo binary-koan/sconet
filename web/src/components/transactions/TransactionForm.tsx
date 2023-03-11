@@ -23,7 +23,7 @@ type TransactionFormValues = CreateTransactionInput & { amountType: "expense" | 
 
 const TransactionForm: Component<{
   data?: GetTransactionQuery
-  onSave: (input: CreateTransactionInput) => void | ((input: UpdateTransactionInput) => void)
+  onSave: (input: UpdateTransactionInput) => void
   loading: boolean
 }> = (props) => {
   const categories = useCategoriesQuery()
@@ -63,12 +63,15 @@ const TransactionForm: Component<{
   const onSubmit = ({ amountType, amount, date, ...data }: TransactionFormValues) => {
     const integerAmount = Math.floor(amount * 10 ** (selectedCurrency()?.decimalDigits || 0))
 
-    const coercedData = {
-      ...data,
-      amount: amountType === "expense" ? -integerAmount : integerAmount,
-      date: new Date(date).toISOString().split("T")[0],
-      includeInReports: Boolean(data.includeInReports)
+    const coercedData: UpdateTransactionInput = { ...data }
+
+    if (amountType) {
+      coercedData.amount = amountType === "expense" ? -integerAmount : integerAmount
     }
+    if (date) {
+      coercedData.date = new Date(date).toISOString().split("T")[0]
+    }
+    coercedData.includeInReports = Boolean(data.includeInReports)
 
     props.onSave(coercedData)
   }

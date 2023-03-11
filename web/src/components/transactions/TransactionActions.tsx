@@ -1,4 +1,4 @@
-import { TbArrowsSplit2, TbDots, TbEye, TbEyeOff, TbTrash } from "solid-icons/tb"
+import { TbArrowsSplit2, TbDotsVertical, TbEye, TbEyeOff, TbTrash } from "solid-icons/tb"
 import { Component, createSignal, Show } from "solid-js"
 import { FullTransactionFragment } from "../../graphql-types"
 import { useDeleteTransaction } from "../../graphql/mutations/deleteTransactionMutation"
@@ -16,10 +16,17 @@ export const TransactionActions: Component<{ transaction: FullTransactionFragmen
   const [splitModalVisible, setSplitModalVisible] = createSignal(false)
   const [deleteModalVisible, setDeleteModalVisible] = createSignal(false)
 
+  const onToggle = (isOpen: boolean, event?: Event) => {
+    event?.stopPropagation()
+    event?.preventDefault()
+
+    setDropdownOpen(isOpen)
+  }
+
   return (
     <Dropdown
       isOpen={dropdownOpen()}
-      onToggle={(isOpen) => setDropdownOpen(isOpen)}
+      onToggle={onToggle}
       placement="bottomRight"
       content={
         <>
@@ -85,7 +92,7 @@ export const TransactionActions: Component<{ transaction: FullTransactionFragmen
       }
     >
       <Button size="sm" variant="ghost" class="ml-2">
-        <TbDots />
+        <TbDotsVertical />
       </Button>
     </Dropdown>
   )
