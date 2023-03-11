@@ -7,12 +7,12 @@ export const BudgetSummary: Component<{
   year: string
   month: string
   isPastMonth: boolean
-  filteredTransactions: () => string
+  filteredTransactions: (filters?: any) => string
 }> = (props) => {
   return (
     <div class="flex items-center px-4 lg:pb-6">
       <LinkButton
-        href={props.filteredTransactions()}
+        href={props.filteredTransactions({ minAmount: 0 })}
         size="custom"
         class="mr-2 flex flex-1 flex-col items-center p-2"
       >
@@ -25,7 +25,7 @@ export const BudgetSummary: Component<{
       </Show>
 
       <LinkButton
-        href={props.filteredTransactions()}
+        href={props.filteredTransactions({ maxAmount: 0 })}
         size="custom"
         class="ml-2 flex flex-1 flex-col items-center p-2"
       >

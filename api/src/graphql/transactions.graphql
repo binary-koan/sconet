@@ -25,6 +25,8 @@ type PaginatedTransactions {
 input TransactionFilter {
   dateFrom: Date
   dateUntil: Date
+  minAmount: Int
+  maxAmount: Int
   keyword: String
   categoryIds: [String]
 }

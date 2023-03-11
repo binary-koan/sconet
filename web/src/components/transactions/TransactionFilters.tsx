@@ -24,9 +24,39 @@ const TransactionFilters: Component<{
       <Form of={props.form} onSubmit={() => {}}>
         <FormInput of={props.form} name="keyword" type="search" label="Filter" />
 
-        <FormInput of={props.form} name="dateFrom" type="date" label="Show from" />
+        <div class="flex gap-2">
+          <FormInput
+            of={props.form}
+            name="dateFrom"
+            type="date"
+            label="Show from"
+            wrapperClass="flex-1"
+          />
+          <FormInput
+            of={props.form}
+            name="dateUntil"
+            type="date"
+            label="Show until"
+            wrapperClass="flex-1"
+          />
+        </div>
 
-        <FormInput of={props.form} name="dateUntil" type="date" label="Show until" />
+        <div class="flex gap-2">
+          <FormInput
+            of={props.form}
+            name="minAmount"
+            type="number"
+            label="Value over (cents)"
+            wrapperClass="flex-1"
+          />
+          <FormInput
+            of={props.form}
+            name="maxAmount"
+            type="number"
+            label="Value under (cents)"
+            wrapperClass="flex-1"
+          />
+        </div>
 
         <FormOptionButtons
           of={props.form}

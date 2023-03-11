@@ -23,6 +23,8 @@ export function filterTransactions({
     accountMailboxId?: Maybe<string>
     dateFrom?: Maybe<Date>
     dateUntil?: Maybe<Date>
+    minAmount?: Maybe<number>
+    maxAmount?: Maybe<number>
     keyword?: Maybe<string>
     categoryIds?: Maybe<Array<string | null>>
   }>
@@ -43,6 +45,16 @@ export function filterTransactions({
   if (filter?.dateUntil) {
     where += " AND date <= $dateUntil"
     args.$dateUntil = serializeDate(filter.dateUntil)
+  }
+
+  if (filter?.minAmount != null) {
+    where += " AND amount >= $minAmount"
+    args.$minAmount = filter.minAmount
+  }
+
+  if (filter?.maxAmount != null) {
+    where += " AND amount <= $maxAmount"
+    args.$maxAmount = filter.maxAmount
   }
 
   if (filter?.keyword) {

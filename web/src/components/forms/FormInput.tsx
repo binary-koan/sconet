@@ -11,6 +11,7 @@ const FormInput: Component<
     placeholderLabel?: boolean
     name: string
     validate?: ValidateField<any> | ValidateField<any>[]
+    wrapperClass?: string
   }
 > = (allProps) => {
   const [props, inputProps] = splitProps(allProps, [
@@ -18,11 +19,12 @@ const FormInput: Component<
     "label",
     "placeholderLabel",
     "name",
-    "validate"
+    "validate",
+    "wrapperClass"
   ])
 
   return (
-    <FormControl>
+    <FormControl class={props.wrapperClass}>
       <FormLabel class={props.placeholderLabel ? "sr-only" : ""}>{props.label}</FormLabel>
       <Field name={props.name} of={props.of} validate={props.validate}>
         {(field) => (

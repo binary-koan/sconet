@@ -414,6 +414,8 @@ export type TransactionFilter = {
   dateFrom: InputMaybe<Scalars['Date']>;
   dateUntil: InputMaybe<Scalars['Date']>;
   keyword: InputMaybe<Scalars['String']>;
+  maxAmount: InputMaybe<Scalars['Int']>;
+  minAmount: InputMaybe<Scalars['Int']>;
 };
 
 export type UpdateAccountMailboxInput = {

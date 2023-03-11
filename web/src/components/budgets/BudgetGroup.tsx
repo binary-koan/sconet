@@ -31,7 +31,7 @@ const BudgetGroup: Component<{
           <span class="ml-auto">{props.group.totalSpending.formatted}</span>
           <LinkButton
             href={props.filteredTransactionsRoute({
-              categoryIds: props.group.categories.map((category) => category?.id || null)
+              categoryIds: props.group.categories.map(({ category }) => category?.id || null)
             })}
             size="square"
             variant="ghost"

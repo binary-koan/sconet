@@ -50,6 +50,9 @@ export const TransactionsList: Component<{
           onClose={() => setShowingModalForDate(undefined)}
         />
       </Show>
+      <Show when={items().length === 0}>
+        <div class="px-4 italic">No transactions found.</div>
+      </Show>
       <For each={items()}>
         {({ date, transactions }, index) => {
           const newMonth =
