@@ -1,6 +1,9 @@
+import { db } from "../db/database"
 import { currenciesRepo } from "../db/repos/currenciesRepo"
 import { dailyExchangeRatesRepo } from "../db/repos/dailyExchangeRatesRepo"
 import { exchangeRateValuesRepo } from "../db/repos/exchangeRateValuesRepo"
+import { loadTransaction } from "../db/repos/transactions/loadTransaction"
+import { transactionsRepo } from "../db/repos/transactionsRepo"
 import { startOfDayUTC } from "../utils/date"
 
 export const startExchangeRateSchedule = () => setInterval(updateExchangeRates, 30 * 60 * 1000)
@@ -33,5 +36,19 @@ export const updateExchangeRates = async () => {
         rate: data[currency.code.toLowerCase()][other.code.toLowerCase()]
       })
     }
+  }
+
+  const transactionsMissingExchangeRate = db
+    .query("SELECT * FROM transactions WHERE dailyExchangeRateId IS NULL")
+    .all()
+    .map(loadTransaction)
+
+  for (const transaction of transactionsMissingExchangeRate) {
+    transactionsRepo.updateOne(transaction.id, {
+      dailyExchangeRateId: dailyExchangeRatesRepo.findClosest(
+        transaction.date,
+        transaction.currencyId
+      )!.id
+    })
   }
 }
