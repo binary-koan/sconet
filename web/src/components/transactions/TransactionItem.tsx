@@ -1,26 +1,17 @@
 import { useNavigate } from "@solidjs/router"
 import { groupBy } from "lodash"
-import { Component, createEffect, createSignal, Index, Show } from "solid-js"
+import { Component, Index, Show } from "solid-js"
 import { FullTransactionFragment } from "../../graphql-types"
 import { namedIcons } from "../../utils/namedIcons"
 import CategoryIndicator from "../CategoryIndicator"
-import MemoEditor from "./MemoEditor"
 import RelationEditor from "./RelationEditor"
 import { TransactionActions } from "./TransactionActions"
 
 const TransactionItem: Component<{
   transaction: FullTransactionFragment
   parent?: FullTransactionFragment
-  isEditing: boolean
 }> = (props) => {
   const navigate = useNavigate()
-  const [editingMemo, setEditingMemo] = createSignal(false)
-
-  const stopEditing = () => setEditingMemo(false)
-
-  createEffect(() => {
-    if (!props.isEditing) setEditingMemo(false)
-  })
 
   const includeInReports = () =>
     Boolean(
@@ -28,13 +19,8 @@ const TransactionItem: Component<{
         props.transaction.splitTo?.some((child: any) => child.includeInReports)
     )
 
-  const navigateUnlessEditing = (event: MouseEvent) => {
-    if (props.isEditing) {
-      event.stopPropagation()
-      event.preventDefault()
-    } else {
-      navigate(`/transactions/${props.transaction.id}`)
-    }
+  const navigateToTransaction = () => {
+    navigate(`/transactions/${props.transaction.id}`)
   }
 
   const splitTo = () =>
@@ -53,56 +39,26 @@ const TransactionItem: Component<{
   return (
     <>
       <div
-        class="flex items-center bg-white py-2 pr-4 shadow-sm"
+        class="flex cursor-pointer items-center bg-white py-2 pr-4 shadow-sm"
         classList={{
           "pl-10": !!props.parent,
-          "pl-4": !props.parent,
-          "cursor-pointer": !props.isEditing
+          "pl-4": !props.parent
         }}
       >
-        <div class="flex flex-1 items-center" onClick={navigateUnlessEditing}>
+        <div class="flex flex-1 items-center" onClick={navigateToTransaction}>
           <RelationEditor
             parent={props.parent}
             transaction={props.transaction}
             includeInReports={includeInReports()}
           />
 
-          <div
-            class="ml-2 min-w-0 flex-1 border-l"
-            classList={{
-              "border-gray-200": props.isEditing && !editingMemo(),
-              "border-transparent": !props.isEditing || editingMemo(),
-              "px-2": !editingMemo(),
-              "-my-1": editingMemo()
-            }}
-          >
-            <Show
-              when={editingMemo()}
-              fallback={
-                <>
-                  <div
-                    class="truncate leading-none"
-                    classList={{ "text-gray-600 line-through": !includeInReports() }}
-                    onClick={() => props.isEditing && setEditingMemo(true)}
-                  >
-                    {props.transaction.memo}
-                  </div>
-                  <Show when={!parent && !props.isEditing}>
-                    <div
-                      class="truncate pt-1 text-xs uppercase leading-tight"
-                      classList={{
-                        "text-gray-600": includeInReports(),
-                        "text-gray-300": !includeInReports()
-                      }}
-                    >
-                      {props.transaction.accountMailbox?.name} / {props.transaction.originalMemo}
-                    </div>
-                  </Show>
-                </>
-              }
+          <div class="ml-2 min-w-0 flex-1 px-2">
+            <div
+              class="truncate leading-none"
+              classList={{ "text-gray-600 line-through": !includeInReports() }}
             >
-              <MemoEditor transaction={props.transaction} stopEditing={stopEditing} />
-            </Show>
+              {props.transaction.memo}
+            </div>
           </div>
           <div
             class="ml-2 whitespace-nowrap"
@@ -120,9 +76,8 @@ const TransactionItem: Component<{
       <Index each={splitTo()}>
         {(child) => (
           <div
-            onClick={navigateUnlessEditing}
-            class="flex items-center bg-white py-2 pr-4 pl-10 shadow-sm"
-            classList={{ "cursor-pointer": !props.isEditing }}
+            onClick={navigateToTransaction}
+            class="flex cursor-pointer items-center bg-white py-2 pr-4 pl-10 shadow-sm"
           >
             <CategoryIndicator
               class="mr-4 h-8 w-8 flex-none"

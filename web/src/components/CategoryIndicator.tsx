@@ -1,8 +1,8 @@
-import { TbCurrencyPound, TbMinus, TbQuestionMark, TbSeparator } from "solid-icons/tb"
+import { TbCurrencyPound, TbMinus, TbQuestionMark, TbSeparatorHorizontal } from "solid-icons/tb"
 import { Component, mergeProps } from "solid-js"
 import { Dynamic } from "solid-js/web"
 import { ClassProps } from "../types"
-import { CategoryColor, CATEGORY_BACKGROUND_COLORS } from "../utils/categoryColors"
+import { CATEGORY_BACKGROUND_COLORS, CategoryColor } from "../utils/categoryColors"
 
 const CategoryIndicator: Component<
   ClassProps & {
@@ -24,7 +24,8 @@ const CategoryIndicator: Component<
   }
 
   const getColor = () => {
-    if (!props.includeInReports || props.isSplit) return "text-gray-200"
+    if (!props.includeInReports) return "text-gray-200"
+    if (props.isSplit) return "text-gray-300"
     if (props.isIncome) return "text-green-500"
     if (!props.color) return "text-red-500"
     return "text-white"
@@ -32,7 +33,7 @@ const CategoryIndicator: Component<
 
   const getIcon = (): Component<{ size?: string }> => {
     if (props.isIncome) return TbCurrencyPound
-    if (props.isSplit) return TbSeparator
+    if (props.isSplit) return TbSeparatorHorizontal
     if (!props.includeInReports) return TbMinus
     if (!props.icon) return TbQuestionMark
     return props.icon

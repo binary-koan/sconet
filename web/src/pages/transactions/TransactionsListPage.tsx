@@ -1,10 +1,10 @@
 import { Title } from "@solidjs/meta"
 import { useNavigate, useRouteData } from "@solidjs/router"
-import { TbCalendarEvent, TbEdit, TbFilter, TbPlus, TbX } from "solid-icons/tb"
-import { Component, createSignal, onMount, Show } from "solid-js"
+import { TbCalendarEvent, TbFilter, TbPlus, TbX } from "solid-icons/tb"
+import { Component, Show, createSignal, onMount } from "solid-js"
+import { Cell } from "../../components/Cell"
 import { Button } from "../../components/base/Button"
 import { PageHeader } from "../../components/base/PageHeader"
-import { Cell } from "../../components/Cell"
 import { NewTransactionModal } from "../../components/transactions/NewTransactionModal"
 import TransactionFilters, {
   TransactionFilterValues
@@ -33,7 +33,6 @@ const TransactionsListPage: Component = () => {
 
   const navigate = useNavigate()
   const routeData = useRouteData<TransactionsListPageData>()
-  const [isEditing, setEditing] = createSignal(false)
   const [isFiltering, setFiltering] = createSignal(false)
   const [creatingTransaction, setCreatingTransaction] = createSignal(false)
 
@@ -79,16 +78,6 @@ const TransactionsListPage: Component = () => {
         </Button>
         <Button
           class="ml-2"
-          colorScheme={isEditing() ? "primary" : "neutral"}
-          variant={isEditing() ? "solid" : "ghost"}
-          size="square"
-          aria-label="Edit"
-          onClick={() => setEditing((isEditing) => !isEditing)}
-        >
-          <TbEdit size="1.25em" />
-        </Button>
-        <Button
-          class="ml-2"
           colorScheme="neutral"
           variant="ghost"
           size="square"
@@ -111,7 +100,6 @@ const TransactionsListPage: Component = () => {
         data={routeData.data}
         success={TransactionsList}
         successProps={{
-          isEditing: isEditing(),
           setFilterValue,
           fetchMore: () =>
             routeData.data.fetchMore(

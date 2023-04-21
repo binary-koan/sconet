@@ -12,7 +12,6 @@ export const TransactionsList: Component<{
   data: TransactionsQuery
   fetchMore?: (variables: any) => void
   setFilterValue: (name: keyof TransactionFilterValues, value: any) => void
-  isEditing: boolean
 }> = (props) => {
   const [showingModalForDate, setShowingModalForDate] = createSignal<Date>()
 
@@ -89,30 +88,21 @@ export const TransactionsList: Component<{
                 </div>
               </Show>
 
-              <div class="flex justify-between px-4 pt-4 pb-2 text-sm text-gray-600">
+              <div class="flex px-2 pt-5 pb-2 text-sm text-gray-600">
+                <Button
+                  variant="ghost"
+                  size="custom"
+                  class="mr-1 h-5 gap-1 px-2 text-xs text-gray-500"
+                  onClick={() => setShowingModalForDate(date)}
+                >
+                  <TbPlus />
+                </Button>
                 {formatDate(date, "fullDateWithoutYear")}
-
-                <Show when={props.isEditing}>
-                  <Button
-                    variant="ghost"
-                    size="custom"
-                    class="ml-2 h-5 gap-1 px-2 text-xs text-gray-800"
-                    onClick={() => setShowingModalForDate(date)}
-                  >
-                    <TbPlus /> Add
-                  </Button>
-                </Show>
               </div>
 
               <For each={transactions}>
-                {(transaction) => (
-                  <TransactionItem transaction={transaction} isEditing={props.isEditing} />
-                )}
+                {(transaction) => <TransactionItem transaction={transaction} />}
               </For>
-
-              <Show when={!transactions.length}>
-                <div class="flex items-center px-4 pb-2 italic text-gray-600">-</div>
-              </Show>
             </>
           )
         }}
