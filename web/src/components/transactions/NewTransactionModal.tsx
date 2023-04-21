@@ -46,11 +46,11 @@ export const NewTransactionModal: Component<{
     }
   })
 
-  let amountInput: HTMLInputElement | undefined
+  let memoInput: HTMLInputElement | undefined
 
   createEffect(() => {
     if (isDateSelected()) {
-      amountInput?.focus()
+      memoInput?.focus()
     }
   })
 
@@ -120,9 +120,16 @@ export const NewTransactionModal: Component<{
 
           <div classList={{ hidden: !isDateSelected() }} class="flex flex-1 flex-col gap-4">
             <div class="my-auto flex flex-col gap-2">
+              <FormInput
+                placeholderLabel={true}
+                of={form}
+                ref={memoInput}
+                label="Memo"
+                name="memo"
+              />
+
               <FormInputGroup
                 of={form}
-                ref={amountInput}
                 label="Amount"
                 name="amount"
                 type="number"
@@ -135,8 +142,6 @@ export const NewTransactionModal: Component<{
                     : "1"
                 }
               />
-
-              <FormInput placeholderLabel={true} of={form} label="Memo" name="memo" />
             </div>
 
             <div class="flex gap-4">
