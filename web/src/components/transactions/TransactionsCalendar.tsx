@@ -1,14 +1,14 @@
 import { Link, useNavigate } from "@solidjs/router"
 import { TbArrowLeft, TbArrowRight, TbDots, TbPlus } from "solid-icons/tb"
-import { Component, createSignal, For, Show } from "solid-js"
+import { Component, For, Show, createSignal } from "solid-js"
 import { TransactionsByDayQuery } from "../../graphql-types"
 import { buildMonthDates } from "../../utils/buildMonthDates"
 import {
-  CategoryColor,
   CATEGORY_BACKGROUND_COLORS,
-  CATEGORY_PALE_BACKGROUND_COLORS
+  CATEGORY_PALE_BACKGROUND_COLORS,
+  CategoryColor
 } from "../../utils/categoryColors"
-import { isSameDate } from "../../utils/date"
+import { decrementMonth, incrementMonth, isSameDate } from "../../utils/date"
 import { Button } from "../base/Button"
 import { NewTransactionModal } from "./NewTransactionModal"
 
@@ -25,6 +25,19 @@ export const TransactionsCalendar: Component<{
 
   const dates = () => monthDates(parseInt(props.year), parseInt(props.month), props.data)
 
+  const changeMonthAndNavigate = (
+    changeMonth: (options: { monthNumber: number; year: number }) => {
+      monthNumber: number
+      year: number
+    }
+  ) => {
+    const { monthNumber, year } = changeMonth({
+      monthNumber: parseInt(props.month),
+      year: parseInt(props.year)
+    })
+    navigate(`/transactions/calendar/${year}-${monthNumber.toString().padStart(2, "0")}`)
+  }
+
   return (
     <>
       <Show when={!!newTransactionDate()}>
@@ -36,7 +49,11 @@ export const TransactionsCalendar: Component<{
       </Show>
 
       <div class="mx-auto mb-4 flex items-center rounded bg-gray-200">
-        <Button size="square" aria-label="List" onClick={() => navigate("/transactions/list")}>
+        <Button
+          size="square"
+          aria-label="List"
+          onClick={() => changeMonthAndNavigate(decrementMonth)}
+        >
           <TbArrowLeft size="1.25em" />
         </Button>
 
@@ -44,7 +61,11 @@ export const TransactionsCalendar: Component<{
           {monthStart.toLocaleDateString("default", { month: "long", year: "numeric" })}
         </span>
 
-        <Button size="square" aria-label="List" onClick={() => navigate("/transactions/list")}>
+        <Button
+          size="square"
+          aria-label="List"
+          onClick={() => changeMonthAndNavigate(incrementMonth)}
+        >
           <TbArrowRight size="1.25em" />
         </Button>
       </div>
@@ -61,10 +82,7 @@ export const TransactionsCalendar: Component<{
             {({ date, isCurrentMonth, totalSpent, expenses, incomes }) => (
               <div
                 class="[&:nth-child(7n)]:border-r-0 flex h-16 flex-col border-t border-r border-gray-200 p-1 text-center text-sm lg:h-32 lg:text-left"
-                classList={{
-                  "text-gray-300": !isCurrentMonth,
-                  "bg-gray-100": !!expenses.length
-                }}
+                classList={{ "text-gray-300": !isCurrentMonth }}
               >
                 <div class="flex flex-col lg:flex-row lg:pl-1">
                   <span class="lg:mr-auto lg:font-semibold">{date.getDate()}</span>
@@ -78,7 +96,7 @@ export const TransactionsCalendar: Component<{
                       )}`}
                       class="my-auto text-xs font-bold"
                     >
-                      {totalSpent?.replace("-", "")}
+                      {totalSpent}
                     </Link>
                   </Show>
                   <Show when={isCurrentMonth}>
