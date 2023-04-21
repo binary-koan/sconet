@@ -1,11 +1,11 @@
 import { TbArrowsSplit2, TbDotsVertical, TbEye, TbEyeOff, TbTrash } from "solid-icons/tb"
-import { Component, createSignal, Show } from "solid-js"
+import { Component, Show, createSignal } from "solid-js"
 import { FullTransactionFragment } from "../../graphql-types"
 import { useDeleteTransaction } from "../../graphql/mutations/deleteTransactionMutation"
 import { useUpdateTransaction } from "../../graphql/mutations/updateTransactionMutation"
 import { AlertModal } from "../AlertModal"
-import { Button } from "../base/Button"
 import { Dropdown, DropdownMenuItem } from "../Dropdown"
+import { Button } from "../base/Button"
 import { SplitTransactionModal } from "./SplitTransactionModal"
 
 export const TransactionActions: Component<{ transaction: FullTransactionFragment }> = (props) => {
@@ -23,6 +23,12 @@ export const TransactionActions: Component<{ transaction: FullTransactionFragmen
     setDropdownOpen(isOpen)
   }
 
+  const stopEvent = (callback: () => void) => (event: Event) => {
+    event.stopPropagation()
+    event.preventDefault()
+    callback()
+  }
+
   return (
     <Dropdown
       isOpen={dropdownOpen()}
@@ -30,7 +36,7 @@ export const TransactionActions: Component<{ transaction: FullTransactionFragmen
       placement="bottomRight"
       content={
         <>
-          <DropdownMenuItem onClick={() => setSplitModalVisible(true)}>
+          <DropdownMenuItem onClick={stopEvent(() => setSplitModalVisible(true))}>
             <TbArrowsSplit2 /> Split transaction
           </DropdownMenuItem>
 
@@ -47,12 +53,12 @@ export const TransactionActions: Component<{ transaction: FullTransactionFragmen
           </Show>
 
           <DropdownMenuItem
-            onClick={() =>
+            onClick={stopEvent(() =>
               updateTransaction({
                 id: props.transaction.id,
                 input: { includeInReports: !props.transaction.includeInReports }
               })
-            }
+            )}
           >
             {props.transaction.includeInReports ? (
               <>
@@ -65,7 +71,7 @@ export const TransactionActions: Component<{ transaction: FullTransactionFragmen
             )}
           </DropdownMenuItem>
 
-          <DropdownMenuItem onClick={() => setDeleteModalVisible(true)}>
+          <DropdownMenuItem onClick={stopEvent(() => setDeleteModalVisible(true))}>
             <TbTrash /> Delete
           </DropdownMenuItem>
 

@@ -11,7 +11,7 @@ const AccountMailboxForm: Component<{
   onSave: (input: CreateAccountMailboxInput, id?: string) => void
   loading: boolean
 }> = (props) => {
-  const form = createForm<AccountMailboxFormValues>({
+  const [form] = createForm<AccountMailboxFormValues>({
     initialValues: {
       name: props.accountMailbox?.name,
       fromAddressPattern: props.accountMailbox?.fromAddressPattern,

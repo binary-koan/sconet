@@ -1,4 +1,4 @@
-import { createForm, DeepPartial, getValues, reset, setValue } from "@modular-forms/solid"
+import { PartialValues, createForm, getValues, reset, setValue } from "@modular-forms/solid"
 import { debounce } from "@solid-primitives/scheduled"
 import { useNavigate, useParams } from "@solidjs/router"
 import { isArray, isEqual, isPlainObject, pickBy } from "lodash"
@@ -13,7 +13,7 @@ const usePageFilter = <FilterValues extends { [key: string]: any }>({
   basePath: string
   paramName: string
   localStorageKey?: string
-  initialValues: DeepPartial<FilterValues>
+  initialValues: PartialValues<FilterValues>
 }) => {
   const params = useParams()
   const navigate = useNavigate()
@@ -39,7 +39,7 @@ const usePageFilter = <FilterValues extends { [key: string]: any }>({
     return value != null && value !== ""
   }
 
-  const form = createForm<FilterValues>({
+  const [form] = createForm<FilterValues>({
     initialValues: paramFilterValues()
   })
 

@@ -24,7 +24,7 @@ export const AddCurrencyButton: Component = () => {
     }
   })
 
-  const form = createForm<CurrencyFormValues>()
+  const [form] = createForm<CurrencyFormValues>()
 
   const onSubmit = (values: CurrencyFormValues) => {
     createCurrency({ input: values })

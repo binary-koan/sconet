@@ -60,7 +60,7 @@ const LoginPage: Component = () => {
     }
   })
 
-  const form = createForm<LoginFormValues>()
+  const [form] = createForm<LoginFormValues>()
 
   let turnstileContainer: HTMLDivElement | undefined = undefined
 

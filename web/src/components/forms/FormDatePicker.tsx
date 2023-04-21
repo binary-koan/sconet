@@ -1,13 +1,13 @@
-import { Field, FormState, getValue, setValue } from "@modular-forms/solid"
+import { Field, FormStore, getValue, setValue } from "@modular-forms/solid"
 import { TbArrowLeft, TbArrowRight } from "solid-icons/tb"
-import { Component, createSignal, For, JSX, Show } from "solid-js"
+import { Component, For, JSX, Show, createSignal } from "solid-js"
 import { buildMonthDates } from "../../utils/buildMonthDates"
 import { decrementMonth, incrementMonth, isSameDate } from "../../utils/date"
 import { Button } from "../base/Button"
 import { FormControl, FormLabel } from "../base/FormControl"
 
 export const FormDatePicker: Component<{
-  of: FormState<any>
+  of: FormStore<any, any>
   label: JSX.Element
   labelHidden?: boolean
   name: string
@@ -42,9 +42,9 @@ export const FormDatePicker: Component<{
         <FormLabel class={props.labelHidden ? "sr-only" : ""}>{props.label}</FormLabel>
       </Show>
       <Field of={props.of} name={props.name}>
-        {(field) => (
+        {(field, fieldProps) => (
           <>
-            <input {...field.props} value={field.value || ""} style={{ display: "none" }} />
+            <input {...fieldProps} value={field.value || ""} style={{ display: "none" }} />
 
             <div class="flex flex-col items-center">
               <div class="mx-auto mb-4 flex items-center justify-center rounded">

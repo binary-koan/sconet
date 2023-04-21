@@ -26,7 +26,7 @@ const CategoryForm: Component<{
   loading: boolean
 }> = (props) => {
   const currencies = useCurrenciesQuery()
-  const form = createForm<CategoryFormValues>({
+  const [form] = createForm<CategoryFormValues>({
     initialValues: {
       name: props.category?.name,
       color: props.category?.color,

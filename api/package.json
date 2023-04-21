@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "dev": "nodemon --exec 'bun start'",
+    "dev": "TZ=UTC bun run --watch src/server.ts",
     "start": "TZ=UTC bun run src/server.ts",
     "codegen": "graphql-codegen",
     "typecheck": "tsc --noEmit",
@@ -36,7 +36,6 @@
     "@types/lodash": "^4.14.182",
     "@types/minio": "^7.0.15",
     "bun-types": "^0.5.0",
-    "nodemon": "^2.0.20",
     "typescript": "^4.9.4"
   }
 }

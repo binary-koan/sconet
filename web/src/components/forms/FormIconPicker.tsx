@@ -1,11 +1,11 @@
-import { Field, FormState, setValue } from "@modular-forms/solid"
+import { Field, FormStore, setValue } from "@modular-forms/solid"
 import { Component, JSX, Show } from "solid-js"
-import { FormControl, FormLabel } from "../base/FormControl"
 import IconPicker from "../IconPicker"
+import { FormControl, FormLabel } from "../base/FormControl"
 import { FieldError } from "./FieldError"
 
 const FormIconPicker: Component<{
-  of: FormState<any>
+  of: FormStore<any, any>
   label: JSX.Element
   name: string
 }> = (props) => {

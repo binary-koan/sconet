@@ -121,6 +121,7 @@ const TransactionItem: Component<{
           <div
             onClick={navigateUnlessEditing}
             class="flex items-center bg-white py-2 pr-4 pl-10 shadow-sm"
+            classList={{ "cursor-pointer": !props.isEditing }}
           >
             <CategoryIndicator
               class="mr-4 h-8 w-8 flex-none"
@@ -131,7 +132,7 @@ const TransactionItem: Component<{
               isIncome={props.transaction.amount.decimalAmount > 0}
             />
 
-            <div class="mr-2 min-w-0 truncate text-xs">{child().memos}</div>
+            <div class="mr-2 min-w-0 truncate text-sm">{child().memos}</div>
 
             <div class="ml-auto ml-auto mr-1 flex h-6 w-6 flex-none items-center justify-center rounded-full bg-gray-200 text-xs">
               {child().count}

@@ -1,4 +1,4 @@
-import { createForm, Form, getValue, minNumber, required } from "@modular-forms/solid"
+import { createForm, Form, getValue, minRange, required } from "@modular-forms/solid"
 import { repeat } from "lodash"
 import { Component, Show } from "solid-js"
 import {
@@ -30,7 +30,7 @@ const TransactionForm: Component<{
   const accountMailboxes = useAccountMailboxesQuery()
   const currencies = useCurrenciesQuery()
 
-  const form = createForm<TransactionFormValues>({
+  const [form] = createForm<TransactionFormValues>({
     initialValues: {
       amountType:
         props.data?.transaction?.amount && props.data?.transaction.amount.decimalAmount > 0
@@ -124,7 +124,7 @@ const TransactionForm: Component<{
           label="Amount"
           name="amount"
           type="number"
-          validate={minNumber(0, "Must be zero or more")}
+          validate={minRange(0, "Must be zero or more")}
           before={<InputAddon>{selectedCurrency()?.symbol}</InputAddon>}
           step={
             selectedCurrency()?.decimalDigits

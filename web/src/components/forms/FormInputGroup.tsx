@@ -1,4 +1,4 @@
-import { Field, FormState, ValidateField } from "@modular-forms/solid"
+import { Field, FormStore, ValidateField } from "@modular-forms/solid"
 import { Component, JSX, Show, splitProps } from "solid-js"
 import { FormControl, FormLabel } from "../base/FormControl"
 import { InputProps } from "../base/Input"
@@ -7,7 +7,7 @@ import { FieldError } from "./FieldError"
 
 const FormInputGroup: Component<
   InputProps & {
-    of: FormState<any>
+    of: FormStore<any, any>
     label: JSX.Element
     name: string
     validate?: ValidateField<any> | ValidateField<any>[]
@@ -31,7 +31,7 @@ const FormInputGroup: Component<
     <FormControl>
       <FormLabel class={props.placeholderLabel ? "sr-only" : ""}>{props.label}</FormLabel>
       <Field name={props.name} of={props.of} validate={props.validate}>
-        {(field) => (
+        {(field, fieldProps) => (
           <>
             <InputGroup>
               {props.before}
@@ -41,7 +41,7 @@ const FormInputGroup: Component<
                 placeholder={
                   props.placeholderLabel && typeof props.label === "string" ? props.label : ""
                 }
-                {...field.props}
+                {...fieldProps}
                 ref={props.ref}
               />
               {props.after}

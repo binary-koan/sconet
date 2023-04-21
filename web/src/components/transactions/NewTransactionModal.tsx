@@ -1,4 +1,4 @@
-import { createForm, Field, Form, getValue, minNumber, setValue } from "@modular-forms/solid"
+import { createForm, Field, Form, getValue, minRange, setValue } from "@modular-forms/solid"
 import { repeat } from "lodash"
 import { TbCalendarEvent, TbChevronDown, TbSwitch3 } from "solid-icons/tb"
 import { Component, createEffect, For, Show } from "solid-js"
@@ -8,7 +8,7 @@ import { useCreateTransaction } from "../../graphql/mutations/createTransactionM
 import { useAccountMailboxesQuery } from "../../graphql/queries/accountMailboxesQuery"
 import { useCategoriesQuery } from "../../graphql/queries/categoriesQuery"
 import { useCurrenciesQuery } from "../../graphql/queries/currenciesQuery"
-import { CategoryColor, CATEGORY_BACKGROUND_COLORS } from "../../utils/categoryColors"
+import { CATEGORY_BACKGROUND_COLORS, CategoryColor } from "../../utils/categoryColors"
 import { preferredAccount, preferredCurrency } from "../../utils/settings"
 import { Button } from "../base/Button"
 import { InputAddon } from "../base/InputGroup"
@@ -39,7 +39,7 @@ export const NewTransactionModal: Component<{
     }
   })
 
-  const form = createForm<NewTransactionModalValues>({
+  const [form] = createForm<NewTransactionModalValues>({
     initialValues: {
       date: props.initialDate && props.initialDate.toISOString().split("T")[0],
       amountType: "expense"
@@ -127,7 +127,7 @@ export const NewTransactionModal: Component<{
                 name="amount"
                 type="number"
                 placeholderLabel={true}
-                validate={minNumber(0, "Must be zero or more")}
+                validate={minRange(0, "Must be zero or more")}
                 before={<InputAddon>{selectedCurrency()?.symbol}</InputAddon>}
                 step={
                   selectedCurrency()?.decimalDigits

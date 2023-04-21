@@ -1,4 +1,4 @@
-import { Field, FormState, setValue, ValidateField } from "@modular-forms/solid"
+import { Field, FormStore, setValue, ValidateField } from "@modular-forms/solid"
 import { Component, For, JSX, Show, splitProps } from "solid-js"
 import { RefProp } from "../../types"
 import { Button } from "../base/Button"
@@ -6,7 +6,7 @@ import { FormControl, FormLabel } from "../base/FormControl"
 import { FieldError } from "./FieldError"
 
 const FormOptionButtons: Component<{
-  of: FormState<any>
+  of: FormStore<any, any>
   ref?: RefProp<HTMLDivElement>
   label?: JSX.Element
   name: string
@@ -21,13 +21,13 @@ const FormOptionButtons: Component<{
 }> = (props) => {
   return (
     <Field name={props.name} of={props.of} validate={props.validate}>
-      {(field) => (
+      {(field, fieldProps) => (
         <FormControl ref={props.ref}>
           <Show when={props.label}>
             <FormLabel>{props.label}</FormLabel>
           </Show>
 
-          <select {...field.props} multiple={props.multiple} style={{ display: "none" }}>
+          <select {...fieldProps} multiple={props.multiple} style={{ display: "none" }}>
             <For each={props.options}>
               {({ value }) => <option value={value} selected={field.value?.includes(value)} />}
             </For>
