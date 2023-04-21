@@ -147,7 +147,10 @@ export const TransactionsCalendar: Component<{
                         }}
                       >
                         <span class="truncate">{transaction.memo}</span>
-                        <span class="ml-auto whitespace-nowrap">
+                        <span
+                          class="ml-auto whitespace-nowrap"
+                          classList={{ "text-green-600": transaction.amount.decimalAmount > 0 }}
+                        >
                           {transaction.amount.formatted}
                         </span>
                       </Link>
