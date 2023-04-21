@@ -1,5 +1,5 @@
 import { evaluate, sum } from "mathjs"
-import { Component, createSignal, For } from "solid-js"
+import { Component, For, createSignal } from "solid-js"
 import { FullTransactionFragment } from "../../graphql-types"
 import { useSplitTransaction } from "../../graphql/mutations/splitTransactionMutation"
 import { useGetCurrencyQuery } from "../../graphql/queries/getCurrencyQuery"
@@ -15,7 +15,16 @@ export const SplitTransactionModal: Component<{
 }> = (props) => {
   const splitTransaction = useSplitTransaction()
   const currencyData = useGetCurrencyQuery(() => ({ id: props.transaction.currencyId }))
-  const [splits, setSplits] = createSignal([{ amount: "", memo: "", numericAmount: 0 }])
+
+  const [splits, setSplits] = createSignal(
+    props.transaction.splitTo
+      .map((child) => ({
+        amount: Math.abs(child.amount.decimalAmount).toString(),
+        memo: child.memo,
+        numericAmount: Math.abs(child.amount.decimalAmount)
+      }))
+      .concat({ amount: "", memo: "", numericAmount: 0 })
+  )
 
   const parseNumericAmount = (amount: string) => {
     try {
@@ -35,7 +44,7 @@ export const SplitTransactionModal: Component<{
     )
 
   const doUpdate = async () => {
-    let splitsToSend = splits().filter((split) => split.numericAmount > 0)
+    let splitsToSend = splits().filter((split) => split.amount && split.memo)
 
     if (remainder() > 0) {
       splitsToSend.push({ amount: "", memo: "", numericAmount: remainder() })
@@ -55,6 +64,7 @@ export const SplitTransactionModal: Component<{
         amount: Math.round(numericAmount * 10 ** (currencyData()?.currency?.decimalDigits || 0))
       }))
     })
+
     props.onFinish()
   }
 
@@ -85,18 +95,18 @@ export const SplitTransactionModal: Component<{
         <div class="flex flex-col gap-2">
           <For each={splits()}>
             {({ amount, memo }, index) => (
-              <div class="flex gap-2">
+              <div class="grid grid-cols-5 gap-2">
                 <Input
-                  class="flex-1"
-                  value={amount}
-                  placeholder="Amount"
-                  onInput={(e) => setField(index(), "amount", e.currentTarget.value)}
-                />
-                <Input
-                  class="flex-1"
+                  class="col-span-3"
                   value={memo}
                   placeholder="Memo"
                   onInput={(e) => setField(index(), "memo", e.currentTarget.value)}
+                />
+                <Input
+                  class="col-span-2"
+                  value={amount}
+                  placeholder="Amount"
+                  onInput={(e) => setField(index(), "amount", e.currentTarget.value)}
                 />
               </div>
             )}

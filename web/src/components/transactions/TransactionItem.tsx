@@ -53,7 +53,6 @@ const TransactionItem: Component<{
   return (
     <>
       <div
-        onClick={navigateUnlessEditing}
         class="flex items-center bg-white py-2 pr-4 shadow-sm"
         classList={{
           "pl-10": !!props.parent,
@@ -61,56 +60,58 @@ const TransactionItem: Component<{
           "cursor-pointer": !props.isEditing
         }}
       >
-        <RelationEditor
-          parent={props.parent}
-          transaction={props.transaction}
-          includeInReports={includeInReports()}
-        />
+        <div class="flex flex-1 items-center" onClick={navigateUnlessEditing}>
+          <RelationEditor
+            parent={props.parent}
+            transaction={props.transaction}
+            includeInReports={includeInReports()}
+          />
 
-        <div
-          class="ml-2 min-w-0 flex-1 border-l"
-          classList={{
-            "border-gray-200": props.isEditing && !editingMemo(),
-            "border-transparent": !props.isEditing || editingMemo(),
-            "px-2": !editingMemo(),
-            "-my-1": editingMemo()
-          }}
-        >
-          <Show
-            when={editingMemo()}
-            fallback={
-              <>
-                <div
-                  class="truncate leading-none"
-                  classList={{ "text-gray-600 line-through": !includeInReports() }}
-                  onClick={() => props.isEditing && setEditingMemo(true)}
-                >
-                  {props.transaction.memo}
-                </div>
-                <Show when={!parent && !props.isEditing}>
-                  <div
-                    class="truncate pt-1 text-xs uppercase leading-tight"
-                    classList={{
-                      "text-gray-600": includeInReports(),
-                      "text-gray-300": !includeInReports()
-                    }}
-                  >
-                    {props.transaction.accountMailbox?.name} / {props.transaction.originalMemo}
-                  </div>
-                </Show>
-              </>
-            }
+          <div
+            class="ml-2 min-w-0 flex-1 border-l"
+            classList={{
+              "border-gray-200": props.isEditing && !editingMemo(),
+              "border-transparent": !props.isEditing || editingMemo(),
+              "px-2": !editingMemo(),
+              "-my-1": editingMemo()
+            }}
           >
-            <MemoEditor transaction={props.transaction} stopEditing={stopEditing} />
-          </Show>
-        </div>
-        <div
-          class="ml-2 whitespace-nowrap"
-          classList={{
-            "text-gray-600 line-through": !includeInReports()
-          }}
-        >
-          {props.transaction.amount.formatted}
+            <Show
+              when={editingMemo()}
+              fallback={
+                <>
+                  <div
+                    class="truncate leading-none"
+                    classList={{ "text-gray-600 line-through": !includeInReports() }}
+                    onClick={() => props.isEditing && setEditingMemo(true)}
+                  >
+                    {props.transaction.memo}
+                  </div>
+                  <Show when={!parent && !props.isEditing}>
+                    <div
+                      class="truncate pt-1 text-xs uppercase leading-tight"
+                      classList={{
+                        "text-gray-600": includeInReports(),
+                        "text-gray-300": !includeInReports()
+                      }}
+                    >
+                      {props.transaction.accountMailbox?.name} / {props.transaction.originalMemo}
+                    </div>
+                  </Show>
+                </>
+              }
+            >
+              <MemoEditor transaction={props.transaction} stopEditing={stopEditing} />
+            </Show>
+          </div>
+          <div
+            class="ml-2 whitespace-nowrap"
+            classList={{
+              "text-gray-600 line-through": !includeInReports()
+            }}
+          >
+            {props.transaction.amount.formatted}
+          </div>
         </div>
         <Show when={!props.parent} fallback={<div class="w-10" />}>
           <TransactionActions transaction={props.transaction} />
