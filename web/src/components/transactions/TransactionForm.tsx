@@ -30,6 +30,8 @@ const TransactionForm: Component<{
   const accountMailboxes = useAccountMailboxesQuery()
   const currencies = useCurrenciesQuery()
 
+  console.log("initial memo", props.data?.transaction?.memo)
+
   const [form] = createForm<TransactionFormValues>({
     initialValues: {
       amountType:

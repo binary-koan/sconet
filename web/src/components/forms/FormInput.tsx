@@ -34,6 +34,7 @@ const FormInput: Component<
               placeholder={
                 props.placeholderLabel && typeof props.label === "string" ? props.label : ""
               }
+              value={field.value}
               {...inputProps}
               {...fieldProps}
               ref={inputProps.ref}

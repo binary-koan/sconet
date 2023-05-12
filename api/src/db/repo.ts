@@ -91,7 +91,7 @@ export const createRepo = <
         updatedAt: new Date()
       }
 
-      db.query(`INSERT INTO ${tableName} ${fieldsInsertQuery(id, record)}`).run(
+      db.prepare(`INSERT INTO ${tableName} ${fieldsInsertQuery(id, record)}`).run(
         fieldBindings({ id, ...serialize(record as Partial<Record>) })
       )
 

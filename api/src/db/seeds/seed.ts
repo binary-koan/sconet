@@ -1,12 +1,13 @@
 import bcrypt from "bcryptjs"
 import ObjectID from "bson-objectid"
+import { updateExchangeRates } from "../../jobs/exchangeRates"
 import { db } from "../database"
 import { accountMailboxesRepo } from "../repos/accountMailboxesRepo"
 import { categoriesRepo } from "../repos/categoriesRepo"
 import { currenciesRepo } from "../repos/currenciesRepo"
 import { serializeDate } from "../utils"
 
-export function seed() {
+export async function seed() {
   for (const email of process.env.USER_EMAILS?.split(",") || []) {
     const existing = db.query("SELECT * FROM users WHERE email = ?").get(email)
 
@@ -65,4 +66,6 @@ export function seed() {
       symbol: "¥"
     })
   }
+
+  await updateExchangeRates()
 }

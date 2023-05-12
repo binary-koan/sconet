@@ -23,7 +23,7 @@ const EditTransactionPage: Component = () => {
   const updateTransaction = useUpdateTransaction({
     onSuccess: () => {
       toast.success("Transaction updated")
-      navigate("/transactions")
+      navigate(`/transactions/${routeData.data()!.transaction!.id}`)
     },
     onError: (error) => {
       toast.error(error.message)
