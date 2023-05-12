@@ -16,7 +16,7 @@ export function findExchangeRatesByCurrencyIds(
   }
 
   const allRates = db
-    .query(
+    .query<any, any>(
       `SELECT * FROM exchangeRates WHERE deletedAt IS NULL AND fromCurrencyId IN ${arrayQuery(
         queries
       )}`

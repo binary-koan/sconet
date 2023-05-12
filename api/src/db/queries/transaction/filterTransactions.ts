@@ -109,7 +109,9 @@ export function filterTransactions({
   )
 
   const totalCount = memoize(
-    () => db.query(`SELECT COUNT(*) AS count FROM transactions ${where}`).get().count
+    () =>
+      db.query<{ count: number }, any>(`SELECT COUNT(*) AS count FROM transactions ${where}`).get()
+        ?.count || 0
   )
 
   return {

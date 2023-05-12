@@ -10,7 +10,7 @@ export function convertAmounts(
   }>
 ) {
   return db
-    .query(
+    .query<{ fromDigits: number; toDigits: number; convertedAmount: number }, any>(
       `
     WITH queries(amount, fromCurrencyId, toCurrencyId, dailyExchangeRateId) AS (
       VALUES ${commonTableExpressionQuery(queries)}

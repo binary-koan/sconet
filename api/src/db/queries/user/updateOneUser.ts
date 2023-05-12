@@ -7,7 +7,7 @@ export function updateOneUser(id: string, fields: Partial<UserRecord>) {
   const fieldsToSet = pickBy(fields, (value) => value !== undefined)
   const set = Object.keys(fieldsToSet).map((key) => assertFieldName(key) && `${key} = $${key}`)
 
-  db.run(`UPDATE users SET ${set} WHERE id = $id`, {
+  db.query(`UPDATE users SET ${set} WHERE id = $id`).run({
     $id: id,
     ...mapKeys(fieldsToSet, (_, key) => `$${key}`)
   })

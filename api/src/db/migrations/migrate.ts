@@ -100,7 +100,7 @@ function runMigration(filename: string, version: string, name: string) {
 
   require(`./${filename}`).up()
 
-  db.run("INSERT INTO schemaMigrations (version) VALUES (?)", version)
+  db.query("INSERT INTO schemaMigrations (version) VALUES (?)").run(version)
 
   console.log("Complete")
 }
@@ -110,7 +110,7 @@ function rollbackMigration(filename: string, version: string, name: string) {
 
   require(`./${filename}`).down()
 
-  db.run("DELETE FROM schemaMigrations WHERE version = ?", version)
+  db.query("DELETE FROM schemaMigrations WHERE version = ?").run(version)
 
   console.log("Complete")
 }
@@ -133,7 +133,7 @@ function listMigrationFiles() {
 
 function getCompletedMigrations() {
   return db
-    .query("SELECT * FROM schemaMigrations")
+    .query<{ version: string }, any>("SELECT * FROM schemaMigrations")
     .all()
-    .map<string>((row) => row.version)
+    .map((row) => row.version)
 }

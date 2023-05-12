@@ -79,7 +79,7 @@ export const createRepo = <
     get(id) {
       const result = db.query(`SELECT * FROM ${tableName} WHERE id = ?`).get(id)
 
-      return result && load(result)
+      return result ? load(result) : undefined
     },
 
     insert(recordForInsert) {
@@ -91,8 +91,7 @@ export const createRepo = <
         updatedAt: new Date()
       }
 
-      db.run(
-        `INSERT INTO ${tableName} ${fieldsInsertQuery(id, record)}`,
+      db.query(`INSERT INTO ${tableName} ${fieldsInsertQuery(id, record)}`).run(
         fieldBindings({ id, ...serialize(record as Partial<Record>) })
       )
 
@@ -109,8 +108,7 @@ export const createRepo = <
         return id
       }
 
-      db.run(
-        `UPDATE ${tableName} SET ${fieldsUpdateQuery(fieldsToSet)} WHERE id = $id`,
+      db.query(`UPDATE ${tableName} SET ${fieldsUpdateQuery(fieldsToSet)} WHERE id = $id`).run(
         fieldBindings({ id, ...fieldsToSet })
       )
 
@@ -118,7 +116,7 @@ export const createRepo = <
     },
 
     softDelete(id) {
-      db.run(`UPDATE ${tableName} SET deletedAt = $now WHERE id = $id`, {
+      db.query(`UPDATE ${tableName} SET deletedAt = $now WHERE id = $id`).run({
         $id: id,
         $now: serializeDate(new Date())
       })

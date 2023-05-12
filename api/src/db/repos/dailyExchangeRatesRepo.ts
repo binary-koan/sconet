@@ -3,7 +3,7 @@ import { startOfDayUTC } from "../../utils/date"
 import { db } from "../database"
 import { DailyExchangeRateRecord } from "../records/dailyExchangeRate"
 import { createRepo } from "../repo"
-import { loadDate, serializeDate } from "../utils"
+import { serializeDate } from "../utils"
 import { loadDailyExchangeRate } from "./dailyExchangeRates/loadDailyExchangeRate"
 import { serializeDailyExchangeRate } from "./dailyExchangeRates/serializeDailyExchangeRate"
 
@@ -29,21 +29,25 @@ export const dailyExchangeRatesRepo = createRepo({
     },
 
     findClosest: (date: Date, fromCurrencyId: string) => {
-      const onOrAfter = db
-        .query(
-          "SELECT * FROM dailyExchangeRates WHERE date >= ? AND fromCurrencyId = ? ORDER BY date ASC"
-        )
-        .get(serializeDate(startOfDayUTC(date)), fromCurrencyId)
+      const onOrAfter = loadDailyExchangeRate(
+        db
+          .query(
+            "SELECT * FROM dailyExchangeRates WHERE date >= ? AND fromCurrencyId = ? ORDER BY date ASC"
+          )
+          .get(serializeDate(startOfDayUTC(date)), fromCurrencyId)
+      )
 
-      if (onOrAfter && loadDate(onOrAfter.date as number)?.getTime() === date.getTime()) {
+      if (onOrAfter?.date?.getTime() === date.getTime()) {
         return loadDailyExchangeRate(onOrAfter)
       }
 
-      const before = db
-        .query(
-          "SELECT * FROM dailyExchangeRates WHERE date < ? AND fromCurrencyId = ? ORDER BY date DESC"
-        )
-        .get(serializeDate(startOfDayUTC(date)), fromCurrencyId)
+      const before = loadDailyExchangeRate(
+        db
+          .query(
+            "SELECT * FROM dailyExchangeRates WHERE date < ? AND fromCurrencyId = ? ORDER BY date DESC"
+          )
+          .get(serializeDate(startOfDayUTC(date)), fromCurrencyId)
+      )
 
       if (!before && !onOrAfter) {
         return null
@@ -57,8 +61,8 @@ export const dailyExchangeRatesRepo = createRepo({
         return loadDailyExchangeRate(onOrAfter)
       }
 
-      const differenceAfter = loadDate(onOrAfter.date as number).getTime() - date.getTime()
-      const differenceBefore = date.getTime() - loadDate(before.date as number).getTime()
+      const differenceAfter = onOrAfter.date.getTime() - date.getTime()
+      const differenceBefore = date.getTime() - before.date.getTime()
 
       if (differenceAfter > differenceBefore) {
         return loadDailyExchangeRate(before)

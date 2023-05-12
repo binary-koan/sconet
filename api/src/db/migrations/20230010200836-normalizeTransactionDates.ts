@@ -2,7 +2,7 @@ import { db } from "../database"
 import { loadDate, serializeDate } from "../utils"
 
 export function up() {
-  db.query("SELECT id, date FROM transactions")
+  db.query<any, any>("SELECT id, date FROM transactions")
     .all()
     .forEach((row) => {
       const currentDate = loadDate(row.date as number)

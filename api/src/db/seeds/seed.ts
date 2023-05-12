@@ -25,7 +25,7 @@ export function seed() {
     }
   }
 
-  const existingCategories = db.query("SELECT * FROM categories").all()
+  const existingCategories = db.query("SELECT * FROM categories").all() as any[]
 
   if (!existingCategories.some((category) => category.name === "First")) {
     categoriesRepo.insert({
@@ -43,7 +43,7 @@ export function seed() {
     })
   }
 
-  const existingAccounts = db.query("SELECT * FROM accountMailboxes").all()
+  const existingAccounts = db.query("SELECT * FROM accountMailboxes").all() as any[]
 
   if (!existingAccounts.some((account) => account.name === "Test")) {
     accountMailboxesRepo.insert({
@@ -56,7 +56,7 @@ export function seed() {
     })
   }
 
-  const existingCurrencies = db.query("SELECT * FROM currencies").all()
+  const existingCurrencies = db.query("SELECT * FROM currencies").all() as any[]
 
   if (!existingCurrencies.some((currency) => currency.code === "JPY")) {
     currenciesRepo.insert({

@@ -68,7 +68,7 @@ export const transactionsRepo = createRepo({
     },
 
     deleteSplitTransactions(fromId: string) {
-      db.run(`DELETE FROM transactions WHERE splitFromId = $id`, {
+      db.query(`DELETE FROM transactions WHERE splitFromId = $id`).run({
         $id: fromId
       })
 
@@ -95,7 +95,7 @@ export const transactionsRepo = createRepo({
     },
 
     softDeleteSplitTransactions(fromId: string) {
-      db.run(`UPDATE transactions SET deletedAt = $now WHERE splitFromId = $id`, {
+      db.query(`UPDATE transactions SET deletedAt = $now WHERE splitFromId = $id`).run({
         $id: fromId,
         $now: serializeDate(new Date())
       })
@@ -110,12 +110,11 @@ export const transactionsRepo = createRepo({
         return fromId
       }
 
-      db.run(
-        `UPDATE transactions SET ${fieldsUpdateQuery(fieldsToSet)} WHERE splitFromId = $fromId`,
-        {
-          ...fieldBindings({ fromId, ...fieldsToSet })
-        }
-      )
+      db.query(
+        `UPDATE transactions SET ${fieldsUpdateQuery(fieldsToSet)} WHERE splitFromId = $fromId`
+      ).run({
+        ...fieldBindings({ fromId, ...fieldsToSet })
+      })
 
       return fromId
     }

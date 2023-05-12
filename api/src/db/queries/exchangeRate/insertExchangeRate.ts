@@ -1,8 +1,8 @@
-import { db } from "../../database"
 import ObjectID from "bson-objectid"
 import { MakeOptional } from "../../../types"
-import { serializeDate } from "../../utils"
+import { db } from "../../database"
 import { ExchangeRateRecord } from "../../records/exchangeRate"
+import { serializeDate } from "../../utils"
 
 export type ExchangeRateForInsert = MakeOptional<
   Omit<ExchangeRateRecord, "id">,
@@ -12,23 +12,22 @@ export type ExchangeRateForInsert = MakeOptional<
 export function insertExchangeRate(exchangeRate: ExchangeRateForInsert) {
   const id = ObjectID().toHexString()
 
-  db.run(
+  db.query(
     `
     INSERT INTO exchangeRates
       (id, fromCurrencyId, toCurrencyId, rate, deletedAt, createdAt, updatedAt)
     VALUES
       ($id, $fromCurrencyId, $toCurrencyId, $rate, $deletedAt, $createdAt, $updatedAt)
-  `,
-    {
-      $id: id,
-      $fromCurrencyId: exchangeRate.fromCurrencyId,
-      $toCurrencyId: exchangeRate.toCurrencyId,
-      $rate: exchangeRate.rate,
-      $deletedAt: serializeDate(exchangeRate.deletedAt),
-      $createdAt: serializeDate(exchangeRate.createdAt || new Date()),
-      $updatedAt: serializeDate(exchangeRate.updatedAt || new Date())
-    }
-  )
+  `
+  ).run({
+    $id: id,
+    $fromCurrencyId: exchangeRate.fromCurrencyId,
+    $toCurrencyId: exchangeRate.toCurrencyId,
+    $rate: exchangeRate.rate,
+    $deletedAt: serializeDate(exchangeRate.deletedAt),
+    $createdAt: serializeDate(exchangeRate.createdAt || new Date()),
+    $updatedAt: serializeDate(exchangeRate.updatedAt || new Date())
+  })
 
   return id
 }
