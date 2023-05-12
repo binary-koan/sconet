@@ -1,4 +1,4 @@
-import { Form, FormState } from "@modular-forms/solid"
+import { Form, FormStore } from "@modular-forms/solid"
 import { Component } from "solid-js"
 import { useCategoriesQuery } from "../../graphql/queries/categoriesQuery"
 import { namedIcons } from "../../utils/namedIcons"
@@ -15,7 +15,7 @@ export type TransactionFilterValues = {
 }
 
 const TransactionFilters: Component<{
-  form: FormState<TransactionFilterValues>
+  form: FormStore<TransactionFilterValues, undefined>
 }> = (props) => {
   const data = useCategoriesQuery()
 

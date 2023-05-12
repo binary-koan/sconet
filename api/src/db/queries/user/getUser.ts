@@ -5,5 +5,5 @@ import { loadUser } from "./loadUser"
 export function getUser(id: string): UserRecord | undefined {
   const result = db.query("SELECT * FROM users WHERE id = ?").get(id)
 
-  return result && loadUser(result)
+  return result ? loadUser(result) : undefined
 }
