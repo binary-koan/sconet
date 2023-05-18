@@ -1,7 +1,6 @@
-import { db } from "../../database"
-import { commonTableExpressionBindings, commonTableExpressionQuery } from "../../utils/fields"
+import { sql } from "../../database"
 
-export function convertAmounts(
+export async function convertAmounts(
   queries: ReadonlyArray<{
     fromCurrencyId: string
     toCurrencyId: string
@@ -9,11 +8,9 @@ export function convertAmounts(
     amount: number
   }>
 ) {
-  return db
-    .query<{ fromDigits: number; toDigits: number; convertedAmount: number }, any>(
-      `
+  const result = await sql`
     WITH queries(amount, fromCurrencyId, toCurrencyId, dailyExchangeRateId) AS (
-      VALUES ${commonTableExpressionQuery(queries)}
+      VALUES ${sql(queries.map((query) => Object.values(query)))}
     )
     SELECT
       (amount * COALESCE(exchangeRateValues.rate, 1)) AS convertedAmount,
@@ -25,11 +22,10 @@ export function convertAmounts(
     INNER JOIN currencies fromCurrency ON queries.fromCurrencyId = fromCurrency.id
     INNER JOIN currencies toCurrency ON queries.toCurrencyId = toCurrency.id
   `
-    )
-    .all(commonTableExpressionBindings(queries))
-    .map((row) => {
-      const fromMultiplier = 10 ** row.fromDigits
-      const toMultiplier = 10 ** row.toDigits
-      return (row.convertedAmount / fromMultiplier) * toMultiplier
-    })
+
+  return result.map((row) => {
+    const fromMultiplier = 10 ** row.fromDigits
+    const toMultiplier = 10 ** row.toDigits
+    return (row.convertedAmount / fromMultiplier) * toMultiplier
+  })
 }

@@ -1,9 +1,8 @@
 import { MakeOptional } from "../../types"
 import { startOfDayUTC } from "../../utils/date"
-import { db } from "../database"
+import { sql } from "../database"
 import { DailyExchangeRateRecord } from "../records/dailyExchangeRate"
 import { createRepo } from "../repo"
-import { serializeDate } from "../utils"
 import { loadDailyExchangeRate } from "./dailyExchangeRates/loadDailyExchangeRate"
 import { serializeDailyExchangeRate } from "./dailyExchangeRates/serializeDailyExchangeRate"
 
@@ -21,20 +20,19 @@ export const dailyExchangeRatesRepo = createRepo({
   formatForInsert: (dailyExchangeRate: DailyExchangeRateForInsert) => dailyExchangeRate,
 
   methods: {
-    findForDay: (date: Date) => {
-      return db
-        .query("SELECT * FROM dailyExchangeRates WHERE date = ?")
-        .all(serializeDate(startOfDayUTC(date)))
-        .map(loadDailyExchangeRate)
+    findForDay: async (date: Date) => {
+      return (await sql`SELECT * FROM dailyExchangeRates WHERE date = ${startOfDayUTC(date)}`).map(
+        loadDailyExchangeRate
+      )
     },
 
-    findClosest: (date: Date, fromCurrencyId: string) => {
+    findClosest: async (date: Date, fromCurrencyId: string) => {
       const onOrAfter = loadDailyExchangeRate(
-        db
-          .query(
-            "SELECT * FROM dailyExchangeRates WHERE date >= ? AND fromCurrencyId = ? ORDER BY date ASC"
-          )
-          .get(serializeDate(startOfDayUTC(date)), fromCurrencyId)
+        (
+          await sql`SELECT * FROM dailyExchangeRates WHERE date >= ${startOfDayUTC(
+            date
+          )} AND fromCurrencyId = ${fromCurrencyId} ORDER BY date ASC`
+        )[0]
       )
 
       if (onOrAfter?.date?.getTime() === date.getTime()) {
@@ -42,11 +40,9 @@ export const dailyExchangeRatesRepo = createRepo({
       }
 
       const before = loadDailyExchangeRate(
-        db
-          .query(
-            "SELECT * FROM dailyExchangeRates WHERE date < ? AND fromCurrencyId = ? ORDER BY date DESC"
-          )
-          .get(serializeDate(startOfDayUTC(date)), fromCurrencyId)
+        await sql`SELECT * FROM dailyExchangeRates WHERE date < ${startOfDayUTC(
+          date
+        )} AND fromCurrencyId = ${fromCurrencyId} ORDER BY date DESC`
       )
 
       if (!before && !onOrAfter) {

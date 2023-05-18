@@ -1,9 +1,8 @@
 import { DailyExchangeRate } from "../../resolvers-types"
 import { MakeOptional } from "../../types"
-import { db } from "../database"
+import { sql } from "../database"
 import { ExchangeRateValueRecord } from "../records/exchangeRateValue"
 import { createRepo } from "../repo"
-import { arrayBindings, arrayQuery } from "../utils/fields"
 import { loadExchangeRateValue } from "./exchangeRateValues/loadExchangeRateValue"
 import { serializeExchangeRateValue } from "./exchangeRateValues/serializeExchangeRateValue"
 
@@ -21,18 +20,16 @@ export const exchangeRateValuesRepo = createRepo({
   formatForInsert: (exchangeRateValue: ExchangeRateValueForInsert) => exchangeRateValue,
 
   methods: {
-    findForRate: (dailyExchangeRate: Pick<DailyExchangeRate, "id">) => {
-      return db
-        .query("SELECT * FROM exchangeRateValues WHERE dailyExchangeRateId = ?")
-        .all(dailyExchangeRate.id)
-        .map(loadExchangeRateValue)
+    findForRate: async (dailyExchangeRate: Pick<DailyExchangeRate, "id">) => {
+      return (
+        await sql`SELECT * FROM exchangeRateValues WHERE dailyExchangeRateId = ${dailyExchangeRate.id}`
+      ).map(loadExchangeRateValue)
     },
 
-    findForRates: (ids: string[]) => {
-      return db
-        .query(`SELECT * FROM exchangeRateValues WHERE dailyExchangeRateId IN ${arrayQuery(ids)}`)
-        .all(arrayBindings(ids))
-        .map(loadExchangeRateValue)
+    findForRates: async (ids: string[]) => {
+      return (
+        await sql`SELECT * FROM exchangeRateValues WHERE dailyExchangeRateId IN ${sql(ids)}`
+      ).map(loadExchangeRateValue)
     }
   }
 })

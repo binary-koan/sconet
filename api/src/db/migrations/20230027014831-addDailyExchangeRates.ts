@@ -1,7 +1,7 @@
-import { db } from "../database"
+import { sql } from "../database"
 
-export function up() {
-  db.run(`
+export async function up() {
+  await sql`
     CREATE TABLE dailyExchangeRates (
       id TEXT PRIMARY KEY,
       fromCurrencyId TEXT NOT NULL,
@@ -11,9 +11,9 @@ export function up() {
       createdAt INTEGER,
       updatedAt INTEGER
     )
-  `)
+  `
 
-  db.run(`
+  await sql`
     CREATE TABLE exchangeRateValues (
       id TEXT PRIMARY KEY,
       dailyExchangeRateId TEXT NOT NULL,
@@ -24,15 +24,15 @@ export function up() {
       createdAt INTEGER,
       updatedAt INTEGER
     )
-  `)
+  `
 
-  db.run(`
+  await sql`
     ALTER TABLE transactions ADD COLUMN dailyExchangeRateId TEXT
-  `)
+  `
 }
 
-export function down() {
-  db.run(`DROP TABLE dailyExchangeRates`)
-  db.run(`DROP TABLE exchangeRateValues`)
-  db.run(`ALTER TABLE transactions DROP COLUMN dailyExchangeRateId`)
+export async function down() {
+  await sql`DROP TABLE dailyExchangeRates`
+  await sql`DROP TABLE exchangeRateValues`
+  await sql`ALTER TABLE transactions DROP COLUMN dailyExchangeRateId`
 }

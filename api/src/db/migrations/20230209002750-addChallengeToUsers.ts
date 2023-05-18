@@ -1,11 +1,11 @@
-import { db } from "../database"
+import { sql } from "../database"
 
-export function up() {
-  db.run(`
+export async function up() {
+  await sql`
     ALTER TABLE users ADD COLUMN webauthnChallenge TEXT
-  `)
+  `
 }
 
-export function down() {
-  db.run(`ALTER TABLE users DROP COLUMN webauthnChallenge`)
+export async function down() {
+  await sql`ALTER TABLE users DROP COLUMN webauthnChallenge`
 }

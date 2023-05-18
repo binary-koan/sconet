@@ -1,12 +1,11 @@
 import { isEmpty, pickBy } from "lodash"
+import { RowList } from "postgres"
 import { MakeOptional } from "../../types"
-import { db } from "../database"
+import { sql } from "../database"
 import { filterTransactions } from "../queries/transaction/filterTransactions"
 import { CurrencyRecord } from "../records/currency"
 import { TransactionRecord } from "../records/transaction"
 import { createRepo } from "../repo"
-import { serializeDate } from "../utils"
-import { arrayBindings, arrayQuery, fieldBindings, fieldsUpdateQuery } from "../utils/fields"
 import { loadTransaction } from "./transactions/loadTransaction"
 import { serializeTransaction } from "./transactions/serializeTransaction"
 
@@ -31,10 +30,8 @@ export const transactionsRepo = createRepo({
   methods: {
     filter: filterTransactions,
 
-    findValuesInCurrency: (ids: string[], currency: CurrencyRecord) => {
-      const values = db
-        .query(
-          `
+    findValuesInCurrency: async (ids: string[], currency: CurrencyRecord) => {
+      const values = (await sql`
             SELECT
               transactions.id AS id,
               (CASE
@@ -45,15 +42,17 @@ export const transactionsRepo = createRepo({
             FROM transactions
             INNER JOIN currencies ON transactions.currencyId = currencies.id
             LEFT OUTER JOIN dailyExchangeRates ON transactions.dailyExchangeRateId = dailyExchangeRates.id
-            LEFT OUTER JOIN exchangeRateValues ON exchangeRateValues.toCurrencyId = $currencyId AND exchangeRateValues.dailyExchangeRateId = dailyExchangeRates.id
-            WHERE transactions.id IN ${arrayQuery(ids)}
-          `
-        )
-        .all({ ...arrayBindings(ids), $currencyId: currency.id }) as Array<{
-        id: string
-        value: number
-        fromDecimalDigits: number
-      }>
+            LEFT OUTER JOIN exchangeRateValues ON exchangeRateValues.toCurrencyId = ${
+              currency.id
+            } AND exchangeRateValues.dailyExchangeRateId = dailyExchangeRates.id
+            WHERE transactions.id IN ${sql(ids)}
+          `) as RowList<
+        Array<{
+          id: string
+          value: number
+          fromDecimalDigits: number
+        }>
+      >
 
       const toMultiplier = 10 ** currency.decimalDigits
 
@@ -67,54 +66,42 @@ export const transactionsRepo = createRepo({
       })
     },
 
-    deleteSplitTransactions(fromId: string) {
-      db.query(`DELETE FROM transactions WHERE splitFromId = $id`).run({
-        $id: fromId
-      })
+    async deleteSplitTransactions(fromId: string) {
+      await sql`DELETE FROM transactions WHERE splitFromId = ${fromId}`
 
       return fromId
     },
 
-    findSplitTransactionsByIds(splitFromIds: readonly string[]) {
+    async findSplitTransactionsByIds(splitFromIds: readonly string[]) {
       if (!splitFromIds.length) {
         return []
       }
 
-      const allTransactions = db
-        .query(
-          `SELECT * FROM transactions WHERE splitFromId IN ${arrayQuery(
-            splitFromIds
-          )} ORDER BY date DESC, id DESC`
-        )
-        .all(arrayBindings(splitFromIds))
-        .map(loadTransaction)
+      const allTransactions = (
+        await sql`SELECT * FROM transactions WHERE splitFromId IN ${sql(
+          splitFromIds
+        )} ORDER BY date DESC, id DESC`
+      ).map(loadTransaction)
 
       return splitFromIds.map((id) =>
         allTransactions.filter((transaction) => transaction.splitFromId === id)
       )
     },
 
-    softDeleteSplitTransactions(fromId: string) {
-      db.query(`UPDATE transactions SET deletedAt = $now WHERE splitFromId = $id`).run({
-        $id: fromId,
-        $now: serializeDate(new Date())
-      })
+    async softDeleteSplitTransactions(fromId: string) {
+      await sql`UPDATE transactions SET deletedAt = ${new Date()} WHERE splitFromId = ${fromId}`
 
       return fromId
     },
 
-    updateSplitTransactions(fromId: string, fields: Partial<TransactionRecord>) {
+    async updateSplitTransactions(fromId: string, fields: Partial<TransactionRecord>) {
       const fieldsToSet = serializeTransaction(pickBy(fields, (value) => value !== undefined))
 
       if (isEmpty(fieldsToSet)) {
         return fromId
       }
 
-      db.query(
-        `UPDATE transactions SET ${fieldsUpdateQuery(fieldsToSet)} WHERE splitFromId = $fromId`
-      ).run({
-        ...fieldBindings({ fromId, ...fieldsToSet })
-      })
+      await sql`UPDATE transactions SET ${sql(fieldsToSet)} WHERE splitFromId = $fromId`
 
       return fromId
     }

@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs"
 import ObjectID from "bson-objectid"
 import { updateExchangeRates } from "../../jobs/exchangeRates"
-import { db } from "../database"
+import { sql } from "../database"
 import { accountMailboxesRepo } from "../repos/accountMailboxesRepo"
 import { categoriesRepo } from "../repos/categoriesRepo"
 import { currenciesRepo } from "../repos/currenciesRepo"
@@ -9,27 +9,24 @@ import { serializeDate } from "../utils"
 
 export async function seed() {
   for (const email of process.env.USER_EMAILS?.split(",") || []) {
-    const existing = db.query("SELECT * FROM users WHERE email = ?").get(email)
+    const existing = sql`SELECT * FROM users WHERE email = ${email}`
 
     if (!existing) {
-      db.run(
-        `INSERT INTO users (id, email, encryptedPassword, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?)`,
-        [
-          ObjectID().toHexString(),
-          email,
-          bcrypt.hashSync("changeme", 10),
-          serializeDate(new Date()),
-          serializeDate(new Date())
-        ]
-      )
+      await sql`INSERT INTO users ${sql({
+        id: ObjectID().toHexString(),
+        email,
+        encryptedPassword: bcrypt.hashSync("changeme", 10),
+        createdAt: serializeDate(new Date()),
+        updatedAt: serializeDate(new Date())
+      })}`
       console.log(`Created user ${email}`)
     }
   }
 
-  const existingCategories = db.query("SELECT * FROM categories").all() as any[]
+  const existingCategories = await sql`SELECT * FROM categories`
 
   if (!existingCategories.some((category) => category.name === "First")) {
-    categoriesRepo.insert({
+    await categoriesRepo.insert({
       name: "First",
       color: "red",
       icon: "ShoppingCart"
@@ -37,17 +34,17 @@ export async function seed() {
   }
 
   if (!existingCategories.some((category) => category.name === "Second")) {
-    categoriesRepo.insert({
+    await categoriesRepo.insert({
       name: "Second",
       color: "green",
       icon: "ShoppingCart"
     })
   }
 
-  const existingAccounts = db.query("SELECT * FROM accountMailboxes").all() as any[]
+  const existingAccounts = await sql`SELECT * FROM accountMailboxes`
 
   if (!existingAccounts.some((account) => account.name === "Test")) {
-    accountMailboxesRepo.insert({
+    await accountMailboxesRepo.insert({
       name: "Test",
       mailServerOptions: {},
       fromAddressPattern: "",
@@ -57,10 +54,10 @@ export async function seed() {
     })
   }
 
-  const existingCurrencies = db.query("SELECT * FROM currencies").all() as any[]
+  const existingCurrencies = await sql`SELECT * FROM currencies`
 
   if (!existingCurrencies.some((currency) => currency.code === "JPY")) {
-    currenciesRepo.insert({
+    await currenciesRepo.insert({
       code: "JPY",
       decimalDigits: 0,
       symbol: "¥"

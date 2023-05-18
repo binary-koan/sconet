@@ -1,5 +1,5 @@
 import { MakeOptional } from "../../types"
-import { db } from "../database"
+import { sql } from "../database"
 import { CategoryRecord } from "../records/category"
 import { createRepo } from "../repo"
 import { loadCategory } from "./categories/loadCategory"
@@ -31,12 +31,12 @@ export const categoriesRepo = createRepo({
   }),
 
   methods: {
-    setOrder(orderedIds: string[]) {
-      const update = db.prepare("UPDATE categories SET sortOrder = $sortOrder WHERE id = $id")
-
-      db.transaction(() => {
-        orderedIds.forEach((id, index) => update.run({ $sortOrder: index, $id: id }))
-      })()
+    async setOrder(orderedIds: string[]) {
+      await sql.begin(async (sql) => {
+        for (const [index, id] of orderedIds.entries()) {
+          await sql`UPDATE categories SET sortOrder = ${index} WHERE id = ${id}`
+        }
+      })
     }
   }
 })

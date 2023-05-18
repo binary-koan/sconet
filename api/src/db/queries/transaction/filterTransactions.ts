@@ -1,15 +1,13 @@
 import { memoize } from "lodash"
 import { Maybe } from "../../../types"
-import { db } from "../../database"
+import { sql } from "../../database"
 import { TransactionRecord } from "../../records/transaction"
 import { loadTransaction } from "../../repos/transactions/loadTransaction"
-import { serializeDate } from "../../utils"
-import { arrayBindings, arrayQuery } from "../../utils/fields"
 
 export interface FindTransactionsResult {
-  data: TransactionRecord[]
-  nextOffset?: string
-  totalCount: number
+  data: Promise<TransactionRecord[]>
+  nextOffset: Promise<string | undefined>
+  totalCount: Promise<number>
 }
 
 export function filterTransactions({
@@ -29,99 +27,87 @@ export function filterTransactions({
     categoryIds?: Maybe<Array<string | null>>
   }>
 }): FindTransactionsResult {
-  let where = " WHERE splitFromId IS NULL AND deletedAt IS NULL"
-  let args: Record<string, string | bigint | TypedArray | number | boolean | null> = {}
+  let where = sql`WHERE splitFromId IS NULL AND deletedAt IS NULL`
 
   if (filter?.accountMailboxId) {
-    where += " AND accountMailboxId = $accountMailboxId"
-    args.$accountMailboxId = filter.accountMailboxId
+    where = sql`${where} AND accountMailboxId = ${filter.accountMailboxId}`
   }
 
   if (filter?.dateFrom) {
-    where += " AND date >= $dateFrom"
-    args.$dateFrom = serializeDate(filter.dateFrom)
+    where = sql`${where} AND date >= ${filter.dateFrom}`
   }
 
   if (filter?.dateUntil) {
-    where += " AND date <= $dateUntil"
-    args.$dateUntil = serializeDate(filter.dateUntil)
+    where = sql`${where} AND date <= ${filter.dateUntil}`
   }
 
   if (filter?.minAmount != null) {
-    where += " AND amount >= $minAmount"
-    args.$minAmount = filter.minAmount
+    where = sql`${where} AND amount >= ${filter.minAmount}`
   }
 
   if (filter?.maxAmount != null) {
-    where += " AND amount <= $maxAmount"
-    args.$maxAmount = filter.maxAmount
+    where = sql`${where} AND amount <= ${filter.maxAmount}`
   }
 
   if (filter?.keyword) {
-    where += ` AND (
-      memo LIKE $keyword
-      OR originalMemo LIKE $keyword
+    where = sql`${where} AND (
+      memo LIKE ${filter.keyword}
+      OR originalMemo LIKE ${filter.keyword}
       OR EXISTS (
         SELECT 1 FROM transactions other
         WHERE other.splitFromId = transactions.id
-        AND (other.memo LIKE $keyword OR other.originalMemo LIKE $keyword)
+        AND (other.memo LIKE ${filter.keyword} OR other.originalMemo LIKE ${filter.keyword})
       )
     )`
-    args.$keyword = filter.keyword
   }
 
   if (filter?.categoryIds?.length) {
     const notNullIds = filter.categoryIds.filter((categoryId) => categoryId) as string[]
     const hasNullId = filter.categoryIds.some((categoryId) => !categoryId)
 
-    const categoryIdsQueries = [
-      notNullIds.length && `categoryId IN ${arrayQuery(notNullIds, "categoryId")}`,
-      hasNullId && "categoryId IS NULL"
-    ]
-      .filter(Boolean)
-      .join(" OR ")
+    let categoryIdsQuery = sql`0`
 
-    where += ` AND (${categoryIdsQueries})`
-    args = { ...args, ...arrayBindings(notNullIds, "categoryId") }
+    if (notNullIds.length)
+      categoryIdsQuery = sql`${categoryIdsQuery} OR categoryId IN ${sql(notNullIds)}`
+    if (hasNullId) categoryIdsQuery = sql`${categoryIdsQuery} OR categoryId IS NULL`
+
+    where = sql`${where} AND (${categoryIdsQuery})`
   }
 
   if (offset) {
-    const date = new Date(JSON.parse(atob(offset)).date)
+    const date = new Date(JSON.parse(Buffer.from(offset, "base64").toString("utf-8")).date)
 
-    where += " AND date <= $offsetDate"
-    args.$offsetDate = serializeDate(date)
+    where = sql`${where} AND date <= ${date}`
   }
 
-  let limitClause = ""
+  let limitClause = sql``
 
   if (limit) {
-    limitClause = "LIMIT $limit"
-    args.$limit = limit + 1
+    limitClause = sql`LIMIT ${limit}`
   }
 
-  const data = memoize(() =>
-    db
-      .query(
-        `SELECT * FROM transactions ${where} ORDER BY date DESC, amount DESC, id ASC ${limitClause}`
-      )
-      .all(args)
-      .map(loadTransaction)
+  const data = memoize(async () =>
+    (
+      await sql`SELECT * FROM transactions ${where} ORDER BY date DESC, amount DESC, id ASC ${limitClause}`
+    ).map(loadTransaction)
   )
 
   const totalCount = memoize(
-    () =>
-      db.query<{ count: number }, any>(`SELECT COUNT(*) AS count FROM transactions ${where}`).get()
-        ?.count || 0
+    async () => (await sql`SELECT COUNT(*) AS count FROM transactions ${where}`)[0].count
   )
 
   return {
     get data() {
-      return limit && data().length > limit ? data().slice(0, data.length - 1) : data()
+      return data().then((data) =>
+        limit && data.length > limit ? data.slice(0, data.length - 1) : data
+      )
     },
     get nextOffset() {
-      return limit && data().length > limit
-        ? btoa(JSON.stringify({ date: data()[data().length - 1].date }))
-        : undefined
+      return data().then((data) =>
+        limit && data.length > limit
+          ? Buffer.from(JSON.stringify({ date: data[data.length - 1].date })).toString("base64")
+          : undefined
+      )
     },
     get totalCount() {
       return totalCount()

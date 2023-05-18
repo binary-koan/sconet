@@ -1,13 +1,13 @@
 import fs from "fs"
 import { orderBy } from "lodash"
-import { db } from "../database"
+import { sql } from "../database"
 
 const FILENAME_PATTERN = /^(\d+)-(\w+)\.(js|ts)$/
 
-export function migrate() {
-  createMigrationsTable()
+export async function migrate() {
+  await createMigrationsTable()
 
-  const runMigrations = getCompletedMigrations()
+  const runMigrations = await getCompletedMigrations()
   const migrationsToRun = listMigrationFiles().filter(
     ({ version }) => !runMigrations.includes(version)
   )
@@ -19,10 +19,10 @@ export function migrate() {
   }
 }
 
-export function rollback() {
-  createMigrationsTable()
+export async function rollback() {
+  await createMigrationsTable()
 
-  const runMigrations = getCompletedMigrations()
+  const runMigrations = await getCompletedMigrations()
 
   if (!runMigrations.length) {
     throw new Error("No migrations have been run")
@@ -35,27 +35,27 @@ export function rollback() {
     throw new Error(`Migration file not found for ${version}`)
   }
 
-  rollbackMigration(filename, version, name)
+  await rollbackMigration(filename, version, name)
 }
 
-export function up(version: string) {
+export async function up(version: string) {
   const { filename, name } = listMigrationFiles().find((file) => file.version === version) || {}
 
   if (!filename || !name) {
     throw new Error("No such version")
   }
 
-  runMigration(filename, version, name)
+  await runMigration(filename, version, name)
 }
 
-export function down(version: string) {
+export async function down(version: string) {
   const { filename, name } = listMigrationFiles().find((file) => file.version === version) || {}
 
   if (!filename || !name) {
     throw new Error("No such version")
   }
 
-  rollbackMigration(filename, version, name)
+  await rollbackMigration(filename, version, name)
 }
 
 export function createMigration(name: string) {
@@ -71,46 +71,48 @@ export function createMigration(name: string) {
 
   fs.writeFileSync(
     `${import.meta.dir}/${timestamp}-${name}.ts`,
-    `export function up() {
+    `import { sql } from "../database"
+
+export async function up() {
 }
 
-export function down() {
+export async function down() {
 }
 `
   )
 }
 
-export function isMigrationNeeded() {
+export async function isMigrationNeeded() {
   const versions = listMigrationFiles().map((file) => file.version)
-  const runMigrations = getCompletedMigrations()
+  const runMigrations = await getCompletedMigrations()
 
   return versions.some((version) => !runMigrations.includes(version))
 }
 
-function createMigrationsTable() {
-  db.run(`
+async function createMigrationsTable() {
+  await sql`
     CREATE TABLE IF NOT EXISTS schemaMigrations (
       version TEXT PRIMARY KEY
     )
-  `)
+  `
 }
 
-function runMigration(filename: string, version: string, name: string) {
+async function runMigration(filename: string, version: string, name: string) {
   console.log(`Migration ${name} (${version}) ...`)
 
   require(`./${filename}`).up()
 
-  db.query("INSERT INTO schemaMigrations (version) VALUES (?)").run(version)
+  await sql`INSERT INTO schemaMigrations (version) VALUES (${sql({ version })})`
 
   console.log("Complete")
 }
 
-function rollbackMigration(filename: string, version: string, name: string) {
+async function rollbackMigration(filename: string, version: string, name: string) {
   console.log(`Rolling back ${name} (${version}) ...`)
 
   require(`./${filename}`).down()
 
-  db.query("DELETE FROM schemaMigrations WHERE version = ?").run(version)
+  await sql`DELETE FROM schemaMigrations WHERE version = ${version}`
 
   console.log("Complete")
 }
@@ -131,9 +133,6 @@ function listMigrationFiles() {
     )
 }
 
-function getCompletedMigrations() {
-  return db
-    .query<{ version: string }, any>("SELECT * FROM schemaMigrations")
-    .all()
-    .map((row) => row.version)
+async function getCompletedMigrations() {
+  return (await sql`SELECT * FROM schemaMigrations`).map((row) => row.version)
 }

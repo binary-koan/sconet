@@ -1,7 +1,7 @@
-import { db } from "../database"
+import { sql } from "../database"
 
-export function up() {
-  db.run(`
+export async function up() {
+  await sql`
     CREATE TABLE userCredentials (
       id TEXT PRIMARY KEY,
       userId TEXT NOT NULL,
@@ -15,9 +15,9 @@ export function up() {
       createdAt INTEGER,
       updatedAt INTEGER
     )
-  `)
+  `
 }
 
-export function down() {
-  db.run(`DROP TABLE userCredentials`)
+export async function down() {
+  await sql`DROP TABLE userCredentials`
 }

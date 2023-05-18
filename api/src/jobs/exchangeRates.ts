@@ -1,4 +1,4 @@
-import { db } from "../db/database"
+import { sql } from "../db/database"
 import { currenciesRepo } from "../db/repos/currenciesRepo"
 import { dailyExchangeRatesRepo } from "../db/repos/dailyExchangeRatesRepo"
 import { exchangeRateValuesRepo } from "../db/repos/exchangeRateValuesRepo"
@@ -10,8 +10,8 @@ export const startExchangeRateSchedule = () => setInterval(updateExchangeRates, 
 
 export const updateExchangeRates = async () => {
   const today = startOfDayUTC()
-  const currencies = currenciesRepo.findAll()
-  const dailyExchangeRates = dailyExchangeRatesRepo.findForDay(today)
+  const currencies = await currenciesRepo.findAll()
+  const dailyExchangeRates = await dailyExchangeRatesRepo.findForDay(today)
 
   const currenciesMissingExchangeRate = currencies.filter(
     (currency) =>
@@ -24,31 +24,30 @@ export const updateExchangeRates = async () => {
     )
     const data: any = await response.json()
 
-    const dailyExchangeRateId = dailyExchangeRatesRepo.insert({
+    const dailyExchangeRate = await dailyExchangeRatesRepo.insert({
       date: today,
       fromCurrencyId: currency.id
     })
 
     for (const other of currencies.filter((other) => other.id !== currency.id)) {
       exchangeRateValuesRepo.insert({
-        dailyExchangeRateId,
+        dailyExchangeRateId: dailyExchangeRate.id,
         toCurrencyId: other.id,
         rate: data[currency.code.toLowerCase()][other.code.toLowerCase()]
       })
     }
   }
 
-  const transactionsMissingExchangeRate = db
-    .query("SELECT * FROM transactions WHERE dailyExchangeRateId IS NULL")
-    .all()
-    .map(loadTransaction)
+  const transactionsMissingExchangeRate = (
+    await sql`SELECT * FROM transactions WHERE dailyExchangeRateId IS NULL`
+  ).map(loadTransaction)
 
   for (const transaction of transactionsMissingExchangeRate) {
     transactionsRepo.updateOne(transaction.id, {
-      dailyExchangeRateId: dailyExchangeRatesRepo.findClosest(
+      dailyExchangeRateId: (await dailyExchangeRatesRepo.findClosest(
         transaction.date,
         transaction.currencyId
-      )!.id
+      ))!.id
     })
   }
 }

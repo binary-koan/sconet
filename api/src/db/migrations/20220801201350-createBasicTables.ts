@@ -1,7 +1,7 @@
-import { db } from "../database"
+import { sql } from "../database"
 
-export function up() {
-  db.run(`
+export async function up() {
+  await sql`
     CREATE TABLE accountMailboxes (
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
@@ -17,9 +17,9 @@ export function up() {
       createdAt INTEGER,
       updatedAt INTEGER
     )
-  `)
+  `
 
-  db.run(`
+  await sql`
     CREATE TABLE categories (
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
@@ -34,9 +34,9 @@ export function up() {
       createdAt INTEGER,
       updatedAt INTEGER
     )
-  `)
+  `
 
-  db.run(`
+  await sql`
     CREATE TABLE transactions (
       id TEXT PRIMARY KEY,
       memo TEXT NOT NULL,
@@ -58,9 +58,9 @@ export function up() {
       createdAt INTEGER,
       updatedAt INTEGER
     )
-  `)
+  `
 
-  db.run(`
+  await sql`
     CREATE TABLE users (
       id TEXT PRIMARY KEY,
       email TEXT NOT NULL,
@@ -69,9 +69,9 @@ export function up() {
       createdAt INTEGER,
       updatedAt INTEGER
     )
-  `)
+  `
 
-  db.run(`
+  await sql`
     CREATE TABLE currencies (
       id TEXT PRIMARY KEY,
       code TEXT NOT NULL,
@@ -82,9 +82,9 @@ export function up() {
       createdAt INTEGER,
       updatedAt INTEGER
     )
-  `)
+  `
 
-  db.run(`
+  await sql`
     CREATE TABLE exchangeRates (
       id TEXT PRIMARY KEY,
       fromCurrencyId TEXT NOT NULL,
@@ -95,14 +95,14 @@ export function up() {
       createdAt INTEGER,
       updatedAt INTEGER
     )
-  `)
+  `
 }
 
-export function down() {
-  db.run("DROP TABLE accountMailboxes")
-  db.run("DROP TABLE categories")
-  db.run("DROP TABLE transactions")
-  db.run("DROP TABLE users")
-  db.run("DROP TABLE currencies")
-  db.run("DROP TABLE exchangeRates")
+export async function down() {
+  await sql`DROP TABLE accountMailboxes`
+  await sql`DROP TABLE categories`
+  await sql`DROP TABLE transactions`
+  await sql`DROP TABLE users`
+  await sql`DROP TABLE currencies`
+  await sql`DROP TABLE exchangeRates`
 }

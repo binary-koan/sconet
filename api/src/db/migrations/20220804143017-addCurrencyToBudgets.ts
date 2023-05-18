@@ -1,13 +1,13 @@
-import { db } from "../database"
+import { sql } from "../database"
 
-export function up() {
-  db.run(`
+export async function up() {
+  await sql`
     ALTER TABLE categories ADD COLUMN budgetCurrencyId TEXT
-  `)
+  `
 }
 
-export function down() {
-  db.run(`
+export async function down() {
+  await sql`
     ALTER TABLE categories DROP COLUMN budgetCurrencyId
-  `)
+  `
 }

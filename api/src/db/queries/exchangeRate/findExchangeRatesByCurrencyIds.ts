@@ -1,27 +1,23 @@
 import { MakeOptional } from "../../../types"
-import { db } from "../../database"
+import { sql } from "../../database"
 import { ExchangeRateRecord } from "../../records/exchangeRate"
-import { arrayBindings, arrayQuery } from "../../utils/fields"
 
 export type ExchangeRateForInsert = MakeOptional<
   Omit<ExchangeRateRecord, "id">,
   "deletedAt" | "createdAt" | "updatedAt"
 >
 
-export function findExchangeRatesByCurrencyIds(
+export async function findExchangeRatesByCurrencyIds(
   queries: ReadonlyArray<{ from: string; to: string }>
-): Array<{ rate: number; fromId: string; toId: string }> {
+): Promise<Array<{ rate: number; fromId: string; toId: string }>> {
   if (!queries.length) {
     return []
   }
 
-  const allRates = db
-    .query<any, any>(
-      `SELECT * FROM exchangeRates WHERE deletedAt IS NULL AND fromCurrencyId IN ${arrayQuery(
-        queries
-      )}`
-    )
-    .all(arrayBindings(queries.map(({ from }) => from)))
+  const allRates =
+    await sql`SELECT * FROM exchangeRates WHERE deletedAt IS NULL AND fromCurrencyId IN ${sql(
+      queries.map(({ from }) => from)
+    )}`
 
   return queries.map(({ from, to }) => {
     if (from === to) {

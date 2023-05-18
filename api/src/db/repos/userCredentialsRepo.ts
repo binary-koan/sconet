@@ -1,5 +1,5 @@
 import { MakeOptional } from "../../types"
-import { db } from "../database"
+import { sql } from "../database"
 import { UserCredentialRecord } from "../records/userCredential"
 import { createRepo } from "../repo"
 import { loadUserCredential } from "./userCredentials/loadUserCredential"
@@ -21,11 +21,10 @@ export const userCredentialsRepo = createRepo({
   }),
 
   methods: {
-    findForUser(userId: string) {
-      return db
-        .query(`SELECT * FROM userCredentials WHERE userId = ? AND deletedAt IS NULL ORDER BY createdAt ASC, id ASC`)
-        .all(userId)
-        .map(loadUserCredential)
+    async findForUser(userId: string) {
+      return (
+        await sql`SELECT * FROM userCredentials WHERE userId = ${userId} AND deletedAt IS NULL ORDER BY createdAt ASC, id ASC`
+      ).map(loadUserCredential)
     }
   }
 })
