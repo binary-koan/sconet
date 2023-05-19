@@ -7,21 +7,22 @@ export const accountMailboxes: QueryResolvers["accountMailboxes"] = () => {
   return accountMailboxesRepo.findAll()
 }
 
-export const accountMailbox: QueryResolvers["accountMailbox"] = (_, { id }) => {
-  return accountMailboxesRepo.get(id) || null
+export const accountMailbox: QueryResolvers["accountMailbox"] = async (_, { id }) => {
+  return (await accountMailboxesRepo.get(id)) || null
 }
 
-export const createAccountMailbox: MutationResolvers["createAccountMailbox"] = (_, { input }) => {
-  const id = accountMailboxesRepo.insert(input)
-
-  return accountMailboxesRepo.get(id)!
+export const createAccountMailbox: MutationResolvers["createAccountMailbox"] = async (
+  _,
+  { input }
+) => {
+  return await accountMailboxesRepo.insert(input)
 }
 
-export const updateAccountMailbox: MutationResolvers["updateAccountMailbox"] = (
+export const updateAccountMailbox: MutationResolvers["updateAccountMailbox"] = async (
   _,
   { id, input }
 ) => {
-  const accountMailbox = accountMailboxesRepo.get(id)
+  const accountMailbox = await accountMailboxesRepo.get(id)
 
   if (!accountMailbox) {
     throw new Error("Not found")
@@ -32,19 +33,20 @@ export const updateAccountMailbox: MutationResolvers["updateAccountMailbox"] = (
     name: input.name ?? undefined
   }
 
-  accountMailboxesRepo.updateOne(id, updates)
-
-  return accountMailboxesRepo.get(id)!
+  return await accountMailboxesRepo.updateOne(id, updates)
 }
 
-export const deleteAccountMailbox: MutationResolvers["deleteAccountMailbox"] = (_, { id }) => {
-  const accountMailbox = accountMailboxesRepo.get(id)
+export const deleteAccountMailbox: MutationResolvers["deleteAccountMailbox"] = async (
+  _,
+  { id }
+) => {
+  const accountMailbox = await accountMailboxesRepo.get(id)
 
   if (!accountMailbox) {
     throw new Error("Not found")
   }
 
-  accountMailboxesRepo.softDelete(id)
+  await accountMailboxesRepo.softDelete(id)
 
   return accountMailbox
 }

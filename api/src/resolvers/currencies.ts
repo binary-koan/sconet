@@ -8,15 +8,13 @@ export const currencies: QueryResolvers["currencies"] = () => {
   return currenciesRepo.findAll()
 }
 
-export const currency: QueryResolvers["currency"] = (_, { id }) => {
-  return currenciesRepo.get(id) || null
+export const currency: QueryResolvers["currency"] = async (_, { id }) => {
+  return (await currenciesRepo.get(id)) || null
 }
 
 export const createCurrency: MutationResolvers["createCurrency"] = async (_, { input }) => {
-  const id = currenciesRepo.insert(input)
-
-  const allCurrencies = currenciesRepo.findAll()
-  const newCurrency = allCurrencies.find((currency) => currency.id === id)!
+  const newCurrency = await currenciesRepo.insert(input)
+  const allCurrencies = await currenciesRepo.findAll()
 
   await Promise.all(
     allCurrencies.map(async (currency) => {
@@ -46,8 +44,8 @@ export const createCurrency: MutationResolvers["createCurrency"] = async (_, { i
   return newCurrency
 }
 
-export const updateCurrency: MutationResolvers["updateCurrency"] = (_, { id, input }) => {
-  const currency = currenciesRepo.get(id)
+export const updateCurrency: MutationResolvers["updateCurrency"] = async (_, { id, input }) => {
+  const currency = await currenciesRepo.get(id)
 
   if (!currency) {
     throw new Error("Not found")
@@ -55,19 +53,17 @@ export const updateCurrency: MutationResolvers["updateCurrency"] = (_, { id, inp
 
   const updates: Partial<CurrencyRecord> = input
 
-  currenciesRepo.updateOne(id, updates)
-
-  return currenciesRepo.get(id)!
+  return await currenciesRepo.updateOne(id, updates)
 }
 
-export const deleteCurrency: MutationResolvers["deleteCurrency"] = (_, { id }) => {
-  const currency = currenciesRepo.get(id)
+export const deleteCurrency: MutationResolvers["deleteCurrency"] = async (_, { id }) => {
+  const currency = await currenciesRepo.get(id)
 
   if (!currency) {
     throw new Error("Not found")
   }
 
-  currenciesRepo.softDelete(id)
+  await currenciesRepo.softDelete(id)
 
   return currency
 }

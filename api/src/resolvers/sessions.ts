@@ -25,7 +25,7 @@ export const login: MutationResolvers["login"] = async (
     throw new GraphQLError("Browser verification failed")
   }
 
-  const user = getUserByEmail(email)
+  const user = await getUserByEmail(email)
 
   if (!user) {
     throw new GraphQLError("Invalid email or password")
@@ -43,7 +43,7 @@ export const changePassword: MutationResolvers["changePassword"] = async (
   { oldPassword, newPassword },
   context
 ) => {
-  const user = getUser(context.auth!.userId)
+  const user = await getUser(context.auth!.userId)
 
   if (!user) {
     throw new GraphQLError("No such user")
@@ -63,7 +63,7 @@ export const generateNewToken: MutationResolvers["generateNewToken"] = async (
   _args,
   context
 ) => {
-  const user = getUser(context.auth!.userId)
+  const user = await getUser(context.auth!.userId)
 
   if (!user) {
     throw new GraphQLError("No such user")
@@ -77,13 +77,13 @@ export const registerCredential: MutationResolvers["registerCredential"] = async
   _args,
   context
 ) => {
-  const user = getUser(context.auth!.userId)
+  const user = await getUser(context.auth!.userId)
 
   if (!user) {
     throw new GraphQLError("No such user")
   }
 
-  const credentials = userCredentialsRepo.findForUser(user.id)
+  const credentials = await userCredentialsRepo.findForUser(user.id)
 
   const options = generateRegistrationOptions({
     rpName,
@@ -104,7 +104,7 @@ export const registerCredential: MutationResolvers["registerCredential"] = async
 
 export const verifyCredentialRegistration: MutationResolvers["verifyCredentialRegistration"] =
   async (_, { response, device }, context) => {
-    const user = getUser(context.auth!.userId)
+    const user = await getUser(context.auth!.userId)
 
     if (!user) {
       throw new GraphQLError("No such user")
@@ -132,13 +132,13 @@ export const verifyCredentialRegistration: MutationResolvers["verifyCredentialRe
 
 export const generateCredentialLoginOptions: MutationResolvers["generateCredentialLoginOptions"] =
   async (_, { userId }, _context) => {
-    const user = getUser(userId)
+    const user = await getUser(userId)
 
     if (!user) {
       throw new GraphQLError("No such user")
     }
 
-    const credentials = userCredentialsRepo.findForUser(user.id)
+    const credentials = await userCredentialsRepo.findForUser(user.id)
 
     const options = generateAuthenticationOptions({
       allowCredentials: credentials.map((credential) => ({
@@ -161,7 +161,7 @@ export const loginViaCredential: MutationResolvers["loginViaCredential"] = async
   { response },
   _context
 ) => {
-  const user = getUser(response.response.userHandle)
+  const user = await getUser(response.response.userHandle)
 
   if (!user) {
     throw new GraphQLError("No such user")
@@ -169,9 +169,9 @@ export const loginViaCredential: MutationResolvers["loginViaCredential"] = async
 
   const credentialId = [...Buffer.from(response.id, "base64")]
 
-  const credential = userCredentialsRepo
-    .findForUser(user.id)
-    .find((credential) => isEqual([...credential.credentialId], credentialId))
+  const credential = (await userCredentialsRepo.findForUser(user.id)).find((credential) =>
+    isEqual([...credential.credentialId], credentialId)
+  )
 
   if (!credential) {
     throw new GraphQLError("Unknown credential")
@@ -207,15 +207,15 @@ export const deleteCredential: MutationResolvers["deleteCredential"] = async (
   { id },
   context
 ) => {
-  const user = getUser(context.auth!.userId)
+  const user = await getUser(context.auth!.userId)
 
   if (!user) {
     throw new GraphQLError("No such user")
   }
 
-  const credential = userCredentialsRepo
-    .findForUser(user.id)
-    .find((credential) => credential.id === id)
+  const credential = (await userCredentialsRepo.findForUser(user.id)).find(
+    (credential) => credential.id === id
+  )
 
   if (!credential) {
     throw new GraphQLError("Unknown credential")
@@ -226,8 +226,8 @@ export const deleteCredential: MutationResolvers["deleteCredential"] = async (
   return credential
 }
 
-export const currentUser: QueryResolvers["currentUser"] = (_, _args, context) => {
-  return (context.auth?.userId && getUser(context.auth.userId)) || null
+export const currentUser: QueryResolvers["currentUser"] = async (_, _args, context) => {
+  return (context.auth?.userId && (await getUser(context.auth.userId))) || null
 }
 
 export const CurrentUser: Resolvers["CurrentUser"] = {

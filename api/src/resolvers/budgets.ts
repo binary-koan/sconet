@@ -33,7 +33,7 @@ export const budget: QueryResolvers["budget"] = async (
   _,
   { year, month, timezoneOffset, currencyId }
 ) => {
-  const currenciesById = keyBy(currenciesRepo.findAll(), "id")
+  const currenciesById = keyBy(await currenciesRepo.findAll(), "id")
 
   const outputCurrency = currencyId ? currenciesById[currencyId] : Object.values(currenciesById)[0]
 
@@ -52,23 +52,25 @@ export const budget: QueryResolvers["budget"] = async (
       .padStart(2, "0")}T23:59:59${timezoneOffset}`
   )
 
-  const parentTransactions = transactionsRepo.filter({
+  const parentTransactions = await transactionsRepo.filter({
     filter: { dateFrom: start, dateUntil: end }
   }).data
 
-  const transactions = chunk(parentTransactions, 100).flatMap((transactions) => {
-    const split = transactionsRepo.findSplitTransactionsByIds(transactions.map((t) => t.id))
+  const transactions = await Promise.all(
+    chunk(parentTransactions, 100).map(async (transactions) => {
+      const split = await transactionsRepo.findSplitTransactionsByIds(transactions.map((t) => t.id))
 
-    return transactions.flatMap((transaction, index) => {
-      if (split[index].length) {
-        return split[index]
-      } else {
-        return [transaction]
-      }
+      return transactions.flatMap((transaction, index) => {
+        if (split[index].length) {
+          return split[index]
+        } else {
+          return [transaction]
+        }
+      })
     })
-  })
+  ).then((chunks) => chunks.flat())
 
-  const categoriesById = keyBy(categoriesRepo.findAll(), "id")
+  const categoriesById = keyBy(await categoriesRepo.findAll(), "id")
 
   const includedCategoryIds = orderBy(
     uniq(transactions.map((transaction) => transaction.categoryId)),
@@ -76,7 +78,7 @@ export const budget: QueryResolvers["budget"] = async (
   )
 
   const transactionValues = keyBy(
-    transactionsRepo.findValuesInCurrency(
+    await transactionsRepo.findValuesInCurrency(
       transactions.map((transaction) => transaction.id),
       outputCurrency
     ),

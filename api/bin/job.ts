@@ -1,9 +1,7 @@
-import { runBackup } from "../src/jobs/backup"
 import { updateExchangeRates } from "../src/jobs/exchangeRates"
 import { recalculateExchangeRates } from "../src/jobs/recalculateExchangeRates"
 
 const jobs: { [name: string]: (() => Promise<void>) | undefined } = {
-  runBackup,
   updateExchangeRates,
   recalculateExchangeRates
 }

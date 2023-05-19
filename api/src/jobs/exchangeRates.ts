@@ -30,7 +30,7 @@ export const updateExchangeRates = async () => {
     })
 
     for (const other of currencies.filter((other) => other.id !== currency.id)) {
-      exchangeRateValuesRepo.insert({
+      await exchangeRateValuesRepo.insert({
         dailyExchangeRateId: dailyExchangeRate.id,
         toCurrencyId: other.id,
         rate: data[currency.code.toLowerCase()][other.code.toLowerCase()]
@@ -43,7 +43,7 @@ export const updateExchangeRates = async () => {
   ).map(loadTransaction)
 
   for (const transaction of transactionsMissingExchangeRate) {
-    transactionsRepo.updateOne(transaction.id, {
+    await transactionsRepo.updateOne(transaction.id, {
       dailyExchangeRateId: (await dailyExchangeRatesRepo.findClosest(
         transaction.date,
         transaction.currencyId

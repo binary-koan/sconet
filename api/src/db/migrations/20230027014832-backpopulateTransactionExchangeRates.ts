@@ -5,8 +5,8 @@ import { transactionsRepo } from "../repos/transactionsRepo"
 export async function up() {
   await updateExchangeRates()
 
-  transactionsRepo.findAll().forEach((transaction) => {
-    const exchangeRate = dailyExchangeRatesRepo.findClosest(
+  for (const transaction of await transactionsRepo.findAll()) {
+    const exchangeRate = await dailyExchangeRatesRepo.findClosest(
       transaction.date,
       transaction.currencyId
     )
@@ -14,7 +14,7 @@ export async function up() {
     if (exchangeRate) {
       transactionsRepo.updateOne(transaction.id, { dailyExchangeRateId: exchangeRate.id })
     }
-  })
+  }
 }
 
 export async function down() {

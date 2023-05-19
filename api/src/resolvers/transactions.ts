@@ -19,11 +19,11 @@ export const transactions: QueryResolvers["transactions"] = (_, { limit, offset,
   return transactionsRepo.filter({ limit, offset, filter })
 }
 
-export const transactionsByDay: QueryResolvers["transactionsByDay"] = (
+export const transactionsByDay: QueryResolvers["transactionsByDay"] = async (
   _,
   { dateFrom, dateUntil }
 ) => {
-  const transactions = transactionsRepo.filter({ filter: { dateFrom, dateUntil } }).data
+  const transactions = await transactionsRepo.filter({ filter: { dateFrom, dateUntil } }).data
 
   const dates: DailyTransactionsResult[] = []
 
@@ -43,24 +43,26 @@ export const transactionsByDay: QueryResolvers["transactionsByDay"] = (
   return dates
 }
 
-export const transaction: QueryResolvers["transaction"] = (_, { id }) => {
-  return transactionsRepo.get(id) || null
+export const transaction: QueryResolvers["transaction"] = async (_, { id }) => {
+  return (await transactionsRepo.get(id)) || null
 }
 
-export const createTransaction: MutationResolvers["createTransaction"] = (_, { input }) => {
-  const id = transactionsRepo.insert({
+export const createTransaction: MutationResolvers["createTransaction"] = async (_, { input }) => {
+  return await transactionsRepo.insert({
     ...input,
     date: input.date || new Date(),
-    dailyExchangeRateId: dailyExchangeRatesRepo.findClosest(input.date, input.currencyId)!.id,
+    dailyExchangeRateId: (await dailyExchangeRatesRepo.findClosest(input.date, input.currencyId))!
+      .id,
     includeInReports: input.includeInReports || true,
     originalMemo: input.memo
   })
-
-  return transactionsRepo.get(id)!
 }
 
-export const updateTransaction: MutationResolvers["updateTransaction"] = (_, { id, input }) => {
-  const transaction = transactionsRepo.get(id)
+export const updateTransaction: MutationResolvers["updateTransaction"] = async (
+  _,
+  { id, input }
+) => {
+  const transaction = await transactionsRepo.get(id)
 
   if (!transaction) {
     throw new Error("Not found")
@@ -83,31 +85,33 @@ export const updateTransaction: MutationResolvers["updateTransaction"] = (_, { i
     accountMailboxId: updateInput.accountMailboxId ?? undefined,
     dailyExchangeRateId:
       updateInput.date || updateInput.currencyId
-        ? dailyExchangeRatesRepo.findClosest(
-            updateInput.date || transaction.date,
-            updateInput.currencyId || transaction.currencyId
+        ? (
+            await dailyExchangeRatesRepo.findClosest(
+              updateInput.date || transaction.date,
+              updateInput.currencyId || transaction.currencyId
+            )
           )?.id ?? undefined
         : undefined
   }
 
-  transactionsRepo.updateOne(id, updates)
-  transactionsRepo.updateSplitTransactions(
+  await transactionsRepo.updateOne(id, updates)
+  await transactionsRepo.updateSplitTransactions(
     id,
     pick(updates, ...parentAttributes, "includeInReports")
   )
 
-  return transactionsRepo.get(id)!
+  return (await transactionsRepo.get(id))!
 }
 
-export const deleteTransaction: MutationResolvers["deleteTransaction"] = (_, { id }) => {
-  const transaction = transactionsRepo.get(id)
+export const deleteTransaction: MutationResolvers["deleteTransaction"] = async (_, { id }) => {
+  const transaction = await transactionsRepo.get(id)
 
   if (!transaction) {
     throw new Error("Not found")
   }
 
-  transactionsRepo.softDelete(id)
-  transactionsRepo.softDeleteSplitTransactions(id)
+  await transactionsRepo.softDelete(id)
+  await transactionsRepo.softDeleteSplitTransactions(id)
 
   return transaction
 }
@@ -116,7 +120,7 @@ export const splitTransaction: MutationResolvers["splitTransaction"] = async (
   _,
   { id, splits }
 ) => {
-  const transaction = transactionsRepo.get(id)
+  const transaction = await transactionsRepo.get(id)
 
   if (!transaction) {
     throw new Error("Not found")
@@ -134,14 +138,16 @@ export const splitTransaction: MutationResolvers["splitTransaction"] = async (
 
   const { id: _id, ...transactionAttributes } = transaction
 
-  splits.forEach((split) => {
-    transactionsRepo.insert({
-      ...transactionAttributes,
-      splitFromId: transaction.id,
-      amount: split.amount,
-      memo: split.memo || transaction.memo
+  await Promise.all(
+    splits.map((split) => {
+      transactionsRepo.insert({
+        ...transactionAttributes,
+        splitFromId: transaction.id,
+        amount: split.amount,
+        memo: split.memo || transaction.memo
+      })
     })
-  })
+  )
 
   return transaction
 }
@@ -189,7 +195,7 @@ export const Transaction: Resolvers["Transaction"] = {
 
 export const PaginatedTransactions: Resolvers["PaginatedTransactions"] = {
   data: (result) => result.data,
-  nextOffset: (result) => result.nextOffset || null,
+  nextOffset: async (result) => (await result.nextOffset) || null,
   totalCount: (result) => result.totalCount
 }
 

@@ -21,7 +21,7 @@ export interface Context {
   auth?: {
     userId: string
   }
-  defaultCurrencyId: string
+  defaultCurrencyId: Promise<string>
   data: {
     accountMailbox: Dataloader<string, AccountMailboxRecord>
     category: Dataloader<string, CategoryRecord>
@@ -42,7 +42,8 @@ export interface Context {
 
 export async function buildContext(request: Request): Promise<Context> {
   const defaultCurrencyId = memoize(
-    () => request.headers.get("x-default-currency-id") || currenciesRepo.findAll()[0].id
+    async () =>
+      request.headers.get("x-default-currency-id") || (await currenciesRepo.findAll())[0].id
   )
 
   return {
@@ -69,17 +70,19 @@ export async function buildContext(request: Request): Promise<Context> {
           ...query
         }))
         const resultsById = fromPairs(
-          uniqBy(queriesWithId, "id").map(({ id, fromCurrencyId, date }) => [
-            id,
-            dailyExchangeRatesRepo.findClosest(date || new Date(), fromCurrencyId)
-          ])
+          await Promise.all(
+            uniqBy(queriesWithId, "id").map(async ({ id, fromCurrencyId, date }) => [
+              id,
+              await dailyExchangeRatesRepo.findClosest(date || new Date(), fromCurrencyId)
+            ])
+          )
         )
 
         return queriesWithId.map(({ id }) => resultsById[id]!)
       }),
 
       exchangeRateValue: new Dataloader(async (queries) => {
-        const all = exchangeRateValuesRepo.findForRates(
+        const all = await exchangeRateValuesRepo.findForRates(
           queries.map((query) => query.dailyExchangeRateId)
         )
 

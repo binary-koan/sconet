@@ -7,18 +7,16 @@ export const categories: QueryResolvers["categories"] = () => {
   return categoriesRepo.findAll()
 }
 
-export const category: QueryResolvers["category"] = (_, { id }) => {
-  return categoriesRepo.get(id) || null
+export const category: QueryResolvers["category"] = async (_, { id }) => {
+  return (await categoriesRepo.get(id)) || null
 }
 
 export const createCategory: MutationResolvers["createCategory"] = (_, { input }) => {
-  const id = categoriesRepo.insert(input)
-
-  return categoriesRepo.get(id)!
+  return categoriesRepo.insert(input)
 }
 
-export const updateCategory: MutationResolvers["updateCategory"] = (_, { id, input }) => {
-  const category = categoriesRepo.get(id)
+export const updateCategory: MutationResolvers["updateCategory"] = async (_, { id, input }) => {
+  const category = await categoriesRepo.get(id)
 
   if (!category) {
     throw new Error("Not found")
@@ -32,25 +30,26 @@ export const updateCategory: MutationResolvers["updateCategory"] = (_, { id, inp
     isRegular: input.isRegular ?? undefined
   }
 
-  categoriesRepo.updateOne(id, updates)
-
-  return categoriesRepo.get(id)!
+  return await categoriesRepo.updateOne(id, updates)
 }
 
-export const deleteCategory: MutationResolvers["deleteCategory"] = (_, { id }) => {
-  const category = categoriesRepo.get(id)
+export const deleteCategory: MutationResolvers["deleteCategory"] = async (_, { id }) => {
+  const category = await categoriesRepo.get(id)
 
   if (!category) {
     throw new Error("Not found")
   }
 
-  categoriesRepo.softDelete(id)
+  await categoriesRepo.softDelete(id)
 
   return category
 }
 
-export const reorderCategories: MutationResolvers["reorderCategories"] = (_, { orderedIds }) => {
-  categoriesRepo.setOrder(orderedIds)
+export const reorderCategories: MutationResolvers["reorderCategories"] = async (
+  _,
+  { orderedIds }
+) => {
+  await categoriesRepo.setOrder(orderedIds)
 
   return categoriesRepo.findAll()
 }

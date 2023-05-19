@@ -46,12 +46,12 @@ export const sumCurrency = async (options: {
   if (!options.amounts.length) {
     return {
       amount: 0,
-      currency: await options.context.data.currency.load(options.context.defaultCurrencyId)
+      currency: await options.context.data.currency.load(await options.context.defaultCurrencyId)
     }
   }
 
   const targetCurrency = await options.context.data.currency.load(
-    options.target?.currencyId || options.context.defaultCurrencyId
+    options.target?.currencyId || (await options.context.defaultCurrencyId)
   )
 
   const convertedAmounts = await options.context.data.amountInCurrency.loadMany(
