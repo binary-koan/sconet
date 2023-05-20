@@ -5,11 +5,11 @@ export async function up() {
     CREATE TABLE dailyExchangeRates (
       id TEXT PRIMARY KEY,
       fromCurrencyId TEXT NOT NULL,
-      date INTEGER NOT NULL,
+      date DATE NOT NULL,
 
-      deletedAt INTEGER,
-      createdAt INTEGER,
-      updatedAt INTEGER
+      deletedAt TIMESTAMP,
+      createdAt TIMESTAMP,
+      updatedAt TIMESTAMP
     )
   `
 
@@ -20,9 +20,9 @@ export async function up() {
       toCurrencyId TEXT NOT NULL,
       rate REAL NOT NULL,
 
-      deletedAt INTEGER,
-      createdAt INTEGER,
-      updatedAt INTEGER
+      deletedAt TIMESTAMP,
+      createdAt TIMESTAMP,
+      updatedAt TIMESTAMP
     )
   `
 

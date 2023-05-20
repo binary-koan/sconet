@@ -2,20 +2,13 @@ import { sql } from "../database"
 
 export async function up() {
   await sql`
-    CREATE TABLE accountMailboxes (
+    CREATE TABLE accounts (
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
 
-      mailServerOptions TEXT,
-
-      fromAddressPattern TEXT,
-      datePattern TEXT,
-      memoPattern TEXT,
-      amountPattern TEXT,
-
-      deletedAt INTEGER,
-      createdAt INTEGER,
-      updatedAt INTEGER
+      deletedAt TIMESTAMP,
+      createdAt TIMESTAMP,
+      updatedAt TIMESTAMP
     )
   `
 
@@ -30,9 +23,9 @@ export async function up() {
       budget INTEGER,
       sortOrder INTEGER,
 
-      deletedAt INTEGER,
-      createdAt INTEGER,
-      updatedAt INTEGER
+      deletedAt TIMESTAMP,
+      createdAt TIMESTAMP,
+      updatedAt TIMESTAMP
     )
   `
 
@@ -42,7 +35,7 @@ export async function up() {
       memo TEXT NOT NULL,
       originalMemo TEXT NOT NULL,
       amount INTEGER NOT NULL,
-      date INTEGER NOT NULL,
+      date DATE NOT NULL,
       includeInReports INTEGER NOT NULL,
 
       currencyId TEXT NOT NULL,
@@ -53,10 +46,10 @@ export async function up() {
 
       splitFromId TEXT,
 
-      deletedAt INTEGER,
+      deletedAt TIMESTAMP,
 
-      createdAt INTEGER,
-      updatedAt INTEGER
+      createdAt TIMESTAMP,
+      updatedAt TIMESTAMP
     )
   `
 
@@ -66,8 +59,8 @@ export async function up() {
       email TEXT NOT NULL,
       encryptedPassword TEXT NOT NULL,
 
-      createdAt INTEGER,
-      updatedAt INTEGER
+      createdAt TIMESTAMP,
+      updatedAt TIMESTAMP
     )
   `
 
@@ -78,9 +71,9 @@ export async function up() {
       symbol TEXT NOT NULL,
       decimalDigits INTEGER NOT NULL,
 
-      deletedAt INTEGER,
-      createdAt INTEGER,
-      updatedAt INTEGER
+      deletedAt TIMESTAMP,
+      createdAt TIMESTAMP,
+      updatedAt TIMESTAMP
     )
   `
 
@@ -91,9 +84,9 @@ export async function up() {
       toCurrencyId TEXT NOT NULL,
       rate REAL NOT NULL,
 
-      deletedAt INTEGER,
-      createdAt INTEGER,
-      updatedAt INTEGER
+      deletedAt TIMESTAMP,
+      createdAt TIMESTAMP,
+      updatedAt TIMESTAMP
     )
   `
 }

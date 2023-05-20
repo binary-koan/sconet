@@ -1,6 +1,6 @@
 import postgres from "postgres"
 
-const rawSql = postgres()
+const rawSql = postgres(process.env.POSTGRES_URI!)
 
 export const sql: postgres.Sql<{}> = (template: any, ...parameters: any[]) => {
   if (Array.isArray(template) && "raw" in template && Array.isArray(template.raw)) {

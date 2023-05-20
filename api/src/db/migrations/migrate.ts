@@ -13,7 +13,9 @@ export async function migrate() {
   )
 
   if (migrationsToRun.length) {
-    migrationsToRun.forEach(({ filename, version, name }) => runMigration(filename, version, name))
+    for (const { filename, version, name } of migrationsToRun) {
+      await runMigration(filename, version, name)
+    }
   } else {
     console.log("Nothing to run")
   }

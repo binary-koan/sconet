@@ -7,13 +7,13 @@ export async function up() {
       userId TEXT NOT NULL,
       device TEXT NOT NULL,
 
-      credentialId BLOB NOT NULL,
-      credentialPublicKey BLOB NOT NULL,
+      credentialId BYTEA NOT NULL,
+      credentialPublicKey BYTEA NOT NULL,
       counter INTEGER NOT NULL,
 
-      deletedAt INTEGER,
-      createdAt INTEGER,
-      updatedAt INTEGER
+      deletedAt TIMESTAMP,
+      createdAt TIMESTAMP,
+      updatedAt TIMESTAMP
     )
   `
 }
