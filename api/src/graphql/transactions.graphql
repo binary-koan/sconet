@@ -8,8 +8,8 @@ type Transaction {
   currencyId: String!
   category: Category
   categoryId: String
-  accountMailbox: AccountMailbox!
-  accountMailboxId: String!
+  account: Account!
+  accountId: String!
   includeInReports: Boolean!
   splitFromId: String
   splitFrom: Transaction
@@ -54,7 +54,7 @@ input CreateTransactionInput {
   amount: Int!
   currencyId: String!
   categoryId: String
-  accountMailboxId: String!
+  accountId: String!
   date: Date
   includeInReports: Boolean
 }
@@ -64,7 +64,7 @@ input UpdateTransactionInput {
   amount: Int
   currencyId: String
   categoryId: String
-  accountMailboxId: String
+  accountId: String
   date: Date
   includeInReports: Boolean
 }

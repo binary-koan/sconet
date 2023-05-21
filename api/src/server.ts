@@ -20,7 +20,10 @@ const yoga = createYoga({
       : {
           origin: "http://localhost:1234",
           allowedHeaders: ["Authorization", "Content-Type"]
-        }
+        },
+
+  // maskedErrors: process.env.NODE_ENV !== "production"
+  maskedErrors: false
 })
 
 Bun.serve({

@@ -1,36 +1,33 @@
 import { TbEdit, TbTrash } from "solid-icons/tb"
 import { Component, For } from "solid-js"
 import toast from "solid-toast"
-import { AccountMailboxesQuery } from "../../graphql-types"
-import { useDeleteAccountMailbox } from "../../graphql/mutations/deleteAccountMailboxMutation"
+import { AccountsQuery } from "../../graphql-types"
+import { useDeleteAccount } from "../../graphql/mutations/deleteAccountMutation"
 import { Button, LinkButton } from "../base/Button"
 
-const AccountMailboxesList: Component<{
-  data: AccountMailboxesQuery
+const AccountsList: Component<{
+  data: AccountsQuery
 }> = (props) => {
-  const deleteAccountMailbox = useDeleteAccountMailbox({
-    onSuccess: () => toast.success("AccountMailbox deleted"),
+  const deleteAccount = useDeleteAccount({
+    onSuccess: () => toast.success("Account deleted"),
     onError: (error) => toast.error(error.message)
   })
 
   const onDeleteClick = (id: string) => {
-    if (confirm("Are you sure you want to delete accountMailbox " + id + "?")) {
-      deleteAccountMailbox({ id })
+    if (confirm("Are you sure you want to delete account " + id + "?")) {
+      deleteAccount({ id })
     }
   }
 
   return (
-    <For each={props.data.accountMailboxes}>
+    <For each={props.data.accounts}>
       {(account) => (
         <div class="flex items-center bg-white px-4 py-2 shadow-sm">
           <div class="mr-4 min-w-0 flex-1">
             <h3 class="mb-1 truncate leading-none">{account.name}</h3>
-            <p class="truncate text-xs leading-tight text-gray-600">
-              {JSON.stringify(account.mailServerOptions)}
-            </p>
           </div>
           <LinkButton
-            href={`/account-mailboxes/${account.id}`}
+            href={`/accounts/${account.id}`}
             size="sm"
             variant="ghost"
             class="ml-auto mr-2"
@@ -53,4 +50,4 @@ const AccountMailboxesList: Component<{
   )
 }
 
-export default AccountMailboxesList
+export default AccountsList

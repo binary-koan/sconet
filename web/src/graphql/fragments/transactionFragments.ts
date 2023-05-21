@@ -17,7 +17,7 @@ export const FullTransactionFragment = gql`
       color
       icon
     }
-    accountMailbox {
+    account {
       id
       name
     }

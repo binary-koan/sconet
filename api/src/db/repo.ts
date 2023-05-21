@@ -1,11 +1,10 @@
-import ObjectID from "bson-objectid"
 import { keyBy, pickBy } from "lodash"
-import { JSONValue } from "postgres"
+import { Helper, JSONValue } from "postgres"
 import { sql } from "./database"
-import { assertFieldName } from "./utils/assertFieldName"
+import { joinSql } from "./utils/joinSql"
 
 export type Repo<Record, RecordForInsert, Methods> = Methods & {
-  tableName: string
+  tableName: Helper<string>
   findAll: (options?: { limit?: number; offset?: number }) => Promise<Record[]>
   findByIds: (ids: readonly string[]) => Promise<Record[]>
   get: (id: string) => Promise<Record | undefined>
@@ -36,20 +35,21 @@ export const createRepo = <
   methods: Methods
 }): Repo<Record, RecordForInsert, Methods> => {
   const tableName = sql(rawTableName)
-  Object.keys(defaultOrder).forEach(assertFieldName)
-  Object.values(defaultOrder).forEach(assertFieldName)
 
   return {
-    tableName: rawTableName,
+    tableName,
 
     ...methods,
 
     async findAll({ limit, offset }: { limit?: number; offset?: number } = {}) {
-      const order = Object.entries(defaultOrder)
-        .map(([name, value]) => [name, value].join(" "))
-        .join(", ")
+      const order = joinSql(
+        Object.entries(defaultOrder).map(
+          ([name, value]) => sql`${sql(name)} ${value === "ASC" ? sql`ASC` : sql`DESC`}`
+        ),
+        ","
+      )
 
-      const query = sql`SELECT * FROM ${tableName} WHERE deletedAt IS NULL ORDER BY ${order}`
+      const query = sql`SELECT * FROM ${tableName} WHERE "deletedAt" IS NULL ORDER BY ${order}`
 
       const result = await sql`
         ${query}
@@ -62,7 +62,7 @@ export const createRepo = <
 
     async findByIds(ids) {
       const results = keyBy(
-        (await sql`SELECT * FROM ${tableName} WHERE deletedAt IS NULL AND id IN ${sql(ids)}`).map(
+        (await sql`SELECT * FROM ${tableName} WHERE "deletedAt" IS NULL AND id IN ${sql(ids)}`).map(
           load
         ),
         (record) => record.id
@@ -78,16 +78,13 @@ export const createRepo = <
     },
 
     async insert(recordForInsert) {
-      const id = ObjectID().toHexString()
-
       const record = serialize({
         ...formatForInsert(recordForInsert),
-        id,
         createdAt: new Date(),
         updatedAt: new Date()
       } as Record)
 
-      const result = await sql`INSERT INTO ${tableName} VALUES ${sql(record)} RETURNING *`
+      const result = await sql`INSERT INTO ${tableName} ${sql(record)} RETURNING *`
 
       return load(result[0]!)
     },
@@ -100,7 +97,7 @@ export const createRepo = <
 
       const result = await sql`UPDATE ${tableName} SET ${sql(
         fieldsToSet
-      )} WHERE id = ${id} RETURNING *`
+      )} WHERE "id" = ${id} RETURNING *`
 
       if (!result.length) {
         throw new Error(`Record with id ${id} not found`)
@@ -110,7 +107,7 @@ export const createRepo = <
     },
 
     async softDelete(id) {
-      await sql`UPDATE ${tableName} SET deletedAt = ${new Date()} WHERE id = ${id}`
+      await sql`UPDATE ${tableName} SET "deletedAt" = ${new Date()} WHERE "id" = ${id}`
     }
   }
 }

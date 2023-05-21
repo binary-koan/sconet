@@ -5,7 +5,7 @@ import { Component, createEffect, For, Show } from "solid-js"
 import toast from "solid-toast"
 import { CreateTransactionInput } from "../../graphql-types"
 import { useCreateTransaction } from "../../graphql/mutations/createTransactionMutation"
-import { useAccountMailboxesQuery } from "../../graphql/queries/accountMailboxesQuery"
+import { useAccountsQuery } from "../../graphql/queries/accountsQuery"
 import { useCategoriesQuery } from "../../graphql/queries/categoriesQuery"
 import { useCurrenciesQuery } from "../../graphql/queries/currenciesQuery"
 import { CATEGORY_BACKGROUND_COLORS, CategoryColor } from "../../utils/categoryColors"
@@ -27,7 +27,7 @@ export const NewTransactionModal: Component<{
 }> = (props) => {
   const categories = useCategoriesQuery()
   const currencies = useCurrenciesQuery()
-  const accountMailboxes = useAccountMailboxesQuery()
+  const accounts = useAccountsQuery()
 
   const createTransaction = useCreateTransaction({
     onSuccess: () => {
@@ -66,13 +66,12 @@ export const NewTransactionModal: Component<{
   })
 
   createEffect(() => {
-    if (accountMailboxes()?.accountMailboxes && !getValue(form, "accountMailboxId")) {
+    if (accounts()?.accounts && !getValue(form, "accountId")) {
       setValue(
         form,
-        "accountMailboxId",
-        accountMailboxes()!.accountMailboxes.find(
-          (accountMailbox) => accountMailbox.id === preferredAccount()
-        )?.id || accountMailboxes()!.accountMailboxes[0]!.id
+        "accountId",
+        accounts()!.accounts.find((account) => account.id === preferredAccount())?.id ||
+          accounts()!.accounts[0]!.id
       )
     }
   })
@@ -251,18 +250,18 @@ export const NewTransactionModal: Component<{
                 )}
               </Field>
 
-              <Field of={form} name="accountMailboxId">
+              <Field of={form} name="accountId">
                 {(field) => (
                   <Dropdown
                     closeOnItemClick
                     content={
-                      <For each={accountMailboxes()?.accountMailboxes}>
-                        {(accountMailbox) => (
+                      <For each={accounts()?.accounts}>
+                        {(account) => (
                           <DropdownMenuItem
                             class="text-sm"
-                            onClick={() => setValue(form, "accountMailboxId", accountMailbox.id)}
+                            onClick={() => setValue(form, "accountId", account.id)}
                           >
-                            {accountMailbox.name}
+                            {account.name}
                           </DropdownMenuItem>
                         )}
                       </For>
@@ -273,11 +272,7 @@ export const NewTransactionModal: Component<{
                       variant="ghost"
                       class="rounded border border-gray-100 px-4 py-2 text-xs text-gray-700"
                     >
-                      {
-                        accountMailboxes()?.accountMailboxes.find(
-                          (accountMailbox) => accountMailbox.id === field.value
-                        )?.name
-                      }
+                      {accounts()?.accounts.find((account) => account.id === field.value)?.name}
                       <TbChevronDown class="ml-1" />
                     </Button>
                   </Dropdown>

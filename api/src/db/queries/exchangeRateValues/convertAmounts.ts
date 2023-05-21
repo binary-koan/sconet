@@ -9,18 +9,18 @@ export async function convertAmounts(
   }>
 ) {
   const result = await sql`
-    WITH queries(amount, fromCurrencyId, toCurrencyId, dailyExchangeRateId) AS (
+    WITH queries("amount", "fromCurrencyId", "toCurrencyId", "dailyExchangeRateId") AS (
       VALUES ${sql(queries.map((query) => Object.values(query)))}
     )
     SELECT
-      (amount * COALESCE(exchangeRateValues.rate, 1)) AS convertedAmount,
-      fromCurrency.decimalDigits AS fromDigits,
-      toCurrency.decimalDigits AS toDigits
+      (amount * COALESCE("exchangeRateValues"."rate", 1)) AS "convertedAmount",
+      "fromCurrency"."decimalDigits" AS "fromDigits",
+      "toCurrency"."decimalDigits" AS "toDigits"
     FROM queries
-    LEFT OUTER JOIN dailyExchangeRates ON queries.dailyExchangeRateId = dailyExchangeRates.id
-    LEFT OUTER JOIN exchangeRateValues ON queries.toCurrencyId = exchangeRateValues.toCurrencyId AND exchangeRateValues.dailyExchangeRateId = dailyExchangeRates.id
-    INNER JOIN currencies fromCurrency ON queries.fromCurrencyId = fromCurrency.id
-    INNER JOIN currencies toCurrency ON queries.toCurrencyId = toCurrency.id
+    LEFT OUTER JOIN "dailyExchangeRates" ON "queries"."dailyExchangeRateId" = "dailyExchangeRates"."id"
+    LEFT OUTER JOIN "exchangeRateValues" ON "queries"."toCurrencyId" = "exchangeRateValues"."toCurrencyId" AND "exchangeRateValues"."dailyExchangeRateId" = "dailyExchangeRates"."id"
+    INNER JOIN "currencies" "fromCurrency" ON "queries"."fromCurrencyId" = "fromCurrency"."id"
+    INNER JOIN "currencies" "toCurrency" ON "queries"."toCurrencyId" = "toCurrency"."id"
   `
 
   return result.map((row) => {

@@ -11,13 +11,13 @@ import {
 import { resolve } from "path"
 import { Resolvers } from "./resolvers-types"
 import {
-  accountMailbox,
-  AccountMailbox,
-  accountMailboxes,
-  createAccountMailbox,
-  deleteAccountMailbox,
-  updateAccountMailbox
-} from "./resolvers/accountMailboxes"
+  account,
+  Account,
+  accounts,
+  createAccount,
+  deleteAccount,
+  updateAccount
+} from "./resolvers/accounts"
 import { budget, CategoryBudget, CategoryBudgetGroup, MonthBudget } from "./resolvers/budgets"
 import {
   categories,
@@ -74,8 +74,8 @@ const resolvers: Resolvers = {
     transaction,
     transactions,
     transactionsByDay,
-    accountMailbox,
-    accountMailboxes,
+    account,
+    accounts,
     category,
     categories,
     budget,
@@ -89,9 +89,9 @@ const resolvers: Resolvers = {
     updateTransaction,
     deleteTransaction,
     splitTransaction,
-    createAccountMailbox,
-    updateAccountMailbox,
-    deleteAccountMailbox,
+    createAccount,
+    updateAccount,
+    deleteAccount,
     createCategory,
     updateCategory,
     deleteCategory,
@@ -113,7 +113,7 @@ const resolvers: Resolvers = {
   DailyTransactions,
   Currency,
   Category,
-  AccountMailbox,
+  Account,
   DailyExchangeRate,
   ExchangeRateValue,
   MonthBudget,

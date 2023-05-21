@@ -1,0 +1,24 @@
+type Account {
+  id: String!
+  name: String!
+  transactions: [Transaction!]!
+}
+
+type Query {
+  accounts: [Account!]! @authenticated
+  account(id: String!): Account @authenticated
+}
+
+input CreateAccountInput {
+  name: String!
+}
+
+input UpdateAccountInput {
+  name: String
+}
+
+type Mutation {
+  createAccount(input: CreateAccountInput!): Account! @authenticated
+  updateAccount(id: String!, input: UpdateAccountInput!): Account! @authenticated
+  deleteAccount(id: String!): Account! @authenticated
+}

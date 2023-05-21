@@ -1,3 +1,4 @@
 import { seed } from "../../src/db/seeds/seed"
+import { runDbSession } from "../../src/utils/runDbSession"
 
-seed()
+runDbSession(seed)

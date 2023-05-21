@@ -1,5 +1,4 @@
 import { ExchangeRateValueRecord } from "../../records/exchangeRateValue"
-import { loadDate } from "../../utils"
 
 export function loadExchangeRateValue(row: any): ExchangeRateValueRecord {
   return {
@@ -8,8 +7,8 @@ export function loadExchangeRateValue(row: any): ExchangeRateValueRecord {
     toCurrencyId: row.toCurrencyId,
     rate: row.rate,
 
-    createdAt: loadDate(row.createdAt as number),
-    updatedAt: loadDate(row.updatedAt as number),
-    deletedAt: loadDate(row.deletedAt as number)
+    createdAt: row.createdAt,
+    updatedAt: row.updatedAt,
+    deletedAt: row.deletedAt
   }
 }

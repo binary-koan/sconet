@@ -1,23 +1,21 @@
 import bcrypt from "bcryptjs"
-import ObjectID from "bson-objectid"
 import { updateExchangeRates } from "../../jobs/exchangeRates"
 import { sql } from "../database"
-import { accountMailboxesRepo } from "../repos/accountMailboxesRepo"
+import { accountsRepo } from "../repos/accountsRepo"
 import { categoriesRepo } from "../repos/categoriesRepo"
 import { currenciesRepo } from "../repos/currenciesRepo"
-import { serializeDate } from "../utils"
 
 export async function seed() {
+  console.log("starting seed")
   for (const email of process.env.USER_EMAILS?.split(",") || []) {
-    const existing = sql`SELECT * FROM users WHERE email = ${email}`
+    const existing = await sql`SELECT * FROM users WHERE email = ${email}`
 
-    if (!existing) {
+    if (!existing.length) {
       await sql`INSERT INTO users ${sql({
-        id: ObjectID().toHexString(),
         email,
         encryptedPassword: bcrypt.hashSync("changeme", 10),
-        createdAt: serializeDate(new Date()),
-        updatedAt: serializeDate(new Date())
+        createdAt: new Date(),
+        updatedAt: new Date()
       })}`
       console.log(`Created user ${email}`)
     }
@@ -31,6 +29,7 @@ export async function seed() {
       color: "red",
       icon: "ShoppingCart"
     })
+    console.log(`Created category 'First'`)
   }
 
   if (!existingCategories.some((category) => category.name === "Second")) {
@@ -39,19 +38,16 @@ export async function seed() {
       color: "green",
       icon: "ShoppingCart"
     })
+    console.log(`Created category 'Second'`)
   }
 
-  const existingAccounts = await sql`SELECT * FROM accountMailboxes`
+  const existingAccounts = await sql`SELECT * FROM accounts`
 
   if (!existingAccounts.some((account) => account.name === "Test")) {
-    await accountMailboxesRepo.insert({
-      name: "Test",
-      mailServerOptions: {},
-      fromAddressPattern: "",
-      memoPattern: "",
-      datePattern: "",
-      amountPattern: ""
+    await accountsRepo.insert({
+      name: "Test"
     })
+    console.log(`Created account 'Test'`)
   }
 
   const existingCurrencies = await sql`SELECT * FROM currencies`
@@ -62,6 +58,7 @@ export async function seed() {
       decimalDigits: 0,
       symbol: "¥"
     })
+    console.log(`Created currency 'JPY'`)
   }
 
   await updateExchangeRates()

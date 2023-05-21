@@ -6,7 +6,7 @@ import {
   GetTransactionQuery,
   UpdateTransactionInput
 } from "../../graphql-types"
-import { useAccountMailboxesQuery } from "../../graphql/queries/accountMailboxesQuery"
+import { useAccountsQuery } from "../../graphql/queries/accountsQuery"
 import { useCategoriesQuery } from "../../graphql/queries/categoriesQuery"
 import { useCurrenciesQuery } from "../../graphql/queries/currenciesQuery"
 import { formatDateForInput } from "../../utils/formatters"
@@ -27,7 +27,7 @@ const TransactionForm: Component<{
   loading: boolean
 }> = (props) => {
   const categories = useCategoriesQuery()
-  const accountMailboxes = useAccountMailboxesQuery()
+  const accounts = useAccountsQuery()
   const currencies = useCurrenciesQuery()
 
   console.log("initial memo", props.data?.transaction?.memo)
@@ -51,7 +51,7 @@ const TransactionForm: Component<{
         props.data?.transaction?.date ? new Date(props.data?.transaction?.date) : new Date()
       ),
 
-      accountMailboxId: props.data?.transaction?.accountMailbox?.id,
+      accountId: props.data?.transaction?.account?.id,
 
       includeInReports:
         props.data?.transaction?.includeInReports != null
@@ -173,10 +173,10 @@ const TransactionForm: Component<{
         <FormOptionButtons
           of={form}
           label="Account"
-          name="accountMailboxId"
+          name="accountId"
           validate={required("Cannot be blank")}
           options={
-            accountMailboxes()?.accountMailboxes?.map((account) => ({
+            accounts()?.accounts?.map((account) => ({
               value: account.id,
               content: account.name
             })) || []

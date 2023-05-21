@@ -6,7 +6,7 @@ type SerializerMap<Record extends object> = {
 
 export function serializePartialRecord<Record extends object>(
   record: Partial<Record>,
-  serializers: SerializerMap<Record>
+  serializers: SerializerMap<Record> = {}
 ) {
   return mapValues(record, (value, key: keyof Record) =>
     serializers[key] ? serializers[key]!(value as any) : value

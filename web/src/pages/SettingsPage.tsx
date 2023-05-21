@@ -5,17 +5,17 @@ import DeviceDetector from "device-detector-js"
 import { TbFingerprint, TbKey, TbTrash } from "solid-icons/tb"
 import { Component, For } from "solid-js"
 import toast from "solid-toast"
-import AccountMailboxes from "../components/accountMailboxes/AccountMailboxes"
+import { Cell } from "../components/Cell"
+import Accounts from "../components/accounts/AccountsList"
 import { Button, LinkButton } from "../components/base/Button"
 import { PageHeader } from "../components/base/PageHeader"
 import CategoriesList from "../components/categories/Categories"
-import { Cell } from "../components/Cell"
 import { AddCurrencyButton } from "../components/currencies/AddCurrencyButton"
 import Currencies from "../components/currencies/Currencies"
 import { CurrentExchangeRates } from "../components/exchangeRates/CurrentExchangeRates"
 import {
-  AccountMailboxesQuery,
-  AccountMailboxesQueryVariables,
+  AccountsQuery,
+  AccountsQueryVariables,
   CategoriesQuery,
   CategoriesQueryVariables,
   CurrenciesQuery,
@@ -33,7 +33,7 @@ import { QueryResource } from "../utils/graphqlClient/useQuery"
 
 export interface SettingsPageData {
   categories: QueryResource<CategoriesQuery, CategoriesQueryVariables>
-  accountMailboxes: QueryResource<AccountMailboxesQuery, AccountMailboxesQueryVariables>
+  accounts: QueryResource<AccountsQuery, AccountsQueryVariables>
   currentUser: QueryResource<CurrentUserQuery, CurrentUserQueryVariables>
   currencies: QueryResource<CurrenciesQuery, CurrenciesQueryVariables>
   currentExchangeRates: QueryResource<CurrentExchangeRatesQuery, CurrentExchangeRatesQueryVariables>
@@ -145,12 +145,12 @@ const SettingsPage: Component = () => {
 
       <PageHeader size="lg">
         Accounts
-        <LinkButton class="ml-auto" size="sm" colorScheme="primary" href="/account-mailboxes/new">
+        <LinkButton class="ml-auto" size="sm" colorScheme="primary" href="/accounts/new">
           New Account
         </LinkButton>
       </PageHeader>
 
-      <Cell data={data.accountMailboxes} success={AccountMailboxes} />
+      <Cell data={data.accounts} success={Accounts} />
 
       <PageHeader size="lg">
         Currencies <AddCurrencyButton />

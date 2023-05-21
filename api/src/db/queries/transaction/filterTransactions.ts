@@ -18,7 +18,7 @@ export function filterTransactions({
   limit?: Maybe<number>
   offset?: Maybe<string>
   filter?: Maybe<{
-    accountMailboxId?: Maybe<string>
+    accountId?: Maybe<string>
     dateFrom?: Maybe<Date>
     dateUntil?: Maybe<Date>
     minAmount?: Maybe<number>
@@ -29,8 +29,8 @@ export function filterTransactions({
 }): FindTransactionsResult {
   let where = sql`WHERE splitFromId IS NULL AND deletedAt IS NULL`
 
-  if (filter?.accountMailboxId) {
-    where = sql`${where} AND accountMailboxId = ${filter.accountMailboxId}`
+  if (filter?.accountId) {
+    where = sql`${where} AND accountId = ${filter.accountId}`
   }
 
   if (filter?.dateFrom) {

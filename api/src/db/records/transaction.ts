@@ -10,7 +10,7 @@ export interface TransactionRecord {
   dailyExchangeRateId: string
   categoryId: string | null
 
-  accountMailboxId: string
+  accountId: string
   remoteId: string | null
 
   splitFromId: string | null

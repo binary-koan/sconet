@@ -39,7 +39,7 @@ export const updateExchangeRates = async () => {
   }
 
   const transactionsMissingExchangeRate = (
-    await sql`SELECT * FROM transactions WHERE dailyExchangeRateId IS NULL`
+    await sql`SELECT * FROM "transactions" WHERE "dailyExchangeRateId" IS NULL`
   ).map(loadTransaction)
 
   for (const transaction of transactionsMissingExchangeRate) {

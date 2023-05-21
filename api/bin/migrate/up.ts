@@ -1,3 +1,4 @@
 import { up } from "../../src/db/migrations/migrate"
+import { runDbSession } from "../../src/utils/runDbSession"
 
-up(process.argv[2])
+runDbSession(() => up(process.argv[2]))

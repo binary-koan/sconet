@@ -16,10 +16,10 @@ const RelationEditor: Component<{
     })
   }
 
-  const updateAccountMailbox = async (accountMailbox: { id: string }) => {
+  const updateAccount = async (account: { id: string }) => {
     await updateTransaction({
       id: props.transaction.id,
-      input: { accountMailboxId: accountMailbox.id }
+      input: { accountId: account.id }
     })
   }
 
@@ -28,11 +28,11 @@ const RelationEditor: Component<{
       hasParent={Boolean(parent)}
       isIncome={props.transaction.amount.decimalAmount > 0}
       category={props.transaction.category}
-      accountMailbox={props.transaction.accountMailbox}
+      account={props.transaction.account}
       hasChildren={Boolean(props.transaction.splitTo?.length)}
       includeInReports={props.includeInReports}
       onChangeCategory={updateCategory}
-      onChangeAccountMailbox={updateAccountMailbox}
+      onChangeAccount={updateAccount}
     />
   )
 }

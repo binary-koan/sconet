@@ -3,13 +3,13 @@ import { GraphQLError } from "graphql"
 import { errors, jwtVerify } from "jose"
 import { fromPairs, last, memoize, uniqBy } from "lodash"
 import { convertAmounts } from "./db/queries/exchangeRateValues/convertAmounts"
-import { AccountMailboxRecord } from "./db/records/accountMailbox"
+import { AccountRecord } from "./db/records/account"
 import { CategoryRecord } from "./db/records/category"
 import { CurrencyRecord } from "./db/records/currency"
 import { DailyExchangeRateRecord } from "./db/records/dailyExchangeRate"
 import { ExchangeRateValueRecord } from "./db/records/exchangeRateValue"
 import { TransactionRecord } from "./db/records/transaction"
-import { accountMailboxesRepo } from "./db/repos/accountMailboxesRepo"
+import { accountsRepo } from "./db/repos/accountsRepo"
 import { categoriesRepo } from "./db/repos/categoriesRepo"
 import { currenciesRepo } from "./db/repos/currenciesRepo"
 import { dailyExchangeRatesRepo } from "./db/repos/dailyExchangeRatesRepo"
@@ -23,7 +23,7 @@ export interface Context {
   }
   defaultCurrencyId: Promise<string>
   data: {
-    accountMailbox: Dataloader<string, AccountMailboxRecord>
+    account: Dataloader<string, AccountRecord>
     category: Dataloader<string, CategoryRecord>
     transaction: Dataloader<string, TransactionRecord>
     transactionSplitTo: Dataloader<string, TransactionRecord[]>
@@ -56,7 +56,7 @@ export async function buildContext(request: Request): Promise<Context> {
     },
 
     data: {
-      accountMailbox: new Dataloader(async (ids) => accountMailboxesRepo.findByIds(ids)),
+      account: new Dataloader(async (ids) => accountsRepo.findByIds(ids)),
       category: new Dataloader(async (ids) => categoriesRepo.findByIds(ids)),
       transaction: new Dataloader(async (ids) => transactionsRepo.findByIds(ids)),
       transactionSplitTo: new Dataloader(async (ids) =>

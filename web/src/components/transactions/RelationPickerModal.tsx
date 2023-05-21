@@ -1,15 +1,13 @@
 import { Component, Show } from "solid-js"
 import { Button } from "../base/Button"
 import { Modal, ModalCloseButton, ModalContent, ModalTitle } from "../base/Modal"
-import AccountMailboxPicker, {
-  ValueProps as AccountMailboxValueProps
-} from "./AccountMailboxPicker"
+import AccountPicker, { ValueProps as AccountValueProps } from "./AccountPicker"
 import CategoryPicker, { ValueProps as CategoryValueProps } from "./CategoryPicker"
 
 const RelationPickerModal: Component<{
   isIncome: boolean
   categoryProps: CategoryValueProps
-  accountMailboxProps: AccountMailboxValueProps
+  accountProps: AccountValueProps
   isOpen: boolean
   onClose: () => void
 }> = (props) => {
@@ -27,8 +25,8 @@ const RelationPickerModal: Component<{
             </h3>
             <CategoryPicker {...props.categoryProps} />
           </Show>
-          <h3 class="mt-6 mb-4 font-semibold">Account Mailbox</h3>
-          <AccountMailboxPicker {...props.accountMailboxProps} />
+          <h3 class="mt-6 mb-4 font-semibold">Account</h3>
+          <AccountPicker {...props.accountProps} />
         </div>
 
         <Button colorScheme="primary" onClick={props.onClose}>

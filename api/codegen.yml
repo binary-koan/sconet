@@ -13,7 +13,7 @@ generates:
         Category: ./db/records/category#CategoryRecord
         Currency: ./db/records/currency#CurrencyRecord
         Transaction: ./db/records/transaction#TransactionRecord
-        AccountMailbox: ./db/records/accountMailbox#AccountMailboxRecord
+        Account: ./db/records/account#AccountRecord
         DailyExchangeRate: ./db/records/dailyExchangeRate#DailyExchangeRateRecord
         ExchangeRateValue: ./db/records/exchangeRateValue#ExchangeRateValueRecord
         PaginatedTransactions: ./db/queries/transaction/filterTransactions#FindTransactionsResult

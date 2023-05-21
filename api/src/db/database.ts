@@ -4,10 +4,14 @@ const rawSql = postgres(process.env.POSTGRES_URI!)
 
 export const sql: postgres.Sql<{}> = (template: any, ...parameters: any[]) => {
   if (Array.isArray(template) && "raw" in template && Array.isArray(template.raw)) {
-    console.log(`[POSTGRES:QUERY] ${template.raw.join("?").replace(/ +/g, " ")}`)
-    console.log(`[POSTGRES:QUERY BINDINGS] ${JSON.stringify(parameters)}`)
+    const raw = rawSql(template as TemplateStringsArray, ...parameters)
 
-    return rawSql(template as TemplateStringsArray, ...parameters) as any
+    if (process.env.LOG_ALL_SQL) {
+      console.log(`[POSTGRES:QUERY] ${(template.raw as any).join(" ? ").replace(/\s+/g, " ")}`)
+      console.log(`[POSTGRES:QUERY BINDINGS]`, parameters)
+    }
+
+    return raw
   }
 
   return rawSql(template, ...parameters) as any

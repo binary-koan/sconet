@@ -1,14 +1,13 @@
 import { DailyExchangeRateRecord } from "../../records/dailyExchangeRate"
-import { loadDate } from "../../utils"
 
 export function loadDailyExchangeRate(row: any): DailyExchangeRateRecord {
   return {
     id: row.id,
     fromCurrencyId: row.fromCurrencyId,
-    date: loadDate(row.date as number),
+    date: row.date,
 
-    createdAt: loadDate(row.createdAt as number),
-    updatedAt: loadDate(row.updatedAt as number),
-    deletedAt: loadDate(row.deletedAt as number)
+    createdAt: row.createdAt,
+    updatedAt: row.updatedAt,
+    deletedAt: row.deletedAt
   }
 }

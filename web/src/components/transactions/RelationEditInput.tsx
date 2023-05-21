@@ -7,11 +7,11 @@ const RelationEditInput: Component<{
   hasParent: boolean
   isIncome: boolean
   category: any
-  accountMailbox: any
+  account: any
   hasChildren: boolean
   includeInReports: boolean
   onChangeCategory: (category: any) => void
-  onChangeAccountMailbox: (accountMailbox: any) => void
+  onChangeAccount: (account: any) => void
 }> = (props) => {
   const [modalOpen, setModalOpen] = createSignal(false)
 
@@ -44,9 +44,9 @@ const RelationEditInput: Component<{
             value: props.category,
             onChange: props.onChangeCategory
           }}
-          accountMailboxProps={{
-            value: props.accountMailbox,
-            onChange: props.onChangeAccountMailbox
+          accountProps={{
+            value: props.account,
+            onChange: props.onChangeAccount
           }}
           isOpen={true}
           onClose={() => setModalOpen(false)}

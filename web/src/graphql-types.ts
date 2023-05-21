@@ -17,14 +17,9 @@ export type Scalars = {
   UtcOffset: any;
 };
 
-export type AccountMailbox = {
-  __typename?: 'AccountMailbox';
-  amountPattern?: Maybe<Scalars['String']>;
-  datePattern?: Maybe<Scalars['String']>;
-  fromAddressPattern?: Maybe<Scalars['String']>;
+export type Account = {
+  __typename?: 'Account';
   id: Scalars['String'];
-  mailServerOptions: Scalars['JSON'];
-  memoPattern?: Maybe<Scalars['String']>;
   name: Scalars['String'];
   transactions: Array<Transaction>;
 };
@@ -62,12 +57,7 @@ export type CategoryBudgetGroup = {
   totalSpending: Money;
 };
 
-export type CreateAccountMailboxInput = {
-  amountPattern?: InputMaybe<Scalars['String']>;
-  datePattern?: InputMaybe<Scalars['String']>;
-  fromAddressPattern?: InputMaybe<Scalars['String']>;
-  mailServerOptions: Scalars['JSON'];
-  memoPattern?: InputMaybe<Scalars['String']>;
+export type CreateAccountInput = {
   name: Scalars['String'];
 };
 
@@ -87,7 +77,7 @@ export type CreateCurrencyInput = {
 };
 
 export type CreateTransactionInput = {
-  accountMailboxId: Scalars['String'];
+  accountId: Scalars['String'];
   amount: Scalars['Int'];
   categoryId?: InputMaybe<Scalars['String']>;
   currencyId: Scalars['String'];
@@ -169,11 +159,11 @@ export type MonthBudget = {
 export type Mutation = {
   __typename?: 'Mutation';
   changePassword: Scalars['Boolean'];
-  createAccountMailbox: AccountMailbox;
+  createAccount: Account;
   createCategory: Category;
   createCurrency: Currency;
   createTransaction: Transaction;
-  deleteAccountMailbox: AccountMailbox;
+  deleteAccount: Account;
   deleteCategory: Category;
   deleteCredential: UserCredential;
   deleteCurrency: Currency;
@@ -185,7 +175,7 @@ export type Mutation = {
   registerCredential: Scalars['JSON'];
   reorderCategories: Array<Category>;
   splitTransaction: Transaction;
-  updateAccountMailbox: AccountMailbox;
+  updateAccount: Account;
   updateCategory: Category;
   updateCurrency: Currency;
   updateTransaction: Transaction;
@@ -199,8 +189,8 @@ export type MutationChangePasswordArgs = {
 };
 
 
-export type MutationCreateAccountMailboxArgs = {
-  input: CreateAccountMailboxInput;
+export type MutationCreateAccountArgs = {
+  input: CreateAccountInput;
 };
 
 
@@ -219,7 +209,7 @@ export type MutationCreateTransactionArgs = {
 };
 
 
-export type MutationDeleteAccountMailboxArgs = {
+export type MutationDeleteAccountArgs = {
   id: Scalars['String'];
 };
 
@@ -272,9 +262,9 @@ export type MutationSplitTransactionArgs = {
 };
 
 
-export type MutationUpdateAccountMailboxArgs = {
+export type MutationUpdateAccountArgs = {
   id: Scalars['String'];
-  input: UpdateAccountMailboxInput;
+  input: UpdateAccountInput;
 };
 
 
@@ -310,8 +300,8 @@ export type PaginatedTransactions = {
 
 export type Query = {
   __typename?: 'Query';
-  accountMailbox?: Maybe<AccountMailbox>;
-  accountMailboxes: Array<AccountMailbox>;
+  account?: Maybe<Account>;
+  accounts: Array<Account>;
   budget: MonthBudget;
   categories: Array<Category>;
   category?: Maybe<Category>;
@@ -325,7 +315,7 @@ export type Query = {
 };
 
 
-export type QueryAccountMailboxArgs = {
+export type QueryAccountArgs = {
   id: Scalars['String'];
 };
 
@@ -372,8 +362,8 @@ export type SplitTransactionItem = {
 
 export type Transaction = {
   __typename?: 'Transaction';
-  accountMailbox: AccountMailbox;
-  accountMailboxId: Scalars['String'];
+  account: Account;
+  accountId: Scalars['String'];
   amount: Money;
   category?: Maybe<Category>;
   categoryId?: Maybe<Scalars['String']>;
@@ -403,12 +393,7 @@ export type TransactionFilter = {
   minAmount?: InputMaybe<Scalars['Int']>;
 };
 
-export type UpdateAccountMailboxInput = {
-  amountPattern?: InputMaybe<Scalars['String']>;
-  datePattern?: InputMaybe<Scalars['String']>;
-  fromAddressPattern?: InputMaybe<Scalars['String']>;
-  mailServerOptions?: InputMaybe<Scalars['JSON']>;
-  memoPattern?: InputMaybe<Scalars['String']>;
+export type UpdateAccountInput = {
   name?: InputMaybe<Scalars['String']>;
 };
 
@@ -427,7 +412,7 @@ export type UpdateCurrencyInput = {
 };
 
 export type UpdateTransactionInput = {
-  accountMailboxId?: InputMaybe<Scalars['String']>;
+  accountId?: InputMaybe<Scalars['String']>;
   amount?: InputMaybe<Scalars['Int']>;
   categoryId?: InputMaybe<Scalars['String']>;
   currencyId?: InputMaybe<Scalars['String']>;
@@ -443,7 +428,7 @@ export type UserCredential = {
   id: Scalars['String'];
 };
 
-export type FullAccountMailboxFragment = { __typename?: 'AccountMailbox', id: string, name: string, mailServerOptions: any, fromAddressPattern?: string | null, datePattern?: string | null, memoPattern?: string | null, amountPattern?: string | null };
+export type FullAccountFragment = { __typename?: 'Account', id: string, name: string };
 
 export type FullCategoryFragment = { __typename?: 'Category', id: string, name: string, color: string, icon: string, isRegular: boolean, sortOrder?: number | null, createdAt: any, updatedAt: any, budget?: { __typename?: 'Money', formatted: string } | null };
 
@@ -451,14 +436,14 @@ export type FullCurrencyFragment = { __typename?: 'Currency', id: string, code: 
 
 export type FullCurrentUserFragment = { __typename?: 'CurrentUser', id: string, email: string, registeredCredentials: Array<{ __typename?: 'UserCredential', id: string, device: string, createdAt: any }> };
 
-export type FullTransactionFragment = { __typename?: 'Transaction', id: string, memo: string, date: any, originalMemo: string, includeInReports: boolean, currencyId: string, splitFromId?: string | null, amount: { __typename?: 'Money', decimalAmount: number, formatted: string }, category?: { __typename?: 'Category', id: string, name: string, color: string, icon: string } | null, accountMailbox: { __typename?: 'AccountMailbox', id: string, name: string }, splitTo: Array<{ __typename?: 'Transaction', id: string, memo: string, includeInReports: boolean, amount: { __typename?: 'Money', decimalAmount: number, formatted: string }, category?: { __typename?: 'Category', id: string, name: string, icon: string, color: string } | null }> };
+export type FullTransactionFragment = { __typename?: 'Transaction', id: string, memo: string, date: any, originalMemo: string, includeInReports: boolean, currencyId: string, splitFromId?: string | null, amount: { __typename?: 'Money', decimalAmount: number, formatted: string }, category?: { __typename?: 'Category', id: string, name: string, color: string, icon: string } | null, account: { __typename?: 'Account', id: string, name: string }, splitTo: Array<{ __typename?: 'Transaction', id: string, memo: string, includeInReports: boolean, amount: { __typename?: 'Money', decimalAmount: number, formatted: string }, category?: { __typename?: 'Category', id: string, name: string, icon: string, color: string } | null }> };
 
-export type CreateAccountMailboxMutationVariables = Exact<{
-  input: CreateAccountMailboxInput;
+export type CreateAccountMutationVariables = Exact<{
+  input: CreateAccountInput;
 }>;
 
 
-export type CreateAccountMailboxMutation = { __typename?: 'Mutation', createAccountMailbox: { __typename?: 'AccountMailbox', id: string } };
+export type CreateAccountMutation = { __typename?: 'Mutation', createAccount: { __typename?: 'Account', id: string } };
 
 export type CreateCategoryMutationVariables = Exact<{
   input: CreateCategoryInput;
@@ -481,12 +466,12 @@ export type CreateTransactionMutationVariables = Exact<{
 
 export type CreateTransactionMutation = { __typename?: 'Mutation', createTransaction: { __typename?: 'Transaction', id: string } };
 
-export type DeleteAccountMailboxMutationVariables = Exact<{
+export type DeleteAccountMutationVariables = Exact<{
   id: Scalars['String'];
 }>;
 
 
-export type DeleteAccountMailboxMutation = { __typename?: 'Mutation', deleteAccountMailbox: { __typename?: 'AccountMailbox', id: string } };
+export type DeleteAccountMutation = { __typename?: 'Mutation', deleteAccount: { __typename?: 'Account', id: string } };
 
 export type DeleteCategoryMutationVariables = Exact<{
   id: Scalars['String'];
@@ -550,15 +535,15 @@ export type SplitTransactionMutationVariables = Exact<{
 }>;
 
 
-export type SplitTransactionMutation = { __typename?: 'Mutation', splitTransaction: { __typename?: 'Transaction', id: string, memo: string, date: any, originalMemo: string, includeInReports: boolean, currencyId: string, splitFromId?: string | null, amount: { __typename?: 'Money', decimalAmount: number, formatted: string }, category?: { __typename?: 'Category', id: string, name: string, color: string, icon: string } | null, accountMailbox: { __typename?: 'AccountMailbox', id: string, name: string }, splitTo: Array<{ __typename?: 'Transaction', id: string, memo: string, includeInReports: boolean, amount: { __typename?: 'Money', decimalAmount: number, formatted: string }, category?: { __typename?: 'Category', id: string, name: string, icon: string, color: string } | null }> } };
+export type SplitTransactionMutation = { __typename?: 'Mutation', splitTransaction: { __typename?: 'Transaction', id: string, memo: string, date: any, originalMemo: string, includeInReports: boolean, currencyId: string, splitFromId?: string | null, amount: { __typename?: 'Money', decimalAmount: number, formatted: string }, category?: { __typename?: 'Category', id: string, name: string, color: string, icon: string } | null, account: { __typename?: 'Account', id: string, name: string }, splitTo: Array<{ __typename?: 'Transaction', id: string, memo: string, includeInReports: boolean, amount: { __typename?: 'Money', decimalAmount: number, formatted: string }, category?: { __typename?: 'Category', id: string, name: string, icon: string, color: string } | null }> } };
 
-export type UpdateAccountMailboxMutationVariables = Exact<{
+export type UpdateAccountMutationVariables = Exact<{
   id: Scalars['String'];
-  input: UpdateAccountMailboxInput;
+  input: UpdateAccountInput;
 }>;
 
 
-export type UpdateAccountMailboxMutation = { __typename?: 'Mutation', updateAccountMailbox: { __typename?: 'AccountMailbox', id: string, name: string, mailServerOptions: any, fromAddressPattern?: string | null, datePattern?: string | null, memoPattern?: string | null, amountPattern?: string | null } };
+export type UpdateAccountMutation = { __typename?: 'Mutation', updateAccount: { __typename?: 'Account', id: string, name: string } };
 
 export type UpdateCategoryMutationVariables = Exact<{
   id: Scalars['String'];
@@ -584,10 +569,10 @@ export type VerifyCredentialRegistrationMutationVariables = Exact<{
 
 export type VerifyCredentialRegistrationMutation = { __typename?: 'Mutation', verifyCredentialRegistration: boolean };
 
-export type AccountMailboxesQueryVariables = Exact<{ [key: string]: never; }>;
+export type AccountsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AccountMailboxesQuery = { __typename?: 'Query', accountMailboxes: Array<{ __typename?: 'AccountMailbox', id: string, name: string, mailServerOptions: any, fromAddressPattern?: string | null, datePattern?: string | null, memoPattern?: string | null, amountPattern?: string | null }> };
+export type AccountsQuery = { __typename?: 'Query', accounts: Array<{ __typename?: 'Account', id: string, name: string }> };
 
 export type BudgetQueryVariables = Exact<{
   currencyId?: InputMaybe<Scalars['String']>;
@@ -618,12 +603,12 @@ export type CurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type CurrentUserQuery = { __typename?: 'Query', currentUser?: { __typename?: 'CurrentUser', id: string, email: string, registeredCredentials: Array<{ __typename?: 'UserCredential', id: string, device: string, createdAt: any }> } | null };
 
-export type GetAccountMailboxQueryVariables = Exact<{
+export type GetAccountQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
 
 
-export type GetAccountMailboxQuery = { __typename?: 'Query', accountMailbox?: { __typename?: 'AccountMailbox', id: string, name: string, mailServerOptions: any, fromAddressPattern?: string | null, datePattern?: string | null, memoPattern?: string | null, amountPattern?: string | null } | null };
+export type GetAccountQuery = { __typename?: 'Query', account?: { __typename?: 'Account', id: string, name: string } | null };
 
 export type GetCategoryQueryVariables = Exact<{
   id: Scalars['String'];
@@ -644,7 +629,7 @@ export type GetTransactionQueryVariables = Exact<{
 }>;
 
 
-export type GetTransactionQuery = { __typename?: 'Query', transaction?: { __typename?: 'Transaction', id: string, memo: string, date: any, originalMemo: string, includeInReports: boolean, currencyId: string, splitFromId?: string | null, amount: { __typename?: 'Money', decimalAmount: number, formatted: string }, category?: { __typename?: 'Category', id: string, name: string, color: string, icon: string } | null, accountMailbox: { __typename?: 'AccountMailbox', id: string, name: string }, splitTo: Array<{ __typename?: 'Transaction', id: string, memo: string, includeInReports: boolean, amount: { __typename?: 'Money', decimalAmount: number, formatted: string }, category?: { __typename?: 'Category', id: string, name: string, icon: string, color: string } | null }> } | null };
+export type GetTransactionQuery = { __typename?: 'Query', transaction?: { __typename?: 'Transaction', id: string, memo: string, date: any, originalMemo: string, includeInReports: boolean, currencyId: string, splitFromId?: string | null, amount: { __typename?: 'Money', decimalAmount: number, formatted: string }, category?: { __typename?: 'Category', id: string, name: string, color: string, icon: string } | null, account: { __typename?: 'Account', id: string, name: string }, splitTo: Array<{ __typename?: 'Transaction', id: string, memo: string, includeInReports: boolean, amount: { __typename?: 'Money', decimalAmount: number, formatted: string }, category?: { __typename?: 'Category', id: string, name: string, icon: string, color: string } | null }> } | null };
 
 export type TransactionsByDayQueryVariables = Exact<{
   currencyId?: InputMaybe<Scalars['String']>;
@@ -653,7 +638,7 @@ export type TransactionsByDayQueryVariables = Exact<{
 }>;
 
 
-export type TransactionsByDayQuery = { __typename?: 'Query', transactionsByDay: Array<{ __typename?: 'DailyTransactions', date?: any | null, totalSpent: { __typename?: 'Money', formattedShort: string }, transactions: Array<{ __typename?: 'Transaction', id: string, memo: string, date: any, originalMemo: string, includeInReports: boolean, currencyId: string, splitFromId?: string | null, amount: { __typename?: 'Money', decimalAmount: number, formatted: string }, category?: { __typename?: 'Category', id: string, name: string, color: string, icon: string } | null, accountMailbox: { __typename?: 'AccountMailbox', id: string, name: string }, splitTo: Array<{ __typename?: 'Transaction', id: string, memo: string, includeInReports: boolean, amount: { __typename?: 'Money', decimalAmount: number, formatted: string }, category?: { __typename?: 'Category', id: string, name: string, icon: string, color: string } | null }> }> }> };
+export type TransactionsByDayQuery = { __typename?: 'Query', transactionsByDay: Array<{ __typename?: 'DailyTransactions', date?: any | null, totalSpent: { __typename?: 'Money', formattedShort: string }, transactions: Array<{ __typename?: 'Transaction', id: string, memo: string, date: any, originalMemo: string, includeInReports: boolean, currencyId: string, splitFromId?: string | null, amount: { __typename?: 'Money', decimalAmount: number, formatted: string }, category?: { __typename?: 'Category', id: string, name: string, color: string, icon: string } | null, account: { __typename?: 'Account', id: string, name: string }, splitTo: Array<{ __typename?: 'Transaction', id: string, memo: string, includeInReports: boolean, amount: { __typename?: 'Money', decimalAmount: number, formatted: string }, category?: { __typename?: 'Category', id: string, name: string, icon: string, color: string } | null }> }> }> };
 
 export type TransactionsQueryVariables = Exact<{
   limit?: InputMaybe<Scalars['Int']>;
@@ -662,4 +647,4 @@ export type TransactionsQueryVariables = Exact<{
 }>;
 
 
-export type TransactionsQuery = { __typename?: 'Query', transactions: { __typename?: 'PaginatedTransactions', nextOffset?: string | null, data: Array<{ __typename?: 'Transaction', id: string, memo: string, date: any, originalMemo: string, includeInReports: boolean, currencyId: string, splitFromId?: string | null, amount: { __typename?: 'Money', decimalAmount: number, formatted: string }, category?: { __typename?: 'Category', id: string, name: string, color: string, icon: string } | null, accountMailbox: { __typename?: 'AccountMailbox', id: string, name: string }, splitTo: Array<{ __typename?: 'Transaction', id: string, memo: string, includeInReports: boolean, amount: { __typename?: 'Money', decimalAmount: number, formatted: string }, category?: { __typename?: 'Category', id: string, name: string, icon: string, color: string } | null }> }> } };
+export type TransactionsQuery = { __typename?: 'Query', transactions: { __typename?: 'PaginatedTransactions', nextOffset?: string | null, data: Array<{ __typename?: 'Transaction', id: string, memo: string, date: any, originalMemo: string, includeInReports: boolean, currencyId: string, splitFromId?: string | null, amount: { __typename?: 'Money', decimalAmount: number, formatted: string }, category?: { __typename?: 'Category', id: string, name: string, color: string, icon: string } | null, account: { __typename?: 'Account', id: string, name: string }, splitTo: Array<{ __typename?: 'Transaction', id: string, memo: string, includeInReports: boolean, amount: { __typename?: 'Money', decimalAmount: number, formatted: string }, category?: { __typename?: 'Category', id: string, name: string, icon: string, color: string } | null }> }> } };

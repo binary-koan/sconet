@@ -33,19 +33,19 @@ export const transactionsRepo = createRepo({
     findValuesInCurrency: async (ids: string[], currency: CurrencyRecord) => {
       const values = (await sql`
             SELECT
-              transactions.id AS id,
+              "transactions"."id" AS "id",
               (CASE
-                WHEN exchangeRateValues.rate IS NOT NULL THEN transactions.amount * exchangeRateValues.rate
-                ELSE transactions.amount
-              END) AS value,
-              currencies.decimalDigits AS fromDecimalDigits
-            FROM transactions
-            INNER JOIN currencies ON transactions.currencyId = currencies.id
-            LEFT OUTER JOIN dailyExchangeRates ON transactions.dailyExchangeRateId = dailyExchangeRates.id
-            LEFT OUTER JOIN exchangeRateValues ON exchangeRateValues.toCurrencyId = ${
+                WHEN "exchangeRateValues"."rate" IS NOT NULL THEN "transactions"."amount" * "exchangeRateValues"."rate"
+                ELSE "transactions"."amount"
+              END) AS "value",
+              "currencies"."decimalDigits" AS "fromDecimalDigits"
+            FROM "transactions"
+            INNER JOIN "currencies" ON "transactions"."currencyId" = "currencies"."id"
+            LEFT OUTER JOIN "dailyExchangeRates" ON "transactions"."dailyExchangeRateId" = "dailyExchangeRates"."id"
+            LEFT OUTER JOIN "exchangeRateValues" ON "exchangeRateValues"."toCurrencyId" = ${
               currency.id
-            } AND exchangeRateValues.dailyExchangeRateId = dailyExchangeRates.id
-            WHERE transactions.id IN ${sql(ids)}
+            } AND "exchangeRateValues"."dailyExchangeRateId" = "dailyExchangeRates"."id"
+            WHERE "transactions"."id" IN ${sql(ids)}
           `) as RowList<
         Array<{
           id: string
@@ -67,7 +67,7 @@ export const transactionsRepo = createRepo({
     },
 
     async deleteSplitTransactions(fromId: string) {
-      await sql`DELETE FROM transactions WHERE splitFromId = ${fromId}`
+      await sql`DELETE FROM "transactions" WHERE "splitFromId" = ${fromId}`
 
       return fromId
     },
@@ -78,7 +78,7 @@ export const transactionsRepo = createRepo({
       }
 
       const allTransactions = (
-        await sql`SELECT * FROM transactions WHERE splitFromId IN ${sql(
+        await sql`SELECT * FROM "transactions" WHERE "splitFromId" IN ${sql(
           splitFromIds
         )} ORDER BY date DESC, id DESC`
       ).map(loadTransaction)
@@ -89,7 +89,7 @@ export const transactionsRepo = createRepo({
     },
 
     async softDeleteSplitTransactions(fromId: string) {
-      await sql`UPDATE transactions SET deletedAt = ${new Date()} WHERE splitFromId = ${fromId}`
+      await sql`UPDATE "transactions" SET "deletedAt" = ${new Date()} WHERE "splitFromId" = ${fromId}`
 
       return fromId
     },
@@ -101,7 +101,7 @@ export const transactionsRepo = createRepo({
         return fromId
       }
 
-      await sql`UPDATE transactions SET ${sql(fieldsToSet)} WHERE splitFromId = $fromId`
+      await sql`UPDATE "transactions" SET ${sql(fieldsToSet)} WHERE "splitFromId" = ${fromId}`
 
       return fromId
     }

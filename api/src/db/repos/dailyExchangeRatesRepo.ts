@@ -21,17 +21,17 @@ export const dailyExchangeRatesRepo = createRepo({
 
   methods: {
     findForDay: async (date: Date) => {
-      return (await sql`SELECT * FROM dailyExchangeRates WHERE date = ${startOfDayUTC(date)}`).map(
-        loadDailyExchangeRate
-      )
+      return (
+        await sql`SELECT * FROM "dailyExchangeRates" WHERE "date" = ${startOfDayUTC(date)}`
+      ).map(loadDailyExchangeRate)
     },
 
     findClosest: async (date: Date, fromCurrencyId: string) => {
       const onOrAfter = loadDailyExchangeRate(
         (
-          await sql`SELECT * FROM dailyExchangeRates WHERE date >= ${startOfDayUTC(
+          await sql`SELECT * FROM "dailyExchangeRates" WHERE "date" >= ${startOfDayUTC(
             date
-          )} AND fromCurrencyId = ${fromCurrencyId} ORDER BY date ASC`
+          )} AND fromCurrencyId = ${fromCurrencyId} ORDER BY "date" ASC`
         )[0]
       )
 
@@ -40,9 +40,9 @@ export const dailyExchangeRatesRepo = createRepo({
       }
 
       const before = loadDailyExchangeRate(
-        await sql`SELECT * FROM dailyExchangeRates WHERE date < ${startOfDayUTC(
+        await sql`SELECT * FROM "dailyExchangeRates" WHERE "date" < ${startOfDayUTC(
           date
-        )} AND fromCurrencyId = ${fromCurrencyId} ORDER BY date DESC`
+        )} AND "fromCurrencyId" = ${fromCurrencyId} ORDER BY "date" DESC`
       )
 
       if (!before && !onOrAfter) {

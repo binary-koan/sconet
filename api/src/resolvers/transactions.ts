@@ -68,7 +68,7 @@ export const updateTransaction: MutationResolvers["updateTransaction"] = async (
     throw new Error("Not found")
   }
 
-  const parentAttributes = ["date", "accountMailboxId", "currencyId"]
+  const parentAttributes = ["date", "accountId", "currencyId"]
 
   let updateInput: Partial<UpdateTransactionInput> = input
   if (transaction.splitFromId) {
@@ -82,7 +82,7 @@ export const updateTransaction: MutationResolvers["updateTransaction"] = async (
     currencyId: updateInput.currencyId ?? undefined,
     date: updateInput.date ?? undefined,
     includeInReports: updateInput.includeInReports ?? undefined,
-    accountMailboxId: updateInput.accountMailboxId ?? undefined,
+    accountId: updateInput.accountId ?? undefined,
     dailyExchangeRateId:
       updateInput.date || updateInput.currencyId
         ? (
@@ -181,9 +181,9 @@ export const Transaction: Resolvers["Transaction"] = {
   category: async (transaction, _, context) =>
     transaction.categoryId ? await context.data.category.load(transaction.categoryId) : null,
 
-  accountMailboxId: (transaction) => transaction.accountMailboxId,
-  accountMailbox: async (transaction, _, context) =>
-    await context.data.accountMailbox.load(transaction.accountMailboxId),
+  accountId: (transaction) => transaction.accountId,
+  account: async (transaction, _, context) =>
+    await context.data.account.load(transaction.accountId),
 
   splitFromId: (transaction) => transaction.splitFromId,
   splitFrom: async (transaction, _, context) =>
