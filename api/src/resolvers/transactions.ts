@@ -54,7 +54,9 @@ export const createTransaction: MutationResolvers["createTransaction"] = async (
     dailyExchangeRateId: (await dailyExchangeRatesRepo.findClosest(input.date, input.currencyId))!
       .id,
     includeInReports: input.includeInReports || true,
-    originalMemo: input.memo
+    originalMemo: input.memo,
+    remoteId: null,
+    splitFromId: null
   })
 }
 

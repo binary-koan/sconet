@@ -27,7 +27,11 @@ export async function seed() {
     await categoriesRepo.insert({
       name: "First",
       color: "red",
-      icon: "ShoppingCart"
+      icon: "ShoppingCart",
+      isRegular: true,
+      budget: null,
+      budgetCurrencyId: null,
+      sortOrder: 0
     })
     console.log(`Created category 'First'`)
   }
@@ -36,7 +40,11 @@ export async function seed() {
     await categoriesRepo.insert({
       name: "Second",
       color: "green",
-      icon: "ShoppingCart"
+      icon: "ShoppingCart",
+      isRegular: true,
+      budget: null,
+      budgetCurrencyId: null,
+      sortOrder: 1
     })
     console.log(`Created category 'Second'`)
   }

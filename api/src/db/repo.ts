@@ -1,39 +1,30 @@
 import { keyBy, pickBy } from "lodash"
-import { Helper, JSONValue } from "postgres"
+import { Helper } from "postgres"
 import { sql } from "./database"
 import { joinSql } from "./utils/joinSql"
 
-export type Repo<Record, RecordForInsert, Methods> = Methods & {
+export type Repo<Record, Methods> = Methods & {
   tableName: Helper<string>
   findAll: (options?: { limit?: number; offset?: number }) => Promise<Record[]>
   findByIds: (ids: readonly string[]) => Promise<Record[]>
   get: (id: string) => Promise<Record | undefined>
-  insert: (recordForInsert: RecordForInsert) => Promise<Record>
+  insert: (record: Omit<Record, "id" | "createdAt" | "updatedAt" | "deletedAt">) => Promise<Record>
   updateOne: (id: string, fields: Partial<Record>) => Promise<Record>
   softDelete: (id: string) => Promise<void>
 }
 
 export const createRepo = <
   Record extends { id: string; createdAt: Date; updatedAt: Date; deletedAt?: Date | null },
-  RecordForInsert,
   Methods extends object
 >({
   tableName: rawTableName,
   defaultOrder,
-  load,
-  serialize,
-  formatForInsert,
   methods
 }: {
   tableName: string
   defaultOrder: { [key in keyof Record]?: "ASC" | "DESC" }
-  load: (row: any) => Record
-  serialize: (record: Partial<Record>) => JSONValue & object
-  formatForInsert: (
-    record: RecordForInsert
-  ) => Omit<Record, "id" | "createdAt" | "updatedAt" | "deletedAt">
   methods: Methods
-}): Repo<Record, RecordForInsert, Methods> => {
+}): Repo<Record, Methods> => {
   const tableName = sql(rawTableName)
 
   return {
@@ -51,20 +42,20 @@ export const createRepo = <
 
       const query = sql`SELECT * FROM ${tableName} WHERE "deletedAt" IS NULL ORDER BY ${order}`
 
-      const result = await sql`
+      const result = await sql<Record[]>`
         ${query}
         ${limit ? sql`LIMIT ${parseInt(limit.toString())}` : sql``}
         ${offset ? sql`OFFSET ${parseInt(offset.toString())}` : sql``}
       `
 
-      return result.map(load)
+      return result
     },
 
     async findByIds(ids) {
       const results = keyBy(
-        (await sql`SELECT * FROM ${tableName} WHERE "deletedAt" IS NULL AND id IN ${sql(ids)}`).map(
-          load
-        ),
+        await sql<Record[]>`SELECT * FROM ${tableName} WHERE "deletedAt" IS NULL AND id IN ${sql(
+          ids
+        )}`,
         (record) => record.id
       )
 
@@ -72,30 +63,30 @@ export const createRepo = <
     },
 
     async get(id) {
-      const result = sql`SELECT * FROM ${tableName} WHERE id = ${id}`
+      const result = await sql<Record[]>`SELECT * FROM ${tableName} WHERE id = ${id}`
 
-      return result ? load(result) : undefined
+      return result[0]
     },
 
     async insert(recordForInsert) {
-      const record = serialize({
-        ...formatForInsert(recordForInsert),
+      const record = {
+        ...recordForInsert,
         createdAt: new Date(),
         updatedAt: new Date()
-      } as Record)
+      } as any
 
-      const result = await sql`INSERT INTO ${tableName} ${sql(record)} RETURNING *`
+      const result = await sql<Record[]>`INSERT INTO ${tableName} ${sql(record)} RETURNING *`
 
-      return load(result[0]!)
+      return result[0]
     },
 
     async updateOne(id, fields) {
-      const fieldsToSet = serialize({
+      const fieldsToSet = {
         ...(pickBy(fields, (value) => value !== undefined) as Partial<Record>),
         updatedAt: new Date()
-      })
+      } as any
 
-      const result = await sql`UPDATE ${tableName} SET ${sql(
+      const result = await sql<Record[]>`UPDATE ${tableName} SET ${sql(
         fieldsToSet
       )} WHERE "id" = ${id} RETURNING *`
 
@@ -103,7 +94,7 @@ export const createRepo = <
         throw new Error(`Record with id ${id} not found`)
       }
 
-      return load(result[0]!)
+      return result[0]
     },
 
     async softDelete(id) {

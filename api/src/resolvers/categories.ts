@@ -11,8 +11,8 @@ export const category: QueryResolvers["category"] = async (_, { id }) => {
   return (await categoriesRepo.get(id)) || null
 }
 
-export const createCategory: MutationResolvers["createCategory"] = (_, { input }) => {
-  return categoriesRepo.insert(input)
+export const createCategory: MutationResolvers["createCategory"] = async (_, { input }) => {
+  return await categoriesRepo.insert({ ...input, sortOrder: await categoriesRepo.nextSortOrder() })
 }
 
 export const updateCategory: MutationResolvers["updateCategory"] = async (_, { id, input }) => {

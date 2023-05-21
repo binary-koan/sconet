@@ -1,42 +1,29 @@
-import { MakeOptional } from "../../types"
 import { sql } from "../database"
 import { CategoryRecord } from "../records/category"
 import { createRepo } from "../repo"
-import { loadCategory } from "./categories/loadCategory"
-import { serializeCategory } from "./categories/serializeCategory"
 
-export type CategoryForInsert = MakeOptional<
-  Omit<CategoryRecord, "id">,
-  | "isRegular"
-  | "budget"
-  | "budgetCurrencyId"
-  | "sortOrder"
-  | "deletedAt"
-  | "createdAt"
-  | "updatedAt"
->
+interface CategoryMethods {
+  setOrder: (orderedIds: string[]) => Promise<void>
+  nextSortOrder: () => Promise<number>
+}
 
-export const categoriesRepo = createRepo({
+export const categoriesRepo = createRepo<CategoryRecord, CategoryMethods>({
   tableName: "categories",
   defaultOrder: { sortOrder: "ASC", name: "ASC" },
-  load: loadCategory,
-  serialize: serializeCategory,
-
-  formatForInsert: (category: CategoryForInsert) => ({
-    isRegular: true,
-    budget: null,
-    budgetCurrencyId: null,
-    sortOrder: 0,
-    ...category
-  }),
 
   methods: {
-    async setOrder(orderedIds: string[]) {
+    async setOrder(orderedIds) {
       await sql.begin(async (sql) => {
         for (const [index, id] of orderedIds.entries()) {
           await sql`UPDATE categories SET sortOrder = ${index} WHERE id = ${id}`
         }
       })
+    },
+
+    async nextSortOrder() {
+      const result = await sql<Array<{ max: number }>>`SELECT MAX(sortOrder) as max FROM categories`
+
+      return (result[0]?.max ?? 0) + 1
     }
   }
 })

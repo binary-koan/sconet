@@ -1,8 +1,8 @@
 import { sql } from "../db/database"
+import { TransactionRecord } from "../db/records/transaction"
 import { currenciesRepo } from "../db/repos/currenciesRepo"
 import { dailyExchangeRatesRepo } from "../db/repos/dailyExchangeRatesRepo"
 import { exchangeRateValuesRepo } from "../db/repos/exchangeRateValuesRepo"
-import { loadTransaction } from "../db/repos/transactions/loadTransaction"
 import { transactionsRepo } from "../db/repos/transactionsRepo"
 import { startOfDayUTC } from "../utils/date"
 
@@ -38,9 +38,9 @@ export const updateExchangeRates = async () => {
     }
   }
 
-  const transactionsMissingExchangeRate = (
-    await sql`SELECT * FROM "transactions" WHERE "dailyExchangeRateId" IS NULL`
-  ).map(loadTransaction)
+  const transactionsMissingExchangeRate = await sql<
+    TransactionRecord[]
+  >`SELECT * FROM "transactions" WHERE "dailyExchangeRateId" IS NULL`
 
   for (const transaction of transactionsMissingExchangeRate) {
     await transactionsRepo.updateOne(transaction.id, {

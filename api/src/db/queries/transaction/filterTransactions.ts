@@ -2,7 +2,6 @@ import { memoize } from "lodash"
 import { Maybe } from "../../../types"
 import { sql } from "../../database"
 import { TransactionRecord } from "../../records/transaction"
-import { loadTransaction } from "../../repos/transactions/loadTransaction"
 
 export interface FindTransactionsResult {
   data: Promise<TransactionRecord[]>
@@ -86,10 +85,11 @@ export function filterTransactions({
     limitClause = sql`LIMIT ${limit}`
   }
 
-  const data = memoize(async () =>
-    (
-      await sql`SELECT * FROM transactions ${where} ORDER BY date DESC, amount DESC, id ASC ${limitClause}`
-    ).map(loadTransaction)
+  const data = memoize(
+    async () =>
+      await sql<
+        TransactionRecord[]
+      >`SELECT * FROM transactions ${where} ORDER BY date DESC, amount DESC, id ASC ${limitClause}`
   )
 
   const totalCount = memoize(
