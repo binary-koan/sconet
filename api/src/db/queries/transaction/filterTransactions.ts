@@ -26,36 +26,36 @@ export function filterTransactions({
     categoryIds?: Maybe<Array<string | null>>
   }>
 }): FindTransactionsResult {
-  let where = sql`WHERE splitFromId IS NULL AND deletedAt IS NULL`
+  let where = sql`WHERE "splitFromId" IS NULL AND "deletedAt" IS NULL`
 
   if (filter?.accountId) {
-    where = sql`${where} AND accountId = ${filter.accountId}`
+    where = sql`${where} AND "accountId" = ${filter.accountId}`
   }
 
   if (filter?.dateFrom) {
-    where = sql`${where} AND date >= ${filter.dateFrom}`
+    where = sql`${where} AND "date" >= ${filter.dateFrom}`
   }
 
   if (filter?.dateUntil) {
-    where = sql`${where} AND date <= ${filter.dateUntil}`
+    where = sql`${where} AND "date" <= ${filter.dateUntil}`
   }
 
   if (filter?.minAmount != null) {
-    where = sql`${where} AND amount >= ${filter.minAmount}`
+    where = sql`${where} AND "amount" >= ${filter.minAmount}`
   }
 
   if (filter?.maxAmount != null) {
-    where = sql`${where} AND amount <= ${filter.maxAmount}`
+    where = sql`${where} AND "amount" <= ${filter.maxAmount}`
   }
 
   if (filter?.keyword) {
     where = sql`${where} AND (
-      memo LIKE ${filter.keyword}
-      OR originalMemo LIKE ${filter.keyword}
+      "memo" LIKE ${filter.keyword}
+      OR "originalMemo" LIKE ${filter.keyword}
       OR EXISTS (
-        SELECT 1 FROM transactions other
-        WHERE other.splitFromId = transactions.id
-        AND (other.memo LIKE ${filter.keyword} OR other.originalMemo LIKE ${filter.keyword})
+        SELECT 1 FROM "transactions" "other"
+        WHERE "other"."splitFromId" = "transactions"."id"
+        AND ("other"."memo" LIKE ${filter.keyword} OR "other"."originalMemo" LIKE ${filter.keyword})
       )
     )`
   }
@@ -67,8 +67,8 @@ export function filterTransactions({
     let categoryIdsQuery = sql`0`
 
     if (notNullIds.length)
-      categoryIdsQuery = sql`${categoryIdsQuery} OR categoryId IN ${sql(notNullIds)}`
-    if (hasNullId) categoryIdsQuery = sql`${categoryIdsQuery} OR categoryId IS NULL`
+      categoryIdsQuery = sql`${categoryIdsQuery} OR "categoryId" IN ${sql(notNullIds)}`
+    if (hasNullId) categoryIdsQuery = sql`${categoryIdsQuery} OR "categoryId" IS NULL`
 
     where = sql`${where} AND (${categoryIdsQuery})`
   }
@@ -76,7 +76,7 @@ export function filterTransactions({
   if (offset) {
     const date = new Date(JSON.parse(Buffer.from(offset, "base64").toString("utf-8")).date)
 
-    where = sql`${where} AND date <= ${date}`
+    where = sql`${where} AND "date" <= ${date}`
   }
 
   let limitClause = sql``
@@ -89,11 +89,11 @@ export function filterTransactions({
     async () =>
       await sql<
         TransactionRecord[]
-      >`SELECT * FROM transactions ${where} ORDER BY date DESC, amount DESC, id ASC ${limitClause}`
+      >`SELECT * FROM "transactions" ${where} ORDER BY "date" DESC, "amount" DESC, "id" ASC ${limitClause}`
   )
 
   const totalCount = memoize(
-    async () => (await sql`SELECT COUNT(*) AS count FROM transactions ${where}`)[0].count
+    async () => (await sql`SELECT COUNT(*) AS "count" FROM "transactions" ${where}`)[0].count
   )
 
   return {
