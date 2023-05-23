@@ -1,5 +1,4 @@
 import { makeExecutableSchema } from "@graphql-tools/schema"
-import { readFileSync } from "fs"
 import { GraphQLScalarType } from "graphql"
 import {
   CurrencyResolver,
@@ -68,15 +67,7 @@ import {
   updateTransaction
 } from "./resolvers/transactions"
 
-import accountsGql from "./graphql/accounts.graphql"
-import budgetsGql from "./graphql/budgets.graphql"
-import categoriesGql from "./graphql/categories.graphql"
-import currenciesGql from "./graphql/currencies.graphql"
-import dailyExchangeRateGql from "./graphql/dailyExchangeRate.graphql"
-import moneyGql from "./graphql/money.graphql"
-import sessionsGql from "./graphql/sessions.graphql"
-import transactionsGql from "./graphql/transactions.graphql"
-import utilsGql from "./graphql/utils.graphql"
+import { typeDefs } from "./schema-definitions"
 
 const resolvers: Resolvers = {
   Query: {
@@ -141,18 +132,7 @@ const resolvers: Resolvers = {
 
 export const schema = applyAuthenticatedDirective(
   makeExecutableSchema({
-    typeDefs: [
-      accountsGql,
-      budgetsGql,
-      categoriesGql,
-      currenciesGql,
-      dailyExchangeRateGql,
-      moneyGql,
-      sessionsGql,
-      transactionsGql,
-      utilsGql
-    ].map((filename) => new TextDecoder().decode(readFileSync(filename))),
-
+    typeDefs,
     resolvers
   })
 )
