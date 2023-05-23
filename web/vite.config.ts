@@ -14,7 +14,7 @@ export default defineConfig({
     extensions: ["jsx"]
   },
   server: {
-    port: 1234
+    port: 1235
   },
   build: {
     target: "esnext"

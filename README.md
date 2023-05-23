@@ -34,7 +34,7 @@ VITE_TURNSTILE_SITEKEY=<your turnstile site key>
    - Run `bun migrate` to apply database migrations
    - Run `bun seed` to populate some initial data along with the user(s) in `USER_EMAILS` above
 7. Run `pnpm dev` to start a dev server
-   - Visit `http://localhost:1234` for the app itself
+   - Visit `http://localhost:1235` for the app itself
    - Visit `http://localhost:4444/graphql` to browse the API in GraphiQL
 8. Log in with the email you added in `USER_EMAILS` and the password `changeme`
 

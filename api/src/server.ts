@@ -18,7 +18,7 @@ const yoga = createYoga({
     process.env.NODE_ENV === "production"
       ? undefined
       : {
-          origin: "http://localhost:1234",
+          origin: "http://localhost:1235",
           allowedHeaders: ["Authorization", "Content-Type"]
         },
 
