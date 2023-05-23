@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "dev": "TZ=UTC bun run --watch src/server.ts",
+    "dev": "TZ=UTC bun run --loader .graphql:file --watch src/server.ts",
     "start": "TZ=UTC bun run src/server.ts",
     "codegen": "graphql-codegen",
     "typecheck": "tsc --noEmit",

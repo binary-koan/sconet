@@ -1,5 +1,5 @@
 import { makeExecutableSchema } from "@graphql-tools/schema"
-import { readdirSync, readFileSync } from "fs"
+import { readFileSync } from "fs"
 import { GraphQLScalarType } from "graphql"
 import {
   CurrencyResolver,
@@ -8,66 +8,75 @@ import {
   JSONResolver,
   UtcOffsetResolver
 } from "graphql-scalars"
-import { resolve } from "path"
 import { Resolvers } from "./resolvers-types"
 import {
-  account,
   Account,
+  account,
   accounts,
   createAccount,
   deleteAccount,
   updateAccount
 } from "./resolvers/accounts"
-import { budget, CategoryBudget, CategoryBudgetGroup, MonthBudget } from "./resolvers/budgets"
+import { CategoryBudget, CategoryBudgetGroup, MonthBudget, budget } from "./resolvers/budgets"
 import {
+  Category,
   categories,
   category,
-  Category,
   createCategory,
   deleteCategory,
   reorderCategories,
   updateCategory
 } from "./resolvers/categories"
 import {
+  Currency,
   createCurrency,
   currencies,
   currency,
-  Currency,
   deleteCurrency,
   updateCurrency
 } from "./resolvers/currencies"
 import {
-  currentExchangeRates,
   DailyExchangeRate,
-  ExchangeRateValue
+  ExchangeRateValue,
+  currentExchangeRates
 } from "./resolvers/dailyExchangeRate"
 import { applyAuthenticatedDirective } from "./resolvers/directives/authenticated"
 import { Money } from "./resolvers/money"
 import {
+  CurrentUser,
+  UserCredential,
   changePassword,
   currentUser,
-  CurrentUser,
   deleteCredential,
   generateCredentialLoginOptions,
   generateNewToken,
   login,
   loginViaCredential,
   registerCredential,
-  UserCredential,
   verifyCredentialRegistration
 } from "./resolvers/sessions"
 import {
-  createTransaction,
   DailyTransactions,
-  deleteTransaction,
   PaginatedTransactions,
-  splitTransaction,
   Transaction,
+  createTransaction,
+  deleteTransaction,
+  splitTransaction,
   transaction,
   transactions,
   transactionsByDay,
   updateTransaction
 } from "./resolvers/transactions"
+
+import accountsGql from "./graphql/accounts.graphql"
+import budgetsGql from "./graphql/budgets.graphql"
+import categoriesGql from "./graphql/categories.graphql"
+import currenciesGql from "./graphql/currencies.graphql"
+import dailyExchangeRateGql from "./graphql/dailyExchangeRate.graphql"
+import moneyGql from "./graphql/money.graphql"
+import sessionsGql from "./graphql/sessions.graphql"
+import transactionsGql from "./graphql/transactions.graphql"
+import utilsGql from "./graphql/utils.graphql"
 
 const resolvers: Resolvers = {
   Query: {
@@ -130,13 +139,20 @@ const resolvers: Resolvers = {
   UtcOffset: UtcOffsetResolver
 }
 
-const graphqlDir = resolve(import.meta.dir, "graphql")
-
 export const schema = applyAuthenticatedDirective(
   makeExecutableSchema({
-    typeDefs: readdirSync(graphqlDir).map((filename) =>
-      new TextDecoder().decode(readFileSync(resolve(graphqlDir, filename)))
-    ),
+    typeDefs: [
+      accountsGql,
+      budgetsGql,
+      categoriesGql,
+      currenciesGql,
+      dailyExchangeRateGql,
+      moneyGql,
+      sessionsGql,
+      transactionsGql,
+      utilsGql
+    ].map((filename) => new TextDecoder().decode(readFileSync(filename))),
+
     resolvers
   })
 )
