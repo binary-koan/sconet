@@ -1,6 +1,6 @@
-import * as path from "path";
 import { statSync } from "fs";
-import type { ServeOptions } from "bun";
+import * as path from "path";
+import { solidPlugin } from "./solid-plugin";
 
 const PROJECT_ROOT = import.meta.dir;
 const PUBLIC_DIR = path.resolve(PROJECT_ROOT, "public");
@@ -9,6 +9,7 @@ const BUILD_DIR = path.resolve(PROJECT_ROOT, "build");
 await Bun.build({
   entrypoints: ["./src/index.tsx"],
   outdir: "./build",
+  plugins: [solidPlugin],
 });
 
 function serveFromDir(config: {

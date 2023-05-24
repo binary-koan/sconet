@@ -2,8 +2,7 @@
   "name": "web-bun",
   "version": "0.1.89",
   "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "solid-js": "^1.7.5",
     "web-vitals": "^3.0.3"
   },
   "eslintConfig": {
@@ -12,12 +11,12 @@
     ]
   },
   "devDependencies": {
-    "@types/react": "^18.0.37",
-    "@types/react-dom": "^18.0.11",
+    "@babel/core": "^7.21.8",
+    "@babel/preset-typescript": "^7.21.5",
     "@types/web": "^0.0.99",
+    "babel-preset-solid": "^1.7.4",
     "bun-types": "canary",
-    "typescript": "latest",
-    "react-refresh": "0.10.0"
+    "typescript": "latest"
   },
   "scripts": {
     "dev": "bun --watch run dev.tsx"
