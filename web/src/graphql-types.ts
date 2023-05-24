@@ -3,24 +3,26 @@ export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
+export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: string;
-  String: string;
-  Boolean: boolean;
-  Int: number;
-  Float: number;
-  CurrencyCode: any;
-  Date: any;
-  DateTime: any;
-  JSON: any;
-  UtcOffset: any;
+  ID: { input: string | number; output: string; }
+  String: { input: string; output: string; }
+  Boolean: { input: boolean; output: boolean; }
+  Int: { input: number; output: number; }
+  Float: { input: number; output: number; }
+  CurrencyCode: { input: any; output: any; }
+  Date: { input: any; output: any; }
+  DateTime: { input: any; output: any; }
+  JSON: { input: any; output: any; }
+  UtcOffset: { input: any; output: any; }
 };
 
 export type Account = {
   __typename?: 'Account';
-  id: Scalars['String'];
-  name: Scalars['String'];
+  id: Scalars['String']['output'];
+  name: Scalars['String']['output'];
   transactions: Array<Transaction>;
 };
 
@@ -28,27 +30,27 @@ export type Category = {
   __typename?: 'Category';
   budget?: Maybe<Money>;
   budgetCurrency?: Maybe<Currency>;
-  color: Scalars['String'];
-  createdAt: Scalars['DateTime'];
-  icon: Scalars['String'];
-  id: Scalars['String'];
-  isRegular: Scalars['Boolean'];
-  name: Scalars['String'];
-  sortOrder?: Maybe<Scalars['Int']>;
-  updatedAt: Scalars['DateTime'];
+  color: Scalars['String']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  icon: Scalars['String']['output'];
+  id: Scalars['String']['output'];
+  isRegular: Scalars['Boolean']['output'];
+  name: Scalars['String']['output'];
+  sortOrder?: Maybe<Scalars['Int']['output']>;
+  updatedAt: Scalars['DateTime']['output'];
 };
 
 
 export type CategoryBudgetArgs = {
-  currencyId?: InputMaybe<Scalars['String']>;
+  currencyId?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type CategoryBudget = {
   __typename?: 'CategoryBudget';
   amountSpent: Money;
   category?: Maybe<Category>;
-  categoryId?: Maybe<Scalars['String']>;
-  id: Scalars['String'];
+  categoryId?: Maybe<Scalars['String']['output']>;
+  id: Scalars['String']['output'];
 };
 
 export type CategoryBudgetGroup = {
@@ -58,107 +60,107 @@ export type CategoryBudgetGroup = {
 };
 
 export type CreateAccountInput = {
-  name: Scalars['String'];
+  name: Scalars['String']['input'];
 };
 
 export type CreateCategoryInput = {
-  budget?: InputMaybe<Scalars['Int']>;
-  budgetCurrencyId?: InputMaybe<Scalars['String']>;
-  color: Scalars['String'];
-  icon: Scalars['String'];
-  isRegular: Scalars['Boolean'];
-  name: Scalars['String'];
+  budget?: InputMaybe<Scalars['Int']['input']>;
+  budgetCurrencyId?: InputMaybe<Scalars['String']['input']>;
+  color: Scalars['String']['input'];
+  icon: Scalars['String']['input'];
+  isRegular: Scalars['Boolean']['input'];
+  name: Scalars['String']['input'];
 };
 
 export type CreateCurrencyInput = {
-  code: Scalars['CurrencyCode'];
-  decimalDigits: Scalars['Int'];
-  symbol: Scalars['String'];
+  code: Scalars['CurrencyCode']['input'];
+  decimalDigits: Scalars['Int']['input'];
+  symbol: Scalars['String']['input'];
 };
 
 export type CreateTransactionInput = {
-  accountId: Scalars['String'];
-  amount: Scalars['Int'];
-  categoryId?: InputMaybe<Scalars['String']>;
-  currencyId: Scalars['String'];
-  date?: InputMaybe<Scalars['Date']>;
-  includeInReports?: InputMaybe<Scalars['Boolean']>;
-  memo: Scalars['String'];
+  accountId: Scalars['String']['input'];
+  amount: Scalars['Int']['input'];
+  categoryId?: InputMaybe<Scalars['String']['input']>;
+  currencyId: Scalars['String']['input'];
+  date?: InputMaybe<Scalars['Date']['input']>;
+  includeInReports?: InputMaybe<Scalars['Boolean']['input']>;
+  memo: Scalars['String']['input'];
 };
 
 export type Currency = {
   __typename?: 'Currency';
-  code: Scalars['CurrencyCode'];
-  decimalDigits: Scalars['Int'];
-  exchangeRate?: Maybe<Scalars['Float']>;
-  id: Scalars['String'];
-  symbol: Scalars['String'];
+  code: Scalars['CurrencyCode']['output'];
+  decimalDigits: Scalars['Int']['output'];
+  exchangeRate?: Maybe<Scalars['Float']['output']>;
+  id: Scalars['String']['output'];
+  symbol: Scalars['String']['output'];
 };
 
 
 export type CurrencyExchangeRateArgs = {
-  toId: Scalars['String'];
+  toId: Scalars['String']['input'];
 };
 
 export type CurrentUser = {
   __typename?: 'CurrentUser';
-  email: Scalars['String'];
-  id: Scalars['String'];
+  email: Scalars['String']['output'];
+  id: Scalars['String']['output'];
   registeredCredentials: Array<UserCredential>;
 };
 
 export type DailyExchangeRate = {
   __typename?: 'DailyExchangeRate';
-  date: Scalars['Date'];
+  date: Scalars['Date']['output'];
   fromCurrency: Currency;
-  fromCurrencyId: Scalars['String'];
-  id: Scalars['String'];
+  fromCurrencyId: Scalars['String']['output'];
+  id: Scalars['String']['output'];
   rates: Array<ExchangeRateValue>;
 };
 
 export type DailyTransactions = {
   __typename?: 'DailyTransactions';
-  date?: Maybe<Scalars['Date']>;
+  date?: Maybe<Scalars['Date']['output']>;
   totalSpent: Money;
   transactions: Array<Transaction>;
 };
 
 
 export type DailyTransactionsTotalSpentArgs = {
-  currencyId?: InputMaybe<Scalars['String']>;
+  currencyId?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type ExchangeRateValue = {
   __typename?: 'ExchangeRateValue';
-  id: Scalars['String'];
-  rate: Scalars['Float'];
+  id: Scalars['String']['output'];
+  rate: Scalars['Float']['output'];
   toCurrency: Currency;
-  toCurrencyId: Scalars['String'];
+  toCurrencyId: Scalars['String']['output'];
 };
 
 export type Money = {
   __typename?: 'Money';
-  decimalAmount: Scalars['Float'];
-  formatted: Scalars['String'];
-  formattedShort: Scalars['String'];
-  integerAmount: Scalars['Int'];
+  decimalAmount: Scalars['Float']['output'];
+  formatted: Scalars['String']['output'];
+  formattedShort: Scalars['String']['output'];
+  integerAmount: Scalars['Int']['output'];
 };
 
 export type MonthBudget = {
   __typename?: 'MonthBudget';
   difference: Money;
-  id: Scalars['String'];
+  id: Scalars['String']['output'];
   income: Money;
   irregularCategories: CategoryBudgetGroup;
-  month: Scalars['Int'];
+  month: Scalars['Int']['output'];
   regularCategories: CategoryBudgetGroup;
   totalSpending: Money;
-  year: Scalars['Int'];
+  year: Scalars['Int']['output'];
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
-  changePassword: Scalars['Boolean'];
+  changePassword: Scalars['Boolean']['output'];
   createAccount: Account;
   createCategory: Category;
   createCurrency: Currency;
@@ -168,24 +170,24 @@ export type Mutation = {
   deleteCredential: UserCredential;
   deleteCurrency: Currency;
   deleteTransaction: Transaction;
-  generateCredentialLoginOptions: Scalars['JSON'];
-  generateNewToken: Scalars['String'];
-  login: Scalars['String'];
-  loginViaCredential: Scalars['String'];
-  registerCredential: Scalars['JSON'];
+  generateCredentialLoginOptions: Scalars['JSON']['output'];
+  generateNewToken: Scalars['String']['output'];
+  login: Scalars['String']['output'];
+  loginViaCredential: Scalars['String']['output'];
+  registerCredential: Scalars['JSON']['output'];
   reorderCategories: Array<Category>;
   splitTransaction: Transaction;
   updateAccount: Account;
   updateCategory: Category;
   updateCurrency: Currency;
   updateTransaction: Transaction;
-  verifyCredentialRegistration: Scalars['Boolean'];
+  verifyCredentialRegistration: Scalars['Boolean']['output'];
 };
 
 
 export type MutationChangePasswordArgs = {
-  newPassword: Scalars['String'];
-  oldPassword: Scalars['String'];
+  newPassword: Scalars['String']['input'];
+  oldPassword: Scalars['String']['input'];
 };
 
 
@@ -210,92 +212,92 @@ export type MutationCreateTransactionArgs = {
 
 
 export type MutationDeleteAccountArgs = {
-  id: Scalars['String'];
+  id: Scalars['String']['input'];
 };
 
 
 export type MutationDeleteCategoryArgs = {
-  id: Scalars['String'];
+  id: Scalars['String']['input'];
 };
 
 
 export type MutationDeleteCredentialArgs = {
-  id: Scalars['String'];
+  id: Scalars['String']['input'];
 };
 
 
 export type MutationDeleteCurrencyArgs = {
-  id: Scalars['String'];
+  id: Scalars['String']['input'];
 };
 
 
 export type MutationDeleteTransactionArgs = {
-  id: Scalars['String'];
+  id: Scalars['String']['input'];
 };
 
 
 export type MutationGenerateCredentialLoginOptionsArgs = {
-  userId: Scalars['String'];
+  userId: Scalars['String']['input'];
 };
 
 
 export type MutationLoginArgs = {
-  email: Scalars['String'];
-  password: Scalars['String'];
-  turnstileToken: Scalars['String'];
+  email: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+  turnstileToken: Scalars['String']['input'];
 };
 
 
 export type MutationLoginViaCredentialArgs = {
-  response: Scalars['JSON'];
+  response: Scalars['JSON']['input'];
 };
 
 
 export type MutationReorderCategoriesArgs = {
-  orderedIds: Array<Scalars['String']>;
+  orderedIds: Array<Scalars['String']['input']>;
 };
 
 
 export type MutationSplitTransactionArgs = {
-  id: Scalars['String'];
+  id: Scalars['String']['input'];
   splits: Array<SplitTransactionItem>;
 };
 
 
 export type MutationUpdateAccountArgs = {
-  id: Scalars['String'];
+  id: Scalars['String']['input'];
   input: UpdateAccountInput;
 };
 
 
 export type MutationUpdateCategoryArgs = {
-  id: Scalars['String'];
+  id: Scalars['String']['input'];
   input: UpdateCategoryInput;
 };
 
 
 export type MutationUpdateCurrencyArgs = {
-  id: Scalars['String'];
+  id: Scalars['String']['input'];
   input: UpdateCurrencyInput;
 };
 
 
 export type MutationUpdateTransactionArgs = {
-  id: Scalars['String'];
+  id: Scalars['String']['input'];
   input: UpdateTransactionInput;
 };
 
 
 export type MutationVerifyCredentialRegistrationArgs = {
-  device: Scalars['String'];
-  response: Scalars['JSON'];
+  device: Scalars['String']['input'];
+  response: Scalars['JSON']['input'];
 };
 
 export type PaginatedTransactions = {
   __typename?: 'PaginatedTransactions';
   data: Array<Transaction>;
-  nextOffset?: Maybe<Scalars['String']>;
-  totalCount: Scalars['Int'];
+  nextOffset?: Maybe<Scalars['String']['output']>;
+  totalCount: Scalars['Int']['output'];
 };
 
 export type Query = {
@@ -316,116 +318,116 @@ export type Query = {
 
 
 export type QueryAccountArgs = {
-  id: Scalars['String'];
+  id: Scalars['String']['input'];
 };
 
 
 export type QueryBudgetArgs = {
-  currencyId?: InputMaybe<Scalars['String']>;
-  month: Scalars['Int'];
-  timezoneOffset?: InputMaybe<Scalars['UtcOffset']>;
-  year: Scalars['Int'];
+  currencyId?: InputMaybe<Scalars['String']['input']>;
+  month: Scalars['Int']['input'];
+  timezoneOffset?: InputMaybe<Scalars['UtcOffset']['input']>;
+  year: Scalars['Int']['input'];
 };
 
 
 export type QueryCategoryArgs = {
-  id: Scalars['String'];
+  id: Scalars['String']['input'];
 };
 
 
 export type QueryCurrencyArgs = {
-  id: Scalars['String'];
+  id: Scalars['String']['input'];
 };
 
 
 export type QueryTransactionArgs = {
-  id: Scalars['String'];
+  id: Scalars['String']['input'];
 };
 
 
 export type QueryTransactionsArgs = {
   filter?: InputMaybe<TransactionFilter>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['String']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['String']['input']>;
 };
 
 
 export type QueryTransactionsByDayArgs = {
-  dateFrom: Scalars['Date'];
-  dateUntil: Scalars['Date'];
+  dateFrom: Scalars['Date']['input'];
+  dateUntil: Scalars['Date']['input'];
 };
 
 export type SplitTransactionItem = {
-  amount: Scalars['Int'];
-  memo?: InputMaybe<Scalars['String']>;
+  amount: Scalars['Int']['input'];
+  memo?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type Transaction = {
   __typename?: 'Transaction';
   account: Account;
-  accountId: Scalars['String'];
+  accountId: Scalars['String']['output'];
   amount: Money;
   category?: Maybe<Category>;
-  categoryId?: Maybe<Scalars['String']>;
+  categoryId?: Maybe<Scalars['String']['output']>;
   currency: Currency;
-  currencyId: Scalars['String'];
-  date: Scalars['Date'];
-  id: Scalars['String'];
-  includeInReports: Scalars['Boolean'];
-  memo: Scalars['String'];
-  originalMemo: Scalars['String'];
+  currencyId: Scalars['String']['output'];
+  date: Scalars['Date']['output'];
+  id: Scalars['String']['output'];
+  includeInReports: Scalars['Boolean']['output'];
+  memo: Scalars['String']['output'];
+  originalMemo: Scalars['String']['output'];
   splitFrom?: Maybe<Transaction>;
-  splitFromId?: Maybe<Scalars['String']>;
+  splitFromId?: Maybe<Scalars['String']['output']>;
   splitTo: Array<Transaction>;
 };
 
 
 export type TransactionAmountArgs = {
-  currencyId?: InputMaybe<Scalars['String']>;
+  currencyId?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type TransactionFilter = {
-  categoryIds?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-  dateFrom?: InputMaybe<Scalars['Date']>;
-  dateUntil?: InputMaybe<Scalars['Date']>;
-  keyword?: InputMaybe<Scalars['String']>;
-  maxAmount?: InputMaybe<Scalars['Int']>;
-  minAmount?: InputMaybe<Scalars['Int']>;
+  categoryIds?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  dateFrom?: InputMaybe<Scalars['Date']['input']>;
+  dateUntil?: InputMaybe<Scalars['Date']['input']>;
+  keyword?: InputMaybe<Scalars['String']['input']>;
+  maxAmount?: InputMaybe<Scalars['Int']['input']>;
+  minAmount?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type UpdateAccountInput = {
-  name?: InputMaybe<Scalars['String']>;
+  name?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateCategoryInput = {
-  budget?: InputMaybe<Scalars['Int']>;
-  budgetCurrencyId?: InputMaybe<Scalars['String']>;
-  color?: InputMaybe<Scalars['String']>;
-  icon?: InputMaybe<Scalars['String']>;
-  isRegular?: InputMaybe<Scalars['Boolean']>;
-  name?: InputMaybe<Scalars['String']>;
+  budget?: InputMaybe<Scalars['Int']['input']>;
+  budgetCurrencyId?: InputMaybe<Scalars['String']['input']>;
+  color?: InputMaybe<Scalars['String']['input']>;
+  icon?: InputMaybe<Scalars['String']['input']>;
+  isRegular?: InputMaybe<Scalars['Boolean']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateCurrencyInput = {
-  decimalDigits: Scalars['Int'];
-  symbol: Scalars['String'];
+  decimalDigits: Scalars['Int']['input'];
+  symbol: Scalars['String']['input'];
 };
 
 export type UpdateTransactionInput = {
-  accountId?: InputMaybe<Scalars['String']>;
-  amount?: InputMaybe<Scalars['Int']>;
-  categoryId?: InputMaybe<Scalars['String']>;
-  currencyId?: InputMaybe<Scalars['String']>;
-  date?: InputMaybe<Scalars['Date']>;
-  includeInReports?: InputMaybe<Scalars['Boolean']>;
-  memo?: InputMaybe<Scalars['String']>;
+  accountId?: InputMaybe<Scalars['String']['input']>;
+  amount?: InputMaybe<Scalars['Int']['input']>;
+  categoryId?: InputMaybe<Scalars['String']['input']>;
+  currencyId?: InputMaybe<Scalars['String']['input']>;
+  date?: InputMaybe<Scalars['Date']['input']>;
+  includeInReports?: InputMaybe<Scalars['Boolean']['input']>;
+  memo?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UserCredential = {
   __typename?: 'UserCredential';
-  createdAt: Scalars['Date'];
-  device: Scalars['String'];
-  id: Scalars['String'];
+  createdAt: Scalars['Date']['output'];
+  device: Scalars['String']['output'];
+  id: Scalars['String']['output'];
 };
 
 export type FullAccountFragment = { __typename?: 'Account', id: string, name: string };
@@ -467,51 +469,51 @@ export type CreateTransactionMutationVariables = Exact<{
 export type CreateTransactionMutation = { __typename?: 'Mutation', createTransaction: { __typename?: 'Transaction', id: string } };
 
 export type DeleteAccountMutationVariables = Exact<{
-  id: Scalars['String'];
+  id: Scalars['String']['input'];
 }>;
 
 
 export type DeleteAccountMutation = { __typename?: 'Mutation', deleteAccount: { __typename?: 'Account', id: string } };
 
 export type DeleteCategoryMutationVariables = Exact<{
-  id: Scalars['String'];
+  id: Scalars['String']['input'];
 }>;
 
 
 export type DeleteCategoryMutation = { __typename?: 'Mutation', deleteCategory: { __typename?: 'Category', id: string } };
 
 export type DeleteCredentialMutationVariables = Exact<{
-  id: Scalars['String'];
+  id: Scalars['String']['input'];
 }>;
 
 
 export type DeleteCredentialMutation = { __typename?: 'Mutation', deleteCredential: { __typename?: 'UserCredential', id: string } };
 
 export type DeleteTransactionMutationVariables = Exact<{
-  id: Scalars['String'];
+  id: Scalars['String']['input'];
 }>;
 
 
 export type DeleteTransactionMutation = { __typename?: 'Mutation', deleteTransaction: { __typename?: 'Transaction', id: string } };
 
 export type GenerateCredentialLoginOptionsMutationVariables = Exact<{
-  userId: Scalars['String'];
+  userId: Scalars['String']['input'];
 }>;
 
 
 export type GenerateCredentialLoginOptionsMutation = { __typename?: 'Mutation', generateCredentialLoginOptions: any };
 
 export type LoginMutationVariables = Exact<{
-  email: Scalars['String'];
-  password: Scalars['String'];
-  turnstileToken: Scalars['String'];
+  email: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+  turnstileToken: Scalars['String']['input'];
 }>;
 
 
 export type LoginMutation = { __typename?: 'Mutation', login: string };
 
 export type LoginViaCredentialMutationVariables = Exact<{
-  response: Scalars['JSON'];
+  response: Scalars['JSON']['input'];
 }>;
 
 
@@ -523,14 +525,14 @@ export type RegisterCredentialMutationVariables = Exact<{ [key: string]: never; 
 export type RegisterCredentialMutation = { __typename?: 'Mutation', registerCredential: any };
 
 export type ReorderCategoriesMutationVariables = Exact<{
-  orderedIds: Array<Scalars['String']> | Scalars['String'];
+  orderedIds: Array<Scalars['String']['input']> | Scalars['String']['input'];
 }>;
 
 
 export type ReorderCategoriesMutation = { __typename?: 'Mutation', reorderCategories: Array<{ __typename?: 'Category', id: string }> };
 
 export type SplitTransactionMutationVariables = Exact<{
-  id: Scalars['String'];
+  id: Scalars['String']['input'];
   splits: Array<SplitTransactionItem> | SplitTransactionItem;
 }>;
 
@@ -538,7 +540,7 @@ export type SplitTransactionMutationVariables = Exact<{
 export type SplitTransactionMutation = { __typename?: 'Mutation', splitTransaction: { __typename?: 'Transaction', id: string, memo: string, date: any, originalMemo: string, includeInReports: boolean, currencyId: string, splitFromId?: string | null, amount: { __typename?: 'Money', decimalAmount: number, formatted: string }, category?: { __typename?: 'Category', id: string, name: string, color: string, icon: string } | null, account: { __typename?: 'Account', id: string, name: string }, splitTo: Array<{ __typename?: 'Transaction', id: string, memo: string, includeInReports: boolean, amount: { __typename?: 'Money', decimalAmount: number, formatted: string }, category?: { __typename?: 'Category', id: string, name: string, icon: string, color: string } | null }> } };
 
 export type UpdateAccountMutationVariables = Exact<{
-  id: Scalars['String'];
+  id: Scalars['String']['input'];
   input: UpdateAccountInput;
 }>;
 
@@ -546,7 +548,7 @@ export type UpdateAccountMutationVariables = Exact<{
 export type UpdateAccountMutation = { __typename?: 'Mutation', updateAccount: { __typename?: 'Account', id: string, name: string } };
 
 export type UpdateCategoryMutationVariables = Exact<{
-  id: Scalars['String'];
+  id: Scalars['String']['input'];
   input: UpdateCategoryInput;
 }>;
 
@@ -554,7 +556,7 @@ export type UpdateCategoryMutationVariables = Exact<{
 export type UpdateCategoryMutation = { __typename?: 'Mutation', updateCategory: { __typename?: 'Category', id: string, name: string, color: string, icon: string, isRegular: boolean, sortOrder?: number | null, createdAt: any, updatedAt: any, budget?: { __typename?: 'Money', formatted: string } | null } };
 
 export type UpdateTransactionMutationVariables = Exact<{
-  id: Scalars['String'];
+  id: Scalars['String']['input'];
   input: UpdateTransactionInput;
 }>;
 
@@ -562,8 +564,8 @@ export type UpdateTransactionMutationVariables = Exact<{
 export type UpdateTransactionMutation = { __typename?: 'Mutation', updateTransaction: { __typename?: 'Transaction', id: string } };
 
 export type VerifyCredentialRegistrationMutationVariables = Exact<{
-  response: Scalars['JSON'];
-  device: Scalars['String'];
+  response: Scalars['JSON']['input'];
+  device: Scalars['String']['input'];
 }>;
 
 
@@ -575,9 +577,9 @@ export type AccountsQueryVariables = Exact<{ [key: string]: never; }>;
 export type AccountsQuery = { __typename?: 'Query', accounts: Array<{ __typename?: 'Account', id: string, name: string }> };
 
 export type BudgetQueryVariables = Exact<{
-  currencyId?: InputMaybe<Scalars['String']>;
-  year: Scalars['Int'];
-  month: Scalars['Int'];
+  currencyId?: InputMaybe<Scalars['String']['input']>;
+  year: Scalars['Int']['input'];
+  month: Scalars['Int']['input'];
 }>;
 
 
@@ -604,45 +606,45 @@ export type CurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 export type CurrentUserQuery = { __typename?: 'Query', currentUser?: { __typename?: 'CurrentUser', id: string, email: string, registeredCredentials: Array<{ __typename?: 'UserCredential', id: string, device: string, createdAt: any }> } | null };
 
 export type GetAccountQueryVariables = Exact<{
-  id: Scalars['String'];
+  id: Scalars['String']['input'];
 }>;
 
 
 export type GetAccountQuery = { __typename?: 'Query', account?: { __typename?: 'Account', id: string, name: string } | null };
 
 export type GetCategoryQueryVariables = Exact<{
-  id: Scalars['String'];
+  id: Scalars['String']['input'];
 }>;
 
 
 export type GetCategoryQuery = { __typename?: 'Query', category?: { __typename?: 'Category', id: string, name: string, color: string, icon: string, isRegular: boolean, sortOrder?: number | null, createdAt: any, updatedAt: any, budget?: { __typename?: 'Money', formatted: string } | null } | null };
 
 export type GetCurrencyQueryVariables = Exact<{
-  id: Scalars['String'];
+  id: Scalars['String']['input'];
 }>;
 
 
 export type GetCurrencyQuery = { __typename?: 'Query', currency?: { __typename?: 'Currency', id: string, code: any, symbol: string, decimalDigits: number } | null };
 
 export type GetTransactionQueryVariables = Exact<{
-  id: Scalars['String'];
+  id: Scalars['String']['input'];
 }>;
 
 
 export type GetTransactionQuery = { __typename?: 'Query', transaction?: { __typename?: 'Transaction', id: string, memo: string, date: any, originalMemo: string, includeInReports: boolean, currencyId: string, splitFromId?: string | null, amount: { __typename?: 'Money', decimalAmount: number, formatted: string }, category?: { __typename?: 'Category', id: string, name: string, color: string, icon: string } | null, account: { __typename?: 'Account', id: string, name: string }, splitTo: Array<{ __typename?: 'Transaction', id: string, memo: string, includeInReports: boolean, amount: { __typename?: 'Money', decimalAmount: number, formatted: string }, category?: { __typename?: 'Category', id: string, name: string, icon: string, color: string } | null }> } | null };
 
 export type TransactionsByDayQueryVariables = Exact<{
-  currencyId?: InputMaybe<Scalars['String']>;
-  dateFrom: Scalars['Date'];
-  dateUntil: Scalars['Date'];
+  currencyId?: InputMaybe<Scalars['String']['input']>;
+  dateFrom: Scalars['Date']['input'];
+  dateUntil: Scalars['Date']['input'];
 }>;
 
 
 export type TransactionsByDayQuery = { __typename?: 'Query', transactionsByDay: Array<{ __typename?: 'DailyTransactions', date?: any | null, totalSpent: { __typename?: 'Money', formattedShort: string }, transactions: Array<{ __typename?: 'Transaction', id: string, memo: string, date: any, originalMemo: string, includeInReports: boolean, currencyId: string, splitFromId?: string | null, amount: { __typename?: 'Money', decimalAmount: number, formatted: string }, category?: { __typename?: 'Category', id: string, name: string, color: string, icon: string } | null, account: { __typename?: 'Account', id: string, name: string }, splitTo: Array<{ __typename?: 'Transaction', id: string, memo: string, includeInReports: boolean, amount: { __typename?: 'Money', decimalAmount: number, formatted: string }, category?: { __typename?: 'Category', id: string, name: string, icon: string, color: string } | null }> }> }> };
 
 export type TransactionsQueryVariables = Exact<{
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['String']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['String']['input']>;
   filter?: InputMaybe<TransactionFilter>;
 }>;
 

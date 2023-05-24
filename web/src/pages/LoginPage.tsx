@@ -9,11 +9,13 @@ import logoImage from "../assets/logo.svg"
 import { Button } from "../components/base/Button"
 import { FieldError } from "../components/forms/FieldError"
 import FormInput from "../components/forms/FormInput"
+import { TURNSTILE_SITEKEY } from "../env"
 import { LoginMutationVariables } from "../graphql-types"
 import { useGenerateCredentialLoginOptionsMutation } from "../graphql/mutations/generateCredentialLoginOptions"
 import { useLoginMutation } from "../graphql/mutations/loginMutation"
 import { useLoginViaCredentialMutation } from "../graphql/mutations/loginViaCredentialMutation"
 import { isLoggedIn, lastUserId, setLoginToken } from "../utils/auth"
+import { fixAssetPath } from "../utils/fixAssetPath"
 import { loadTurnstile, turnstileError, turnstileLoaded } from "../utils/turnstile"
 
 type LoginFormValues = Omit<LoginMutationVariables, "turnstileToken">
@@ -73,7 +75,7 @@ const LoginPage: Component = () => {
   createEffect(() => {
     if (turnstileLoaded() && turnstileContainer) {
       window.turnstile?.render(turnstileContainer, {
-        sitekey: import.meta.env.VITE_TURNSTILE_SITEKEY,
+        sitekey: TURNSTILE_SITEKEY,
         callback: (token) => setToken(token)
       })
     }
@@ -93,7 +95,7 @@ const LoginPage: Component = () => {
       <Title>Login</Title>
 
       <div class="flex min-h-screen flex-col pb-20">
-        <img class="mx-auto mt-8 mb-auto w-36" src={logoImage} />
+        <img class="mx-auto mt-8 mb-auto w-36" src={fixAssetPath(logoImage)} />
 
         <div class="mx-6 mt-2 mb-10 rounded bg-white p-6 shadow-2xl lg:mx-auto lg:w-96">
           <h1 class="mb-4 flex items-center text-lg font-bold lg:text-2xl">Login</h1>

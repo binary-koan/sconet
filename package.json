@@ -1,7 +1,7 @@
 {
   "scripts": {
-    "dev": "concurrently -n api,web,api-codegen,web-codegen -c blue,magenta,green,yellow 'cd api && bun run dev' 'cd web && pnpm dev' 'cd api && bun graphql-codegen --watch' 'cd web && pnpm graphql-codegen --watch'",
-    "dev:test": "concurrently -n api,web 'cd api && NODE_ENV=test PORT=4445 WEB_URL=http://127.0.0.1:1236 bun run dev' 'cd web && PORT=1236 pnpm dev'",
+    "dev": "concurrently -n api,web,api-codegen,web-codegen -c blue,magenta,green,yellow 'cd api && bun run dev' 'cd web && bun run dev' 'cd api && bun graphql-codegen --watch' 'cd web && bun graphql-codegen --watch'",
+    "dev:test": "concurrently -n api,web 'cd api && NODE_ENV=test PORT=4445 WEB_URL=http://127.0.0.1:1236 bun run dev' 'cd web && PORT=1236 bun run dev'",
     "deploy": "dotenv -e web/.env pnpm run deploy:perform",
     "deploy:perform": "fly deploy --build-arg \"VITE_TURNSTILE_SITEKEY=$VITE_TURNSTILE_SITEKEY\"",
     "typecheck": "cd api && bun typecheck && cd ../web && pnpm typecheck",

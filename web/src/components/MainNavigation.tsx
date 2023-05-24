@@ -4,6 +4,7 @@ import { TbAdjustmentsHorizontal, TbChartPie, TbReportMoney } from "solid-icons/
 import { Component, JSX } from "solid-js"
 import { Dynamic } from "solid-js/web"
 import logoImage from "../assets/logo.svg"
+import { fixAssetPath } from "../utils/fixAssetPath"
 
 const MainNavigation: Component = () => {
   return (
@@ -11,7 +12,7 @@ const MainNavigation: Component = () => {
       <div class="flex items-center lg:mx-auto lg:max-w-5xl lg:px-2">
         {/* <div class="mr-4 hidden text-lg font-semibold lg:block">Sconet</div> */}
         <Link href="/" class="mr-4 hidden lg:block">
-          <img class="w-24" src={logoImage} />
+          <img class="w-24" src={fixAssetPath(logoImage)} />
         </Link>
         <NavigationItem icon={TbReportMoney} text="History" to="/transactions" />
         <NavigationItem icon={TbChartPie} text="Budgets" to="/budgets" />

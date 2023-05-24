@@ -1,6 +1,7 @@
+import { PRODUCTION_BUILD } from "../../env"
 import { loginToken } from "../auth"
 
-const BASE_URL = import.meta.env.MODE === "development" ? "http://localhost:4444" : ""
+const BASE_URL = PRODUCTION_BUILD ? "" : "http://localhost:4444"
 
 export const requestGraphql = async <Result>(
   query: string,
@@ -17,7 +18,7 @@ export const requestGraphql = async <Result>(
     }
   })
 
-  const { data, errors } = await response.json()
+  const { data, errors } = await response.json() as any
 
   if (errors) {
     throw new Error(`GraphQL error: ${JSON.stringify(errors)}`)

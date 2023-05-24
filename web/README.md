@@ -1,34 +1,25 @@
-## Usage
+# React Bun App
 
-Those templates dependencies are maintained via [pnpm](https://pnpm.io) via `pnpm up -Lri`.
+This is a single-page application project template using React and [Bun](https://bun.sh/). Run the following commands to get started.
 
-This is the reason you see a `pnpm-lock.yaml`. That being said, any package manager will work. This file can be safely be removed once you clone a template.
-
-```bash
-$ npm install # or pnpm install or yarn install
+```sh
+bun create react ./react-bun-app
+cd react-bun-app
 ```
 
-### Learn more on the [Solid Website](https://solidjs.com) and come chat with us on our [Discord](https://discord.com/invite/solidjs)
+The `bun create` command will automatically install the required dependencies. To start the dev server:
 
-## Available Scripts
+```sh
+bun run dev
+```
 
-In the project directory, you can run:
+Then open http://localhost:3000 with your browser to see the result.
 
-### `npm dev` or `npm start`
+This bundles `src/index.tsx` and starts a development server that serves from the `public` and `build` directories. When the incoming request to `localhost:3000/` comes in, the following exchange occurs:
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- The Bun server returns `public/index.html`.
+- The browser renders this HTML, which contains a `script` tags with `src="/index.js"`. The browser requests this file.
+- The server checks for this file, first in `public` (no match) then in `build`. It finds `build/index.js` and returns it to the browser.
+- This file renders the React component in `src/App.tsx` inside the `div#root` element. The app is now ready to accept user input.
 
-The page will reload if you make edits.<br>
-
-### `npm run build`
-
-Builds the app for production to the `dist` folder.<br>
-It correctly bundles Solid in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
-
-## Deployment
-
-You can deploy the `dist` folder to any static host provider (netlify, surge, now, etc.)
+Start building your app by editing `src/App.tsx`.

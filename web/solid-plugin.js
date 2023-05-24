@@ -10,17 +10,21 @@ export const solidPlugin = {
   name: "Solid.js loader",
   setup(build) {
     build.onLoad({ filter: /\.tsx$/ }, async ({ path }) => {
-      const text = await Bun.file(path).text();
+      try {
+        const text = await Bun.file(path).text();
 
-      const result = babel.transformSync(text, {
-        filename: path,
-        presets: [typescript, solid],
-      });
+        const result = babel.transformSync(text, {
+          filename: path,
+          presets: [typescript, solid],
+        });
 
-      return {
-        contents: result.code,
-        loader: "js",
-      };
+        return {
+          contents: result.code,
+          loader: "js",
+        };
+      } catch (e) {
+        console.error(e)
+      }
     });
   },
 };
