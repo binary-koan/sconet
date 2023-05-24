@@ -1,6 +1,5 @@
 {
-  "name": "web-bun",
-  "version": "0.1.89",
+  "name": "web",
   "dependencies": {
     "@modular-forms/solid": "^0.16.0",
     "@simplewebauthn/browser": "^7.2.0",

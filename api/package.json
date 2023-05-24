@@ -1,4 +1,5 @@
 {
+  "name": "api",
   "scripts": {
     "dev": "TZ=UTC bun run --loader .graphql:file --watch src/server.ts",
     "start": "TZ=UTC bun run src/server.ts",
