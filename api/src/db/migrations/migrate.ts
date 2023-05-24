@@ -93,7 +93,7 @@ export async function isMigrationNeeded() {
 
 async function createMigrationsTable() {
   await sql`
-    CREATE TABLE IF NOT EXISTS schemaMigrations (
+    CREATE TABLE IF NOT EXISTS "schemaMigrations" (
       version TEXT PRIMARY KEY
     )
   `
@@ -102,9 +102,9 @@ async function createMigrationsTable() {
 async function runMigration(filename: string, version: string, name: string) {
   console.log(`Migration ${name} (${version}) ...`)
 
-  require(`./${filename}`).up()
+  await import(`./${filename}`).then((migration) => migration.up())
 
-  await sql`INSERT INTO schemaMigrations (version) VALUES (${sql({ version })})`
+  await sql`INSERT INTO "schemaMigrations" (version) VALUES (${sql({ version })})`
 
   console.log("Complete")
 }
@@ -112,9 +112,9 @@ async function runMigration(filename: string, version: string, name: string) {
 async function rollbackMigration(filename: string, version: string, name: string) {
   console.log(`Rolling back ${name} (${version}) ...`)
 
-  require(`./${filename}`).down()
+  await import(`./${filename}`).then((migration) => migration.down())
 
-  await sql`DELETE FROM schemaMigrations WHERE version = ${version}`
+  await sql`DELETE FROM "schemaMigrations" WHERE version = ${version}`
 
   console.log("Complete")
 }
@@ -136,5 +136,5 @@ function listMigrationFiles() {
 }
 
 async function getCompletedMigrations() {
-  return (await sql`SELECT * FROM schemaMigrations`).map((row) => row.version)
+  return (await sql`SELECT * FROM "schemaMigrations"`).map((row) => row.version)
 }

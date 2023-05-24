@@ -2,9 +2,16 @@ import { file } from "bun"
 import { existsSync, statSync } from "fs"
 import { createYoga } from "graphql-yoga"
 import { buildContext } from "./context"
+import { createDb } from "./db/createDb"
+import { migrate } from "./db/migrations/migrate"
 import { startExchangeRateSchedule } from "./jobs/exchangeRates"
 import "./polyfills"
 import { schema } from "./schema"
+
+if (process.env.NODE_ENV === "test") {
+  await createDb()
+  await migrate()
+}
 
 const port = process.env.PORT || 4444
 
@@ -18,7 +25,7 @@ const yoga = createYoga({
     process.env.NODE_ENV === "production"
       ? undefined
       : {
-          origin: "http://localhost:1235",
+          origin: process.env.WEB_URL || "http://localhost:1235",
           allowedHeaders: ["Authorization", "Content-Type"]
         },
 
