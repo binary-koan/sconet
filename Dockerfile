@@ -1,41 +1,32 @@
-FROM node:18 AS builder
+FROM oven/bun:0.6.3 AS builder
 
 WORKDIR /app
 
-RUN curl https://dl.min.io/client/mc/release/linux-amd64/mc -o /usr/local/bin/mc && \
-  chmod +x /usr/local/bin/mc
+RUN mkdir api && mkdir web
 
-RUN npm install -g pnpm
+COPY bun.lockb ./
+COPY package.json ./
+COPY api/package.json ./api
+COPY web/package.json ./web
 
-COPY web/pnpm-lock.yaml ./
-RUN pnpm fetch
-COPY web/package.json ./
-RUN pnpm install --offline
-
-COPY web ./
-
-ARG VITE_TURNSTILE_SITEKEY
-RUN test -n "$VITE_TURNSTILE_SITEKEY" || (echo "VITE_TURNSTILE_SITEKEY not set" && false)
-
-RUN pnpm build
-
-FROM jarredsumner/bun:0.5.1
-
-WORKDIR /app
-
-COPY api/package.json api/bun.lockb ./
-
-# This fails with --production on Fly builders for some reason (error linking - FileNotFound)
-# RUN bun install --production
 RUN bun install
 
-COPY --from=builder /usr/local/bin/mc /usr/local/bin/mc
+COPY . .
 
-COPY api ./
+ARG TURNSTILE_SITEKEY
+RUN test -n "$TURNSTILE_SITEKEY" || (echo "TURNSTILE_SITEKEY not set" && false)
+
+RUN cd api && bun run build
+RUN cd web && bun run build
+
+FROM gcr.io/distroless/cc-debian11
+
+WORKDIR /app
 
 ENV STATIC_PATH=static
+ENV TZ=UTC
 
-RUN mkdir static
-COPY --from=builder /app/dist static
+COPY --from=builder /app/api/build .
+COPY --from=builder /app/web/build ./static
 
-CMD bun start
+ENTRYPOINT ["/app/server"]

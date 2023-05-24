@@ -4,5 +4,9 @@ api/data
 !api/data/.keep
 api/scratch.*
 .vscode
+
 /e2e-results/
 /e2e-report/
+
+api/build
+web/build

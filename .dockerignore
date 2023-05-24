@@ -4,3 +4,9 @@
 **/*.sqlite
 api/scratch.ts
 .vscode
+
+/e2e-results/
+/e2e-report/
+
+api/build
+web/build

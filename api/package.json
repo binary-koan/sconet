@@ -2,7 +2,10 @@
   "name": "api",
   "scripts": {
     "dev": "TZ=UTC bun run --loader .graphql:file --watch src/server.ts",
-    "start": "TZ=UTC bun run src/server.ts",
+    "build": "mkdir -p build && bun build:server && bun build:migrate && bun build:job",
+    "build:server": "cd build && bun build --compile ../src/server.ts --outfile server",
+    "build:migrate": "cd build && bun build --compile ../bin/migrate/index.ts --outfile migrate",
+    "build:job": "cd build && bun build --compile ../bin/job.ts --outfile job",
     "codegen": "graphql-codegen",
     "typecheck": "tsc --noEmit",
     "migrate": "TZ=UTC bun bin/migrate/index.ts",
@@ -36,7 +39,7 @@
     "@types/cookie": "^0.5.1",
     "@types/lodash": "^4.14.182",
     "@types/minio": "^7.0.15",
-    "bun-types": "^0.5.0",
+    "bun-types": "canary",
     "typescript": "^4.9.4"
   }
 }
