@@ -6,7 +6,7 @@ export interface CategoryRecord {
   icon: string
   isRegular: boolean
   budget: number | null
-  budgetCurrencyId: string | null
+  budgetCurrencyCode: string | null
   sortOrder: number | null
 
   deletedAt: Date | null

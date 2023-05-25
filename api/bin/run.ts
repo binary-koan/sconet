@@ -2,16 +2,10 @@ import { createDb } from "../src/db/createDb"
 import { sql } from "../src/db/database"
 import { createMigration, down, migrate, rollback, up } from "../src/db/migrate"
 import { seed } from "../src/db/seeds/seed"
-import { runJob } from "../src/job"
 import { startServer } from "../src/server"
 
 const commands: { [command: string]: ((...args: string[]) => void | Promise<void>) | undefined } = {
   server: () => startServer(),
-
-  job: async (jobName: string) => {
-    await runJob(jobName)
-    await sql.end()
-  },
 
   db_create: () => createDb(),
 

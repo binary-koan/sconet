@@ -1,4 +1,4 @@
 ALTER TABLE
   "categories"
 ADD
-  COLUMN "budgetCurrencyId" TEXT;
+  COLUMN "budgetCurrencyCode" TEXT;

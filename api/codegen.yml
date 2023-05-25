@@ -12,7 +12,7 @@ generates:
         DateTime: Date
       mappers:
         Category: ./db/records/category#CategoryRecord
-        Currency: ./db/records/currency#CurrencyRecord
+        Currency: ts-money#Currency as CurrencyValue
         Transaction: ./db/records/transaction#TransactionRecord
         Account: ./db/records/account#AccountRecord
         DailyExchangeRate: ./db/records/dailyExchangeRate#DailyExchangeRateRecord
@@ -22,6 +22,6 @@ generates:
         MonthBudget: ./resolvers/budgets#MonthBudgetResult
         CategoryBudgetGroup: ./resolvers/budgets#CategoryBudgetGroupResult
         CategoryBudget: ./resolvers/budgets#CategoryBudgetResult
-        Money: ./resolvers/money#MoneyOptions
+        Money: ts-money#Money as MoneyValue
         CurrentUser: ./db/records/user#UserRecord
         UserCredential: ./db/records/userCredential#UserCredentialRecord

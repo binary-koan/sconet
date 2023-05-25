@@ -2,12 +2,12 @@ export interface TransactionRecord {
   id: string
   memo: string
   originalMemo: string
-  amount: number
   date: Date
   includeInReports: boolean
 
-  currencyId: string
-  dailyExchangeRateId: string
+  amount: number
+  currencyCode: string
+
   categoryId: string | null
 
   accountId: string

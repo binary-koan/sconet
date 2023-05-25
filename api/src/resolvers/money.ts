@@ -1,103 +1,52 @@
 import { GraphQLError } from "graphql"
-import { isError, sum } from "lodash"
+import { isError } from "lodash"
+import { Money as MoneyValue } from "ts-money"
 import { Context } from "../context"
-import { CurrencyRecord } from "../db/records/currency"
 import { Resolvers } from "../resolvers-types"
 
-export interface MoneyOptions {
-  amount: number
-  currency: CurrencyRecord
-}
-
-export const convertCurrency = async (
-  options: MoneyOptions & {
-    target?: { currencyId: string; date?: Date } | null
-    context: Context
-  }
-): Promise<MoneyOptions> => {
-  if (!options.target) {
-    return { amount: options.amount, currency: options.currency }
-  }
-
-  const convertedAmount = await options.context.data.amountInCurrency.load({
-    amount: options.amount,
-    fromCurrencyId: options.currency.id,
-    toCurrencyId: options.target.currencyId,
-    dailyExchangeRateId: (
-      await options.context.data.dailyExchangeRate.load({
-        fromCurrencyId: options.currency.id,
-        date: options.target.date
-      })
-    ).id
-  })
-  const otherCurrency = await options.context.data.currency.load(options.target.currencyId)
-
-  return {
-    amount: convertedAmount,
-    currency: otherCurrency
-  }
-}
-
-export const sumCurrency = async (options: {
-  amounts: MoneyOptions[]
-  target?: { currencyId: string; date?: Date } | null
+export const sumCurrency = async ({
+  amounts,
+  target,
+  context
+}: {
+  amounts: MoneyValue[]
+  target?: { currencyCode: string; date?: Date } | null
   context: Context
-}): Promise<MoneyOptions> => {
-  if (!options.amounts.length) {
-    return {
-      amount: 0,
-      currency: await options.context.data.currency.load(await options.context.defaultCurrencyId)
-    }
+}): Promise<MoneyValue> => {
+  const targetCurrencyCode =
+    target?.currencyCode || context.currentUser!.settings.defaultCurrencyCode
+
+  if (!amounts.length) {
+    return new MoneyValue(0, targetCurrencyCode)
   }
 
-  const targetCurrency = await options.context.data.currency.load(
-    options.target?.currencyId || (await options.context.defaultCurrencyId)
-  )
-
-  const convertedAmounts = await options.context.data.amountInCurrency.loadMany(
-    await Promise.all(
-      options.amounts.map(async ({ amount, currency }) => ({
-        amount,
-        fromCurrencyId: currency.id,
-        toCurrencyId: targetCurrency.id,
-        dailyExchangeRateId: (
-          await options.context.data.dailyExchangeRate.load({
-            fromCurrencyId: targetCurrency.id,
-            date: options.target?.date
-          })
-        ).id
-      }))
-    )
+  const convertedAmounts = await context.data.currencyValues.loadMany(
+    amounts.map((amount) => ({
+      original: amount,
+      targetCurrencyCode,
+      date: target?.date || new Date()
+    }))
   )
 
   if (convertedAmounts.some((amount) => isError(amount))) {
     throw new GraphQLError(`Error fetching converted amounts: ${JSON.stringify(convertedAmounts)}`)
   }
 
-  const total = sum(convertedAmounts)
-
-  return {
-    amount: total,
-    currency: targetCurrency
-  }
-}
-
-const decimalAmount = ({ amount, currency }: MoneyOptions) => {
-  if (amount === 0) return 0
-
-  return parseFloat((amount / 10 ** currency.decimalDigits).toFixed(currency.decimalDigits))
+  return (convertedAmounts as MoneyValue[]).reduce((sum, amount) => sum.add(amount))
 }
 
 export const Money: Resolvers["Money"] = {
-  formatted: (options) => {
-    const formattedValue = Math.abs(decimalAmount(options)).toFixed(options.currency.decimalDigits)
-    const withCommas = formattedValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+  formatted: (money) => {
+    const absoluteWithCommas = money
+      .toString()
+      .replace(/^-/, "")
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
 
-    return `${options.amount < 0 ? "-" : ""}${options.currency.symbol}${withCommas}`
+    return `${money.amount < 0 ? "-" : ""}${money.getCurrencyInfo().symbol}${absoluteWithCommas}`
   },
 
-  formattedShort: (options) => {
-    const absoluteAmount = Math.round(Math.abs(decimalAmount(options)))
+  formattedShort: (money) => {
+    const absoluteAmount = Math.round(Math.abs(money.toDecimal()))
     let amount = absoluteAmount
     let suffix = ""
 
@@ -109,9 +58,9 @@ export const Money: Resolvers["Money"] = {
       suffix = "K"
     }
 
-    return `${options.amount < 0 ? "-" : ""}${options.currency.symbol}${amount}${suffix}`
+    return `${money.amount < 0 ? "-" : ""}${money.getCurrencyInfo().symbol}${amount}${suffix}`
   },
 
-  integerAmount: (options) => Math.round(options.amount),
-  decimalAmount: (options) => decimalAmount(options)
+  integerAmount: (money) => Math.round(money.amount),
+  decimalAmount: (money) => money.toDecimal()
 }

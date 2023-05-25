@@ -1,58 +1,44 @@
 import Dataloader from "dataloader"
 import { GraphQLError } from "graphql"
 import { errors, jwtVerify } from "jose"
-import { fromPairs, last, memoize, uniqBy } from "lodash"
-import { convertAmounts } from "./db/queries/exchangeRateValues/convertAmounts"
+import { last } from "lodash"
+import { Currencies } from "ts-money"
 import { AccountRecord } from "./db/records/account"
 import { CategoryRecord } from "./db/records/category"
-import { CurrencyRecord } from "./db/records/currency"
-import { DailyExchangeRateRecord } from "./db/records/dailyExchangeRate"
-import { ExchangeRateValueRecord } from "./db/records/exchangeRateValue"
 import { TransactionRecord } from "./db/records/transaction"
+import { UserRecord } from "./db/records/user"
 import { accountsRepo } from "./db/repos/accountsRepo"
 import { categoriesRepo } from "./db/repos/categoriesRepo"
-import { currenciesRepo } from "./db/repos/currenciesRepo"
-import { dailyExchangeRatesRepo } from "./db/repos/dailyExchangeRatesRepo"
-import { exchangeRateValuesRepo } from "./db/repos/exchangeRateValuesRepo"
 import { transactionsRepo } from "./db/repos/transactionsRepo"
+import { usersRepo } from "./db/repos/usersRepo"
+import { CurrencyValuesLoader, currencyValuesLoader } from "./utils/currencyValuesLoader"
+import { ExchangeRatesLoader, exchangeRatesLoader } from "./utils/exchangeRatesLoader"
 
 export interface Context {
   remoteIp?: string
-  auth?: {
-    userId: string
-  }
-  defaultCurrencyId: Promise<string>
+  currentUser?: UserRecord
+  defaultCurrencyCode: string
   data: {
     account: Dataloader<string, AccountRecord>
     category: Dataloader<string, CategoryRecord>
     transaction: Dataloader<string, TransactionRecord>
     transactionSplitTo: Dataloader<string, TransactionRecord[]>
-    currency: Dataloader<string, CurrencyRecord>
-    dailyExchangeRate: Dataloader<{ fromCurrencyId: string; date?: Date }, DailyExchangeRateRecord>
-    exchangeRateValue: Dataloader<
-      { dailyExchangeRateId: string; toCurrencyId: string },
-      ExchangeRateValueRecord
-    >
-    amountInCurrency: Dataloader<
-      { fromCurrencyId: string; toCurrencyId: string; dailyExchangeRateId: string; amount: number },
-      number
-    >
+    exchangeRates: ExchangeRatesLoader
+    currencyValues: CurrencyValuesLoader
   }
 }
 
 export async function buildContext(request: Request): Promise<Context> {
-  const defaultCurrencyId = memoize(
-    async () =>
-      request.headers.get("x-default-currency-id") || (await currenciesRepo.findAll())[0].id
-  )
+  const currentUser = await getCurrentUser(request)
+  const exchangeRates = exchangeRatesLoader()
 
   return {
     remoteIp: getRemoteIp(request) ?? undefined,
 
-    auth: await getAuthDetails(request),
+    currentUser,
 
-    get defaultCurrencyId() {
-      return defaultCurrencyId()
+    get defaultCurrencyCode() {
+      return currentUser?.settings.defaultCurrencyCode || Currencies.USD.code
     },
 
     data: {
@@ -62,46 +48,13 @@ export async function buildContext(request: Request): Promise<Context> {
       transactionSplitTo: new Dataloader(async (ids) =>
         transactionsRepo.findSplitTransactionsByIds(ids)
       ),
-      currency: new Dataloader(async (ids) => currenciesRepo.findByIds(ids)),
-
-      dailyExchangeRate: new Dataloader(async (queries) => {
-        const queriesWithId = queries.map((query) => ({
-          id: `${query.fromCurrencyId}-${query.date}`,
-          ...query
-        }))
-        const resultsById = fromPairs(
-          await Promise.all(
-            uniqBy(queriesWithId, "id").map(async ({ id, fromCurrencyId, date }) => [
-              id,
-              await dailyExchangeRatesRepo.findClosest(date || new Date(), fromCurrencyId)
-            ])
-          )
-        )
-
-        return queriesWithId.map(({ id }) => resultsById[id]!)
-      }),
-
-      exchangeRateValue: new Dataloader(async (queries) => {
-        const all = await exchangeRateValuesRepo.findForRates(
-          queries.map((query) => query.dailyExchangeRateId)
-        )
-
-        return queries.map(
-          (query) =>
-            all.find(
-              (value) =>
-                value.dailyExchangeRateId === query.dailyExchangeRateId &&
-                value.toCurrencyId === query.toCurrencyId
-            )!
-        )
-      }),
-
-      amountInCurrency: new Dataloader(async (queries) => convertAmounts(queries))
+      exchangeRates,
+      currencyValues: currencyValuesLoader(exchangeRates)
     }
   }
 }
 
-async function getAuthDetails(request: Request) {
+async function getCurrentUser(request: Request) {
   try {
     const token = last(request.headers.get("authorization")?.split(" ") || [])
 
@@ -119,9 +72,7 @@ async function getAuthDetails(request: Request) {
       throw new GraphQLError("Invalid token")
     }
 
-    return {
-      userId: body.payload.sub
-    }
+    return await usersRepo.get(body.payload.sub!)
   } catch (e) {
     if (e instanceof errors.JWTExpired) {
       return

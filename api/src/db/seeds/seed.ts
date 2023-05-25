@@ -1,10 +1,9 @@
-import { updateExchangeRates } from "../../jobs/exchangeRates"
 import { runDbSession } from "../../utils/runDbSession"
 import { hashPassword } from "../../utils/scrypt"
 import { sql } from "../database"
 import { accountsRepo } from "../repos/accountsRepo"
 import { categoriesRepo } from "../repos/categoriesRepo"
-import { currenciesRepo } from "../repos/currenciesRepo"
+import { usersRepo } from "../repos/usersRepo"
 
 export async function seed() {
   console.log("Starting seed")
@@ -14,12 +13,16 @@ export async function seed() {
       const existing = await sql`SELECT * FROM users WHERE email = ${email}`
 
       if (!existing.length) {
-        await sql`INSERT INTO users ${sql({
+        await usersRepo.insert({
           email,
           encryptedPassword: await hashPassword("changeme"),
-          createdAt: new Date(),
-          updatedAt: new Date()
-        })}`
+          webauthnChallenge: null,
+          settings: {
+            defaultCurrencyCode: "USD",
+            favoriteCurrencyCodes: [],
+            defaultAccountId: null
+          }
+        })
         console.log(`Created user ${email}`)
       }
     }
@@ -33,7 +36,7 @@ export async function seed() {
         icon: "ShoppingCart",
         isRegular: true,
         budget: null,
-        budgetCurrencyId: null,
+        budgetCurrencyCode: null,
         sortOrder: 0
       })
       console.log(`Created category 'First'`)
@@ -46,7 +49,7 @@ export async function seed() {
         icon: "ShoppingCart",
         isRegular: true,
         budget: null,
-        budgetCurrencyId: null,
+        budgetCurrencyCode: null,
         sortOrder: 1
       })
       console.log(`Created category 'Second'`)
@@ -60,18 +63,5 @@ export async function seed() {
       })
       console.log(`Created account 'Test'`)
     }
-
-    const existingCurrencies = await sql`SELECT * FROM currencies`
-
-    if (!existingCurrencies.some((currency) => currency.code === "JPY")) {
-      await currenciesRepo.insert({
-        code: "JPY",
-        decimalDigits: 0,
-        symbol: "¥"
-      })
-      console.log(`Created currency 'JPY'`)
-    }
-
-    await updateExchangeRates()
   })
 }

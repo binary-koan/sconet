@@ -3,15 +3,12 @@ import { existsSync, statSync } from "fs"
 import { createYoga } from "graphql-yoga"
 import { extname } from "path"
 import { buildContext } from "./context"
-import { startExchangeRateSchedule } from "./jobs/exchangeRates"
 import "./polyfills"
 import { schema } from "./schema"
 
 export async function startServer(serveStaticPaths?: string[]) {
   const port = Bun.env.PORT || 4444
   const staticPaths = serveStaticPaths || Bun.env.STATIC_PATHS?.split(",") || []
-
-  startExchangeRateSchedule()
 
   const yoga = createYoga({
     schema,

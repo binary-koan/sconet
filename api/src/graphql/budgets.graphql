@@ -27,6 +27,6 @@ type Query {
     year: Int!
     month: Int!
     timezoneOffset: UtcOffset = "+00:00"
-    currencyId: String
+    currencyCode: String
   ): MonthBudget! @authenticated
 }

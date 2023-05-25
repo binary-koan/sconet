@@ -28,17 +28,11 @@ import {
 } from "./resolvers/categories"
 import {
   Currency,
-  createCurrency,
   currencies,
   currency,
-  deleteCurrency,
-  updateCurrency
+  favoriteCurrency,
+  unfavoriteCurrency
 } from "./resolvers/currencies"
-import {
-  DailyExchangeRate,
-  ExchangeRateValue,
-  currentExchangeRates
-} from "./resolvers/dailyExchangeRate"
 import { applyAuthenticatedDirective } from "./resolvers/directives/authenticated"
 import { Money } from "./resolvers/money"
 import {
@@ -81,8 +75,7 @@ const resolvers: Resolvers = {
     budget,
     currencies,
     currency,
-    currentUser,
-    currentExchangeRates
+    currentUser
   },
   Mutation: {
     createTransaction,
@@ -96,9 +89,8 @@ const resolvers: Resolvers = {
     updateCategory,
     deleteCategory,
     reorderCategories,
-    createCurrency,
-    updateCurrency,
-    deleteCurrency,
+    favoriteCurrency,
+    unfavoriteCurrency,
     login,
     changePassword,
     generateNewToken,
@@ -114,8 +106,6 @@ const resolvers: Resolvers = {
   Currency,
   Category,
   Account,
-  DailyExchangeRate,
-  ExchangeRateValue,
   MonthBudget,
   CategoryBudget,
   CategoryBudgetGroup,

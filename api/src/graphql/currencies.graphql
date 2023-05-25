@@ -3,12 +3,12 @@ type Currency {
   code: CurrencyCode!
   symbol: String!
   decimalDigits: Int!
-  exchangeRate(toId: String!): Float
+  exchangeRate(toCode: String!): Float
 }
 
 type Query {
   currencies: [Currency!]! @authenticated
-  currency(id: String!): Currency @authenticated
+  currency(code: String!): Currency @authenticated
 }
 
 input CreateCurrencyInput {
@@ -23,7 +23,6 @@ input UpdateCurrencyInput {
 }
 
 type Mutation {
-  createCurrency(input: CreateCurrencyInput!): Currency! @authenticated
-  updateCurrency(id: String!, input: UpdateCurrencyInput!): Currency! @authenticated
-  deleteCurrency(id: String!): Currency! @authenticated
+  favoriteCurrency(code: String!): Currency! @authenticated
+  unfavoriteCurrency(code: String!): Currency! @authenticated
 }

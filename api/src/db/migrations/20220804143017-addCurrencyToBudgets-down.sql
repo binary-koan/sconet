@@ -1,2 +1,2 @@
 ALTER TABLE
-  "categories" DROP COLUMN "budgetCurrencyId";
+  "categories" DROP COLUMN "budgetCurrencyCode";

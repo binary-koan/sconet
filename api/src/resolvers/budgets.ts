@@ -1,41 +1,39 @@
-import { chunk, keyBy, orderBy, sumBy, uniq } from "lodash"
+import { chunk, keyBy, orderBy, uniq } from "lodash"
+import { Currencies, Currency, Money } from "ts-money"
 import { CategoryRecord } from "../db/records/category"
-import { CurrencyRecord } from "../db/records/currency"
 import { categoriesRepo } from "../db/repos/categoriesRepo"
-import { currenciesRepo } from "../db/repos/currenciesRepo"
 import { transactionsRepo } from "../db/repos/transactionsRepo"
 import { QueryResolvers, Resolvers } from "../resolvers-types"
+import { loadTransactionCurrencyValues } from "../utils/currencyValuesLoader"
 
 export interface MonthBudgetResult {
   id: string
   year: number
   month: number
-  income: number
-  totalSpending: number
-  currency: CurrencyRecord
+  income: Money
+  totalSpending: Money
   regularCategories: CategoryBudgetGroupResult
   irregularCategories: CategoryBudgetGroupResult
 }
 
 export interface CategoryBudgetGroupResult {
-  currency: CurrencyRecord
+  currency: Currency
   categories: CategoryBudgetResult[]
 }
 export interface CategoryBudgetResult {
   id: string
   category: CategoryRecord | null
-  amountSpent: number
-  currency: CurrencyRecord
+  amountSpent: Money
 }
 
 // TODO: Optimise some of this nicely in SQL so it works well for larger numbers of transactions
 export const budget: QueryResolvers["budget"] = async (
   _,
-  { year, month, timezoneOffset, currencyId }
+  { year, month, timezoneOffset, currencyCode },
+  context
 ) => {
-  const currenciesById = keyBy(await currenciesRepo.findAll(), "id")
-
-  const outputCurrency = currencyId ? currenciesById[currencyId] : Object.values(currenciesById)[0]
+  const outputCurrency =
+    Currencies[currencyCode || context.currentUser!.settings.defaultCurrencyCode]
 
   const start = new Date(
     `${year}-${month.toString().padStart(2, "0")}-01T00:00:00${timezoneOffset}`
@@ -77,42 +75,34 @@ export const budget: QueryResolvers["budget"] = async (
     (id) => (id ? categoriesById[id].sortOrder : -1)
   )
 
-  const transactionValues = keyBy(
-    await transactionsRepo.findValuesInCurrency(
-      transactions.map((transaction) => transaction.id),
-      outputCurrency
-    ),
-    "id"
-  )
+  const transactionValues = (
+    (await loadTransactionCurrencyValues(transactions, context.data.currencyValues)) as Money[]
+  ).map((value, index) => ({ value, transaction: transactions[index] }))
 
   const allCategories = includedCategoryIds.map((id) => ({
     id: `${year}-${month}-${id || "uncategorized"}`,
     category: id ? categoriesById[id] : null,
-    amountSpent: Math.abs(
-      sumBy(
-        transactions.filter(
-          (transaction) => transaction.amount < 0 && transaction.categoryId === id
-        ),
-        (transaction) => transactionValues[transaction.id].value
-      )
-    ),
+    amountSpent: transactionValues
+      .filter(({ transaction }) => transaction.amount < 0 && transaction.categoryId === id)
+      .reduce((total, transaction) => total.add(transaction.value), new Money(0, outputCurrency)),
     currency: outputCurrency
   }))
+
+  const totalSpending = () => {
+    const total = transactionValues
+      .filter(({ transaction }) => transaction.amount < 0)
+      .reduce((total, transaction) => total.add(transaction.value), new Money(0, outputCurrency))
+    return new Money(Math.abs(total.amount), total.currency)
+  }
 
   return {
     id: `${year}-${month}`,
     year,
     month,
-    income: sumBy(
-      transactions.filter((transaction) => transaction.amount > 0),
-      (transaction) => transactionValues[transaction.id].value
-    ),
-    totalSpending: Math.abs(
-      sumBy(
-        transactions.filter((transaction) => transaction.amount < 0),
-        (transaction) => transactionValues[transaction.id].value
-      )
-    ),
+    income: transactionValues
+      .filter(({ transaction }) => transaction.amount > 0)
+      .reduce((total, transaction) => total.add(transaction.value), new Money(0, outputCurrency)),
+    totalSpending: totalSpending(),
     currency: outputCurrency,
     regularCategories: {
       currency: outputCurrency,
@@ -127,32 +117,27 @@ export const budget: QueryResolvers["budget"] = async (
 
 export const MonthBudget: Resolvers["MonthBudget"] = {
   id: (budget) => budget.id,
-  income: (budget) => ({ amount: budget.income, currency: budget.currency }),
+  income: (budget) => budget.income,
   month: (budget) => budget.month,
   year: (budget) => budget.year,
-  totalSpending: (budget) => ({
-    amount: budget.totalSpending,
-    currency: budget.currency
-  }),
-  difference: (budget) => ({
-    amount: budget.income - budget.totalSpending,
-    currency: budget.currency
-  }),
+  totalSpending: (budget) => budget.totalSpending,
+  difference: (budget) => budget.income.subtract(budget.totalSpending),
   regularCategories: (budget) => budget.regularCategories,
   irregularCategories: (budget) => budget.irregularCategories
 }
 
 export const CategoryBudgetGroup: Resolvers["CategoryBudgetGroup"] = {
-  totalSpending: (group) => ({
-    amount: sumBy(group.categories, (category) => category.amountSpent),
-    currency: group.currency
-  }),
+  totalSpending: (group) =>
+    group.categories.reduce(
+      (total, category) => total.add(category.amountSpent),
+      new Money(0, group.currency)
+    ),
   categories: (group) => group.categories
 }
 
 export const CategoryBudget: Resolvers["CategoryBudget"] = {
   id: (budget) => budget.id,
-  amountSpent: (budget) => ({ amount: budget.amountSpent, currency: budget.currency }),
+  amountSpent: (budget) => budget.amountSpent,
   categoryId: (budget) => budget.category?.id || null,
   category: (budget) => budget.category
 }

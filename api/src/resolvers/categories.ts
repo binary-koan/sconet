@@ -1,7 +1,7 @@
+import { Currencies, Money } from "ts-money"
 import { CategoryRecord } from "../db/records/category"
 import { categoriesRepo } from "../db/repos/categoriesRepo"
 import { MutationResolvers, QueryResolvers, Resolvers } from "../resolvers-types"
-import { convertCurrency } from "./money"
 
 export const categories: QueryResolvers["categories"] = () => {
   return categoriesRepo.findAll()
@@ -60,18 +60,16 @@ export const Category: Resolvers["Category"] = {
   color: (category) => category.color,
   icon: (category) => category.icon,
 
-  budget: async (category, { currencyId }, context) =>
-    category.budget != null && category.budgetCurrencyId
-      ? convertCurrency({
-          amount: category.budget,
-          currency: await context.data.currency.load(category.budgetCurrencyId),
-          target: currencyId ? { currencyId } : undefined,
-          context
+  budget: async (category, { currencyCode, date }, context) =>
+    category.budget != null && category.budgetCurrencyCode
+      ? context.data.currencyValues.load({
+          original: new Money(category.budget, category.budgetCurrencyCode),
+          targetCurrencyCode: currencyCode || category.budgetCurrencyCode,
+          date: date || new Date()
         })
       : null,
-
   budgetCurrency: (category, _, context) =>
-    category.budgetCurrencyId ? context.data.currency.load(category.budgetCurrencyId) : null,
+    category.budgetCurrencyCode ? Currencies[category.budgetCurrencyCode] : null,
 
   isRegular: (category) => category.isRegular,
   sortOrder: (category) => category.sortOrder,

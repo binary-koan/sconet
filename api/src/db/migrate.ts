@@ -1,5 +1,5 @@
 import fs from "fs"
-import { orderBy } from "lodash"
+import { groupBy, mapValues, orderBy } from "lodash"
 import { runDbSession } from "../utils/runDbSession"
 import { sql } from "./database"
 
@@ -18,6 +18,8 @@ export async function migrate() {
     for (const { upPath, version, name } of migrationsToRun) {
       await runMigration(upPath, version, name)
     }
+
+    await writeSchema()
   } else {
     console.log("Nothing to run")
   }
@@ -40,6 +42,7 @@ export async function rollback() {
   }
 
   await rollbackMigration(downPath, version, name)
+  await writeSchema()
 }
 
 export async function up(version: string) {
@@ -50,6 +53,7 @@ export async function up(version: string) {
   }
 
   await runMigration(upPath, version, name)
+  await writeSchema()
 }
 
 export async function down(version: string) {
@@ -60,6 +64,7 @@ export async function down(version: string) {
   }
 
   await rollbackMigration(downPath, version, name)
+  await writeSchema()
 }
 
 export async function createMigration(name: string) {
@@ -154,4 +159,26 @@ function listMigrationFiles() {
 
 async function getCompletedMigrations() {
   return (await sql`SELECT * FROM "schemaMigrations"`).map((row) => row.version as string)
+}
+
+async function writeSchema() {
+  const schema = await sql<
+    Array<{
+      table_name: string
+      column_name: string
+      data_type: string
+      is_nullable: boolean
+      column_default: any
+    }>
+  >`
+    SELECT table_name, column_name, data_type, is_nullable, column_default
+    FROM information_schema.columns
+    WHERE table_schema = 'public'
+  `
+
+  const formatted = mapValues(groupBy(schema, "table_name"), (columns) =>
+    columns.map(({ table_name, ...column }) => column)
+  )
+
+  await Bun.write(`${BASE_PATH}/schema.json`, JSON.stringify(formatted, null, 2))
 }

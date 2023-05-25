@@ -4,7 +4,7 @@ type Category {
   color: String!
   icon: String!
   isRegular: Boolean!
-  budget(currencyId: String): Money
+  budget(currencyCode: String, date: Date): Money
   budgetCurrency: Currency
   sortOrder: Int
   createdAt: DateTime!
@@ -21,7 +21,7 @@ input CreateCategoryInput {
   color: String!
   icon: String!
   isRegular: Boolean!
-  budgetCurrencyId: String
+  budgetCurrencyCode: String
   budget: Int
 }
 
@@ -30,7 +30,7 @@ input UpdateCategoryInput {
   color: String
   icon: String
   isRegular: Boolean
-  budgetCurrencyId: String
+  budgetCurrencyCode: String
   budget: Int
 }
 

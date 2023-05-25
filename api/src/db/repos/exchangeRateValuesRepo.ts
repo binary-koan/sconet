@@ -1,11 +1,11 @@
-import { DailyExchangeRate } from "../../resolvers-types"
 import { sql } from "../database"
+import { DailyExchangeRateRecord } from "../records/dailyExchangeRate"
 import { ExchangeRateValueRecord } from "../records/exchangeRateValue"
 import { createRepo } from "../repo"
 
 interface ExchangeRateValueMethods {
   findForRate: (
-    dailyExchangeRate: Pick<DailyExchangeRate, "id">
+    dailyExchangeRate: Pick<DailyExchangeRateRecord, "id">
   ) => Promise<ExchangeRateValueRecord[]>
   findForRates: (ids: string[]) => Promise<ExchangeRateValueRecord[]>
 }

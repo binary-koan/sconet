@@ -1,5 +1,5 @@
-import { mapSchema, getDirective, MapperKind } from "@graphql-tools/utils"
-import { defaultFieldResolver, GraphQLError, GraphQLSchema } from "graphql"
+import { MapperKind, getDirective, mapSchema } from "@graphql-tools/utils"
+import { GraphQLError, GraphQLSchema, defaultFieldResolver } from "graphql"
 import { Context } from "../../context"
 
 const DIRECTIVE_NAME = "authenticated"
@@ -16,7 +16,7 @@ export function applyAuthenticatedDirective(schema: GraphQLSchema) {
       const { resolve = defaultFieldResolver } = fieldConfig
 
       fieldConfig.resolve = function (source, args, context: Context, info) {
-        if (!context.auth?.userId) {
+        if (!context.currentUser) {
           throw new GraphQLError("Not logged in")
         }
 

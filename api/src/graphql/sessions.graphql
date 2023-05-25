@@ -4,7 +4,7 @@ type Mutation {
   generateCredentialLoginOptions(userId: String!): JSON!
   loginViaCredential(response: JSON!): String!
 
-  changePassword(oldPassword: String!, newPassword: String!): Boolean!
+  changePassword(oldPassword: String!, newPassword: String!): Boolean! @authenticated
 
   generateNewToken: String! @authenticated
 

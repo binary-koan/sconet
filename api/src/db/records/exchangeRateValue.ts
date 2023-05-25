@@ -1,7 +1,7 @@
 export interface ExchangeRateValueRecord {
   id: string
   dailyExchangeRateId: string
-  toCurrencyId: string
+  toCurrencyCode: string
   rate: number
 
   createdAt: Date

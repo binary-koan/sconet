@@ -1,6 +1,6 @@
 import { omit, pick, sum } from "lodash"
+import { Currencies, Money } from "ts-money"
 import { TransactionRecord } from "../db/records/transaction"
-import { dailyExchangeRatesRepo } from "../db/repos/dailyExchangeRatesRepo"
 import { transactionsRepo } from "../db/repos/transactionsRepo"
 import {
   MutationResolvers,
@@ -8,7 +8,8 @@ import {
   Resolvers,
   UpdateTransactionInput
 } from "../resolvers-types"
-import { convertCurrency, sumCurrency } from "./money"
+import { loadTransactionCurrencyValue } from "../utils/currencyValuesLoader"
+import { sumCurrency } from "./money"
 
 export interface DailyTransactionsResult {
   date: Date
@@ -51,8 +52,6 @@ export const createTransaction: MutationResolvers["createTransaction"] = async (
   return await transactionsRepo.insert({
     ...input,
     date: input.date || new Date(),
-    dailyExchangeRateId: (await dailyExchangeRatesRepo.findClosest(input.date, input.currencyId))!
-      .id,
     includeInReports: input.includeInReports || true,
     originalMemo: input.memo,
     remoteId: null,
@@ -70,7 +69,7 @@ export const updateTransaction: MutationResolvers["updateTransaction"] = async (
     throw new Error("Not found")
   }
 
-  const parentAttributes = ["date", "accountId", "currencyId"]
+  const parentAttributes = ["date", "accountId", "currencyCode"]
 
   let updateInput: Partial<UpdateTransactionInput> = input
   if (transaction.splitFromId) {
@@ -81,19 +80,10 @@ export const updateTransaction: MutationResolvers["updateTransaction"] = async (
     ...updateInput,
     memo: updateInput.memo ?? undefined,
     amount: updateInput.amount ?? undefined,
-    currencyId: updateInput.currencyId ?? undefined,
+    currencyCode: updateInput.currencyCode ?? undefined,
     date: updateInput.date ?? undefined,
     includeInReports: updateInput.includeInReports ?? undefined,
-    accountId: updateInput.accountId ?? undefined,
-    dailyExchangeRateId:
-      updateInput.date || updateInput.currencyId
-        ? (
-            await dailyExchangeRatesRepo.findClosest(
-              updateInput.date || transaction.date,
-              updateInput.currencyId || transaction.currencyId
-            )
-          )?.id ?? undefined
-        : undefined
+    accountId: updateInput.accountId ?? undefined
   }
 
   await transactionsRepo.updateOne(id, updates)
@@ -157,27 +147,16 @@ export const splitTransaction: MutationResolvers["splitTransaction"] = async (
 export const Transaction: Resolvers["Transaction"] = {
   id: (transaction) => transaction.id,
 
-  amount: async (transaction, { currencyId }, context) =>
-    convertCurrency({
-      amount: transaction.amount,
-      currency: await context.data.currency.load(transaction.currencyId),
-      target: currencyId
-        ? {
-            currencyId,
-            date: transaction.date
-          }
-        : undefined,
-      context
-    }),
+  amount: async (transaction, { currencyCode }, context) =>
+    loadTransactionCurrencyValue(transaction, context.data.currencyValues),
 
   date: (transaction) => transaction.date,
   memo: (transaction) => transaction.memo,
   originalMemo: (transaction) => transaction.originalMemo,
   includeInReports: (transaction) => transaction.includeInReports,
 
-  currencyId: (transaction) => transaction.currencyId,
-  currency: async (transaction, _, context) =>
-    await context.data.currency.load(transaction.currencyId),
+  currencyCode: (transaction) => transaction.currencyCode,
+  currency: async (transaction) => Currencies[transaction.currencyCode],
 
   categoryId: (transaction) => transaction.categoryId,
   category: async (transaction, _, context) =>
@@ -204,15 +183,14 @@ export const PaginatedTransactions: Resolvers["PaginatedTransactions"] = {
 export const DailyTransactions: Resolvers["DailyTransactions"] = {
   date: (result) => result.date,
 
-  totalSpent: async (result, { currencyId }, context) =>
+  totalSpent: async (result, { currencyCode }, context) =>
     sumCurrency({
       amounts: await Promise.all(
-        result.transactions.map(async (transaction) => ({
-          amount: transaction.amount,
-          currency: await context.data.currency.load(transaction.currencyId)
-        }))
+        result.transactions.map(
+          async (transaction) => new Money(transaction.amount, transaction.currencyCode)
+        )
       ),
-      target: currencyId ? { currencyId, date: result.date } : undefined,
+      target: currencyCode ? { currencyCode, date: result.date } : undefined,
       context
     }),
 

@@ -1,86 +1,58 @@
-import { insertExchangeRate } from "../db/queries/exchangeRate/insertExchangeRate"
-import { CurrencyRecord } from "../db/records/currency"
-import { currenciesRepo } from "../db/repos/currenciesRepo"
-import { updateExchangeRates } from "../jobs/exchangeRates"
+import { difference, union } from "lodash"
+import { Currencies } from "ts-money"
+import { usersRepo } from "../db/repos/usersRepo"
 import { MutationResolvers, QueryResolvers, Resolvers } from "../resolvers-types"
 
 export const currencies: QueryResolvers["currencies"] = () => {
-  return currenciesRepo.findAll()
+  return Object.values(currencies)
 }
 
-export const currency: QueryResolvers["currency"] = async (_, { id }) => {
-  return (await currenciesRepo.get(id)) || null
+export const currency: QueryResolvers["currency"] = async (_, { code }) => {
+  return Currencies[code] || null
 }
 
-export const createCurrency: MutationResolvers["createCurrency"] = async (_, { input }) => {
-  const newCurrency = await currenciesRepo.insert(input)
-  const allCurrencies = await currenciesRepo.findAll()
+export const favoriteCurrency: MutationResolvers["favoriteCurrency"] = async (
+  _,
+  { code },
+  context
+) => {
+  await usersRepo.updateOne(context.currentUser!.id, {
+    settings: {
+      ...context.currentUser!.settings,
+      favoriteCurrencyCodes: union(context.currentUser!.settings.favoriteCurrencyCodes, [code])
+    }
+  })
 
-  await Promise.all(
-    allCurrencies.map(async (currency) => {
-      if (currency.id === newCurrency.id) return
-
-      const response = await fetch(
-        `https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/${currency.code.toLowerCase()}/${input.code.toLowerCase()}.json`
-      )
-      const data: any = await response.json()
-
-      insertExchangeRate({
-        fromCurrencyId: currency.id,
-        toCurrencyId: newCurrency.id,
-        rate: data[input.code.toLowerCase()]
-      })
-
-      insertExchangeRate({
-        fromCurrencyId: newCurrency.id,
-        toCurrencyId: currency.id,
-        rate: 1 / data[input.code.toLowerCase()]
-      })
-
-      await updateExchangeRates()
-    })
-  )
-
-  return newCurrency
+  return Currencies[code]
 }
 
-export const updateCurrency: MutationResolvers["updateCurrency"] = async (_, { id, input }) => {
-  const currency = await currenciesRepo.get(id)
+export const unfavoriteCurrency: MutationResolvers["unfavoriteCurrency"] = async (
+  _,
+  { code },
+  context
+) => {
+  await usersRepo.updateOne(context.currentUser!.id, {
+    settings: {
+      ...context.currentUser!.settings,
+      favoriteCurrencyCodes: difference(context.currentUser!.settings.favoriteCurrencyCodes, [code])
+    }
+  })
 
-  if (!currency) {
-    throw new Error("Not found")
-  }
-
-  const updates: Partial<CurrencyRecord> = input
-
-  return await currenciesRepo.updateOne(id, updates)
-}
-
-export const deleteCurrency: MutationResolvers["deleteCurrency"] = async (_, { id }) => {
-  const currency = await currenciesRepo.get(id)
-
-  if (!currency) {
-    throw new Error("Not found")
-  }
-
-  await currenciesRepo.softDelete(id)
-
-  return currency
+  return Currencies[code]
 }
 
 export const Currency: Resolvers["Currency"] = {
-  id: (currency) => currency.id,
+  id: (currency) => currency.code,
   code: (currency) => currency.code,
   symbol: (currency) => currency.symbol,
-  decimalDigits: (currency) => currency.decimalDigits,
+  decimalDigits: (currency) => currency.decimal_digits,
 
-  exchangeRate: async (currency, { toId }, context) =>
+  exchangeRate: async (currency, { toCode }, context) =>
     (
-      await context.data.exchangeRateValue.load({
-        dailyExchangeRateId: (
-          await context.data.dailyExchangeRate.load({ fromCurrencyId: currency.id })
-        ).id,
-        toCurrencyId: toId
+      await context.data.exchangeRates.load({
+        fromCurrencyCode: currency.code,
+        toCurrencyCode: toCode,
+        date: new Date()
       })
     ).rate
 }

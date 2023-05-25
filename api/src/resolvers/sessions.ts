@@ -7,11 +7,9 @@ import {
 import { GraphQLError } from "graphql"
 import { SignJWT } from "jose"
 import { isEqual } from "lodash"
-import { getUser } from "../db/queries/user/getUser"
-import { getUserByEmail } from "../db/queries/user/getUserByEmail"
-import { updateOneUser } from "../db/queries/user/updateOneUser"
 import { UserRecord } from "../db/records/user"
 import { userCredentialsRepo } from "../db/repos/userCredentialsRepo"
+import { usersRepo } from "../db/repos/usersRepo"
 import { MutationResolvers, QueryResolvers, Resolvers } from "../resolvers-types"
 import { comparePassword, hashPassword } from "../utils/scrypt"
 import { origin, rpID, rpName } from "../utils/webauthn"
@@ -25,7 +23,7 @@ export const login: MutationResolvers["login"] = async (
     throw new GraphQLError("Browser verification failed")
   }
 
-  const user = await getUserByEmail(email)
+  const user = await usersRepo.getByEmail(email)
 
   if (!user) {
     throw new GraphQLError("Invalid email or password")
@@ -43,17 +41,13 @@ export const changePassword: MutationResolvers["changePassword"] = async (
   { oldPassword, newPassword },
   context
 ) => {
-  const user = await getUser(context.auth!.userId)
-
-  if (!user) {
-    throw new GraphQLError("No such user")
-  }
-
-  if (!(await comparePassword(oldPassword, user.encryptedPassword))) {
+  if (!(await comparePassword(oldPassword, context.currentUser!.encryptedPassword))) {
     throw new GraphQLError("Invalid email or password")
   }
 
-  updateOneUser(user.id, { encryptedPassword: await hashPassword(newPassword) })
+  usersRepo.updateOne(context.currentUser!.id, {
+    encryptedPassword: await hashPassword(newPassword)
+  })
 
   return true
 }
@@ -63,13 +57,7 @@ export const generateNewToken: MutationResolvers["generateNewToken"] = async (
   _args,
   context
 ) => {
-  const user = await getUser(context.auth!.userId)
-
-  if (!user) {
-    throw new GraphQLError("No such user")
-  }
-
-  return await createToken(user)
+  return await createToken(context.currentUser!)
 }
 
 export const registerCredential: MutationResolvers["registerCredential"] = async (
@@ -77,19 +65,13 @@ export const registerCredential: MutationResolvers["registerCredential"] = async
   _args,
   context
 ) => {
-  const user = await getUser(context.auth!.userId)
-
-  if (!user) {
-    throw new GraphQLError("No such user")
-  }
-
-  const credentials = await userCredentialsRepo.findForUser(user.id)
+  const credentials = await userCredentialsRepo.findForUser(context.currentUser!.id)
 
   const options = generateRegistrationOptions({
     rpName,
     rpID,
-    userID: user.id,
-    userName: user.email,
+    userID: context.currentUser!.id,
+    userName: context.currentUser!.email,
     attestationType: "none",
     excludeCredentials: credentials.map((credential) => ({
       id: credential.credentialId,
@@ -97,29 +79,23 @@ export const registerCredential: MutationResolvers["registerCredential"] = async
     }))
   })
 
-  updateOneUser(user.id, { webauthnChallenge: options.challenge })
+  await usersRepo.updateOne(context.currentUser!.id, { webauthnChallenge: options.challenge })
 
   return options
 }
 
 export const verifyCredentialRegistration: MutationResolvers["verifyCredentialRegistration"] =
   async (_, { response, device }, context) => {
-    const user = await getUser(context.auth!.userId)
-
-    if (!user) {
-      throw new GraphQLError("No such user")
-    }
-
     const verification = await verifyRegistrationResponse({
       response,
-      expectedChallenge: user.webauthnChallenge!,
+      expectedChallenge: context.currentUser!.webauthnChallenge!,
       expectedOrigin: origin,
       expectedRPID: rpID
     })
 
     if (verification.verified && verification.registrationInfo) {
       userCredentialsRepo.insert({
-        userId: user.id,
+        userId: context.currentUser!.id,
         device,
         credentialId: verification.registrationInfo.credentialID,
         credentialPublicKey: verification.registrationInfo.credentialPublicKey,
@@ -132,7 +108,7 @@ export const verifyCredentialRegistration: MutationResolvers["verifyCredentialRe
 
 export const generateCredentialLoginOptions: MutationResolvers["generateCredentialLoginOptions"] =
   async (_, { userId }, _context) => {
-    const user = await getUser(userId)
+    const user = await usersRepo.get(userId)
 
     if (!user) {
       throw new GraphQLError("No such user")
@@ -148,7 +124,7 @@ export const generateCredentialLoginOptions: MutationResolvers["generateCredenti
       userVerification: "preferred"
     })
 
-    updateOneUser(user.id, { webauthnChallenge: options.challenge })
+    usersRepo.updateOne(user.id, { webauthnChallenge: options.challenge })
 
     // Conflicts with GraphQL JSON's special extensions field
     delete options.extensions
@@ -161,7 +137,7 @@ export const loginViaCredential: MutationResolvers["loginViaCredential"] = async
   { response },
   _context
 ) => {
-  const user = await getUser(response.response.userHandle)
+  const user = await usersRepo.get(response.response.userHandle)
 
   if (!user) {
     throw new GraphQLError("No such user")
@@ -207,13 +183,7 @@ export const deleteCredential: MutationResolvers["deleteCredential"] = async (
   { id },
   context
 ) => {
-  const user = await getUser(context.auth!.userId)
-
-  if (!user) {
-    throw new GraphQLError("No such user")
-  }
-
-  const credential = (await userCredentialsRepo.findForUser(user.id)).find(
+  const credential = (await userCredentialsRepo.findForUser(context.currentUser!.id)).find(
     (credential) => credential.id === id
   )
 
@@ -227,7 +197,7 @@ export const deleteCredential: MutationResolvers["deleteCredential"] = async (
 }
 
 export const currentUser: QueryResolvers["currentUser"] = async (_, _args, context) => {
-  return (context.auth?.userId && (await getUser(context.auth.userId))) || null
+  return context.currentUser || null
 }
 
 export const CurrentUser: Resolvers["CurrentUser"] = {
