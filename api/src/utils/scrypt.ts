@@ -13,8 +13,8 @@ export function hashPassword(password: string, existingSalt?: string) {
 }
 
 export async function comparePassword(password: string, encrypted: string) {
-  const [salt, key] = encrypted.split(":")
-  const keyToCompare = await hashPassword(password, salt)
+  const [salt, _] = encrypted.split(":")
+  const comparison = await hashPassword(password, salt)
 
-  return key === keyToCompare
+  return encrypted === comparison
 }
