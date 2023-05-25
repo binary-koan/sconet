@@ -1,5 +1,6 @@
 import { omit, pick, sum } from "lodash"
 import { Currencies, Money } from "ts-money"
+import { AuthenticatedContext, Context } from "../context"
 import { TransactionRecord } from "../db/records/transaction"
 import { transactionsRepo } from "../db/repos/transactionsRepo"
 import {
@@ -190,7 +191,7 @@ export const DailyTransactions: Resolvers["DailyTransactions"] = {
         )
       ),
       target: currencyCode ? { currencyCode, date: result.date } : undefined,
-      context
+      context: context as AuthenticatedContext<Context>
     }),
 
   transactions: (result) => result.transactions

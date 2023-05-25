@@ -10,6 +10,7 @@ import { EditAccountRoute } from "./routes/accounts/EditAccountRoute"
 import { NewAccountRoute } from "./routes/accounts/NewAccountRoute"
 import { EditCategoryRoute } from "./routes/categories/EditCategoryRoute"
 import { NewCategoryRoute } from "./routes/categories/NewCategoryRoute"
+import { CurrenciesRoute } from "./routes/settings/CurrenciesRoute"
 import { EditTransactionRoute } from "./routes/transactions/EditTransactionRoute"
 import { ShowTransactionRoute } from "./routes/transactions/ShowTransactionRoute"
 import { TransactionsCalendarRoute } from "./routes/transactions/TransactionsCalendarRoute"
@@ -57,6 +58,7 @@ const App: Component = () => {
           <EditTransactionRoute />
 
           <SettingsRoute />
+          <CurrenciesRoute />
 
           <NewCategoryRoute />
           <EditCategoryRoute />
@@ -66,7 +68,15 @@ const App: Component = () => {
 
           <BudgetsRoute />
 
-          <Route path="/*all" element={<div>Not found</div>} />
+          <Route
+            path="/*all"
+            element={
+              <div class="flex min-h-[50vh] flex-col items-center justify-center text-center text-gray-600">
+                <div class="mb-8 text-7xl">404</div>
+                Couldn't find that page.
+              </div>
+            }
+          />
         </LoggedIn>
       </Routes>
     </>

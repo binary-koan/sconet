@@ -10,7 +10,7 @@ import { isEqual } from "lodash"
 import { UserRecord } from "../db/records/user"
 import { userCredentialsRepo } from "../db/repos/userCredentialsRepo"
 import { usersRepo } from "../db/repos/usersRepo"
-import { MutationResolvers, QueryResolvers, Resolvers } from "../resolvers-types"
+import { MutationResolvers } from "../resolvers-types"
 import { comparePassword, hashPassword } from "../utils/scrypt"
 import { origin, rpID, rpName } from "../utils/webauthn"
 
@@ -41,11 +41,11 @@ export const changePassword: MutationResolvers["changePassword"] = async (
   { oldPassword, newPassword },
   context
 ) => {
-  if (!(await comparePassword(oldPassword, context.currentUser!.encryptedPassword))) {
+  if (!(await comparePassword(oldPassword, context.currentUser.encryptedPassword))) {
     throw new GraphQLError("Invalid email or password")
   }
 
-  usersRepo.updateOne(context.currentUser!.id, {
+  usersRepo.updateOne(context.currentUser.id, {
     encryptedPassword: await hashPassword(newPassword)
   })
 
@@ -57,7 +57,7 @@ export const generateNewToken: MutationResolvers["generateNewToken"] = async (
   _args,
   context
 ) => {
-  return await createToken(context.currentUser!)
+  return await createToken(context.currentUser)
 }
 
 export const registerCredential: MutationResolvers["registerCredential"] = async (
@@ -65,13 +65,13 @@ export const registerCredential: MutationResolvers["registerCredential"] = async
   _args,
   context
 ) => {
-  const credentials = await userCredentialsRepo.findForUser(context.currentUser!.id)
+  const credentials = await userCredentialsRepo.findForUser(context.currentUser.id)
 
   const options = generateRegistrationOptions({
     rpName,
     rpID,
-    userID: context.currentUser!.id,
-    userName: context.currentUser!.email,
+    userID: context.currentUser.id,
+    userName: context.currentUser.email,
     attestationType: "none",
     excludeCredentials: credentials.map((credential) => ({
       id: credential.credentialId,
@@ -79,7 +79,7 @@ export const registerCredential: MutationResolvers["registerCredential"] = async
     }))
   })
 
-  await usersRepo.updateOne(context.currentUser!.id, { webauthnChallenge: options.challenge })
+  await usersRepo.updateOne(context.currentUser.id, { webauthnChallenge: options.challenge })
 
   return options
 }
@@ -88,14 +88,14 @@ export const verifyCredentialRegistration: MutationResolvers["verifyCredentialRe
   async (_, { response, device }, context) => {
     const verification = await verifyRegistrationResponse({
       response,
-      expectedChallenge: context.currentUser!.webauthnChallenge!,
+      expectedChallenge: context.currentUser.webauthnChallenge!,
       expectedOrigin: origin,
       expectedRPID: rpID
     })
 
     if (verification.verified && verification.registrationInfo) {
       userCredentialsRepo.insert({
-        userId: context.currentUser!.id,
+        userId: context.currentUser.id,
         device,
         credentialId: verification.registrationInfo.credentialID,
         credentialPublicKey: verification.registrationInfo.credentialPublicKey,
@@ -183,7 +183,7 @@ export const deleteCredential: MutationResolvers["deleteCredential"] = async (
   { id },
   context
 ) => {
-  const credential = (await userCredentialsRepo.findForUser(context.currentUser!.id)).find(
+  const credential = (await userCredentialsRepo.findForUser(context.currentUser.id)).find(
     (credential) => credential.id === id
   )
 
@@ -194,22 +194,6 @@ export const deleteCredential: MutationResolvers["deleteCredential"] = async (
   userCredentialsRepo.softDelete(credential.id)
 
   return credential
-}
-
-export const currentUser: QueryResolvers["currentUser"] = async (_, _args, context) => {
-  return context.currentUser || null
-}
-
-export const CurrentUser: Resolvers["CurrentUser"] = {
-  id: (user) => user.id,
-  email: (user) => user.email,
-  registeredCredentials: (user) => userCredentialsRepo.findForUser(user.id)
-}
-
-export const UserCredential: Resolvers["UserCredential"] = {
-  id: (credential) => credential.id,
-  device: (credential) => credential.device,
-  createdAt: (credential) => credential.createdAt
 }
 
 const createToken = (user: UserRecord) => {

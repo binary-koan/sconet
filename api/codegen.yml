@@ -8,6 +8,8 @@ generates:
     config:
       avoidOptionals: true
       contextType: ./context#Context
+      directiveContextTypes:
+        - authenticated#./context#AuthenticatedContext
       scalars:
         DateTime: Date
         Date: Date
@@ -19,8 +21,6 @@ generates:
         Currency: ts-money#Currency as CurrencyValue
         Transaction: ./db/records/transaction#TransactionRecord
         Account: ./db/records/account#AccountRecord
-        DailyExchangeRate: ./db/records/dailyExchangeRate#DailyExchangeRateRecord
-        ExchangeRateValue: ./db/records/exchangeRateValue#ExchangeRateValueRecord
         PaginatedTransactions: ./db/queries/transaction/filterTransactions#FindTransactionsResult
         DailyTransactions: ./resolvers/transactions#DailyTransactionsResult
         MonthBudget: ./resolvers/budgets#MonthBudgetResult

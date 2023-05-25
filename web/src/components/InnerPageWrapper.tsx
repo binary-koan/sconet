@@ -9,6 +9,7 @@ const InnerPageWrapper: Component<{
   backLink: string
   children: JSX.Element
   actions?: JSX.Element
+  contentBackground?: boolean
 }> = (props) => {
   return (
     <>
@@ -21,7 +22,13 @@ const InnerPageWrapper: Component<{
           <div class="ml-auto">{props.actions}</div>
         </Show>
       </PageHeader>
-      <div class="bg-white p-4 shadow-sm lg:rounded lg:p-6">{props.children}</div>
+      <div
+        classList={{
+          "p-4 shadow-sm lg:rounded lg:p-6 bg-white": props.contentBackground !== false
+        }}
+      >
+        {props.children}
+      </div>
     </>
   )
 }

@@ -1,7 +1,7 @@
 import { GraphQLError } from "graphql"
 import { isError } from "lodash"
 import { Money as MoneyValue } from "ts-money"
-import { Context } from "../context"
+import { AuthenticatedContext, Context } from "../context"
 import { Resolvers } from "../resolvers-types"
 
 export const sumCurrency = async ({
@@ -11,10 +11,10 @@ export const sumCurrency = async ({
 }: {
   amounts: MoneyValue[]
   target?: { currencyCode: string; date?: Date } | null
-  context: Context
+  context: AuthenticatedContext<Context>
 }): Promise<MoneyValue> => {
   const targetCurrencyCode =
-    target?.currencyCode || context.currentUser!.settings.defaultCurrencyCode
+    target?.currencyCode || context.currentUser.settings.defaultCurrencyCode
 
   if (!amounts.length) {
     return new MoneyValue(0, targetCurrencyCode)

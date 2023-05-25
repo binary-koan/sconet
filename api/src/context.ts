@@ -28,6 +28,8 @@ export interface Context {
   }
 }
 
+export type AuthenticatedContext<Context> = Context & { currentUser: UserRecord }
+
 export async function buildContext(request: Request): Promise<Context> {
   const currentUser = await getCurrentUser(request)
   const exchangeRates = exchangeRatesLoader()

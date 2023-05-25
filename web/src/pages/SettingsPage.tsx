@@ -10,14 +10,12 @@ import Accounts from "../components/accounts/AccountsList"
 import { Button, LinkButton } from "../components/base/Button"
 import { PageHeader } from "../components/base/PageHeader"
 import CategoriesList from "../components/categories/Categories"
-import Currencies from "../components/currencies/Currencies"
+import { CurrentUserProfile } from "../components/user/CurrentUserProfile"
 import {
   AccountsQuery,
   AccountsQueryVariables,
   CategoriesQuery,
   CategoriesQueryVariables,
-  CurrenciesQuery,
-  CurrenciesQueryVariables,
   CurrentUserQuery,
   CurrentUserQueryVariables
 } from "../graphql-types"
@@ -31,7 +29,6 @@ export interface SettingsPageData {
   categories: QueryResource<CategoriesQuery, CategoriesQueryVariables>
   accounts: QueryResource<AccountsQuery, AccountsQueryVariables>
   currentUser: QueryResource<CurrentUserQuery, CurrentUserQueryVariables>
-  currencies: QueryResource<CurrenciesQuery, CurrenciesQueryVariables>
 }
 
 const deviceDetector = new DeviceDetector()
@@ -95,7 +92,7 @@ const SettingsPage: Component = () => {
           Sign Out
         </Button>
       </PageHeader>
-      <div class="bg-white py-2 px-4 shadow-sm">{data.currentUser()?.currentUser?.email}</div>
+      <Cell data={data.currentUser} success={CurrentUserProfile} />
 
       <PageHeader size="lg">
         Login Methods
@@ -146,10 +143,6 @@ const SettingsPage: Component = () => {
       </PageHeader>
 
       <Cell data={data.accounts} success={Accounts} />
-
-      <PageHeader size="lg">Currencies</PageHeader>
-
-      <Cell data={data.currencies} success={Currencies} />
     </>
   )
 }

@@ -21,8 +21,3 @@ input UpdateCurrencyInput {
   symbol: String!
   decimalDigits: Int!
 }
-
-type Mutation {
-  favoriteCurrency(code: String!): Currency! @authenticated
-  unfavoriteCurrency(code: String!): Currency! @authenticated
-}

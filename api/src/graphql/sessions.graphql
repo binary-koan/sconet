@@ -13,19 +13,3 @@ type Mutation {
 
   deleteCredential(id: String!): UserCredential! @authenticated
 }
-
-type Query {
-  currentUser: CurrentUser
-}
-
-type CurrentUser {
-  id: String!
-  email: String!
-  registeredCredentials: [UserCredential!]!
-}
-
-type UserCredential {
-  id: String!
-  device: String!
-  createdAt: Date!
-}

@@ -33,7 +33,7 @@ export const budget: QueryResolvers["budget"] = async (
   context
 ) => {
   const outputCurrency =
-    Currencies[currencyCode || context.currentUser!.settings.defaultCurrencyCode]
+    Currencies[currencyCode || context.currentUser.settings.defaultCurrencyCode]
 
   const start = new Date(
     `${year}-${month.toString().padStart(2, "0")}-01T00:00:00${timezoneOffset}`

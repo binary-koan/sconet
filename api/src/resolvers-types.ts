@@ -3,14 +3,12 @@ import { CategoryRecord } from './db/records/category';
 import { Currency as CurrencyValue, Money as MoneyValue } from 'ts-money';
 import { TransactionRecord } from './db/records/transaction';
 import { AccountRecord } from './db/records/account';
-import { DailyExchangeRateRecord } from './db/records/dailyExchangeRate';
-import { ExchangeRateValueRecord } from './db/records/exchangeRateValue';
 import { FindTransactionsResult } from './db/queries/transaction/filterTransactions';
 import { DailyTransactionsResult } from './resolvers/transactions';
 import { MonthBudgetResult, CategoryBudgetGroupResult, CategoryBudgetResult } from './resolvers/budgets';
 import { UserRecord } from './db/records/user';
 import { UserCredentialRecord } from './db/records/userCredential';
-import { Context } from './context';
+import { Context, AuthenticatedContext } from './context';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -117,7 +115,9 @@ export type CurrencyExchangeRateArgs = {
 
 export type CurrentUser = {
   __typename?: 'CurrentUser';
+  defaultCurrency: Currency;
   email: Scalars['String'];
+  favoriteCurrencies: Array<Currency>;
   id: Scalars['String'];
   registeredCredentials: Array<UserCredential>;
 };
@@ -164,15 +164,16 @@ export type Mutation = {
   deleteCategory: Category;
   deleteCredential: UserCredential;
   deleteTransaction: Transaction;
-  favoriteCurrency: Currency;
+  favoriteCurrency: CurrentUser;
   generateCredentialLoginOptions: Scalars['JSON'];
   generateNewToken: Scalars['String'];
   login: Scalars['String'];
   loginViaCredential: Scalars['String'];
   registerCredential: Scalars['JSON'];
   reorderCategories: Array<Category>;
+  setDefaultCurrency: CurrentUser;
   splitTransaction: Transaction;
-  unfavoriteCurrency: Currency;
+  unfavoriteCurrency: CurrentUser;
   updateAccount: Account;
   updateCategory: Category;
   updateTransaction: Transaction;
@@ -222,7 +223,7 @@ export type MutationDeleteTransactionArgs = {
 
 
 export type MutationFavoriteCurrencyArgs = {
-  code: Scalars['String'];
+  code: Scalars['CurrencyCode'];
 };
 
 
@@ -248,6 +249,11 @@ export type MutationReorderCategoriesArgs = {
 };
 
 
+export type MutationSetDefaultCurrencyArgs = {
+  code: Scalars['CurrencyCode'];
+};
+
+
 export type MutationSplitTransactionArgs = {
   id: Scalars['String'];
   splits: Array<SplitTransactionItem>;
@@ -255,7 +261,7 @@ export type MutationSplitTransactionArgs = {
 
 
 export type MutationUnfavoriteCurrencyArgs = {
-  code: Scalars['String'];
+  code: Scalars['CurrencyCode'];
 };
 
 
@@ -612,7 +618,9 @@ export interface CurrencyCodeScalarConfig extends GraphQLScalarTypeConfig<Resolv
 }
 
 export type CurrentUserResolvers<ContextType = Context, ParentType extends ResolversParentTypes['CurrentUser'] = ResolversParentTypes['CurrentUser']> = {
+  defaultCurrency: Resolver<ResolversTypes['Currency'], ParentType, ContextType>;
   email: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  favoriteCurrencies: Resolver<Array<ResolversTypes['Currency']>, ParentType, ContextType>;
   id: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   registeredCredentials: Resolver<Array<ResolversTypes['UserCredential']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -658,27 +666,28 @@ export type MonthBudgetResolvers<ContextType = Context, ParentType extends Resol
 };
 
 export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  changePassword: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationChangePasswordArgs, 'newPassword' | 'oldPassword'>>;
-  createAccount: Resolver<ResolversTypes['Account'], ParentType, ContextType, RequireFields<MutationCreateAccountArgs, 'input'>>;
-  createCategory: Resolver<ResolversTypes['Category'], ParentType, ContextType, RequireFields<MutationCreateCategoryArgs, 'input'>>;
-  createTransaction: Resolver<ResolversTypes['Transaction'], ParentType, ContextType, RequireFields<MutationCreateTransactionArgs, 'input'>>;
-  deleteAccount: Resolver<ResolversTypes['Account'], ParentType, ContextType, RequireFields<MutationDeleteAccountArgs, 'id'>>;
-  deleteCategory: Resolver<ResolversTypes['Category'], ParentType, ContextType, RequireFields<MutationDeleteCategoryArgs, 'id'>>;
-  deleteCredential: Resolver<ResolversTypes['UserCredential'], ParentType, ContextType, RequireFields<MutationDeleteCredentialArgs, 'id'>>;
-  deleteTransaction: Resolver<ResolversTypes['Transaction'], ParentType, ContextType, RequireFields<MutationDeleteTransactionArgs, 'id'>>;
-  favoriteCurrency: Resolver<ResolversTypes['Currency'], ParentType, ContextType, RequireFields<MutationFavoriteCurrencyArgs, 'code'>>;
+  changePassword: Resolver<ResolversTypes['Boolean'], ParentType, AuthenticatedContext<ContextType>, RequireFields<MutationChangePasswordArgs, 'newPassword' | 'oldPassword'>>;
+  createAccount: Resolver<ResolversTypes['Account'], ParentType, AuthenticatedContext<ContextType>, RequireFields<MutationCreateAccountArgs, 'input'>>;
+  createCategory: Resolver<ResolversTypes['Category'], ParentType, AuthenticatedContext<ContextType>, RequireFields<MutationCreateCategoryArgs, 'input'>>;
+  createTransaction: Resolver<ResolversTypes['Transaction'], ParentType, AuthenticatedContext<ContextType>, RequireFields<MutationCreateTransactionArgs, 'input'>>;
+  deleteAccount: Resolver<ResolversTypes['Account'], ParentType, AuthenticatedContext<ContextType>, RequireFields<MutationDeleteAccountArgs, 'id'>>;
+  deleteCategory: Resolver<ResolversTypes['Category'], ParentType, AuthenticatedContext<ContextType>, RequireFields<MutationDeleteCategoryArgs, 'id'>>;
+  deleteCredential: Resolver<ResolversTypes['UserCredential'], ParentType, AuthenticatedContext<ContextType>, RequireFields<MutationDeleteCredentialArgs, 'id'>>;
+  deleteTransaction: Resolver<ResolversTypes['Transaction'], ParentType, AuthenticatedContext<ContextType>, RequireFields<MutationDeleteTransactionArgs, 'id'>>;
+  favoriteCurrency: Resolver<ResolversTypes['CurrentUser'], ParentType, AuthenticatedContext<ContextType>, RequireFields<MutationFavoriteCurrencyArgs, 'code'>>;
   generateCredentialLoginOptions: Resolver<ResolversTypes['JSON'], ParentType, ContextType, RequireFields<MutationGenerateCredentialLoginOptionsArgs, 'userId'>>;
-  generateNewToken: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  generateNewToken: Resolver<ResolversTypes['String'], ParentType, AuthenticatedContext<ContextType>>;
   login: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'email' | 'password' | 'turnstileToken'>>;
   loginViaCredential: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationLoginViaCredentialArgs, 'response'>>;
-  registerCredential: Resolver<ResolversTypes['JSON'], ParentType, ContextType>;
-  reorderCategories: Resolver<Array<ResolversTypes['Category']>, ParentType, ContextType, RequireFields<MutationReorderCategoriesArgs, 'orderedIds'>>;
-  splitTransaction: Resolver<ResolversTypes['Transaction'], ParentType, ContextType, RequireFields<MutationSplitTransactionArgs, 'id' | 'splits'>>;
-  unfavoriteCurrency: Resolver<ResolversTypes['Currency'], ParentType, ContextType, RequireFields<MutationUnfavoriteCurrencyArgs, 'code'>>;
-  updateAccount: Resolver<ResolversTypes['Account'], ParentType, ContextType, RequireFields<MutationUpdateAccountArgs, 'id' | 'input'>>;
-  updateCategory: Resolver<ResolversTypes['Category'], ParentType, ContextType, RequireFields<MutationUpdateCategoryArgs, 'id' | 'input'>>;
-  updateTransaction: Resolver<ResolversTypes['Transaction'], ParentType, ContextType, RequireFields<MutationUpdateTransactionArgs, 'id' | 'input'>>;
-  verifyCredentialRegistration: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationVerifyCredentialRegistrationArgs, 'device' | 'response'>>;
+  registerCredential: Resolver<ResolversTypes['JSON'], ParentType, AuthenticatedContext<ContextType>>;
+  reorderCategories: Resolver<Array<ResolversTypes['Category']>, ParentType, AuthenticatedContext<ContextType>, RequireFields<MutationReorderCategoriesArgs, 'orderedIds'>>;
+  setDefaultCurrency: Resolver<ResolversTypes['CurrentUser'], ParentType, AuthenticatedContext<ContextType>, RequireFields<MutationSetDefaultCurrencyArgs, 'code'>>;
+  splitTransaction: Resolver<ResolversTypes['Transaction'], ParentType, AuthenticatedContext<ContextType>, RequireFields<MutationSplitTransactionArgs, 'id' | 'splits'>>;
+  unfavoriteCurrency: Resolver<ResolversTypes['CurrentUser'], ParentType, AuthenticatedContext<ContextType>, RequireFields<MutationUnfavoriteCurrencyArgs, 'code'>>;
+  updateAccount: Resolver<ResolversTypes['Account'], ParentType, AuthenticatedContext<ContextType>, RequireFields<MutationUpdateAccountArgs, 'id' | 'input'>>;
+  updateCategory: Resolver<ResolversTypes['Category'], ParentType, AuthenticatedContext<ContextType>, RequireFields<MutationUpdateCategoryArgs, 'id' | 'input'>>;
+  updateTransaction: Resolver<ResolversTypes['Transaction'], ParentType, AuthenticatedContext<ContextType>, RequireFields<MutationUpdateTransactionArgs, 'id' | 'input'>>;
+  verifyCredentialRegistration: Resolver<ResolversTypes['Boolean'], ParentType, AuthenticatedContext<ContextType>, RequireFields<MutationVerifyCredentialRegistrationArgs, 'device' | 'response'>>;
 };
 
 export type PaginatedTransactionsResolvers<ContextType = Context, ParentType extends ResolversParentTypes['PaginatedTransactions'] = ResolversParentTypes['PaginatedTransactions']> = {
@@ -689,17 +698,17 @@ export type PaginatedTransactionsResolvers<ContextType = Context, ParentType ext
 };
 
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  account: Resolver<Maybe<ResolversTypes['Account']>, ParentType, ContextType, RequireFields<QueryAccountArgs, 'id'>>;
-  accounts: Resolver<Array<ResolversTypes['Account']>, ParentType, ContextType>;
-  budget: Resolver<ResolversTypes['MonthBudget'], ParentType, ContextType, RequireFields<QueryBudgetArgs, 'month' | 'timezoneOffset' | 'year'>>;
-  categories: Resolver<Array<ResolversTypes['Category']>, ParentType, ContextType>;
-  category: Resolver<Maybe<ResolversTypes['Category']>, ParentType, ContextType, RequireFields<QueryCategoryArgs, 'id'>>;
-  currencies: Resolver<Array<ResolversTypes['Currency']>, ParentType, ContextType>;
-  currency: Resolver<Maybe<ResolversTypes['Currency']>, ParentType, ContextType, RequireFields<QueryCurrencyArgs, 'code'>>;
+  account: Resolver<Maybe<ResolversTypes['Account']>, ParentType, AuthenticatedContext<ContextType>, RequireFields<QueryAccountArgs, 'id'>>;
+  accounts: Resolver<Array<ResolversTypes['Account']>, ParentType, AuthenticatedContext<ContextType>>;
+  budget: Resolver<ResolversTypes['MonthBudget'], ParentType, AuthenticatedContext<ContextType>, RequireFields<QueryBudgetArgs, 'month' | 'timezoneOffset' | 'year'>>;
+  categories: Resolver<Array<ResolversTypes['Category']>, ParentType, AuthenticatedContext<ContextType>>;
+  category: Resolver<Maybe<ResolversTypes['Category']>, ParentType, AuthenticatedContext<ContextType>, RequireFields<QueryCategoryArgs, 'id'>>;
+  currencies: Resolver<Array<ResolversTypes['Currency']>, ParentType, AuthenticatedContext<ContextType>>;
+  currency: Resolver<Maybe<ResolversTypes['Currency']>, ParentType, AuthenticatedContext<ContextType>, RequireFields<QueryCurrencyArgs, 'code'>>;
   currentUser: Resolver<Maybe<ResolversTypes['CurrentUser']>, ParentType, ContextType>;
-  transaction: Resolver<Maybe<ResolversTypes['Transaction']>, ParentType, ContextType, RequireFields<QueryTransactionArgs, 'id'>>;
-  transactions: Resolver<ResolversTypes['PaginatedTransactions'], ParentType, ContextType, RequireFields<QueryTransactionsArgs, 'limit'>>;
-  transactionsByDay: Resolver<Array<ResolversTypes['DailyTransactions']>, ParentType, ContextType, RequireFields<QueryTransactionsByDayArgs, 'dateFrom' | 'dateUntil'>>;
+  transaction: Resolver<Maybe<ResolversTypes['Transaction']>, ParentType, AuthenticatedContext<ContextType>, RequireFields<QueryTransactionArgs, 'id'>>;
+  transactions: Resolver<ResolversTypes['PaginatedTransactions'], ParentType, AuthenticatedContext<ContextType>, RequireFields<QueryTransactionsArgs, 'limit'>>;
+  transactionsByDay: Resolver<Array<ResolversTypes['DailyTransactions']>, ParentType, AuthenticatedContext<ContextType>, RequireFields<QueryTransactionsByDayArgs, 'dateFrom' | 'dateUntil'>>;
 };
 
 export type TransactionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Transaction'] = ResolversParentTypes['Transaction']> = {

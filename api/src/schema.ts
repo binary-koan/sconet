@@ -19,20 +19,11 @@ import {
   reorderCategories,
   updateCategory
 } from "./resolvers/categories"
-import {
-  Currency,
-  currencies,
-  currency,
-  favoriteCurrency,
-  unfavoriteCurrency
-} from "./resolvers/currencies"
+import { Currency, currencies, currency } from "./resolvers/currencies"
 import { applyAuthenticatedDirective } from "./resolvers/directives/authenticated"
 import { Money } from "./resolvers/money"
 import {
-  CurrentUser,
-  UserCredential,
   changePassword,
-  currentUser,
   deleteCredential,
   generateCredentialLoginOptions,
   generateNewToken,
@@ -54,6 +45,14 @@ import {
   updateTransaction
 } from "./resolvers/transactions"
 
+import {
+  CurrentUser,
+  UserCredential,
+  currentUser,
+  favoriteCurrency,
+  setDefaultCurrency,
+  unfavoriteCurrency
+} from "./resolvers/currentUser"
 import { CurrencyCode } from "./resolvers/scalars/currencyCode"
 import { typeDefs } from "./schema-definitions"
 
@@ -85,6 +84,7 @@ const resolvers: Resolvers = {
     reorderCategories,
     favoriteCurrency,
     unfavoriteCurrency,
+    setDefaultCurrency,
     login,
     changePassword,
     generateNewToken,

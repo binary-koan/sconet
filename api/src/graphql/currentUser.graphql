@@ -1,0 +1,23 @@
+type Query {
+  currentUser: CurrentUser
+}
+
+type Mutation {
+  favoriteCurrency(code: CurrencyCode!): CurrentUser! @authenticated
+  unfavoriteCurrency(code: CurrencyCode!): CurrentUser! @authenticated
+  setDefaultCurrency(code: CurrencyCode!): CurrentUser! @authenticated
+}
+
+type CurrentUser {
+  id: String!
+  email: String!
+  defaultCurrency: Currency!
+  favoriteCurrencies: [Currency!]!
+  registeredCredentials: [UserCredential!]!
+}
+
+type UserCredential {
+  id: String!
+  device: String!
+  createdAt: Date!
+}
