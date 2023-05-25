@@ -1,3 +1,4 @@
+# Builder
 FROM oven/bun:0.6.3 AS builder
 
 WORKDIR /app
@@ -14,22 +15,24 @@ RUN bun install
 COPY . .
 
 ARG TURNSTILE_SITEKEY
-RUN test -n "$TURNSTILE_SITEKEY" || (echo "TURNSTILE_SITEKEY not set" && false)
+ENV PRODUCTION_BUILD=1
 
 RUN cd api && bun run build
 RUN cd web && bun run build
 
-FROM gcr.io/distroless/cc-debian11
+# Runtime
+FROM gcr.io/distroless/cc-debian11 AS runtime
 
 WORKDIR /app
 
-ENV NODE_ENV=production
+ENV ENV_TYPE=production
 ENV STATIC_PATH=static
 ENV MIGRATIONS_PATH=migrations
 ENV TZ=UTC
 
 COPY --from=builder /app/api/build .
 COPY --from=builder /app/web/build ./static
+COPY --from=builder /app/web/public ./static
 COPY --from=builder /app/api/src/db/migrations ./migrations
 
-CMD ["/app/run", "server"]
+CMD ["/app/run", "migrate-and-serve"]

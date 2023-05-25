@@ -1,20 +1,15 @@
 import { file } from "bun"
 import { existsSync, statSync } from "fs"
 import { createYoga } from "graphql-yoga"
+import { extname } from "path"
 import { buildContext } from "./context"
-import { createDb } from "./db/createDb"
-import { migrate } from "./db/migrate"
 import { startExchangeRateSchedule } from "./jobs/exchangeRates"
 import "./polyfills"
 import { schema } from "./schema"
 
-export async function startServer() {
-  if (process.env.NODE_ENV === "test") {
-    await createDb()
-    await migrate()
-  }
-
-  const port = process.env.PORT || 4444
+export async function startServer(serveStaticPaths?: string[]) {
+  const port = Bun.env.PORT || 4444
+  const staticPaths = serveStaticPaths || Bun.env.STATIC_PATHS?.split(",") || []
 
   startExchangeRateSchedule()
 
@@ -23,16 +18,25 @@ export async function startServer() {
     context: ({ request }) => buildContext(request),
 
     cors:
-      process.env.NODE_ENV === "production"
+      Bun.env.ENV_TYPE === "production"
         ? undefined
         : {
-            origin: process.env.WEB_URL || "http://localhost:1235",
+            origin: Bun.env.WEB_URL || "http://localhost:1235",
             allowedHeaders: ["Authorization", "Content-Type"]
           },
 
-    // maskedErrors: process.env.NODE_ENV !== "production"
-    maskedErrors: false
+    maskedErrors: Bun.env.ENV_TYPE !== "production"
   })
+
+  function serveStaticFile(pathname: string) {
+    for (const staticPath of staticPaths) {
+      const path = `${staticPath}${pathname}`
+
+      if (existsSync(path) && statSync(path).isFile()) {
+        return new Response(file(path))
+      }
+    }
+  }
 
   Bun.serve({
     port,
@@ -42,23 +46,21 @@ export async function startServer() {
 
       console.log(`[HTTP] ${req.method} ${url.pathname}${url.search}${url.hash}`)
 
-      if (url.pathname !== "/graphql") {
-        if (process.env.STATIC_PATH) {
-          const path = `${process.env.STATIC_PATH}${url.pathname}`
-
-          if (existsSync(path) && statSync(path).isFile()) {
-            return new Response(file(path))
-          } else {
-            return new Response(file(`${process.env.STATIC_PATH}/index.html`))
-          }
-        }
-
-        return new Response("Not found", {
-          status: 404
-        })
+      if (url.pathname === "/graphql") {
+        return yoga.fetch(req)
       }
 
-      return yoga.fetch(req)
+      const staticFileResponse = serveStaticFile(url.pathname)
+      if (staticFileResponse) return staticFileResponse
+
+      if (!extname(url.pathname)) {
+        const indexResponse = serveStaticFile("/index.html")
+        if (indexResponse) return indexResponse
+      }
+
+      return new Response("Not found", {
+        status: 404
+      })
     }
   })
 

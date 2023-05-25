@@ -37,12 +37,13 @@
     "autoprefixer": "^10.4.14",
     "babel-preset-solid": "^1.7.4",
     "bun-types": "canary",
+    "nodemon": "^2.0.22",
     "postcss": "^8.4.23",
     "tailwindcss": "^3.3.2",
     "typescript": "latest"
   },
   "scripts": {
-    "dev": "bun --watch run bin/dev.ts",
+    "watch": "nodemon -e ts,tsx,json --exec bun run bin/build.ts",
     "build": "bun run bin/build.ts"
   },
   "module": "index.ts",

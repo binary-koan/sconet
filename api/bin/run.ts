@@ -8,26 +8,50 @@ import { startServer } from "../src/server"
 const commands: { [command: string]: ((...args: string[]) => void | Promise<void>) | undefined } = {
   server: () => startServer(),
 
-  job: (jobName: string) => runJob(jobName),
+  job: async (jobName: string) => {
+    await runJob(jobName)
+    await sql.end()
+  },
 
   db_create: () => createDb(),
 
   migrate_create: (name: string) => createMigration(name),
 
-  migrate: () => migrate(),
+  migrate: async () => {
+    await migrate()
+    await sql.end()
+  },
 
-  migrate_rollback: () => rollback(),
+  migrate_rollback: async () => {
+    await rollback()
+    await sql.end()
+  },
 
-  migrate_up: (version: string) => up(version),
+  migrate_up: async (version: string) => {
+    await up(version)
+    await sql.end()
+  },
 
-  migrate_down: (version: string) => down(version),
+  migrate_down: async (version: string) => {
+    await down(version)
+    await sql.end()
+  },
 
   setup: async () => {
     await createDb()
     await migrate()
+    await sql.end()
   },
 
-  seed: () => seed()
+  seed: async () => {
+    await seed()
+    await sql.end()
+  },
+
+  migrate_and_serve: async () => {
+    await migrate()
+    startServer()
+  }
 }
 
 const command = commands[process.argv[2]?.replace(/\W/g, "_")]
@@ -35,7 +59,6 @@ const command = commands[process.argv[2]?.replace(/\W/g, "_")]
 if (command) {
   try {
     await command(...process.argv.slice(3))
-    await sql.end()
   } catch (e) {
     console.error(e)
     process.exit(1)

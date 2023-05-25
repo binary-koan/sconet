@@ -1,4 +1,4 @@
-import { PRODUCTION_BUILD } from "../../env"
+import { PRODUCTION_BUILD } from "../../../env"
 import { loginToken } from "../auth"
 
 const BASE_URL = PRODUCTION_BUILD ? "" : "http://localhost:4444"

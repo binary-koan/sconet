@@ -1,14 +1,14 @@
 import { sql } from "../db/database"
 
 export async function runDbSession(runner: () => void | Promise<void>) {
-  if (process.env.NODE_ENV !== "production") {
+  if (Bun.env.ENV_TYPE !== "production") {
     console.log("[POSTGRESQL] Starting session")
     await sql`SELECT pg_stat_statements_reset()`
   }
 
   await runner()
 
-  if (process.env.NODE_ENV !== "production") {
+  if (Bun.env.ENV_TYPE !== "production") {
     const queries = await sql`SELECT * FROM pg_stat_statements`
 
     console.log("[POSTGRESQL] Queries during session")

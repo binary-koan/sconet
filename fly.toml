@@ -11,9 +11,6 @@ processes = []
 
 [build]
 
-[deploy]
-  release_command = "/app/run setup"
-
 [env]
   PORT = 8080
 

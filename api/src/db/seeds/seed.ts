@@ -1,6 +1,6 @@
-import bcrypt from "bcryptjs"
 import { updateExchangeRates } from "../../jobs/exchangeRates"
 import { runDbSession } from "../../utils/runDbSession"
+import { hashPassword } from "../../utils/scrypt"
 import { sql } from "../database"
 import { accountsRepo } from "../repos/accountsRepo"
 import { categoriesRepo } from "../repos/categoriesRepo"
@@ -16,7 +16,7 @@ export async function seed() {
       if (!existing.length) {
         await sql`INSERT INTO users ${sql({
           email,
-          encryptedPassword: bcrypt.hashSync("changeme", 10),
+          encryptedPassword: await hashPassword("changeme"),
           createdAt: new Date(),
           updatedAt: new Date()
         })}`

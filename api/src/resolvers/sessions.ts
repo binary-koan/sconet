@@ -4,7 +4,6 @@ import {
   verifyAuthenticationResponse,
   verifyRegistrationResponse
 } from "@simplewebauthn/server"
-import bcrypt from "bcryptjs"
 import { GraphQLError } from "graphql"
 import { SignJWT } from "jose"
 import { isEqual } from "lodash"
@@ -14,6 +13,7 @@ import { updateOneUser } from "../db/queries/user/updateOneUser"
 import { UserRecord } from "../db/records/user"
 import { userCredentialsRepo } from "../db/repos/userCredentialsRepo"
 import { MutationResolvers, QueryResolvers, Resolvers } from "../resolvers-types"
+import { comparePassword, hashPassword } from "../utils/scrypt"
 import { origin, rpID, rpName } from "../utils/webauthn"
 
 export const login: MutationResolvers["login"] = async (
@@ -31,7 +31,7 @@ export const login: MutationResolvers["login"] = async (
     throw new GraphQLError("Invalid email or password")
   }
 
-  if (await bcrypt.compare(password, user.encryptedPassword)) {
+  if (await comparePassword(password, user.encryptedPassword)) {
     return await createToken(user)
   }
 
@@ -49,11 +49,11 @@ export const changePassword: MutationResolvers["changePassword"] = async (
     throw new GraphQLError("No such user")
   }
 
-  if (!(await bcrypt.compare(oldPassword, user.encryptedPassword))) {
+  if (!(await comparePassword(oldPassword, user.encryptedPassword))) {
     throw new GraphQLError("Invalid email or password")
   }
 
-  updateOneUser(user.id, { encryptedPassword: await bcrypt.hash(newPassword, 10) })
+  updateOneUser(user.id, { encryptedPassword: await hashPassword(newPassword) })
 
   return true
 }
