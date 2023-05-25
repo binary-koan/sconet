@@ -44,7 +44,9 @@
   },
   "scripts": {
     "watch": "nodemon -e ts,tsx,json --exec bun run bin/build.ts",
-    "build": "bun run bin/build.ts"
+    "build": "bun run bin/build.ts",
+    "codegen": "graphql-codegen",
+    "typecheck": "tsc --noEmit"
   },
   "module": "index.ts",
   "type": "module"

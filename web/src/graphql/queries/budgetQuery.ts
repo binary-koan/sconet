@@ -3,8 +3,8 @@ import { gql } from "../../utils/gql"
 import { useQuery } from "../../utils/graphqlClient/useQuery"
 
 export const BUDGET_QUERY = gql`
-  query Budget($currencyId: String, $year: Int!, $month: Int!) {
-    budget(year: $year, month: $month, currencyId: $currencyId) {
+  query Budget($currencyCode: String, $year: Int!, $month: Int!) {
+    budget(year: $year, month: $month, currencyCode: $currencyCode) {
       id
       month
       income {
@@ -32,7 +32,7 @@ export const BUDGET_QUERY = gql`
             color
             icon
             isRegular
-            budget(currencyId: $currencyId) {
+            budget(currencyCode: $currencyCode) {
               decimalAmount
               formatted
             }

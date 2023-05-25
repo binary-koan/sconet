@@ -14,7 +14,7 @@ export const SplitTransactionModal: Component<{
   onFinish: () => void
 }> = (props) => {
   const splitTransaction = useSplitTransaction()
-  const currencyData = useGetCurrencyQuery(() => ({ id: props.transaction.currencyId }))
+  const currencyData = useGetCurrencyQuery(() => ({ code: props.transaction.currencyCode }))
 
   const [splits, setSplits] = createSignal(
     props.transaction.splitTo

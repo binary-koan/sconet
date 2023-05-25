@@ -42,8 +42,8 @@ export const unfavoriteCurrency: MutationResolvers["unfavoriteCurrency"] = async
 }
 
 export const Currency: Resolvers["Currency"] = {
-  id: (currency) => currency.code,
   code: (currency) => currency.code,
+  name: (currency) => currency.name,
   symbol: (currency) => currency.symbol,
   decimalDigits: (currency) => currency.decimal_digits,
 

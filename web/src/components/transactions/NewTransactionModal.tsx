@@ -55,12 +55,12 @@ export const NewTransactionModal: Component<{
   })
 
   createEffect(() => {
-    if (currencies()?.currencies && !getValue(form, "currencyId")) {
+    if (currencies()?.currencies && !getValue(form, "currencyCode")) {
       setValue(
         form,
-        "currencyId",
-        currencies()!.currencies.find((currency) => currency.id === preferredCurrency())?.id ||
-          currencies()!.currencies[0]!.id
+        "currencyCode",
+        currencies()!.currencies.find((currency) => currency.code === preferredCurrency())?.code ||
+          currencies()!.currencies[0]!.code
       )
     }
   })
@@ -77,7 +77,7 @@ export const NewTransactionModal: Component<{
   })
 
   const onSave = ({ amount, amountType, date, ...data }: NewTransactionModalValues) => {
-    const currency = currencies()?.currencies.find((currency) => currency.id === data.currencyId)
+    const currency = currencies()?.currencies.find((currency) => currency.code === data.currencyCode)
     const integerAmount = Math.round(amount * 10 ** (currency?.decimalDigits || 0))
 
     const coercedData = {
@@ -95,7 +95,7 @@ export const NewTransactionModal: Component<{
   }
 
   const selectedCurrency = () =>
-    currencies()?.currencies.find((currency) => currency.id === getValue(form, "currencyId"))
+    currencies()?.currencies.find((currency) => currency.code === getValue(form, "currencyCode"))
 
   const selectedCategory = () =>
     categories()?.categories.find((category) => category.id === getValue(form, "categoryId"))
@@ -218,7 +218,7 @@ export const NewTransactionModal: Component<{
             </div>
 
             <div class="mb-2 flex gap-4">
-              <Field of={form} name="currencyId">
+              <Field of={form} name="currencyCode">
                 {(field) => (
                   <Dropdown
                     closeOnItemClick
@@ -227,7 +227,7 @@ export const NewTransactionModal: Component<{
                         {(currency) => (
                           <DropdownMenuItem
                             class="text-sm"
-                            onClick={() => setValue(form, "currencyId", currency.id)}
+                            onClick={() => setValue(form, "currencyCode", currency.code)}
                           >
                             {currency.code}
                           </DropdownMenuItem>
@@ -241,7 +241,7 @@ export const NewTransactionModal: Component<{
                       class="rounded border border-gray-100 px-4 py-2 text-xs text-gray-700"
                     >
                       {
-                        currencies()?.currencies.find((currency) => currency.id === field.value)
+                        currencies()?.currencies.find((currency) => currency.code === field.value)
                           ?.code
                       }
                       <TbChevronDown class="ml-1" />

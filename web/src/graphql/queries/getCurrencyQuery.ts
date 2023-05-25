@@ -6,8 +6,8 @@ import { FullCurrencyFragment } from "../fragments/currencyFragments"
 export const CURRENCY_QUERY = gql`
   ${FullCurrencyFragment}
 
-  query GetCurrency($id: String!) {
-    currency(id: $id) {
+  query GetCurrency($code: String!) {
+    currency(code: $code) {
       ...FullCurrency
     }
   }

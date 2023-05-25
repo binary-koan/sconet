@@ -39,7 +39,7 @@ const TransactionForm: Component<{
           ? "income"
           : "expense",
 
-      currencyId: props.data?.transaction?.currencyId,
+      currencyCode: props.data?.transaction?.currencyCode,
 
       amount:
         props.data?.transaction?.amount.decimalAmount &&
@@ -79,7 +79,7 @@ const TransactionForm: Component<{
   }
 
   const selectedCurrency = () =>
-    currencies()?.currencies.find((currency) => currency.id === getValue(form, "currencyId"))
+    currencies()?.currencies.find((currency) => currency.code === getValue(form, "currencyCode"))
 
   const isIncome = () => getValue(form, "amountType") === "income"
 
@@ -115,8 +115,8 @@ const TransactionForm: Component<{
           validate={required("Cannot be blank")}
           options={
             currencies()?.currencies?.map((currency) => ({
-              value: currency.id,
-              content: currency.code
+              value: currency.code,
+              content: `${currency.code} (${currency.name})`
             })) || []
           }
         />

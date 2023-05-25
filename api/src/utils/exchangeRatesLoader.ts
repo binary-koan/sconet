@@ -22,6 +22,10 @@ export interface ResolvedExchangeRate {
 
 export function exchangeRatesLoader(): ExchangeRatesLoader {
   return new DataLoader(async (toLoad: readonly ExchangeRateIdentifier[]) => {
+    if (toLoad.some(({ date }) => date > new Date())) {
+      throw new Error("Cannot load exchange rates for future dates")
+    }
+
     const neededExchangeRates = buildNeededRates(toLoad)
 
     const mapping = new ExchangeRateMap()

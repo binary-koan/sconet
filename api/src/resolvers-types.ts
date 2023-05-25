@@ -106,7 +106,7 @@ export type Currency = {
   code: Scalars['CurrencyCode'];
   decimalDigits: Scalars['Int'];
   exchangeRate: Maybe<Scalars['Float']>;
-  id: Scalars['String'];
+  name: Scalars['String'];
   symbol: Scalars['String'];
 };
 
@@ -602,7 +602,7 @@ export type CurrencyResolvers<ContextType = Context, ParentType extends Resolver
   code: Resolver<ResolversTypes['CurrencyCode'], ParentType, ContextType>;
   decimalDigits: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   exchangeRate: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType, RequireFields<CurrencyExchangeRateArgs, 'toCode'>>;
-  id: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  name: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   symbol: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };

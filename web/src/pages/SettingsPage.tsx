@@ -10,9 +10,7 @@ import Accounts from "../components/accounts/AccountsList"
 import { Button, LinkButton } from "../components/base/Button"
 import { PageHeader } from "../components/base/PageHeader"
 import CategoriesList from "../components/categories/Categories"
-import { AddCurrencyButton } from "../components/currencies/AddCurrencyButton"
 import Currencies from "../components/currencies/Currencies"
-import { CurrentExchangeRates } from "../components/exchangeRates/CurrentExchangeRates"
 import {
   AccountsQuery,
   AccountsQueryVariables,
@@ -20,8 +18,6 @@ import {
   CategoriesQueryVariables,
   CurrenciesQuery,
   CurrenciesQueryVariables,
-  CurrentExchangeRatesQuery,
-  CurrentExchangeRatesQueryVariables,
   CurrentUserQuery,
   CurrentUserQueryVariables
 } from "../graphql-types"
@@ -36,7 +32,6 @@ export interface SettingsPageData {
   accounts: QueryResource<AccountsQuery, AccountsQueryVariables>
   currentUser: QueryResource<CurrentUserQuery, CurrentUserQueryVariables>
   currencies: QueryResource<CurrenciesQuery, CurrenciesQueryVariables>
-  currentExchangeRates: QueryResource<CurrentExchangeRatesQuery, CurrentExchangeRatesQueryVariables>
 }
 
 const deviceDetector = new DeviceDetector()
@@ -152,15 +147,9 @@ const SettingsPage: Component = () => {
 
       <Cell data={data.accounts} success={Accounts} />
 
-      <PageHeader size="lg">
-        Currencies <AddCurrencyButton />
-      </PageHeader>
+      <PageHeader size="lg">Currencies</PageHeader>
 
       <Cell data={data.currencies} success={Currencies} />
-
-      <PageHeader size="lg">Current Exchange Rates</PageHeader>
-
-      <Cell data={data.currentExchangeRates} success={CurrentExchangeRates} />
     </>
   )
 }

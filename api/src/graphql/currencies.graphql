@@ -1,6 +1,6 @@
 type Currency {
-  id: String!
   code: CurrencyCode!
+  name: String!
   symbol: String!
   decimalDigits: Int!
   exchangeRate(toCode: String!): Float
