@@ -3,6 +3,7 @@ import { groupBy, isEqual, uniqWith } from "lodash"
 import { sql } from "../db/database"
 import { dailyExchangeRatesRepo } from "../db/repos/dailyExchangeRatesRepo"
 import { exchangeRateValuesRepo } from "../db/repos/exchangeRateValuesRepo"
+import { joinSql } from "../db/utils/joinSql"
 import { startOfDayUTC } from "./date"
 
 export interface ExchangeRateIdentifier {
@@ -34,8 +35,11 @@ export function exchangeRatesLoader(): ExchangeRatesLoader {
 
     const missingExchangeRates = neededExchangeRates.filter(
       (neededExchangeRate) =>
-        !existingExchangeRates.some((existingExchangeRate) =>
-          isEqual(existingExchangeRate, neededExchangeRate)
+        !existingExchangeRates.some(
+          (existingExchangeRate) =>
+            existingExchangeRate.fromCurrencyCode === neededExchangeRate.fromCurrencyCode &&
+            existingExchangeRate.toCurrencyCode === neededExchangeRate.toCurrencyCode &&
+            existingExchangeRate.date.getTime() === neededExchangeRate.date.getTime()
         )
     )
 
@@ -75,11 +79,21 @@ function buildNeededRates(
 }
 
 async function fetchExistingRates(neededExchangeRates: ExchangeRateIdentifier[]) {
+  const queries = joinSql(
+    neededExchangeRates.map(
+      ({ fromCurrencyCode, toCurrencyCode, date }) =>
+        sql`"fromCurrencyCode" = ${fromCurrencyCode} AND "toCurrencyCode" = ${toCurrencyCode} AND "date" = ${
+          date.toISOString().split("T")[0]
+        }`
+    ),
+    "OR"
+  )
+
   return await sql<Array<ResolvedExchangeRate>>`
-      SELECT "fromCurrencyCode", "toCurrencyCode", "date", "rate" FROM "dailyExchangeRates"
-      INNER JOIN "exchangeRateValues" ON "dailyExchangeRates"."id" = "exchangeRateValues"."dailyExchangeRateId"
-      WHERE ("fromCurrencyCode", "toCurrencyCode", "date") IN ${sql(neededExchangeRates)}
-    `
+    SELECT "fromCurrencyCode", "toCurrencyCode", "date", "rate" FROM "dailyExchangeRates"
+    INNER JOIN "exchangeRateValues" ON "dailyExchangeRates"."id" = "exchangeRateValues"."dailyExchangeRateId"
+    WHERE ${queries}
+  `
 }
 
 async function fetchAllRates(exchangeRates: ExchangeRateIdentifier[], mapping: ExchangeRateMap) {
@@ -100,7 +114,9 @@ async function fetchAllRates(exchangeRates: ExchangeRateIdentifier[], mapping: E
     }
 
     for (const { fromCurrencyCode, toCurrencyCode, date } of group) {
-      if (!data[fromCurrencyCode][toCurrencyCode]) {
+      const rate = data[fromCurrencyCode.toLowerCase()]?.[toCurrencyCode.toLowerCase()]
+
+      if (!rate) {
         throw new Error(
           `No exchange rate exists for ${fromCurrencyCode} to ${toCurrencyCode} on ${date}`
         )
@@ -110,7 +126,7 @@ async function fetchAllRates(exchangeRates: ExchangeRateIdentifier[], mapping: E
         fromCurrencyCode,
         toCurrencyCode,
         date,
-        rate: data[fromCurrencyCode][toCurrencyCode]
+        rate
       })
     }
   }
@@ -127,6 +143,10 @@ async function fetchExchangeRates(
 }
 
 async function saveRates(mapping: ExchangeRateMap) {
+  if (mapping.isEmpty) {
+    return
+  }
+
   await sql.begin(async (sql) => {
     const dailyRates = await dailyExchangeRatesRepo.insertAll(
       mapping.values().map(({ fromCurrencyCode, date }) => ({
@@ -139,7 +159,9 @@ async function saveRates(mapping: ExchangeRateMap) {
     await exchangeRateValuesRepo.insertAll(
       mapping.values().map(({ fromCurrencyCode, toCurrencyCode, date, rate }) => ({
         dailyExchangeRateId: dailyRates.find(
-          (dailyRate) => dailyRate.fromCurrencyCode === fromCurrencyCode && dailyRate.date === date
+          (dailyRate) =>
+            dailyRate.fromCurrencyCode === fromCurrencyCode &&
+            dailyRate.date.getTime() === date.getTime()
         )!.id,
         toCurrencyCode,
         rate
@@ -175,5 +197,9 @@ class ExchangeRateMap {
 
   values() {
     return [...this.map.values()]
+  }
+
+  get isEmpty() {
+    return this.map.size === 0
   }
 }

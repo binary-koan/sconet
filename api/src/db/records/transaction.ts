@@ -11,7 +11,6 @@ export interface TransactionRecord {
   categoryId: string | null
 
   accountId: string
-  remoteId: string | null
 
   splitFromId: string | null
 

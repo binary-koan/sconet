@@ -76,7 +76,11 @@ export const budget: QueryResolvers["budget"] = async (
   )
 
   const transactionValues = (
-    (await loadTransactionCurrencyValues(transactions, context.data.currencyValues)) as Money[]
+    (await loadTransactionCurrencyValues(
+      transactions,
+      outputCurrency.code,
+      context.data.currencyValues
+    )) as Money[]
   ).map((value, index) => ({ value, transaction: transactions[index] }))
 
   const allCategories = includedCategoryIds.map((id) => ({

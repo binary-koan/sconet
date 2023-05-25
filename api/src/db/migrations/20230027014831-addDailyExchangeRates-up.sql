@@ -9,7 +9,7 @@ CREATE TABLE "dailyExchangeRates" (
 
 CREATE TABLE "exchangeRateValues" (
   "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-  "dailyExchangeRateId" TEXT NOT NULL,
+  "dailyExchangeRateId" UUID NOT NULL,
   "toCurrencyCode" TEXT NOT NULL,
   "rate" REAL NOT NULL,
   "deletedAt" TIMESTAMP,

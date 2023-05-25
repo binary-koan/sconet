@@ -111,7 +111,7 @@ const TransactionForm: Component<{
         <FormOptionButtons
           of={form}
           label="Currency"
-          name="currencyId"
+          name="currencyCode"
           validate={required("Cannot be blank")}
           options={
             currencies()?.currencies?.map((currency) => ({

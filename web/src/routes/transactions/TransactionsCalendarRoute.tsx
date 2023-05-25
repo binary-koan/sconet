@@ -12,7 +12,7 @@ const transactionsData: RouteDataFunc<unknown, TransactionsCalendarPageData> = (
     new Date(parseInt(year()), parseInt(month()), 0).getDate().toString().padStart(2, "0")
 
   const data = useTransactionsByDayQuery(() => ({
-    currencyId: preferredCurrency(),
+    currencyCode: preferredCurrency(),
     dateFrom: `${year()}-${month()}-01`,
     dateUntil: `${year()}-${month()}-${lastDateOfMonth()}`
   }))

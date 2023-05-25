@@ -1,7 +1,8 @@
-import { Currencies, Money } from "ts-money"
+import { Currencies } from "ts-money"
 import { CategoryRecord } from "../db/records/category"
 import { categoriesRepo } from "../db/repos/categoriesRepo"
 import { MutationResolvers, QueryResolvers, Resolvers } from "../resolvers-types"
+import { loadCategoryBudgetCurrencyValue } from "../utils/currencyValuesLoader"
 
 export const categories: QueryResolvers["categories"] = () => {
   return categoriesRepo.findAll()
@@ -61,13 +62,13 @@ export const Category: Resolvers["Category"] = {
   icon: (category) => category.icon,
 
   budget: async (category, { currencyCode, date }, context) =>
-    category.budget != null && category.budgetCurrencyCode
-      ? context.data.currencyValues.load({
-          original: new Money(category.budget, category.budgetCurrencyCode),
-          targetCurrencyCode: currencyCode || category.budgetCurrencyCode,
-          date: date || new Date()
-        })
-      : null,
+    (await loadCategoryBudgetCurrencyValue(
+      category,
+      currencyCode,
+      date,
+      context.data.currencyValues
+    )) || null,
+
   budgetCurrency: (category, _, context) =>
     category.budgetCurrencyCode ? Currencies[category.budgetCurrencyCode] : null,
 

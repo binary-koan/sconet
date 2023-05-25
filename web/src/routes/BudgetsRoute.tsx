@@ -11,7 +11,7 @@ const budgetsRouteData: RouteDataFunc<unknown, BudgetsPageData> = ({ params }) =
   const month = () => params.yearmonth.split("-")[1]
 
   const data = useBudgetQuery(() => ({
-    currencyId: preferredCurrency(),
+    currencyCode: preferredCurrency(),
     year: parseInt(year()),
     month: parseInt(month())
   }))
