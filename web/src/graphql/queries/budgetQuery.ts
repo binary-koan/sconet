@@ -3,7 +3,7 @@ import { gql } from "../../utils/gql"
 import { useQuery } from "../../utils/graphqlClient/useQuery"
 
 export const BUDGET_QUERY = gql`
-  query Budget($currencyCode: String, $year: Int!, $month: Int!) {
+  query Budget($currencyCode: CurrencyCode, $year: Int!, $month: Int!) {
     budget(year: $year, month: $month, currencyCode: $currencyCode) {
       id
       month

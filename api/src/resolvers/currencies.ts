@@ -4,7 +4,7 @@ import { usersRepo } from "../db/repos/usersRepo"
 import { MutationResolvers, QueryResolvers, Resolvers } from "../resolvers-types"
 
 export const currencies: QueryResolvers["currencies"] = () => {
-  return Object.values(currencies)
+  return Object.values(Currencies)
 }
 
 export const currency: QueryResolvers["currency"] = async (_, { code }) => {

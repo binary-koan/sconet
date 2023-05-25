@@ -10,6 +10,10 @@ generates:
       contextType: ./context#Context
       scalars:
         DateTime: Date
+        Date: Date
+        CurrencyCode: string
+        UtcOffset: string
+        JSON: any
       mappers:
         Category: ./db/records/category#CategoryRecord
         Currency: ts-money#Currency as CurrencyValue

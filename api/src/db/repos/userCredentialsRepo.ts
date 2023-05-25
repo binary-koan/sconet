@@ -12,7 +12,7 @@ export const userCredentialsRepo = createRepo<UserCredentialRecord, UserCredenti
 
   methods: {
     async findForUser(userId: string) {
-      return await sql`SELECT * FROM userCredentials WHERE userId = ${userId} AND deletedAt IS NULL ORDER BY createdAt ASC, id ASC`
+      return await sql`SELECT * FROM "userCredentials" WHERE "userId" = ${userId} AND "deletedAt" IS NULL ORDER BY "createdAt" ASC, "id" ASC`
     }
   }
 })

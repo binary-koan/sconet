@@ -1,12 +1,5 @@
 import { makeExecutableSchema } from "@graphql-tools/schema"
-import { GraphQLScalarType } from "graphql"
-import {
-  CurrencyResolver,
-  DateResolver,
-  DateTimeResolver,
-  JSONResolver,
-  UtcOffsetResolver
-} from "graphql-scalars"
+import { DateResolver, DateTimeResolver, JSONResolver, UtcOffsetResolver } from "graphql-scalars"
 import { Resolvers } from "./resolvers-types"
 import {
   Account,
@@ -61,6 +54,7 @@ import {
   updateTransaction
 } from "./resolvers/transactions"
 
+import { CurrencyCode } from "./resolvers/scalars/currencyCode"
 import { typeDefs } from "./schema-definitions"
 
 const resolvers: Resolvers = {
@@ -116,7 +110,7 @@ const resolvers: Resolvers = {
   Date: DateResolver,
   DateTime: DateTimeResolver,
   JSON: JSONResolver,
-  CurrencyCode: new GraphQLScalarType({ ...CurrencyResolver.toConfig(), name: "CurrencyCode" }),
+  CurrencyCode,
   UtcOffset: UtcOffsetResolver
 }
 

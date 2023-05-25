@@ -24,11 +24,11 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  CurrencyCode: any;
-  Date: any;
+  CurrencyCode: string;
+  Date: Date;
   DateTime: Date;
   JSON: any;
-  UtcOffset: any;
+  UtcOffset: string;
 };
 
 export type Account = {
@@ -54,7 +54,7 @@ export type Category = {
 
 
 export type CategoryBudgetArgs = {
-  currencyCode: InputMaybe<Scalars['String']>;
+  currencyCode: InputMaybe<Scalars['CurrencyCode']>;
   date: InputMaybe<Scalars['Date']>;
 };
 
@@ -95,7 +95,7 @@ export type CreateTransactionInput = {
   accountId: Scalars['String'];
   amount: Scalars['Int'];
   categoryId: InputMaybe<Scalars['String']>;
-  currencyCode: Scalars['String'];
+  currencyCode: Scalars['CurrencyCode'];
   date: InputMaybe<Scalars['Date']>;
   includeInReports: InputMaybe<Scalars['Boolean']>;
   memo: Scalars['String'];
@@ -131,7 +131,7 @@ export type DailyTransactions = {
 
 
 export type DailyTransactionsTotalSpentArgs = {
-  currencyCode: InputMaybe<Scalars['String']>;
+  currencyCode: InputMaybe<Scalars['CurrencyCode']>;
 };
 
 export type Money = {
@@ -311,7 +311,7 @@ export type QueryAccountArgs = {
 
 
 export type QueryBudgetArgs = {
-  currencyCode: InputMaybe<Scalars['String']>;
+  currencyCode: InputMaybe<Scalars['CurrencyCode']>;
   month: Scalars['Int'];
   timezoneOffset?: InputMaybe<Scalars['UtcOffset']>;
   year: Scalars['Int'];
@@ -358,7 +358,7 @@ export type Transaction = {
   category: Maybe<Category>;
   categoryId: Maybe<Scalars['String']>;
   currency: Currency;
-  currencyCode: Scalars['String'];
+  currencyCode: Scalars['CurrencyCode'];
   date: Scalars['Date'];
   id: Scalars['String'];
   includeInReports: Scalars['Boolean'];
@@ -371,7 +371,7 @@ export type Transaction = {
 
 
 export type TransactionAmountArgs = {
-  currencyCode: InputMaybe<Scalars['String']>;
+  currencyCode: InputMaybe<Scalars['CurrencyCode']>;
 };
 
 export type TransactionFilter = {
@@ -405,7 +405,7 @@ export type UpdateTransactionInput = {
   accountId: InputMaybe<Scalars['String']>;
   amount: InputMaybe<Scalars['Int']>;
   categoryId: InputMaybe<Scalars['String']>;
-  currencyCode: InputMaybe<Scalars['String']>;
+  currencyCode: InputMaybe<Scalars['CurrencyCode']>;
   date: InputMaybe<Scalars['Date']>;
   includeInReports: InputMaybe<Scalars['Boolean']>;
   memo: InputMaybe<Scalars['String']>;
@@ -709,7 +709,7 @@ export type TransactionResolvers<ContextType = Context, ParentType extends Resol
   category: Resolver<Maybe<ResolversTypes['Category']>, ParentType, ContextType>;
   categoryId: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   currency: Resolver<ResolversTypes['Currency'], ParentType, ContextType>;
-  currencyCode: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  currencyCode: Resolver<ResolversTypes['CurrencyCode'], ParentType, ContextType>;
   date: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
   id: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   includeInReports: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
