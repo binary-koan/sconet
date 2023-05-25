@@ -17,7 +17,11 @@ export function applyAuthenticatedDirective(schema: GraphQLSchema) {
 
       fieldConfig.resolve = function (source, args, context: Context, info) {
         if (!context.currentUser) {
-          throw new GraphQLError("Not logged in")
+          throw new GraphQLError("Not logged in", {
+            extensions: {
+              code: "UNAUTHENTICATED"
+            }
+          })
         }
 
         return resolve(source, args, context, info)

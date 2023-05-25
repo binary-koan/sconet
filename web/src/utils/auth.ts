@@ -23,6 +23,7 @@ export function setLoginToken(token: string | null) {
   }
 }
 
+// Basic check to see if the token is expired. May not work everywhere, so we also check in places like <Cell>
 export function isLoggedIn() {
   const token = loginToken()
 

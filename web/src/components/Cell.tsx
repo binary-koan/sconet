@@ -1,5 +1,7 @@
-import { Component, ErrorBoundary, JSX, Match, Switch } from "solid-js"
+import { useLocation, useNavigate } from "@solidjs/router"
+import { Component, ErrorBoundary, JSX, Match, Switch, createEffect } from "solid-js"
 import { Dynamic } from "solid-js/web"
+import { setLoginToken } from "../utils/auth"
 import { QueryResource } from "../utils/graphqlClient/useQuery"
 import LoadingBar from "./LoadingBar"
 
@@ -15,6 +17,19 @@ export const Cell: <Data, Variables, OtherProps = never>(props: {
   success: Component<{ data: Data } & OtherProps>
   successProps?: OtherProps
 }) => JSX.Element = (props) => {
+  const navigate = useNavigate()
+  const location = useLocation()
+
+  createEffect(() => {
+    if (props.data.error?.isUnauthenticatedError) {
+      setLoginToken(null)
+      navigate("/login", {
+        replace: true,
+        state: { returnTo: [location.pathname, location.search, location.hash].join("") }
+      })
+    }
+  })
+
   return (
     <ErrorBoundary
       fallback={(error) => {
@@ -26,7 +41,7 @@ export const Cell: <Data, Variables, OtherProps = never>(props: {
         <Match when={props.data.loading}>
           <Dynamic component={props.loading || DefaultLoader} />
         </Match>
-        <Match when={props.failure && props.data.error}>
+        <Match when={props.data.error}>
           <Dynamic component={props.failure || DefaultFailure} error={props.data.error} />
         </Match>
         <Match when={true}>
