@@ -16,6 +16,11 @@ export const FullCurrentUserFragment = gql`
       ...FullCurrency
     }
 
+    defaultAccount {
+      id
+      name
+    }
+
     registeredCredentials {
       id
       device

@@ -6,6 +6,7 @@ type Mutation {
   favoriteCurrency(code: CurrencyCode!): CurrentUser! @authenticated
   unfavoriteCurrency(code: CurrencyCode!): CurrentUser! @authenticated
   setDefaultCurrency(code: CurrencyCode!): CurrentUser! @authenticated
+  setDefaultAccount(id: String!): CurrentUser! @authenticated
 }
 
 type CurrentUser {
@@ -13,6 +14,8 @@ type CurrentUser {
   email: String!
   defaultCurrency: Currency!
   favoriteCurrencies: [Currency!]!
+  defaultAccountId: String
+  defaultAccount: Account
   registeredCredentials: [UserCredential!]!
 }
 

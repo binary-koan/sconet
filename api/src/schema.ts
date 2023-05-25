@@ -50,6 +50,7 @@ import {
   UserCredential,
   currentUser,
   favoriteCurrency,
+  setDefaultAccount,
   setDefaultCurrency,
   unfavoriteCurrency
 } from "./resolvers/currentUser"
@@ -85,6 +86,7 @@ const resolvers: Resolvers = {
     favoriteCurrency,
     unfavoriteCurrency,
     setDefaultCurrency,
+    setDefaultAccount,
     login,
     changePassword,
     generateNewToken,

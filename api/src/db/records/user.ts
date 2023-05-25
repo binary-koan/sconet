@@ -1,7 +1,7 @@
 export interface UserSettings {
   defaultCurrencyCode: string
   favoriteCurrencyCodes: string[]
-  defaultAccountId: string | null
+  defaultAccountId?: string | null
 }
 
 export interface UserRecord {

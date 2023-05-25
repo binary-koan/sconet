@@ -115,6 +115,8 @@ export type CurrencyExchangeRateArgs = {
 
 export type CurrentUser = {
   __typename?: 'CurrentUser';
+  defaultAccount: Maybe<Account>;
+  defaultAccountId: Maybe<Scalars['String']>;
   defaultCurrency: Currency;
   email: Scalars['String'];
   favoriteCurrencies: Array<Currency>;
@@ -171,6 +173,7 @@ export type Mutation = {
   loginViaCredential: Scalars['String'];
   registerCredential: Scalars['JSON'];
   reorderCategories: Array<Category>;
+  setDefaultAccount: CurrentUser;
   setDefaultCurrency: CurrentUser;
   splitTransaction: Transaction;
   unfavoriteCurrency: CurrentUser;
@@ -246,6 +249,11 @@ export type MutationLoginViaCredentialArgs = {
 
 export type MutationReorderCategoriesArgs = {
   orderedIds: Array<Scalars['String']>;
+};
+
+
+export type MutationSetDefaultAccountArgs = {
+  id: Scalars['String'];
 };
 
 
@@ -618,6 +626,8 @@ export interface CurrencyCodeScalarConfig extends GraphQLScalarTypeConfig<Resolv
 }
 
 export type CurrentUserResolvers<ContextType = Context, ParentType extends ResolversParentTypes['CurrentUser'] = ResolversParentTypes['CurrentUser']> = {
+  defaultAccount: Resolver<Maybe<ResolversTypes['Account']>, ParentType, ContextType>;
+  defaultAccountId: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   defaultCurrency: Resolver<ResolversTypes['Currency'], ParentType, ContextType>;
   email: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   favoriteCurrencies: Resolver<Array<ResolversTypes['Currency']>, ParentType, ContextType>;
@@ -681,6 +691,7 @@ export type MutationResolvers<ContextType = Context, ParentType extends Resolver
   loginViaCredential: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationLoginViaCredentialArgs, 'response'>>;
   registerCredential: Resolver<ResolversTypes['JSON'], ParentType, AuthenticatedContext<ContextType>>;
   reorderCategories: Resolver<Array<ResolversTypes['Category']>, ParentType, AuthenticatedContext<ContextType>, RequireFields<MutationReorderCategoriesArgs, 'orderedIds'>>;
+  setDefaultAccount: Resolver<ResolversTypes['CurrentUser'], ParentType, AuthenticatedContext<ContextType>, RequireFields<MutationSetDefaultAccountArgs, 'id'>>;
   setDefaultCurrency: Resolver<ResolversTypes['CurrentUser'], ParentType, AuthenticatedContext<ContextType>, RequireFields<MutationSetDefaultCurrencyArgs, 'code'>>;
   splitTransaction: Resolver<ResolversTypes['Transaction'], ParentType, AuthenticatedContext<ContextType>, RequireFields<MutationSplitTransactionArgs, 'id' | 'splits'>>;
   unfavoriteCurrency: Resolver<ResolversTypes['CurrentUser'], ParentType, AuthenticatedContext<ContextType>, RequireFields<MutationUnfavoriteCurrencyArgs, 'code'>>;

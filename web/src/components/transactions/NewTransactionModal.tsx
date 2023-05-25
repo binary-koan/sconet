@@ -10,7 +10,6 @@ import { useCategoriesQuery } from "../../graphql/queries/categoriesQuery"
 import { useCurrenciesQuery } from "../../graphql/queries/currenciesQuery"
 import { useCurrentUserQuery } from "../../graphql/queries/currentUserQuery"
 import { CATEGORY_BACKGROUND_COLORS, CategoryColor } from "../../utils/categoryColors"
-import { preferredAccount } from "../../utils/settings"
 import { Button } from "../base/Button"
 import { InputAddon } from "../base/InputGroup"
 import { Modal, ModalCloseButton, ModalContent, ModalTitle } from "../base/Modal"
@@ -63,13 +62,8 @@ export const NewTransactionModal: Component<{
   })
 
   createEffect(() => {
-    if (accounts()?.accounts && !getValue(form, "accountId")) {
-      setValue(
-        form,
-        "accountId",
-        accounts()!.accounts.find((account) => account.id === preferredAccount())?.id ||
-          accounts()!.accounts[0]!.id
-      )
+    if (currentUser()?.currentUser && !getValue(form, "accountId")) {
+      setValue(form, "accountId", currentUser()!.currentUser!.defaultAccount?.id || "")
     }
   })
 

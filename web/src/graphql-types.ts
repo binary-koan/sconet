@@ -105,6 +105,8 @@ export type CurrencyExchangeRateArgs = {
 
 export type CurrentUser = {
   __typename?: 'CurrentUser';
+  defaultAccount?: Maybe<Account>;
+  defaultAccountId?: Maybe<Scalars['String']['output']>;
   defaultCurrency: Currency;
   email: Scalars['String']['output'];
   favoriteCurrencies: Array<Currency>;
@@ -161,6 +163,7 @@ export type Mutation = {
   loginViaCredential: Scalars['String']['output'];
   registerCredential: Scalars['JSON']['output'];
   reorderCategories: Array<Category>;
+  setDefaultAccount: CurrentUser;
   setDefaultCurrency: CurrentUser;
   splitTransaction: Transaction;
   unfavoriteCurrency: CurrentUser;
@@ -236,6 +239,11 @@ export type MutationLoginViaCredentialArgs = {
 
 export type MutationReorderCategoriesArgs = {
   orderedIds: Array<Scalars['String']['input']>;
+};
+
+
+export type MutationSetDefaultAccountArgs = {
+  id: Scalars['String']['input'];
 };
 
 
@@ -420,7 +428,7 @@ export type FullCategoryFragment = { __typename?: 'Category', id: string, name: 
 
 export type FullCurrencyFragment = { __typename?: 'Currency', code: any, name: string, symbol: string, decimalDigits: number };
 
-export type FullCurrentUserFragment = { __typename?: 'CurrentUser', id: string, email: string, defaultCurrency: { __typename?: 'Currency', code: any, name: string, symbol: string, decimalDigits: number }, favoriteCurrencies: Array<{ __typename?: 'Currency', code: any, name: string, symbol: string, decimalDigits: number }>, registeredCredentials: Array<{ __typename?: 'UserCredential', id: string, device: string, createdAt: any }> };
+export type FullCurrentUserFragment = { __typename?: 'CurrentUser', id: string, email: string, defaultCurrency: { __typename?: 'Currency', code: any, name: string, symbol: string, decimalDigits: number }, favoriteCurrencies: Array<{ __typename?: 'Currency', code: any, name: string, symbol: string, decimalDigits: number }>, defaultAccount?: { __typename?: 'Account', id: string, name: string } | null, registeredCredentials: Array<{ __typename?: 'UserCredential', id: string, device: string, createdAt: any }> };
 
 export type FullTransactionFragment = { __typename?: 'Transaction', id: string, memo: string, date: any, originalMemo: string, includeInReports: boolean, currencyCode: any, splitFromId?: string | null, amount: { __typename?: 'Money', decimalAmount: number, formatted: string }, category?: { __typename?: 'Category', id: string, name: string, color: string, icon: string } | null, account: { __typename?: 'Account', id: string, name: string }, splitTo: Array<{ __typename?: 'Transaction', id: string, memo: string, includeInReports: boolean, amount: { __typename?: 'Money', decimalAmount: number, formatted: string }, category?: { __typename?: 'Category', id: string, name: string, icon: string, color: string } | null }> };
 
@@ -515,6 +523,13 @@ export type ReorderCategoriesMutationVariables = Exact<{
 
 export type ReorderCategoriesMutation = { __typename?: 'Mutation', reorderCategories: Array<{ __typename?: 'Category', id: string }> };
 
+export type SetDefaultAccountMutationVariables = Exact<{
+  id: Scalars['String']['input'];
+}>;
+
+
+export type SetDefaultAccountMutation = { __typename?: 'Mutation', setDefaultAccount: { __typename?: 'CurrentUser', id: string } };
+
 export type SetDefaultCurrencyMutationVariables = Exact<{
   code: Scalars['CurrencyCode']['input'];
 }>;
@@ -596,7 +611,7 @@ export type CurrenciesQuery = { __typename?: 'Query', currencies: Array<{ __type
 export type CurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type CurrentUserQuery = { __typename?: 'Query', currentUser?: { __typename?: 'CurrentUser', id: string, email: string, defaultCurrency: { __typename?: 'Currency', code: any, name: string, symbol: string, decimalDigits: number }, favoriteCurrencies: Array<{ __typename?: 'Currency', code: any, name: string, symbol: string, decimalDigits: number }>, registeredCredentials: Array<{ __typename?: 'UserCredential', id: string, device: string, createdAt: any }> } | null };
+export type CurrentUserQuery = { __typename?: 'Query', currentUser?: { __typename?: 'CurrentUser', id: string, email: string, defaultCurrency: { __typename?: 'Currency', code: any, name: string, symbol: string, decimalDigits: number }, favoriteCurrencies: Array<{ __typename?: 'Currency', code: any, name: string, symbol: string, decimalDigits: number }>, defaultAccount?: { __typename?: 'Account', id: string, name: string } | null, registeredCredentials: Array<{ __typename?: 'UserCredential', id: string, device: string, createdAt: any }> } | null };
 
 export type GetAccountQueryVariables = Exact<{
   id: Scalars['String']['input'];

@@ -1,12 +1,14 @@
-import { TbEdit, TbTrash } from "solid-icons/tb"
+import { TbAsterisk, TbEdit, TbTrash } from "solid-icons/tb"
 import { Component, For } from "solid-js"
 import toast from "solid-toast"
-import { AccountsQuery } from "../../graphql-types"
+import { AccountsQuery, CurrentUserQuery } from "../../graphql-types"
 import { useDeleteAccount } from "../../graphql/mutations/deleteAccountMutation"
+import { useSetDefaultAccount } from "../../graphql/mutations/setDefaultAccount"
 import { Button, LinkButton } from "../base/Button"
 
 const AccountsList: Component<{
   data: AccountsQuery
+  currentUser?: CurrentUserQuery
 }> = (props) => {
   const deleteAccount = useDeleteAccount({
     onSuccess: () => toast.success("Account deleted"),
@@ -19,6 +21,12 @@ const AccountsList: Component<{
     }
   }
 
+  const setDefaultAccount = useSetDefaultAccount({
+    onSuccess: () => toast.success("Default account updated")
+  })
+
+  const defaultAccountId = () => props.currentUser?.currentUser?.defaultAccount?.id
+
   return (
     <For each={props.data.accounts}>
       {(account) => (
@@ -26,12 +34,22 @@ const AccountsList: Component<{
           <div class="mr-4 min-w-0 flex-1">
             <h3 class="mb-1 truncate leading-none">{account.name}</h3>
           </div>
+          <Button
+            size="sm"
+            variant="ghost"
+            colorScheme={account.id === defaultAccountId() ? "primary" : "neutral"}
+            class="ml-auto mr-2"
+            title={"Set default to " + account.name}
+            onClick={() => setDefaultAccount({ id: account.id })}
+          >
+            <TbAsterisk />
+          </Button>
           <LinkButton
             href={`/accounts/${account.id}`}
             size="sm"
             variant="ghost"
             class="ml-auto mr-2"
-            title={"Edit account " + account.id}
+            title={"Edit account " + account.name}
           >
             <TbEdit />
           </LinkButton>
@@ -39,7 +57,7 @@ const AccountsList: Component<{
             size="sm"
             variant="ghost"
             colorScheme="danger"
-            title={"Delete account " + account.id}
+            title={"Delete account " + account.name}
             onClick={() => onDeleteClick(account.id)}
           >
             <TbTrash />

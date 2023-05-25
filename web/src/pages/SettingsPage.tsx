@@ -11,6 +11,7 @@ import { Button, LinkButton } from "../components/base/Button"
 import { PageHeader } from "../components/base/PageHeader"
 import CategoriesList from "../components/categories/Categories"
 import { CurrentUserProfile } from "../components/user/CurrentUserProfile"
+import { FavoriteCurrencies } from "../components/user/FavoriteCurrencies"
 import {
   AccountsQuery,
   AccountsQueryVariables,
@@ -94,8 +95,8 @@ const SettingsPage: Component = () => {
       </PageHeader>
       <Cell data={data.currentUser} success={CurrentUserProfile} />
 
-      <PageHeader size="lg">
-        Login Methods
+      <PageHeader size="lg" class="mt-4">
+        Login methods
         <Button
           class="ml-auto"
           size="sm"
@@ -126,7 +127,16 @@ const SettingsPage: Component = () => {
         )}
       </For>
 
-      <PageHeader size="lg">
+      <PageHeader size="lg" class="mt-4">
+        Favourite currencies
+        <LinkButton href="/settings/currencies" class="ml-auto" size="sm" colorScheme="primary">
+          Manage
+        </LinkButton>
+      </PageHeader>
+
+      <Cell data={data.currentUser} success={FavoriteCurrencies} />
+
+      <PageHeader size="lg" class="mt-4">
         Categories
         <LinkButton class="ml-auto" size="sm" colorScheme="primary" href="/categories/new">
           New Category
@@ -135,14 +145,18 @@ const SettingsPage: Component = () => {
 
       <Cell data={data.categories} success={CategoriesList} />
 
-      <PageHeader size="lg">
+      <PageHeader size="lg" class="mt-4">
         Accounts
         <LinkButton class="ml-auto" size="sm" colorScheme="primary" href="/accounts/new">
           New Account
         </LinkButton>
       </PageHeader>
 
-      <Cell data={data.accounts} success={Accounts} />
+      <Cell
+        data={data.accounts}
+        success={Accounts}
+        successProps={{ currentUser: data.currentUser() }}
+      />
     </>
   )
 }
