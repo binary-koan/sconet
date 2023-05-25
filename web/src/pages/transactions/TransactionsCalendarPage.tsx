@@ -1,15 +1,15 @@
 import { Title } from "@solidjs/meta"
 import { useNavigate, useRouteData } from "@solidjs/router"
 import { TbList } from "solid-icons/tb"
-import { Component, onMount, Show } from "solid-js"
+import { Component, Show, onMount } from "solid-js"
+import { Cell } from "../../components/Cell"
+import { DefaultCurrencySelect } from "../../components/DefaultCurrencySelect"
 import { Button } from "../../components/base/Button"
 import { PageHeader } from "../../components/base/PageHeader"
-import { Cell } from "../../components/Cell"
-import { PreferredCurrencySelect } from "../../components/PreferredCurrencySelect"
 import { TransactionsCalendar } from "../../components/transactions/TransactionsCalendar"
 import {
-  CurrenciesQuery,
-  CurrenciesQueryVariables,
+  CurrentUserQuery,
+  CurrentUserQueryVariables,
   TransactionsByDayQuery,
   TransactionsByDayQueryVariables
 } from "../../graphql-types"
@@ -18,7 +18,7 @@ import { setTransactionsViewPreference } from "../../utils/transactions/viewPref
 
 export interface TransactionsCalendarPageData {
   data: QueryResource<TransactionsByDayQuery, TransactionsByDayQueryVariables>
-  currencies: QueryResource<CurrenciesQuery, CurrenciesQueryVariables>
+  currentUser: QueryResource<CurrentUserQuery, CurrentUserQueryVariables>
   year: string
   month: string
 }
@@ -36,8 +36,11 @@ const TransactionsCalendarPage: Component = () => {
       <PageHeader size="lg">
         <span class="mr-auto">Transactions</span>
 
-        <Show when={routeData.currencies()?.currencies}>
-          <PreferredCurrencySelect currencies={routeData.currencies()!.currencies} />
+        <Show when={routeData.currentUser()?.currentUser}>
+          <DefaultCurrencySelect
+            favoriteCurrencies={routeData.currentUser()!.currentUser!.favoriteCurrencies}
+            defaultCurrency={routeData.currentUser()!.currentUser!.defaultCurrency}
+          />
         </Show>
 
         <Button

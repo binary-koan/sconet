@@ -1,9 +1,8 @@
 import { Route, RouteDataFunc } from "@solidjs/router"
 import { Component, lazy } from "solid-js"
-import { useCurrenciesQuery } from "../../graphql/queries/currenciesQuery"
+import { useCurrentUserQuery } from "../../graphql/queries/currentUserQuery"
 import { useTransactionsByDayQuery } from "../../graphql/queries/transactionsByDayQuery"
 import { TransactionsCalendarPageData } from "../../pages/transactions/TransactionsCalendarPage"
-import { preferredCurrency } from "../../utils/settings"
 
 const transactionsData: RouteDataFunc<unknown, TransactionsCalendarPageData> = ({ params }) => {
   const year = () => params.yearmonth.split("-")[0]
@@ -11,17 +10,18 @@ const transactionsData: RouteDataFunc<unknown, TransactionsCalendarPageData> = (
   const lastDateOfMonth = () =>
     new Date(parseInt(year()), parseInt(month()), 0).getDate().toString().padStart(2, "0")
 
+  const currentUser = useCurrentUserQuery()
+
+  // TODO: This currently fetches twice, maybe add a skip option to useQuery
   const data = useTransactionsByDayQuery(() => ({
-    currencyCode: preferredCurrency(),
+    currencyCode: currentUser()?.currentUser?.defaultCurrency.code,
     dateFrom: `${year()}-${month()}-01`,
     dateUntil: `${year()}-${month()}-${lastDateOfMonth()}`
   }))
 
-  const currencies = useCurrenciesQuery()
-
   return {
     data,
-    currencies,
+    currentUser,
 
     get year() {
       return year()

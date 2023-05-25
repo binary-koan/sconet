@@ -8,8 +8,9 @@ import { useCreateTransaction } from "../../graphql/mutations/createTransactionM
 import { useAccountsQuery } from "../../graphql/queries/accountsQuery"
 import { useCategoriesQuery } from "../../graphql/queries/categoriesQuery"
 import { useCurrenciesQuery } from "../../graphql/queries/currenciesQuery"
+import { useCurrentUserQuery } from "../../graphql/queries/currentUserQuery"
 import { CATEGORY_BACKGROUND_COLORS, CategoryColor } from "../../utils/categoryColors"
-import { preferredAccount, preferredCurrency } from "../../utils/settings"
+import { preferredAccount } from "../../utils/settings"
 import { Button } from "../base/Button"
 import { InputAddon } from "../base/InputGroup"
 import { Modal, ModalCloseButton, ModalContent, ModalTitle } from "../base/Modal"
@@ -28,6 +29,7 @@ export const NewTransactionModal: Component<{
   const categories = useCategoriesQuery()
   const currencies = useCurrenciesQuery()
   const accounts = useAccountsQuery()
+  const currentUser = useCurrentUserQuery()
 
   const createTransaction = useCreateTransaction({
     onSuccess: () => {
@@ -55,13 +57,8 @@ export const NewTransactionModal: Component<{
   })
 
   createEffect(() => {
-    if (currencies()?.currencies && !getValue(form, "currencyCode")) {
-      setValue(
-        form,
-        "currencyCode",
-        currencies()!.currencies.find((currency) => currency.code === preferredCurrency())?.code ||
-          currencies()!.currencies[0]!.code
-      )
+    if (currentUser()?.currentUser && !getValue(form, "currencyCode")) {
+      setValue(form, "currencyCode", currentUser()!.currentUser!.defaultCurrency.code)
     }
   })
 
@@ -77,7 +74,9 @@ export const NewTransactionModal: Component<{
   })
 
   const onSave = ({ amount, amountType, date, ...data }: NewTransactionModalValues) => {
-    const currency = currencies()?.currencies.find((currency) => currency.code === data.currencyCode)
+    const currency = currencies()?.currencies.find(
+      (currency) => currency.code === data.currencyCode
+    )
     const integerAmount = Math.round(amount * 10 ** (currency?.decimalDigits || 0))
 
     const coercedData = {

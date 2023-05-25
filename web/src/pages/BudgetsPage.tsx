@@ -1,18 +1,18 @@
 import { Title } from "@solidjs/meta"
 import { useNavigate, useRouteData } from "@solidjs/router"
 import { TbArrowLeft, TbArrowRight } from "solid-icons/tb"
-import { createEffect, Show } from "solid-js"
+import { Show, createEffect } from "solid-js"
 import { Dynamic } from "solid-js/web"
+import { Cell } from "../components/Cell"
+import { DefaultCurrencySelect } from "../components/DefaultCurrencySelect"
 import { Button } from "../components/base/Button"
 import { PageHeader } from "../components/base/PageHeader"
 import { Budgets } from "../components/budgets/Budgets"
-import { Cell } from "../components/Cell"
-import { PreferredCurrencySelect } from "../components/PreferredCurrencySelect"
 import {
   BudgetQuery,
   BudgetQueryVariables,
-  CurrenciesQuery,
-  CurrenciesQueryVariables
+  CurrentUserQuery,
+  CurrentUserQueryVariables
 } from "../graphql-types"
 import { decrementMonth, incrementMonth } from "../utils/date"
 import { QueryResource } from "../utils/graphqlClient/useQuery"
@@ -20,7 +20,7 @@ import { setLastViewedBudget } from "../utils/transactions/viewPreference"
 
 export interface BudgetsPageData {
   data: QueryResource<BudgetQuery, BudgetQueryVariables>
-  currencies: QueryResource<CurrenciesQuery, CurrenciesQueryVariables>
+  currentUser: QueryResource<CurrentUserQuery, CurrentUserQueryVariables>
   year: string
   month: string
 }
@@ -56,8 +56,11 @@ const BudgetsPage = () => {
           {date().toLocaleDateString("en", { year: "numeric", month: "long" })}
         </span>
 
-        <Show when={routeData.currencies()?.currencies}>
-          <PreferredCurrencySelect currencies={routeData.currencies()!.currencies} />
+        <Show when={routeData.currentUser()?.currentUser}>
+          <DefaultCurrencySelect
+            favoriteCurrencies={routeData.currentUser()!.currentUser!.favoriteCurrencies}
+            defaultCurrency={routeData.currentUser()!.currentUser!.defaultCurrency}
+          />
         </Show>
 
         <Button

@@ -1,26 +1,26 @@
 import { Navigate, Route, RouteDataFunc } from "@solidjs/router"
 import { Component, lazy } from "solid-js"
 import { useBudgetQuery } from "../graphql/queries/budgetQuery"
-import { useCurrenciesQuery } from "../graphql/queries/currenciesQuery"
+import { useCurrentUserQuery } from "../graphql/queries/currentUserQuery"
 import type { BudgetsPageData } from "../pages/BudgetsPage"
-import { preferredCurrency } from "../utils/settings"
 import { lastViewedBudget } from "../utils/transactions/viewPreference"
 
 const budgetsRouteData: RouteDataFunc<unknown, BudgetsPageData> = ({ params }) => {
   const year = () => params.yearmonth.split("-")[0]
   const month = () => params.yearmonth.split("-")[1]
 
+  const currentUser = useCurrentUserQuery()
+
+  // TODO: This currently fetches twice, maybe add a skip option to useQuery
   const data = useBudgetQuery(() => ({
-    currencyCode: preferredCurrency(),
+    currencyCode: currentUser()?.currentUser?.defaultCurrency.code,
     year: parseInt(year()),
     month: parseInt(month())
   }))
 
-  const currencies = useCurrenciesQuery()
-
   return {
     data,
-    currencies,
+    currentUser,
 
     get year() {
       return year()

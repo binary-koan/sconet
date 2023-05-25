@@ -16,7 +16,6 @@ const createSetting = (key: string) => {
   return [value, setValue] as const
 }
 
-const [preferredCurrency, setPreferredCurrency] = createSetting("sconet.preferredCurrency")
 const [preferredAccount, setPreferredAccount] = createSetting("sconet.preferredAccount")
 
-export { preferredCurrency, setPreferredCurrency, preferredAccount, setPreferredAccount }
+export { preferredAccount, setPreferredAccount }
