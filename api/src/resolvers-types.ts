@@ -377,7 +377,6 @@ export type Transaction = {
   id: Scalars['String'];
   includeInReports: Scalars['Boolean'];
   memo: Scalars['String'];
-  originalMemo: Scalars['String'];
   splitFrom: Maybe<Transaction>;
   splitFromId: Maybe<Scalars['String']>;
   splitTo: Array<Transaction>;
@@ -734,7 +733,6 @@ export type TransactionResolvers<ContextType = Context, ParentType extends Resol
   id: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   includeInReports: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   memo: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  originalMemo: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   splitFrom: Resolver<Maybe<ResolversTypes['Transaction']>, ParentType, ContextType>;
   splitFromId: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   splitTo: Resolver<Array<ResolversTypes['Transaction']>, ParentType, ContextType>;

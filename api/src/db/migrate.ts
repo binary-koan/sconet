@@ -68,7 +68,7 @@ export async function down(version: string) {
 }
 
 export async function writeSchema() {
-  const schema = await sql<
+  const columns = await sql<
     Array<{
       table_name: string
       column_name: string
@@ -82,23 +82,70 @@ export async function writeSchema() {
     WHERE table_schema = 'public'
   `
 
-  const tables = orderBy(schema, "table_name").filter(
-    (column) =>
-      column.table_name !== "pg_stat_statements" &&
-      column.table_name !== "pg_stat_statements_info" &&
-      column.table_name !== "schemaMigrations"
-  )
+  const constraints = await sql<
+    Array<{
+      table_name: string
+      column_name: string
+      constraint_name: string
+    }>
+  >`
+    SELECT table_name, column_name, constraint_name
+    FROM information_schema.constraint_column_usage
+    WHERE table_schema = 'public'
+  `
+
+  const indexes = await sql<
+    Array<{
+      tablename: string
+      indexname: string
+    }>
+  >`
+    SELECT tablename, indexname
+    FROM pg_indexes
+    WHERE schemaname = 'public'
+  `
+
+  const tables = orderBy(columns, ["table_name", "column_name"])
+    .filter(
+      (column) =>
+        column.table_name !== "pg_stat_statements" &&
+        column.table_name !== "pg_stat_statements_info" &&
+        column.table_name !== "schemaMigrations"
+    )
+    .map((column) => ({
+      ...column,
+      constraints: constraints.filter(
+        (constraint) =>
+          constraint.column_name === column.column_name &&
+          constraint.table_name === column.table_name
+      )
+    }))
 
   const formatted = map(groupBy(tables, "table_name"), (columns, tableName) =>
     [
-      `## ${tableName}`,
+      `## \`${tableName}\``,
       "",
-      ...columns.map(
-        ({ column_name, data_type, is_nullable, column_default }) =>
-          `- _${column_name}_ ${data_type}${is_nullable ? "" : " not null"}${
-            column_default ? ` (default: \`${column_default}\`)` : ""
-          }`
-      )
+      "Columns",
+      ...columns.map(({ column_name, data_type, is_nullable, column_default, constraints }) =>
+        [
+          ["-", `\`${column_name}\``, data_type, !is_nullable && "not null"]
+            .filter(Boolean)
+            .join(" "),
+
+          column_default && `  - default: \`${column_default}\``,
+
+          ...constraints.map(
+            (constraint) => `  - used in constraint: \`${constraint.constraint_name}\``
+          )
+        ]
+          .filter(Boolean)
+          .join("\n")
+      ),
+      "",
+      "Indexes",
+      ...indexes
+        .filter((index) => index.tablename === tableName)
+        .map((index) => `- \`${index.indexname}\``)
     ].join("\n")
   ).join("\n\n")
 

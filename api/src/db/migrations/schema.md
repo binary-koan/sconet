@@ -1,80 +1,130 @@
-## accounts
+## `accounts`
 
-- _id_ uuid (default: `uuid_generate_v4()`)
-- _deletedAt_ timestamp without time zone
-- _createdAt_ timestamp without time zone
-- _updatedAt_ timestamp without time zone
-- _name_ text
+Columns
+- `createdAt` timestamp without time zone
+- `deletedAt` timestamp without time zone
+- `id` uuid
+  - default: `uuid_generate_v4()`
+  - used in constraint: `accounts_pkey`
+  - used in constraint: `fk_account`
+- `name` text
+- `updatedAt` timestamp without time zone
 
-## categories
+Indexes
+- `accounts_pkey`
 
-- _id_ uuid (default: `uuid_generate_v4()`)
-- _isRegular_ boolean
-- _budget_ integer
-- _sortOrder_ integer
-- _deletedAt_ timestamp without time zone
-- _createdAt_ timestamp without time zone
-- _updatedAt_ timestamp without time zone
-- _name_ text
-- _color_ text
-- _icon_ text
-- _budgetCurrencyCode_ text
+## `categories`
 
-## dailyExchangeRates
+Columns
+- `budget` integer
+- `budgetCurrencyCode` text
+- `color` text
+- `createdAt` timestamp without time zone
+- `deletedAt` timestamp without time zone
+- `icon` text
+- `id` uuid
+  - default: `uuid_generate_v4()`
+  - used in constraint: `categories_pkey`
+  - used in constraint: `fk_category`
+- `isRegular` boolean
+- `name` text
+- `sortOrder` integer
+- `updatedAt` timestamp without time zone
 
-- _id_ uuid (default: `uuid_generate_v4()`)
-- _date_ date
-- _deletedAt_ timestamp without time zone
-- _createdAt_ timestamp without time zone
-- _updatedAt_ timestamp without time zone
-- _fromCurrencyCode_ text
+Indexes
+- `categories_pkey`
 
-## exchangeRateValues
+## `dailyExchangeRates`
 
-- _id_ uuid (default: `uuid_generate_v4()`)
-- _rate_ real
-- _deletedAt_ timestamp without time zone
-- _createdAt_ timestamp without time zone
-- _updatedAt_ timestamp without time zone
-- _dailyExchangeRateId_ text
-- _toCurrencyCode_ text
+Columns
+- `createdAt` timestamp without time zone
+- `date` date
+- `deletedAt` timestamp without time zone
+- `fromCurrencyCode` text
+- `id` uuid
+  - default: `uuid_generate_v4()`
+  - used in constraint: `dailyExchangeRates_pkey`
+  - used in constraint: `fk_dailyexchangerate`
+- `updatedAt` timestamp without time zone
 
-## transactions
+Indexes
+- `dailyExchangeRates_pkey`
 
-- _id_ uuid (default: `uuid_generate_v4()`)
-- _date_ date
-- _includeInReports_ integer
-- _amount_ integer
-- _createdAt_ timestamp without time zone
-- _updatedAt_ timestamp without time zone
-- _deletedAt_ timestamp without time zone
-- _memo_ text
-- _originalMemo_ text
-- _currencyCode_ text
-- _categoryId_ text
-- _accountId_ text
-- _remoteId_ text
-- _splitFromId_ text
+## `exchangeRateValues`
 
-## userCredentials
+Columns
+- `createdAt` timestamp without time zone
+- `dailyExchangeRateId` uuid
+- `deletedAt` timestamp without time zone
+- `id` uuid
+  - default: `uuid_generate_v4()`
+  - used in constraint: `exchangeRateValues_pkey`
+- `rate` real
+- `toCurrencyCode` text
+- `updatedAt` timestamp without time zone
 
-- _id_ uuid (default: `uuid_generate_v4()`)
-- _credentialId_ bytea
-- _credentialPublicKey_ bytea
-- _counter_ integer
-- _deletedAt_ timestamp without time zone
-- _createdAt_ timestamp without time zone
-- _updatedAt_ timestamp without time zone
-- _userId_ text
-- _device_ text
+Indexes
+- `exchangeRateValues_pkey`
 
-## users
+## `transactions`
 
-- _id_ uuid (default: `uuid_generate_v4()`)
-- _settings_ jsonb
-- _createdAt_ timestamp without time zone
-- _updatedAt_ timestamp without time zone
-- _deletedAt_ timestamp without time zone
-- _webauthnChallenge_ text
-- _email_ text
-- _encryptedPassword_ text
+Columns
+- `accountId` uuid
+- `amount` integer
+- `categoryId` uuid
+- `createdAt` timestamp without time zone
+- `currencyCode` text
+- `date` date
+- `deletedAt` timestamp without time zone
+- `id` uuid
+  - default: `uuid_generate_v4()`
+  - used in constraint: `transactions_pkey`
+  - used in constraint: `fk_splitfrom`
+- `includeInReports` boolean
+- `memo` text
+- `splitFromId` uuid
+- `updatedAt` timestamp without time zone
+
+Indexes
+- `transactions_pkey`
+- `idx_memo`
+- `idx_date`
+- `idx_accountid`
+- `idx_categoryid`
+- `idx_splitfromid`
+
+## `userCredentials`
+
+Columns
+- `counter` integer
+- `createdAt` timestamp without time zone
+- `credentialId` bytea
+- `credentialPublicKey` bytea
+- `deletedAt` timestamp without time zone
+- `device` text
+- `id` uuid
+  - default: `uuid_generate_v4()`
+  - used in constraint: `userCredentials_pkey`
+- `updatedAt` timestamp without time zone
+- `userId` uuid
+
+Indexes
+- `userCredentials_pkey`
+
+## `users`
+
+Columns
+- `createdAt` timestamp without time zone
+- `deletedAt` timestamp without time zone
+- `email` text
+- `encryptedPassword` text
+- `id` uuid
+  - default: `uuid_generate_v4()`
+  - used in constraint: `users_pkey`
+  - used in constraint: `fk_user`
+- `settings` jsonb
+- `updatedAt` timestamp without time zone
+- `webauthnChallenge` text
+
+Indexes
+- `users_pkey`

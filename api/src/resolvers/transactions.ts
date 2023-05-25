@@ -54,7 +54,6 @@ export const createTransaction: MutationResolvers["createTransaction"] = async (
     ...input,
     date: input.date || new Date(),
     includeInReports: input.includeInReports || true,
-    originalMemo: input.memo,
     splitFromId: null
   })
 }
@@ -152,7 +151,6 @@ export const Transaction: Resolvers["Transaction"] = {
 
   date: (transaction) => transaction.date,
   memo: (transaction) => transaction.memo,
-  originalMemo: (transaction) => transaction.originalMemo,
   includeInReports: (transaction) => transaction.includeInReports,
 
   currencyCode: (transaction) => transaction.currencyCode,

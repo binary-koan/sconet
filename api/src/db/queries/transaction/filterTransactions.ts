@@ -51,11 +51,10 @@ export function filterTransactions({
   if (filter?.keyword) {
     where = sql`${where} AND (
       "memo" LIKE ${filter.keyword}
-      OR "originalMemo" LIKE ${filter.keyword}
       OR EXISTS (
         SELECT 1 FROM "transactions" "other"
         WHERE "other"."splitFromId" = "transactions"."id"
-        AND ("other"."memo" LIKE ${filter.keyword} OR "other"."originalMemo" LIKE ${filter.keyword})
+        AND "other"."memo" LIKE ${filter.keyword}
       )
     )`
   }

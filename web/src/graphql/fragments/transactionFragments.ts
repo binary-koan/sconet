@@ -5,7 +5,6 @@ export const FullTransactionFragment = gql`
     id
     memo
     date
-    originalMemo
     amount {
       decimalAmount
       formatted

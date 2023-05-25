@@ -22,7 +22,6 @@ CREATE TABLE "categories" (
 CREATE TABLE "transactions" (
   "id" UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   "memo" TEXT NOT NULL,
-  "originalMemo" TEXT NOT NULL,
   "date" DATE NOT NULL,
   "includeInReports" BOOLEAN NOT NULL,
   "amount" INTEGER NOT NULL,

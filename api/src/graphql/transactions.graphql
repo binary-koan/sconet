@@ -2,7 +2,6 @@ type Transaction {
   id: String!
   date: Date!
   memo: String!
-  originalMemo: String!
   amount(currencyCode: CurrencyCode): Money!
   currency: Currency!
   currencyCode: CurrencyCode!

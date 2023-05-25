@@ -1,7 +1,6 @@
 export interface TransactionRecord {
   id: string
   memo: string
-  originalMemo: string
   date: Date
   includeInReports: boolean
 
