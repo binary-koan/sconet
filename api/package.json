@@ -12,6 +12,7 @@
     "migrate:rollback": "TZ=UTC bun bin/run.ts migrate:rollback",
     "migrate:up": "TZ=UTC bun bin/run.ts migrate:up",
     "migrate:down": "TZ=UTC bun bin/run.ts migrate:down",
+    "schema:write": "TZ=UTC bun bin/run.ts schema:write",
     "seed": "TZ=UTC bun bin/run.ts seed",
     "job": "TZ=UTC bun bin/run.ts job"
   },

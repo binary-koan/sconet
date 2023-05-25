@@ -1,6 +1,6 @@
 import { createDb } from "../src/db/createDb"
 import { sql } from "../src/db/database"
-import { createMigration, down, migrate, rollback, up } from "../src/db/migrate"
+import { createMigration, down, migrate, rollback, up, writeSchema } from "../src/db/migrate"
 import { seed } from "../src/db/seeds/seed"
 import { startServer } from "../src/server"
 
@@ -28,6 +28,11 @@ const commands: { [command: string]: ((...args: string[]) => void | Promise<void
 
   migrate_down: async (version: string) => {
     await down(version)
+    await sql.end()
+  },
+
+  schema_write: async () => {
+    await writeSchema()
     await sql.end()
   },
 
