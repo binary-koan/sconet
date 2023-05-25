@@ -71,7 +71,7 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: "pnpm dev:test",
+    command: "bun dev:test",
     url: "http://localhost:1236",
     stdout: "pipe",
     reuseExistingServer: !process.env.CI,

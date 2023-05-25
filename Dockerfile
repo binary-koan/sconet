@@ -23,10 +23,13 @@ FROM gcr.io/distroless/cc-debian11
 
 WORKDIR /app
 
+ENV NODE_ENV=production
 ENV STATIC_PATH=static
+ENV MIGRATIONS_PATH=migrations
 ENV TZ=UTC
 
 COPY --from=builder /app/api/build .
 COPY --from=builder /app/web/build ./static
+COPY --from=builder /app/api/src/db/migrations ./migrations
 
-ENTRYPOINT ["/app/server"]
+CMD ["/app/run", "server"]

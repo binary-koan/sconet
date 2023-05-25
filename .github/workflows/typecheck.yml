@@ -11,22 +11,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: pnpm/action-setup@v2
+      - uses: oven-sh/setup-bun@v1
         with:
-          version: 7.x.x
-
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 18.x
-          cache: pnpm
-
-      - name: Setup Bun Runtime
-        uses: antongolub/action-setup-bun@v1
-        with:
-          bun-version: 0.5.1
+          bun-version: 0.6.3
 
       - name: Install dependencies
-        run: pnpm install
+        run: bun install
 
       - name: Run type checks
-        run: pnpm typecheck
+        run: bun typecheck

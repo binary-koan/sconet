@@ -1,24 +1,26 @@
-# fly.toml file generated for sconet on 2023-01-06T23:17:53+13:00
+# fly.toml app configuration file generated for sconet-app on 2023-05-25T01:01:18+12:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
 
-app = "sconet"
+app = "sconet-app"
 kill_signal = "SIGINT"
 kill_timeout = 5
+primary_region = "syd"
 processes = []
+
+[build]
+
+[deploy]
+  release_command = "/app/run setup"
 
 [env]
   PORT = 8080
-
-[deploy]
-  release_command = "bun migrate"
 
 [experimental]
   allowed_public_ports = []
   auto_rollback = true
   enable_consul = true
-
-[mounts]
-  source="sconet_data"
-  destination="/app/data"
 
 [[services]]
   http_checks = []

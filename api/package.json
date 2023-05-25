@@ -1,21 +1,18 @@
 {
   "name": "api",
   "scripts": {
-    "dev": "TZ=UTC bun run --loader .graphql:file --watch src/server.ts",
-    "build": "mkdir -p build && bun build:server && bun build:migrate && bun build:job",
-    "build:server": "cd build && bun build --compile ../src/server.ts --outfile server",
-    "build:migrate": "cd build && bun build --compile ../bin/migrate/index.ts --outfile migrate",
-    "build:job": "cd build && bun build --compile ../bin/job.ts --outfile job",
+    "dev": "TZ=UTC bun run --watch bin/run.ts server",
+    "build": "mkdir -p build && cd build && bun build --compile ../bin/run.ts --outfile run",
     "codegen": "graphql-codegen",
     "typecheck": "tsc --noEmit",
-    "migrate": "TZ=UTC bun bin/migrate/index.ts",
-    "migrate:create": "TZ=UTC bun bin/migrate/create.ts",
-    "migrate:rollback": "TZ=UTC bun bin/migrate/rollback.ts",
-    "migrate:up": "TZ=UTC bun bin/migrate/up.ts",
-    "migrate:down": "TZ=UTC bun bin/migrate/down.ts",
-    "seed": "TZ=UTC bun bin/seed/index.ts",
-    "dbconsole": "TZ=UTC bun bin/dbconsole.ts",
-    "job": "TZ=UTC bun bin/job.ts"
+    "setup": "TZ=UTC bun bin/run.ts setup",
+    "migrate": "TZ=UTC bun bin/run.ts migrate",
+    "migrate:create": "TZ=UTC bun bin/run.ts migrate:create",
+    "migrate:rollback": "TZ=UTC bun bin/run.ts migrate:rollback",
+    "migrate:up": "TZ=UTC bun bin/run.ts migrate:up",
+    "migrate:down": "TZ=UTC bun bin/run.ts migrate:down",
+    "seed": "TZ=UTC bun bin/run.ts seed",
+    "job": "TZ=UTC bun bin/run.ts job"
   },
   "dependencies": {
     "@graphql-tools/schema": "^9.0.13",

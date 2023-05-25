@@ -17,7 +17,5 @@ export async function runDbSession(runner: () => void | Promise<void>) {
     })
 
     await sql`SELECT pg_stat_statements_reset()`
-
-    sql.end()
   }
 }

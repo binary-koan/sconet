@@ -10,11 +10,11 @@ It's 🚧 **super WIP and incomplete** 🚧 so expect to find broken things ever
 Requirements
 
 - [Bun](https://bun.sh/) 0.4.0 or higher
-- [Node.js](https://nodejs.org/en/) and [pnpm](https://pnpm.io/)
+- [Node.js](https://nodejs.org/en/)
 - A [PostgreSQL](https://www.postgresql.org) database with `pg_stat_statements` and `uuid-ossp` extensions enabled
 
 1. Clone the repo
-2. Run `pnpm install` in the root
+2. Run `bun install` in the root
 3. Set up a [CloudFlare Turnstile](https://www.cloudflare.com/products/turnstile/) site and set the domain to `localhost`. This is required for login to work
 4. Create a `api/.env` file with the following content:
 
@@ -33,7 +33,7 @@ VITE_TURNSTILE_SITEKEY=<your turnstile site key>
 6. In the `api` directory:
    - Run `bun migrate` to apply database migrations
    - Run `bun seed` to populate some initial data along with the user(s) in `USER_EMAILS` above
-7. Run `pnpm dev` to start a dev server
+7. Run `bun dev` to start a dev server
    - Visit `http://localhost:1235` for the app itself
    - Visit `http://localhost:4444/graphql` to browse the API in GraphiQL
 8. Log in with the email you added in `USER_EMAILS` and the password `changeme`
