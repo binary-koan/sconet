@@ -7,6 +7,9 @@ export interface TransactionRecord {
   amount: number
   currencyCode: string
 
+  originalAmount: number | null
+  originalCurrencyCode: string | null
+
   categoryId: string | null
 
   accountId: string

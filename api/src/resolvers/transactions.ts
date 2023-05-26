@@ -80,18 +80,33 @@ export const updateTransaction: MutationResolvers["updateTransaction"] = async (
     memo: updateInput.memo ?? undefined,
     amount: updateInput.amount ?? undefined,
     currencyCode: updateInput.currencyCode ?? undefined,
+    originalAmount: updateInput.originalAmount ?? undefined,
+    originalCurrencyCode: updateInput.originalCurrencyCode ?? undefined,
     date: updateInput.date ?? undefined,
     includeInReports: updateInput.includeInReports ?? undefined,
     accountId: updateInput.accountId ?? undefined
   }
 
-  await transactionsRepo.updateOne(id, updates)
-  await transactionsRepo.updateSplitTransactions(
-    id,
-    pick(updates, ...parentAttributes, "includeInReports")
-  )
+  if (
+    updates.amount === updates.originalAmount &&
+    updates.currencyCode === updates.originalCurrencyCode
+  ) {
+    updates.originalAmount = undefined
+    updates.originalCurrencyCode = undefined
+  }
 
-  return (await transactionsRepo.get(id))!
+  const updatedTransaction = await transactionsRepo.updateOne(id, updates)
+
+  if (updates.amount !== transaction.amount || updates.currencyCode !== transaction.currencyCode) {
+    await transactionsRepo.deleteSplitTransactions(id)
+  } else {
+    await transactionsRepo.updateSplitTransactions(
+      id,
+      pick(updates, ...parentAttributes, "includeInReports")
+    )
+  }
+
+  return updatedTransaction
 }
 
 export const deleteTransaction: MutationResolvers["deleteTransaction"] = async (_, { id }) => {
@@ -146,15 +161,27 @@ export const splitTransaction: MutationResolvers["splitTransaction"] = async (
 export const Transaction: Resolvers["Transaction"] = {
   id: (transaction) => transaction.id,
 
-  amount: async (transaction, { currencyCode }, context) =>
-    loadTransactionCurrencyValue(transaction, currencyCode, context.data.currencyValues),
-
   date: (transaction) => transaction.date,
   memo: (transaction) => transaction.memo,
   includeInReports: (transaction) => transaction.includeInReports,
 
+  amount: async (transaction, { currencyCode }, context) =>
+    loadTransactionCurrencyValue(transaction, currencyCode, context.data.currencyValues),
   currencyCode: (transaction) => transaction.currencyCode,
   currency: async (transaction) => Currencies[transaction.currencyCode],
+
+  originalAmount: async (transaction, { currencyCode }, context) =>
+    transaction.originalAmount
+      ? loadTransactionCurrencyValue(
+          transaction,
+          currencyCode,
+          context.data.currencyValues,
+          "originalAmount"
+        )
+      : null,
+  originalCurrencyCode: (transaction) => transaction.originalCurrencyCode,
+  originalCurrency: async (transaction) =>
+    transaction.originalCurrencyCode ? Currencies[transaction.originalCurrencyCode] : null,
 
   categoryId: (transaction) => transaction.categoryId,
   category: async (transaction, _, context) =>

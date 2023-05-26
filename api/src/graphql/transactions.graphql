@@ -2,9 +2,15 @@ type Transaction {
   id: String!
   date: Date!
   memo: String!
+
   amount(currencyCode: CurrencyCode): Money!
   currency: Currency!
   currencyCode: CurrencyCode!
+
+  originalAmount(currencyCode: CurrencyCode): Money
+  originalCurrency: Currency
+  originalCurrencyCode: CurrencyCode
+
   category: Category
   categoryId: String
   account: Account!
@@ -52,6 +58,8 @@ input CreateTransactionInput {
   memo: String!
   amount: Int!
   currencyCode: CurrencyCode!
+  originalAmount: Int
+  originalCurrencyCode: CurrencyCode
   categoryId: String
   accountId: String!
   date: Date
@@ -62,6 +70,8 @@ input UpdateTransactionInput {
   memo: String
   amount: Int
   currencyCode: CurrencyCode
+  originalAmount: Int
+  originalCurrencyCode: CurrencyCode
   categoryId: String
   accountId: String
   date: Date

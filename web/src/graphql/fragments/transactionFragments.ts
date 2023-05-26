@@ -5,10 +5,19 @@ export const FullTransactionFragment = gql`
     id
     memo
     date
+
     amount {
       decimalAmount
       formatted
     }
+    currencyCode
+
+    originalAmount {
+      decimalAmount
+      formatted
+    }
+    originalCurrencyCode
+
     includeInReports
     category {
       id
@@ -20,7 +29,6 @@ export const FullTransactionFragment = gql`
       id
       name
     }
-    currencyCode
     splitFromId
     splitTo {
       id

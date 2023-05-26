@@ -56,28 +56,40 @@ export function currencyValuesLoader(
 export function loadTransactionCurrencyValue(
   transaction: TransactionRecord,
   targetCurrencyCode: string | null | undefined,
-  loader: CurrencyValuesLoader
+  loader: CurrencyValuesLoader,
+  field: "amount" | "originalAmount" = "amount"
 ) {
-  return loader.load(transactionToCurrencyValue(transaction, targetCurrencyCode))
+  return loader.load(transactionToCurrencyValue(transaction, targetCurrencyCode, field))
 }
 
 export function loadTransactionCurrencyValues(
   transactions: TransactionRecord[],
   targetCurrencyCode: string | null | undefined,
-  loader: CurrencyValuesLoader
+  loader: CurrencyValuesLoader,
+  field: "amount" | "originalAmount" = "amount"
 ) {
   return loader.loadMany(
-    transactions.map((transaction) => transactionToCurrencyValue(transaction, targetCurrencyCode))
+    transactions.map((transaction) =>
+      transactionToCurrencyValue(transaction, targetCurrencyCode, field)
+    )
   )
 }
 
 function transactionToCurrencyValue(
   transaction: TransactionRecord,
-  targetCurrencyCode?: string | null
+  targetCurrencyCode: string | null | undefined,
+  field: "amount" | "originalAmount"
 ): AmountForConversion {
+  const currencyCode = transaction[field === "amount" ? "currencyCode" : "originalCurrencyCode"]
+  const amount = transaction[field]
+
+  if (!amount || !currencyCode) {
+    throw new Error(`Transaction ${transaction.id} has no ${field}`)
+  }
+
   return {
-    original: new Money(transaction.amount, transaction.currencyCode),
-    targetCurrencyCode: targetCurrencyCode || transaction.currencyCode,
+    original: new Money(amount, currencyCode),
+    targetCurrencyCode: targetCurrencyCode || currencyCode,
     date: transaction.date
   }
 }

@@ -82,6 +82,8 @@ Columns
   - used in constraint: `fk_splitfrom`
 - `includeInReports` boolean
 - `memo` text
+- `originalAmount` integer
+- `originalCurrencyCode` text
 - `splitFromId` uuid
 - `updatedAt` timestamp without time zone
 

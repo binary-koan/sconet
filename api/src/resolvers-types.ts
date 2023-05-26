@@ -97,6 +97,8 @@ export type CreateTransactionInput = {
   date: InputMaybe<Scalars['Date']>;
   includeInReports: InputMaybe<Scalars['Boolean']>;
   memo: Scalars['String'];
+  originalAmount: InputMaybe<Scalars['Int']>;
+  originalCurrencyCode: InputMaybe<Scalars['CurrencyCode']>;
 };
 
 export type Currency = {
@@ -377,6 +379,9 @@ export type Transaction = {
   id: Scalars['String'];
   includeInReports: Scalars['Boolean'];
   memo: Scalars['String'];
+  originalAmount: Maybe<Money>;
+  originalCurrency: Maybe<Currency>;
+  originalCurrencyCode: Maybe<Scalars['CurrencyCode']>;
   splitFrom: Maybe<Transaction>;
   splitFromId: Maybe<Scalars['String']>;
   splitTo: Array<Transaction>;
@@ -384,6 +389,11 @@ export type Transaction = {
 
 
 export type TransactionAmountArgs = {
+  currencyCode: InputMaybe<Scalars['CurrencyCode']>;
+};
+
+
+export type TransactionOriginalAmountArgs = {
   currencyCode: InputMaybe<Scalars['CurrencyCode']>;
 };
 
@@ -422,6 +432,8 @@ export type UpdateTransactionInput = {
   date: InputMaybe<Scalars['Date']>;
   includeInReports: InputMaybe<Scalars['Boolean']>;
   memo: InputMaybe<Scalars['String']>;
+  originalAmount: InputMaybe<Scalars['Int']>;
+  originalCurrencyCode: InputMaybe<Scalars['CurrencyCode']>;
 };
 
 export type UserCredential = {
@@ -733,6 +745,9 @@ export type TransactionResolvers<ContextType = Context, ParentType extends Resol
   id: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   includeInReports: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   memo: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  originalAmount: Resolver<Maybe<ResolversTypes['Money']>, ParentType, ContextType, Partial<TransactionOriginalAmountArgs>>;
+  originalCurrency: Resolver<Maybe<ResolversTypes['Currency']>, ParentType, ContextType>;
+  originalCurrencyCode: Resolver<Maybe<ResolversTypes['CurrencyCode']>, ParentType, ContextType>;
   splitFrom: Resolver<Maybe<ResolversTypes['Transaction']>, ParentType, ContextType>;
   splitFromId: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   splitTo: Resolver<Array<ResolversTypes['Transaction']>, ParentType, ContextType>;
