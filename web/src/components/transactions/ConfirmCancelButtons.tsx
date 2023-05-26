@@ -9,8 +9,7 @@ const ConfirmCancelButtons: Component<{ onConfirm: () => void; onCancel: () => v
   return (
     <InputAddon class="flex w-24">
       <Button
-        size="custom"
-        class="h-6 flex-1"
+        class="ml-1 flex-1"
         colorScheme="primary"
         aria-label="Confirm"
         onClick={props.onConfirm}
@@ -18,8 +17,7 @@ const ConfirmCancelButtons: Component<{ onConfirm: () => void; onCancel: () => v
         <TbCheck />
       </Button>
       <Button
-        size="custom"
-        class="ml-1 h-6 flex-1"
+        class="ml-1 flex-1"
         colorScheme="neutral"
         aria-label="Cancel"
         onClick={props.onCancel}

@@ -7,6 +7,8 @@ const INPUT_SIZES = {
 
 interface InputCustomProps {
   size?: keyof typeof INPUT_SIZES
+  onEnter?: () => void
+  onEscape?: () => void
 }
 
 export const inputClasses = (props: InputCustomProps) =>
@@ -17,7 +19,21 @@ export const inputClasses = (props: InputCustomProps) =>
 export type InputProps = JSX.IntrinsicElements["input"] & InputCustomProps
 
 export const Input = (allProps: InputProps) => {
-  const [props, elementProps] = splitProps(allProps, ["size", "class"])
+  const [props, elementProps] = splitProps(allProps, ["size", "class", "onEnter", "onEscape"])
 
-  return <input class={`${inputClasses(props)} ${props.class}`} {...elementProps} />
+  const onKeyDown = (e: KeyboardEvent) => {
+    if (e.key === "Enter") {
+      props.onEnter?.()
+    } else if (e.key === "Escape") {
+      props.onEscape?.()
+    }
+  }
+
+  return (
+    <input
+      class={`${inputClasses(props)} ${props.class}`}
+      onKeyDown={onKeyDown}
+      {...elementProps}
+    />
+  )
 }

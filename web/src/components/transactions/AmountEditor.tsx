@@ -1,5 +1,4 @@
 import { Component, createSignal, onMount } from "solid-js"
-import toast from "solid-toast"
 import { FullTransactionFragment } from "../../graphql-types"
 import { useUpdateTransaction } from "../../graphql/mutations/updateTransactionMutation"
 import { Input } from "../base/Input"
@@ -10,7 +9,6 @@ const MemoEditor: Component<{ transaction: FullTransactionFragment; stopEditing:
 ) => {
   const updateTransaction = useUpdateTransaction({
     onSuccess() {
-      toast.success("Memo updated")
       props.stopEditing()
     }
   })
@@ -34,9 +32,7 @@ const MemoEditor: Component<{ transaction: FullTransactionFragment; stopEditing:
       <Input
         ref={input}
         value={newMemo()}
-        onInput={(e) => setNewMemo(e.currentTarget.value)}
-        onEnter={doUpdate}
-        onEscape={props.stopEditing}
+        onChange={(e) => setNewMemo(e.currentTarget.value)}
         class="flex-1"
       />
       <ConfirmCancelButtons onConfirm={doUpdate} onCancel={props.stopEditing} />
