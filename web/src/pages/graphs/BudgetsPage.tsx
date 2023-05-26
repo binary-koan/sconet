@@ -2,21 +2,21 @@ import { Title } from "@solidjs/meta"
 import { useNavigate, useRouteData } from "@solidjs/router"
 import { TbArrowLeft, TbArrowRight } from "solid-icons/tb"
 import { Show, createEffect } from "solid-js"
-import { Dynamic } from "solid-js/web"
-import { Cell } from "../components/Cell"
-import { Button } from "../components/base/Button"
-import { PageHeader } from "../components/base/PageHeader"
-import { Budgets } from "../components/budgets/Budgets"
-import { DefaultCurrencySelect } from "../components/currencies/DefaultCurrencySelect"
+import { Cell } from "../../components/Cell"
+import { GraphsNavigation } from "../../components/GraphsNavigation"
+import { Button } from "../../components/base/Button"
+import { PageHeader } from "../../components/base/PageHeader"
+import { Budgets } from "../../components/budgets/Budgets"
+import { DefaultCurrencySelect } from "../../components/currencies/DefaultCurrencySelect"
 import {
   BudgetQuery,
   BudgetQueryVariables,
   CurrentUserQuery,
   CurrentUserQueryVariables
-} from "../graphql-types"
-import { decrementMonth, incrementMonth } from "../utils/date"
-import { QueryResource } from "../utils/graphqlClient/useQuery"
-import { setLastViewedBudget } from "../utils/transactions/viewPreference"
+} from "../../graphql-types"
+import { decrementMonth, incrementMonth } from "../../utils/date"
+import { QueryResource } from "../../utils/graphqlClient/useQuery"
+import { setLastViewedBudget } from "../../utils/transactions/viewPreference"
 
 export interface BudgetsPageData {
   data: QueryResource<BudgetQuery, BudgetQueryVariables>
@@ -57,6 +57,8 @@ const BudgetsPage = () => {
     <>
       <Title>Budgets</Title>
 
+      <GraphsNavigation />
+
       <PageHeader size="lg">
         <span class="mr-auto">
           {date().toLocaleDateString("en", { year: "numeric", month: "long" })}
@@ -75,7 +77,7 @@ const BudgetsPage = () => {
           variant="ghost"
           onClick={() => setParams(decrementMonth)}
         >
-          <Dynamic component={TbArrowLeft} />
+          <TbArrowLeft />
         </Button>
         <Button
           size="sm"
@@ -84,7 +86,7 @@ const BudgetsPage = () => {
           onClick={() => setParams(incrementMonth)}
           disabled={isCurrentMonth()}
         >
-          <Dynamic component={TbArrowRight} />
+          <TbArrowRight />
         </Button>
       </PageHeader>
       <Cell

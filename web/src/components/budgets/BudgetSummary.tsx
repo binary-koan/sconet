@@ -3,10 +3,8 @@ import { BudgetQuery } from "../../graphql-types"
 import { LinkButton } from "../base/Button"
 
 export const BudgetSummary: Component<{
-  budget: BudgetQuery["budget"]
-  year: string
-  month: string
-  isPastMonth: boolean
+  budget: Pick<BudgetQuery["budget"], "income" | "totalSpending" | "difference">
+  showDifference: boolean
   filteredTransactions: (filters?: any) => string
 }> = (props) => {
   return (
@@ -20,7 +18,7 @@ export const BudgetSummary: Component<{
         <div class="truncate text-xs">Income</div>
       </LinkButton>
 
-      <Show when={props.isPastMonth}>
+      <Show when={props.showDifference}>
         <div class="text-2xl">-</div>
       </Show>
 
@@ -33,7 +31,7 @@ export const BudgetSummary: Component<{
         <div class="truncate text-xs">Spending</div>
       </LinkButton>
 
-      <Show when={props.isPastMonth}>
+      <Show when={props.showDifference}>
         <div class="ml-2 text-2xl">=</div>
 
         <LinkButton

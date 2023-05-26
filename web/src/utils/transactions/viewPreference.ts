@@ -25,3 +25,9 @@ export const [lastViewedBudget, setLastViewedBudget] = createPreference<LastView
   "lastViewedBudget",
   null
 )
+
+export type LastViewedBalance = string | null
+export const [lastViewedBalance, setLastViewedBalance] = createPreference<LastViewedBalance>(
+  "lastViewedBalance",
+  null
+)

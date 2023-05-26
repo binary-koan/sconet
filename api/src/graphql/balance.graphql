@@ -1,0 +1,25 @@
+type AnnualBalance {
+  id: String!
+  year: Int!
+  currency: Currency!
+
+  income: Money!
+  totalSpending: Money!
+  difference: Money!
+
+  months: [MonthBalance!]!
+}
+
+type MonthBalance {
+  id: String!
+  month: Int!
+  year: Int!
+
+  income: Money!
+  totalSpending: Money!
+  difference: Money!
+}
+
+type Query {
+  balance(year: Int!, currencyCode: CurrencyCode): AnnualBalance! @authenticated
+}

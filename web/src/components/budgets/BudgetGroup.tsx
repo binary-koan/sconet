@@ -1,11 +1,11 @@
 import { TbListSearch } from "solid-icons/tb"
 import { Component, For, Show } from "solid-js"
 import { BudgetQuery } from "../../graphql-types"
-import { CategoryColor, CATEGORY_BACKGROUND_COLORS } from "../../utils/categoryColors"
+import { CATEGORY_BACKGROUND_COLORS, CategoryColor } from "../../utils/categoryColors"
 import { getCssValue } from "../../utils/getCssValue"
 import { namedIcons } from "../../utils/namedIcons"
-import { LinkButton } from "../base/Button"
 import CategoryIndicator from "../CategoryIndicator"
+import { LinkButton } from "../base/Button"
 import { PieChart } from "./PieChart"
 
 const BudgetGroup: Component<{
@@ -14,17 +14,7 @@ const BudgetGroup: Component<{
   filteredTransactionsRoute: (filters?: any) => string
 }> = (props) => {
   return (
-    <div class="flex flex-col lg:flex-row-reverse">
-      <PieChart
-        data={props.group.categories.map(({ category, amountSpent }) => ({
-          name: category?.name || "Uncategorized",
-          color: category?.color
-            ? getCssValue(`--color-${category.color}-500`)
-            : getCssValue("--color-gray-400"),
-          value: amountSpent.decimalAmount,
-          formattedValue: amountSpent.formatted
-        }))}
-      />
+    <div class="mt-6 flex flex-col lg:mt-0 lg:flex-row">
       <div class="min-w-0 flex-none lg:flex-1">
         <h2 class="mb-2 flex items-center px-4 font-semibold">
           {props.title}
@@ -42,7 +32,7 @@ const BudgetGroup: Component<{
             <TbListSearch />
           </LinkButton>
         </h2>
-        <div class="mb-6 bg-white pl-6 pr-4 pt-4 shadow-sm lg:ml-4">
+        <div class="bg-white pl-6 pr-4 pt-4 shadow-sm lg:mb-6 lg:ml-4">
           <Show when={!props.group.categories.length}>
             <div class="pb-4">Nothing spent</div>
           </Show>
@@ -126,6 +116,16 @@ const BudgetGroup: Component<{
           </For>
         </div>
       </div>
+      <PieChart
+        data={props.group.categories.map(({ category, amountSpent }) => ({
+          name: category?.name || "Uncategorized",
+          color: category?.color
+            ? getCssValue(`--color-${category.color}-500`)
+            : getCssValue("--color-gray-400"),
+          value: amountSpent.decimalAmount,
+          formattedValue: amountSpent.formatted
+        }))}
+      />
     </div>
   )
 }

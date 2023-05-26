@@ -26,11 +26,9 @@ export const Budgets: Component<{
   return (
     <>
       <BudgetSummary
-        isPastMonth={isPastMonth()}
+        showDifference={isPastMonth()}
         filteredTransactions={filteredTransactions}
         budget={props.data.budget}
-        year={props.year}
-        month={props.month}
       />
       <BudgetGroup
         title="Regular spending"

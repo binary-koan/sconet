@@ -26,6 +26,8 @@ generates:
         MonthBudget: ./resolvers/budgets#MonthBudgetResult
         CategoryBudgetGroup: ./resolvers/budgets#CategoryBudgetGroupResult
         CategoryBudget: ./resolvers/budgets#CategoryBudgetResult
+        AnnualBalance: ./resolvers/balance#AnnualBalanceResult
+        MonthBalance: ./resolvers/balance#MonthBalanceResult
         Money: ts-money#Money as MoneyValue
         CurrentUser: ./db/records/user#UserRecord
         UserCredential: ./db/records/userCredential#UserCredentialRecord

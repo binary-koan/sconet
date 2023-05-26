@@ -15,7 +15,7 @@ const MainNavigation: Component = () => {
           <img class="w-24" src={fixAssetPath(logoImage)} />
         </Link>
         <NavigationItem icon={TbReportMoney} text="History" to="/transactions" />
-        <NavigationItem icon={TbChartPie} text="Budgets" to="/budgets" />
+        <NavigationItem icon={TbChartPie} text="Graphs" to="/graphs" />
         <NavigationItem icon={TbAdjustmentsHorizontal} text="Settings" to="/settings" />
       </div>
     </div>

@@ -45,6 +45,7 @@ import {
   updateTransaction
 } from "./resolvers/transactions"
 
+import { AnnualBalance, MonthBalance, balance } from "./resolvers/balance"
 import {
   CurrentUser,
   UserCredential,
@@ -68,6 +69,7 @@ const resolvers: Resolvers = {
     category,
     categories,
     budget,
+    balance,
     currencies,
     currency,
     currentUser
@@ -106,6 +108,8 @@ const resolvers: Resolvers = {
   MonthBudget,
   CategoryBudget,
   CategoryBudgetGroup,
+  AnnualBalance,
+  MonthBalance,
   Money,
   CurrentUser,
   UserCredential,

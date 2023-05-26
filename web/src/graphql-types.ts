@@ -29,6 +29,17 @@ export type Account = {
   transactions: Array<Transaction>;
 };
 
+export type AnnualBalance = {
+  __typename?: 'AnnualBalance';
+  currency: Currency;
+  difference: Money;
+  id: Scalars['String']['output'];
+  income: Money;
+  months: Array<MonthBalance>;
+  totalSpending: Money;
+  year: Scalars['Int']['output'];
+};
+
 export type Category = {
   __typename?: 'Category';
   budget?: Maybe<Money>;
@@ -138,6 +149,16 @@ export type Money = {
   formatted: Scalars['String']['output'];
   formattedShort: Scalars['String']['output'];
   integerAmount: Scalars['Int']['output'];
+};
+
+export type MonthBalance = {
+  __typename?: 'MonthBalance';
+  difference: Money;
+  id: Scalars['String']['output'];
+  income: Money;
+  month: Scalars['Int']['output'];
+  totalSpending: Money;
+  year: Scalars['Int']['output'];
 };
 
 export type MonthBudget = {
@@ -303,6 +324,7 @@ export type Query = {
   __typename?: 'Query';
   account?: Maybe<Account>;
   accounts: Array<Account>;
+  balance: AnnualBalance;
   budget: MonthBudget;
   categories: Array<Category>;
   category?: Maybe<Category>;
@@ -317,6 +339,12 @@ export type Query = {
 
 export type QueryAccountArgs = {
   id: Scalars['String']['input'];
+};
+
+
+export type QueryBalanceArgs = {
+  currencyCode?: InputMaybe<Scalars['CurrencyCode']['input']>;
+  year: Scalars['Int']['input'];
 };
 
 
@@ -606,6 +634,14 @@ export type AccountsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type AccountsQuery = { __typename?: 'Query', accounts: Array<{ __typename?: 'Account', id: string, name: string, currencyCode: any }> };
+
+export type BalanceQueryVariables = Exact<{
+  currencyCode?: InputMaybe<Scalars['CurrencyCode']['input']>;
+  year: Scalars['Int']['input'];
+}>;
+
+
+export type BalanceQuery = { __typename?: 'Query', balance: { __typename?: 'AnnualBalance', currency: { __typename?: 'Currency', symbol: string }, income: { __typename?: 'Money', decimalAmount: number, formatted: string }, totalSpending: { __typename?: 'Money', decimalAmount: number, formatted: string }, difference: { __typename?: 'Money', decimalAmount: number, formatted: string }, months: Array<{ __typename?: 'MonthBalance', month: number, income: { __typename?: 'Money', decimalAmount: number, formatted: string }, totalSpending: { __typename?: 'Money', decimalAmount: number, formatted: string }, difference: { __typename?: 'Money', decimalAmount: number, formatted: string } }> } };
 
 export type BudgetQueryVariables = Exact<{
   currencyCode?: InputMaybe<Scalars['CurrencyCode']['input']>;

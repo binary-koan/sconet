@@ -6,6 +6,7 @@ import { AccountRecord } from './db/records/account';
 import { FindTransactionsResult } from './db/queries/transaction/filterTransactions';
 import { DailyTransactionsResult } from './resolvers/transactions';
 import { MonthBudgetResult, CategoryBudgetGroupResult, CategoryBudgetResult } from './resolvers/budgets';
+import { AnnualBalanceResult, MonthBalanceResult } from './resolvers/balance';
 import { UserRecord } from './db/records/user';
 import { UserCredentialRecord } from './db/records/userCredential';
 import { Context, AuthenticatedContext } from './context';
@@ -37,6 +38,17 @@ export type Account = {
   id: Scalars['String'];
   name: Scalars['String'];
   transactions: Array<Transaction>;
+};
+
+export type AnnualBalance = {
+  __typename?: 'AnnualBalance';
+  currency: Currency;
+  difference: Money;
+  id: Scalars['String'];
+  income: Money;
+  months: Array<MonthBalance>;
+  totalSpending: Money;
+  year: Scalars['Int'];
 };
 
 export type Category = {
@@ -148,6 +160,16 @@ export type Money = {
   formatted: Scalars['String'];
   formattedShort: Scalars['String'];
   integerAmount: Scalars['Int'];
+};
+
+export type MonthBalance = {
+  __typename?: 'MonthBalance';
+  difference: Money;
+  id: Scalars['String'];
+  income: Money;
+  month: Scalars['Int'];
+  totalSpending: Money;
+  year: Scalars['Int'];
 };
 
 export type MonthBudget = {
@@ -313,6 +335,7 @@ export type Query = {
   __typename?: 'Query';
   account: Maybe<Account>;
   accounts: Array<Account>;
+  balance: AnnualBalance;
   budget: MonthBudget;
   categories: Array<Category>;
   category: Maybe<Category>;
@@ -327,6 +350,12 @@ export type Query = {
 
 export type QueryAccountArgs = {
   id: Scalars['String'];
+};
+
+
+export type QueryBalanceArgs = {
+  currencyCode: InputMaybe<Scalars['CurrencyCode']>;
+  year: Scalars['Int'];
 };
 
 
@@ -518,6 +547,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   Account: ResolverTypeWrapper<AccountRecord>;
+  AnnualBalance: ResolverTypeWrapper<AnnualBalanceResult>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Category: ResolverTypeWrapper<CategoryRecord>;
   CategoryBudget: ResolverTypeWrapper<CategoryBudgetResult>;
@@ -536,6 +566,7 @@ export type ResolversTypes = {
   Int: ResolverTypeWrapper<Scalars['Int']>;
   JSON: ResolverTypeWrapper<Scalars['JSON']>;
   Money: ResolverTypeWrapper<MoneyValue>;
+  MonthBalance: ResolverTypeWrapper<MonthBalanceResult>;
   MonthBudget: ResolverTypeWrapper<MonthBudgetResult>;
   Mutation: ResolverTypeWrapper<{}>;
   PaginatedTransactions: ResolverTypeWrapper<FindTransactionsResult>;
@@ -556,6 +587,7 @@ export type ResolversTypes = {
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   Account: AccountRecord;
+  AnnualBalance: AnnualBalanceResult;
   Boolean: Scalars['Boolean'];
   Category: CategoryRecord;
   CategoryBudget: CategoryBudgetResult;
@@ -574,6 +606,7 @@ export type ResolversParentTypes = {
   Int: Scalars['Int'];
   JSON: Scalars['JSON'];
   Money: MoneyValue;
+  MonthBalance: MonthBalanceResult;
   MonthBudget: MonthBudgetResult;
   Mutation: {};
   PaginatedTransactions: FindTransactionsResult;
@@ -601,6 +634,17 @@ export type AccountResolvers<ContextType = Context, ParentType extends Resolvers
   id: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   name: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   transactions: Resolver<Array<ResolversTypes['Transaction']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type AnnualBalanceResolvers<ContextType = Context, ParentType extends ResolversParentTypes['AnnualBalance'] = ResolversParentTypes['AnnualBalance']> = {
+  currency: Resolver<ResolversTypes['Currency'], ParentType, ContextType>;
+  difference: Resolver<ResolversTypes['Money'], ParentType, ContextType>;
+  id: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  income: Resolver<ResolversTypes['Money'], ParentType, ContextType>;
+  months: Resolver<Array<ResolversTypes['MonthBalance']>, ParentType, ContextType>;
+  totalSpending: Resolver<ResolversTypes['Money'], ParentType, ContextType>;
+  year: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -683,6 +727,16 @@ export type MoneyResolvers<ContextType = Context, ParentType extends ResolversPa
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type MonthBalanceResolvers<ContextType = Context, ParentType extends ResolversParentTypes['MonthBalance'] = ResolversParentTypes['MonthBalance']> = {
+  difference: Resolver<ResolversTypes['Money'], ParentType, ContextType>;
+  id: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  income: Resolver<ResolversTypes['Money'], ParentType, ContextType>;
+  month: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  totalSpending: Resolver<ResolversTypes['Money'], ParentType, ContextType>;
+  year: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type MonthBudgetResolvers<ContextType = Context, ParentType extends ResolversParentTypes['MonthBudget'] = ResolversParentTypes['MonthBudget']> = {
   difference: Resolver<ResolversTypes['Money'], ParentType, ContextType>;
   id: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -735,6 +789,7 @@ export interface PastDateScalarConfig extends GraphQLScalarTypeConfig<ResolversT
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   account: Resolver<Maybe<ResolversTypes['Account']>, ParentType, AuthenticatedContext<ContextType>, RequireFields<QueryAccountArgs, 'id'>>;
   accounts: Resolver<Array<ResolversTypes['Account']>, ParentType, AuthenticatedContext<ContextType>>;
+  balance: Resolver<ResolversTypes['AnnualBalance'], ParentType, AuthenticatedContext<ContextType>, RequireFields<QueryBalanceArgs, 'year'>>;
   budget: Resolver<ResolversTypes['MonthBudget'], ParentType, AuthenticatedContext<ContextType>, RequireFields<QueryBudgetArgs, 'month' | 'timezoneOffset' | 'year'>>;
   categories: Resolver<Array<ResolversTypes['Category']>, ParentType, AuthenticatedContext<ContextType>>;
   category: Resolver<Maybe<ResolversTypes['Category']>, ParentType, AuthenticatedContext<ContextType>, RequireFields<QueryCategoryArgs, 'id'>>;
@@ -780,6 +835,7 @@ export interface UtcOffsetScalarConfig extends GraphQLScalarTypeConfig<Resolvers
 
 export type Resolvers<ContextType = Context> = {
   Account: AccountResolvers<ContextType>;
+  AnnualBalance: AnnualBalanceResolvers<ContextType>;
   Category: CategoryResolvers<ContextType>;
   CategoryBudget: CategoryBudgetResolvers<ContextType>;
   CategoryBudgetGroup: CategoryBudgetGroupResolvers<ContextType>;
@@ -791,6 +847,7 @@ export type Resolvers<ContextType = Context> = {
   DateTime: GraphQLScalarType;
   JSON: GraphQLScalarType;
   Money: MoneyResolvers<ContextType>;
+  MonthBalance: MonthBalanceResolvers<ContextType>;
   MonthBudget: MonthBudgetResolvers<ContextType>;
   Mutation: MutationResolvers<ContextType>;
   PaginatedTransactions: PaginatedTransactionsResolvers<ContextType>;

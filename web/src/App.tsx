@@ -4,13 +4,14 @@ import { Toaster } from "solid-toast"
 import { AlertManager } from "./components/AlertManager"
 import { MainLayout } from "./components/MainLayout"
 import { useRequireLogin } from "./hooks/useRequireLogin"
-import { BudgetsRoute } from "./routes/BudgetsRoute"
 import { LoginRoute } from "./routes/LoginRoute"
 import { SettingsRoute } from "./routes/SettingsRoute"
 import { EditAccountRoute } from "./routes/accounts/EditAccountRoute"
 import { NewAccountRoute } from "./routes/accounts/NewAccountRoute"
 import { EditCategoryRoute } from "./routes/categories/EditCategoryRoute"
 import { NewCategoryRoute } from "./routes/categories/NewCategoryRoute"
+import { BalanceRoute } from "./routes/graphs/BalanceRoute"
+import { BudgetsRoute } from "./routes/graphs/BudgetsRoute"
 import { CurrenciesRoute } from "./routes/settings/CurrenciesRoute"
 import { ShowTransactionRoute } from "./routes/transactions/ShowTransactionRoute"
 import { TransactionsCalendarRoute } from "./routes/transactions/TransactionsCalendarRoute"
@@ -66,7 +67,9 @@ const App: Component = () => {
           <NewAccountRoute />
           <EditAccountRoute />
 
+          <Route path="/graphs" element={<Navigate href="/graphs/budgets" />} />
           <BudgetsRoute />
+          <BalanceRoute />
 
           <Route
             path="/*all"
