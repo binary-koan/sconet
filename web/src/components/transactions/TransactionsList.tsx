@@ -1,6 +1,6 @@
 import { TbPlus } from "solid-icons/tb"
 import { Component, createMemo, createSignal, For, Show } from "solid-js"
-import { FullTransactionFragment, TransactionsQuery } from "../../graphql-types"
+import { ListingTransactionFragment, TransactionsQuery } from "../../graphql-types"
 import { monthRange } from "../../utils/date"
 import { formatDate } from "../../utils/formatters"
 import { Button } from "../base/Button"
@@ -23,7 +23,7 @@ export const TransactionsList: Component<{
     const firstTransactionDate = new Date(`${transactions.at(0)!.date.split("T")[0]}T00:00:00Z`)
     const lastTransactionDate = new Date(`${transactions.at(-1)!.date.split("T")[0]}T00:00:00Z`)
 
-    const items: Array<{ date: Date; transactions: FullTransactionFragment[] }> = []
+    const items: Array<{ date: Date; transactions: ListingTransactionFragment[] }> = []
 
     for (
       let date = new Date(firstTransactionDate);

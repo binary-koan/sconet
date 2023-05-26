@@ -1,15 +1,15 @@
 import { useNavigate } from "@solidjs/router"
 import { groupBy } from "lodash"
 import { Component, Index, Show } from "solid-js"
-import { FullTransactionFragment } from "../../graphql-types"
+import { ListingTransactionFragment } from "../../graphql-types"
 import { namedIcons } from "../../utils/namedIcons"
 import CategoryIndicator from "../CategoryIndicator"
 import RelationEditor from "./RelationEditor"
 import { TransactionActions } from "./TransactionActions"
 
 const TransactionItem: Component<{
-  transaction: FullTransactionFragment
-  parent?: FullTransactionFragment
+  transaction: ListingTransactionFragment
+  parent?: ListingTransactionFragment
 }> = (props) => {
   const navigate = useNavigate()
 

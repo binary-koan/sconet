@@ -1,5 +1,5 @@
 import { Component, JSX } from "solid-js"
-import { FullTransactionFragment, TransactionsQuery } from "../../graphql-types"
+import { ListingTransactionFragment, TransactionsQuery } from "../../graphql-types"
 import { useUpdateTransaction } from "../../graphql/mutations/updateTransactionMutation"
 import { namedIcons } from "../../utils/namedIcons"
 import { showAlert } from "../AlertManager"
@@ -9,8 +9,8 @@ import RelationEditInput from "./RelationEditInput"
 type SplitTransaction = TransactionsQuery["transactions"]["data"][number]["splitTo"][number]
 
 const RelationEditor: Component<{
-  parent?: FullTransactionFragment | null
-  transaction: FullTransactionFragment | SplitTransaction
+  parent?: ListingTransactionFragment | null
+  transaction: ListingTransactionFragment | SplitTransaction
   includeInReports?: boolean
   showAccount?: boolean
   showCategory?: boolean

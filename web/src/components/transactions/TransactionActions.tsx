@@ -1,6 +1,6 @@
 import { TbArrowsSplit2, TbDotsVertical, TbEye, TbEyeOff, TbTrash } from "solid-icons/tb"
 import { Component, Show, createSignal } from "solid-js"
-import { FullTransactionFragment } from "../../graphql-types"
+import { ListingTransactionFragment } from "../../graphql-types"
 import { useDeleteTransaction } from "../../graphql/mutations/deleteTransactionMutation"
 import { useUpdateTransaction } from "../../graphql/mutations/updateTransactionMutation"
 import { AlertModal } from "../AlertModal"
@@ -8,7 +8,9 @@ import { Dropdown, DropdownMenuItem } from "../Dropdown"
 import { Button } from "../base/Button"
 import { SplitTransactionModal } from "./SplitTransactionModal"
 
-export const TransactionActions: Component<{ transaction: FullTransactionFragment }> = (props) => {
+export const TransactionActions: Component<{ transaction: ListingTransactionFragment }> = (
+  props
+) => {
   const updateTransaction = useUpdateTransaction()
   const deleteTransaction = useDeleteTransaction()
 

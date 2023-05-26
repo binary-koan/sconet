@@ -1,6 +1,6 @@
 import { evaluate, sum } from "mathjs"
 import { Component, For, createSignal } from "solid-js"
-import { FullTransactionFragment } from "../../graphql-types"
+import { ListingTransactionFragment } from "../../graphql-types"
 import { useSplitTransaction } from "../../graphql/mutations/splitTransactionMutation"
 import { useGetCurrencyQuery } from "../../graphql/queries/getCurrencyQuery"
 import { Button } from "../base/Button"
@@ -8,7 +8,7 @@ import { Input } from "../base/Input"
 import { Modal, ModalCloseButton, ModalContent, ModalTitle } from "../base/Modal"
 
 export const SplitTransactionModal: Component<{
-  transaction: FullTransactionFragment
+  transaction: ListingTransactionFragment
   isOpen: boolean
   onClose: () => void
   onFinish: () => void
