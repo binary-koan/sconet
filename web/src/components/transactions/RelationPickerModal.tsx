@@ -6,8 +6,8 @@ import CategoryPicker, { ValueProps as CategoryValueProps } from "./CategoryPick
 
 const RelationPickerModal: Component<{
   isIncome: boolean
-  categoryProps: CategoryValueProps
-  accountProps: AccountValueProps
+  categoryProps?: CategoryValueProps
+  accountProps?: AccountValueProps
   isOpen: boolean
   onClose: () => void
 }> = (props) => {
@@ -19,14 +19,16 @@ const RelationPickerModal: Component<{
         </ModalTitle>
 
         <div class="mb-8">
-          <Show when={!props.isIncome}>
+          <Show when={props.categoryProps && !props.isIncome}>
             <h3 class="mb-4 font-semibold">
-              {props.categoryProps.multiple ? "Categories" : "Category"}
+              {props.categoryProps!.multiple ? "Categories" : "Category"}
             </h3>
-            <CategoryPicker {...props.categoryProps} />
+            <CategoryPicker {...props.categoryProps!} />
           </Show>
-          <h3 class="mt-6 mb-4 font-semibold">Account</h3>
-          <AccountPicker {...props.accountProps} />
+          <Show when={props.accountProps}>
+            <h3 class="mt-6 mb-4 font-semibold">Account</h3>
+            <AccountPicker {...props.accountProps!} />
+          </Show>
         </div>
 
         <Button colorScheme="primary" onClick={props.onClose}>

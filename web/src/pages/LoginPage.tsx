@@ -45,9 +45,6 @@ const LoginPage: Component = () => {
     onSuccess: async (data) => {
       const response = await startAuthentication(data.generateCredentialLoginOptions)
       await loginViaCredential({ response })
-    },
-    onError: (error) => {
-      toast.error(error.message)
     }
   })
 
@@ -56,9 +53,6 @@ const LoginPage: Component = () => {
       setLoginToken(data.loginViaCredential)
       setSubmittedValues(undefined)
       toast.success("Logged in")
-    },
-    onError: (error) => {
-      toast.error(error.message)
     }
   })
 

@@ -12,7 +12,6 @@ import { NewAccountRoute } from "./routes/accounts/NewAccountRoute"
 import { EditCategoryRoute } from "./routes/categories/EditCategoryRoute"
 import { NewCategoryRoute } from "./routes/categories/NewCategoryRoute"
 import { CurrenciesRoute } from "./routes/settings/CurrenciesRoute"
-import { EditTransactionRoute } from "./routes/transactions/EditTransactionRoute"
 import { ShowTransactionRoute } from "./routes/transactions/ShowTransactionRoute"
 import { TransactionsCalendarRoute } from "./routes/transactions/TransactionsCalendarRoute"
 import { TransactionsListRoute } from "./routes/transactions/TransactionsListRoute"
@@ -57,7 +56,6 @@ const App: Component = () => {
           <TransactionsListRoute />
           <TransactionsCalendarRoute />
           <ShowTransactionRoute />
-          <EditTransactionRoute />
 
           <SettingsRoute />
           <CurrenciesRoute />

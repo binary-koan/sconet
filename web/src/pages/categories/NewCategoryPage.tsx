@@ -1,8 +1,8 @@
 import { useNavigate } from "@solidjs/router"
 import { Component } from "solid-js"
 import toast from "solid-toast"
-import CategoryForm from "../../components/categories/CategoryForm"
 import InnerPageWrapper from "../../components/InnerPageWrapper"
+import CategoryForm from "../../components/categories/CategoryForm"
 import { CreateCategoryMutationVariables } from "../../graphql-types"
 import { useCreateCategory } from "../../graphql/mutations/createCategoryMutation"
 
@@ -13,9 +13,6 @@ const NewCategoryPage: Component = () => {
     onSuccess: () => {
       toast.success("Category created")
       navigate("/settings")
-    },
-    onError: (error) => {
-      toast.error(error.message)
     }
   })
 

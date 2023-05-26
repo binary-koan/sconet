@@ -25,13 +25,11 @@ const DragOverlayFixed = DragOverlay as any
 
 export const CategoriesList: Component<{ data: CategoriesQuery }> = (props) => {
   const deleteCategory = useDeleteCategory({
-    onSuccess: () => toast.success("Category deleted"),
-    onError: (error: any) => toast.error(error.message)
+    onSuccess: () => toast.success("Category deleted")
   })
 
   const reorderCategories = useReorderCategories({
-    onSuccess: () => toast.success("Categories reordered"),
-    onError: (error) => toast.error(error.message)
+    onSuccess: () => toast.success("Categories reordered")
   })
 
   const onDeleteClick = (id: string) => {

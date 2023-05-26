@@ -1,6 +1,6 @@
 import { useRouteData } from "@solidjs/router"
 import { Component, createSignal, Show } from "solid-js"
-import { Button, LinkButton } from "../../components/base/Button"
+import { Button } from "../../components/base/Button"
 import { Cell } from "../../components/Cell"
 import InnerPageWrapper from "../../components/InnerPageWrapper"
 import { SplitTransactionModal } from "../../components/transactions/SplitTransactionModal"
@@ -22,13 +22,7 @@ const ShowTransactionPage: Component = () => {
       backLink="/transactions"
       actions={
         <div class="flex gap-2">
-          <Button onClick={() => setSplitModalVisible(true)}>Split transaction</Button>
-          <LinkButton
-            colorScheme="primary"
-            href={`/transactions/${routeData.data()?.transaction?.id}/edit`}
-          >
-            Edit
-          </LinkButton>
+          <Button onClick={() => setSplitModalVisible(true)}>Split</Button>
         </div>
       }
     >

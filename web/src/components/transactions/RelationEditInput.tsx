@@ -1,17 +1,17 @@
-import { Component, createSignal, Show } from "solid-js"
-import { namedIcons } from "../../utils/namedIcons"
-import CategoryIndicator from "../CategoryIndicator"
+import { Component, createSignal, JSX, Show } from "solid-js"
+import { AccountBasicDetails } from "./AccountPicker"
+import { CategoryBasicDetails } from "./CategoryPicker"
 import RelationPickerModal from "./RelationPickerModal"
 
 const RelationEditInput: Component<{
-  hasParent: boolean
   isIncome: boolean
-  category: any
-  account: any
-  hasChildren: boolean
-  includeInReports: boolean
-  onChangeCategory: (category: any) => void
-  onChangeAccount: (account: any) => void
+  category?: CategoryBasicDetails
+  account?: AccountBasicDetails
+  showCategory: boolean
+  showAccount: boolean
+  onChangeCategory: (category: CategoryBasicDetails) => void
+  onChangeAccount: (account: AccountBasicDetails) => void
+  children: JSX.Element
 }> = (props) => {
   const [modalOpen, setModalOpen] = createSignal(false)
 
@@ -25,29 +25,35 @@ const RelationEditInput: Component<{
   return (
     <>
       <div class="relative" onClick={onClick}>
-        <CategoryIndicator
-          class={props.hasParent ? "h-8 w-8" : "h-10 w-10"}
-          iconSize="1.25em"
-          icon={props.category?.icon ? namedIcons[props.category?.icon] : undefined}
-          color={props.category?.color}
-          isSplit={props.hasChildren}
-          includeInReports={props.includeInReports}
-          isIncome={props.isIncome}
-        />
+        {props.children}
       </div>
 
       <Show when={modalOpen()}>
         <RelationPickerModal
           isIncome={props.isIncome}
-          categoryProps={{
-            multiple: false,
-            value: props.category,
-            onChange: props.onChangeCategory
-          }}
-          accountProps={{
-            value: props.account,
-            onChange: props.onChangeAccount
-          }}
+          categoryProps={
+            props.showCategory
+              ? {
+                  multiple: false,
+                  value: props.category,
+                  onChange: (category) => {
+                    props.onChangeCategory(category)
+                    setModalOpen(false)
+                  }
+                }
+              : undefined
+          }
+          accountProps={
+            props.showAccount
+              ? {
+                  value: props.account,
+                  onChange: (account) => {
+                    props.onChangeAccount(account)
+                    setModalOpen(false)
+                  }
+                }
+              : undefined
+          }
           isOpen={true}
           onClose={() => setModalOpen(false)}
         />

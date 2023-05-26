@@ -3,9 +3,15 @@ import { FullAccountFragment } from "../../graphql-types"
 import { useAccountsQuery } from "../../graphql/queries/accountsQuery"
 import { Button } from "../base/Button"
 
+export interface AccountBasicDetails {
+  id: string
+  name: string
+  currencyCode: string
+}
+
 export type ValueProps = {
-  value: FullAccountFragment | undefined
-  onChange: (account: FullAccountFragment) => void
+  value: AccountBasicDetails | undefined
+  onChange: (account: AccountBasicDetails) => void
 }
 
 const AccountPicker: Component<ValueProps> = (props) => {
@@ -39,7 +45,9 @@ const AccountOption: Component<{
       variant={isCurrent ? "solid" : "ghost"}
       onClick={onClick}
     >
-      <span class="min-w-0 truncate">{props.account.name}</span>
+      <span class="min-w-0 truncate">
+        {props.account.name} ({props.account.currencyCode})
+      </span>
     </Button>
   )
 }

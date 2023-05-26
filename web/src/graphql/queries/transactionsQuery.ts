@@ -1,15 +1,15 @@
 import { TransactionsQuery, TransactionsQueryVariables } from "../../graphql-types"
 import { gql } from "../../utils/gql"
 import { useQuery } from "../../utils/graphqlClient/useQuery"
-import { FullTransactionFragment } from "../fragments/transactionFragments"
+import { ListingTransactionFragment } from "../fragments/transactionFragments"
 
 export const TRANSACTIONS_QUERY = gql`
-  ${FullTransactionFragment}
+  ${ListingTransactionFragment}
 
   query Transactions($limit: Int, $offset: String, $filter: TransactionFilter) {
     transactions(limit: $limit, offset: $offset, filter: $filter) {
       data {
-        ...FullTransaction
+        ...ListingTransaction
       }
       nextOffset
     }

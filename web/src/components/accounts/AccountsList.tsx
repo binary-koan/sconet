@@ -11,8 +11,7 @@ const AccountsList: Component<{
   currentUser?: CurrentUserQuery
 }> = (props) => {
   const deleteAccount = useDeleteAccount({
-    onSuccess: () => toast.success("Account deleted"),
-    onError: (error) => toast.error(error.message)
+    onSuccess: () => toast.success("Account deleted")
   })
 
   const onDeleteClick = (id: string) => {

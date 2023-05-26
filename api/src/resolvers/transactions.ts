@@ -97,7 +97,7 @@ export const updateTransaction: MutationResolvers["updateTransaction"] = async (
 
   const updatedTransaction = await transactionsRepo.updateOne(id, updates)
 
-  if (updates.amount !== transaction.amount || updates.currencyCode !== transaction.currencyCode) {
+  if (updates.amount !== undefined && updates.amount !== transaction.amount) {
     await transactionsRepo.deleteSplitTransactions(id)
   } else {
     await transactionsRepo.updateSplitTransactions(

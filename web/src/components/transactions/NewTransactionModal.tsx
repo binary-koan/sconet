@@ -33,9 +33,6 @@ export const NewTransactionModal: Component<{
     onSuccess: () => {
       toast.success("Transaction created")
       props.onClose()
-    },
-    onError: (error) => {
-      toast.error(error.message)
     }
   })
 

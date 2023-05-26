@@ -52,23 +52,13 @@ const SettingsPage: Component = () => {
         .join(" ")
 
       await verifyCredentialRegistration({ response, device: deviceString })
-    },
-    onError: (error) => {
-      toast.error(error.message)
     }
   })
-  const verifyCredentialRegistration = useVerifyCredentialRegistration({
-    onError: (error) => {
-      toast.error(error.message)
-    }
-  })
+  const verifyCredentialRegistration = useVerifyCredentialRegistration()
 
   const deleteCredential = useDeleteCredential({
     onSuccess: async () => {
       toast.success("Credential deleted.")
-    },
-    onError: (error) => {
-      toast.error(error.message)
     }
   })
 

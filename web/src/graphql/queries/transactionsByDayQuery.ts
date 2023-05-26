@@ -1,10 +1,10 @@
 import { TransactionsByDayQuery, TransactionsByDayQueryVariables } from "../../graphql-types"
 import { gql } from "../../utils/gql"
 import { useQuery } from "../../utils/graphqlClient/useQuery"
-import { FullTransactionFragment } from "../fragments/transactionFragments"
+import { ListingTransactionFragment } from "../fragments/transactionFragments"
 
 export const TRANSACTIONS_BY_DAY_QUERY = gql`
-  ${FullTransactionFragment}
+  ${ListingTransactionFragment}
 
   query TransactionsByDay($currencyCode: CurrencyCode, $dateFrom: Date!, $dateUntil: Date!) {
     transactionsByDay(dateFrom: $dateFrom, dateUntil: $dateUntil) {
@@ -13,7 +13,7 @@ export const TRANSACTIONS_BY_DAY_QUERY = gql`
         formattedShort
       }
       transactions {
-        ...FullTransaction
+        ...ListingTransaction
       }
     }
   }

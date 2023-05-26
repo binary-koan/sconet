@@ -4,23 +4,23 @@ import { useUpdateTransaction } from "../../graphql/mutations/updateTransactionM
 import { Input } from "../base/Input"
 import ConfirmCancelButtons from "./ConfirmCancelButtons"
 
-export const MemoEditor: Component<{
+export const DateEditor: Component<{
   class?: string
-  transaction: { id: string; memo: string }
+  transaction: { id: string; date: string }
   stopEditing: () => void
 }> = (props) => {
   const updateTransaction = useUpdateTransaction({
     onSuccess() {
-      toast.success("Memo updated")
+      toast.success("Date updated")
       props.stopEditing()
     }
   })
-  const [newMemo, setNewMemo] = createSignal(props.transaction.memo)
+  const [newDate, setNewDate] = createSignal(props.transaction.date)
 
   const doUpdate = async () => {
     await updateTransaction({
       id: props.transaction.id,
-      input: { memo: newMemo() }
+      input: { date: newDate() }
     })
   }
 
@@ -34,8 +34,9 @@ export const MemoEditor: Component<{
     <div class={`flex ${props.class}`}>
       <Input
         ref={input}
-        value={newMemo()}
-        onInput={(e) => setNewMemo(e.currentTarget.value)}
+        type="date"
+        value={newDate()}
+        onInput={(e) => setNewDate(e.currentTarget.value)}
         onEnter={doUpdate}
         onEscape={props.stopEditing}
         class="min-w-0 flex-1"

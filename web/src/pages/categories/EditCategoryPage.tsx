@@ -1,8 +1,8 @@
 import { useNavigate, useRouteData } from "@solidjs/router"
 import { Component, Show } from "solid-js"
 import toast from "solid-toast"
-import CategoryForm from "../../components/categories/CategoryForm"
 import InnerPageWrapper from "../../components/InnerPageWrapper"
+import CategoryForm from "../../components/categories/CategoryForm"
 import {
   GetCategoryQuery,
   GetCategoryQueryVariables,
@@ -23,9 +23,6 @@ const EditCategoryPage: Component = () => {
     onSuccess: () => {
       toast.success("Category updated")
       navigate("/settings")
-    },
-    onError: (error) => {
-      toast.error(error.message)
     }
   })
 

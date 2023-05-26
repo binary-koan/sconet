@@ -18,7 +18,7 @@ interface TransactionMethods {
 
 export const transactionsRepo = createRepo<TransactionRecord, TransactionMethods>({
   tableName: "transactions",
-  defaultOrder: { date: "DESC", amount: "DESC", id: "ASC" },
+  defaultOrder: { date: "DESC", amount: "ASC", id: "ASC" },
 
   methods: {
     filter: filterTransactions,
@@ -38,7 +38,7 @@ export const transactionsRepo = createRepo<TransactionRecord, TransactionMethods
         TransactionRecord[]
       >`SELECT * FROM "transactions" WHERE "splitFromId" IN ${sql(
         splitFromIds
-      )} ORDER BY date DESC, id DESC`
+      )} ORDER BY date DESC, amount ASC, id ASC`
 
       return splitFromIds.map((id) =>
         allTransactions.filter((transaction) => transaction.splitFromId === id)

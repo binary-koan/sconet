@@ -24,8 +24,7 @@ const EditAccountPage = () => {
     onSuccess: () => {
       toast.success("Account updated")
       navigate("/settings")
-    },
-    onError: (error) => toast.error(error.message)
+    }
   })
 
   const onSave = async (input: UpdateAccountMutationVariables["input"], id?: string) => {

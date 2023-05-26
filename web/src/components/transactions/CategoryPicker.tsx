@@ -3,19 +3,26 @@ import { Component, For } from "solid-js"
 import { FullCategoryFragment } from "../../graphql-types"
 import { useCategoriesQuery } from "../../graphql/queries/categoriesQuery"
 import { namedIcons } from "../../utils/namedIcons"
-import { Button } from "../base/Button"
 import CategoryIndicator from "../CategoryIndicator"
+import { Button } from "../base/Button"
+
+export interface CategoryBasicDetails {
+  id: string
+  name: string
+  color: string
+  icon: string
+}
 
 export type ValueProps =
   | {
       multiple: false
-      value: FullCategoryFragment | undefined
-      onChange: (category: FullCategoryFragment) => void
+      value: CategoryBasicDetails | undefined
+      onChange: (category: CategoryBasicDetails) => void
     }
   | {
       multiple: true
-      value: FullCategoryFragment[]
-      onChange: (categories: FullCategoryFragment[]) => void
+      value: CategoryBasicDetails[]
+      onChange: (categories: CategoryBasicDetails[]) => void
     }
 
 const CategoryPicker: Component<ValueProps> = (props) => {

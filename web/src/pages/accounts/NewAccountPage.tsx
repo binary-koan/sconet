@@ -12,8 +12,7 @@ const NewAccountPage = () => {
     onSuccess: () => {
       toast.success("Account created")
       navigate("/settings")
-    },
-    onError: (error) => toast.error(error.message)
+    }
   })
 
   const onSave = (input: CreateAccountMutationVariables["input"]) => {

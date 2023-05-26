@@ -1,4 +1,6 @@
+import { isObject } from "lodash"
 import { createSignal, useContext } from "solid-js"
+import toast from "solid-toast"
 import { gqlContext } from "./context"
 import { requestGraphql } from "./requestGraphql"
 
@@ -33,7 +35,13 @@ export function useMutation<Data, Variables>(
       })
     } catch (error) {
       console.error(error)
-      onError?.(error)
+      if (onError) {
+        onError(error)
+      } else {
+        toast.error(
+          isObject(error) && "message" in error ? `${error.message}` : "An API error occurred"
+        )
+      }
     } finally {
       setLoading(false)
     }
