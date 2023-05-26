@@ -604,6 +604,7 @@ export type BudgetQueryVariables = Exact<{
   currencyCode?: InputMaybe<Scalars['CurrencyCode']['input']>;
   year: Scalars['Int']['input'];
   month: Scalars['Int']['input'];
+  monthStart: Scalars['Date']['input'];
 }>;
 
 

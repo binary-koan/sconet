@@ -47,6 +47,13 @@ const BudgetsPage = () => {
 
   const date = () => new Date(parseInt(routeData.year), parseInt(routeData.month) - 1, 1)
 
+  const thisMonthStart = () => {
+    const now = new Date()
+    return new Date(now.getFullYear(), now.getMonth(), 1)
+  }
+
+  const isCurrentMonth = () => date().getTime() === thisMonthStart().getTime()
+
   return (
     <>
       <Title>Budgets</Title>
@@ -76,6 +83,7 @@ const BudgetsPage = () => {
           colorScheme="neutral"
           variant="ghost"
           onClick={() => setParams(incrementMonth)}
+          disabled={isCurrentMonth()}
         >
           <Dynamic component={TbArrowRight} />
         </Button>

@@ -26,6 +26,8 @@ export interface CategoryBudgetResult {
   amountSpent: Money
 }
 
+const moneyAbs = (money: Money) => new Money(Math.abs(money.amount), money.currency)
+
 // TODO: Optimise some of this nicely in SQL so it works well for larger numbers of transactions
 export const budget: QueryResolvers["budget"] = async (
   _,
@@ -86,18 +88,13 @@ export const budget: QueryResolvers["budget"] = async (
   const allCategories = includedCategoryIds.map((id) => ({
     id: `${year}-${month}-${id || "uncategorized"}`,
     category: id ? categoriesById[id] : null,
-    amountSpent: transactionValues
-      .filter(({ transaction }) => transaction.amount < 0 && transaction.categoryId === id)
-      .reduce((total, transaction) => total.add(transaction.value), new Money(0, outputCurrency)),
+    amountSpent: moneyAbs(
+      transactionValues
+        .filter(({ transaction }) => transaction.amount < 0 && transaction.categoryId === id)
+        .reduce((total, transaction) => total.add(transaction.value), new Money(0, outputCurrency))
+    ),
     currency: outputCurrency
   }))
-
-  const totalSpending = () => {
-    const total = transactionValues
-      .filter(({ transaction }) => transaction.amount < 0)
-      .reduce((total, transaction) => total.add(transaction.value), new Money(0, outputCurrency))
-    return new Money(Math.abs(total.amount), total.currency)
-  }
 
   return {
     id: `${year}-${month}`,
@@ -106,7 +103,11 @@ export const budget: QueryResolvers["budget"] = async (
     income: transactionValues
       .filter(({ transaction }) => transaction.amount > 0)
       .reduce((total, transaction) => total.add(transaction.value), new Money(0, outputCurrency)),
-    totalSpending: totalSpending(),
+    totalSpending: moneyAbs(
+      transactionValues
+        .filter(({ transaction }) => transaction.amount < 0)
+        .reduce((total, transaction) => total.add(transaction.value), new Money(0, outputCurrency))
+    ),
     currency: outputCurrency,
     regularCategories: {
       currency: outputCurrency,
