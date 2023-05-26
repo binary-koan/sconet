@@ -46,7 +46,7 @@ const BalancePage = () => {
           size="sm"
           colorScheme="neutral"
           variant="ghost"
-          onClick={() => navigate(`/budgets/${parseInt(routeData.year) - 1}`)}
+          onClick={() => navigate(`/graphs/balance/${parseInt(routeData.year) - 1}`)}
         >
           <TbArrowLeft />
         </Button>
@@ -54,7 +54,7 @@ const BalancePage = () => {
           size="sm"
           colorScheme="neutral"
           variant="ghost"
-          onClick={() => navigate(`/budgets/${parseInt(routeData.year) + 1}`)}
+          onClick={() => navigate(`/graphs/balance/${parseInt(routeData.year) + 1}`)}
           disabled={routeData.year === new Date().getFullYear().toString()}
         >
           <TbArrowRight />

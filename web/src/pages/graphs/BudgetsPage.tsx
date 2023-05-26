@@ -42,7 +42,7 @@ const BudgetsPage = () => {
       monthNumber: parseInt(routeData.month)
     })
 
-    navigate(`/budgets/${year}-${monthNumber.toString().padStart(2, "0")}`)
+    navigate(`/graphs/budgets/${year}-${monthNumber.toString().padStart(2, "0")}`)
   }
 
   const date = () => new Date(parseInt(routeData.year), parseInt(routeData.month) - 1, 1)
