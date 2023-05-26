@@ -59,7 +59,8 @@ export async function seed() {
 
     if (!existingAccounts.some((account) => account.name === "Test")) {
       await accountsRepo.insert({
-        name: "Test"
+        name: "Test",
+        currencyCode: "USD"
       })
       console.log(`Created account 'Test'`)
     }
