@@ -1,7 +1,7 @@
 import { TbPlus } from "solid-icons/tb"
 import { Component, createMemo, createSignal, For, Show } from "solid-js"
 import { ListingTransactionFragment, TransactionsQuery } from "../../graphql-types"
-import { monthRange } from "../../utils/date"
+import { monthRange, stripTime } from "../../utils/date"
 import { formatDate } from "../../utils/formatters"
 import { Button } from "../base/Button"
 import { NewTransactionModal } from "./NewTransactionModal"
@@ -20,8 +20,8 @@ export const TransactionsList: Component<{
 
     if (!transactions.length) return []
 
-    const firstTransactionDate = new Date(`${transactions.at(0)!.date.split("T")[0]}T00:00:00Z`)
-    const lastTransactionDate = new Date(`${transactions.at(-1)!.date.split("T")[0]}T00:00:00Z`)
+    const firstTransactionDate = new Date(transactions.at(0)!.date)
+    const lastTransactionDate = new Date(transactions.at(-1)!.date)
 
     const items: Array<{ date: Date; transactions: ListingTransactionFragment[] }> = []
 
@@ -31,7 +31,7 @@ export const TransactionsList: Component<{
       date.setDate(date.getDate() - 1)
     ) {
       const transactionsOnDate = transactions.filter(
-        (transaction) => formatDate(transaction.date, "fullDate") === formatDate(date, "fullDate")
+        (transaction) => transaction.date === stripTime(date)
       )
 
       items.push({ date: new Date(date), transactions: transactionsOnDate })
@@ -77,8 +77,8 @@ export const TransactionsList: Component<{
                     <button
                       type="button"
                       onClick={() => {
-                        props.setFilterValue("dateFrom", dateFrom.toISOString().split("T")[0])
-                        props.setFilterValue("dateUntil", dateUntil.toISOString().split("T")[0])
+                        props.setFilterValue("dateFrom", stripTime(dateFrom))
+                        props.setFilterValue("dateUntil", stripTime(dateUntil))
                       }}
                       class="relative mx-2 inline-block rounded bg-gray-50 py-1 pl-2 pr-4 text-base font-semibold text-gray-700"
                     >

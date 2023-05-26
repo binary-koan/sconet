@@ -1,6 +1,6 @@
 import { Component } from "solid-js"
 import { BudgetQuery } from "../../graphql-types"
-import { monthRange } from "../../utils/date"
+import { monthRange, stripTime } from "../../utils/date"
 import BudgetGroup from "./BudgetGroup"
 import { BudgetSummary } from "./BudgetSummary"
 
@@ -15,8 +15,8 @@ export const Budgets: Component<{
 
   const filteredTransactions = (filters: any = {}) => {
     const filter = JSON.stringify({
-      dateFrom: range()[0].toISOString().split("T")[0],
-      dateUntil: range()[1].toISOString().split("T")[0],
+      dateFrom: stripTime(range()[0]),
+      dateUntil: stripTime(range()[1]),
       ...filters
     })
 

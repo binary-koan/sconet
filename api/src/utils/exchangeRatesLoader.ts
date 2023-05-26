@@ -4,7 +4,7 @@ import { sql } from "../db/database"
 import { dailyExchangeRatesRepo } from "../db/repos/dailyExchangeRatesRepo"
 import { exchangeRateValuesRepo } from "../db/repos/exchangeRateValuesRepo"
 import { joinSql } from "../db/utils/joinSql"
-import { startOfDayUTC } from "./date"
+import { oneDayFromNow, startOfDayUTC } from "./date"
 
 export interface ExchangeRateIdentifier {
   fromCurrencyCode: string
@@ -23,7 +23,7 @@ export interface ResolvedExchangeRate {
 
 export function exchangeRatesLoader(): ExchangeRatesLoader {
   return new DataLoader(async (toLoad: readonly ExchangeRateIdentifier[]) => {
-    if (toLoad.some(({ date }) => date > new Date())) {
+    if (toLoad.some(({ date }) => date > oneDayFromNow())) {
       throw new Error("Cannot load exchange rates for future dates")
     }
 
@@ -136,6 +136,7 @@ async function fetchExchangeRates(
   fromCurrencyCode: string,
   date: string
 ): Promise<{ [from: string]: { [to: string]: number } }> {
+  console.log("fetching", fromCurrencyCode, date)
   const response = await fetch(
     `https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/${date}/currencies/${fromCurrencyCode.toLowerCase()}.json`
   )

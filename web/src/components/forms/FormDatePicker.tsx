@@ -3,7 +3,7 @@ import { last } from "lodash"
 import { TbArrowLeft, TbArrowRight } from "solid-icons/tb"
 import { Component, For, JSX, Show, createSignal } from "solid-js"
 import { buildMonthDates } from "../../utils/buildMonthDates"
-import { decrementMonth, incrementMonth, isSameDate } from "../../utils/date"
+import { decrementMonth, incrementMonth, isSameDate, stripTime } from "../../utils/date"
 import { Button } from "../base/Button"
 import { FormControl, FormLabel } from "../base/FormControl"
 
@@ -14,10 +14,8 @@ export const FormDatePicker: Component<{
   name: string
   type?: string
   class?: string
-  maxDate?: Date
+  maxDate?: string
 }> = (props) => {
-  const formatDate = (value: Date) => value.toISOString().split("T")[0]
-
   const initialValue = getValue(props.of, props.name)
   const [displayedMonth, setDisplayedMonth] = createSignal(
     initialValue
@@ -31,7 +29,7 @@ export const FormDatePicker: Component<{
     new Date(displayedMonth().year, displayedMonth().monthNumber - 1)
 
   const onSelect = (date: Date) => {
-    setValue(props.of, props.name, formatDate(date))
+    setValue(props.of, props.name, stripTime(date))
   }
 
   const dates = () => {
@@ -71,7 +69,11 @@ export const FormDatePicker: Component<{
                   variant="ghost"
                   aria-label="Next Month"
                   onClick={() => setDisplayedMonth(incrementMonth(displayedMonth()))}
-                  disabled={props.maxDate && last(dates())!.date >= props.maxDate}
+                  disabled={
+                    props.maxDate
+                      ? new Date(stripTime(last(dates())!.date)) >= new Date(props.maxDate)
+                      : false
+                  }
                 >
                   <TbArrowRight size="1.25em" />
                 </Button>
@@ -101,7 +103,11 @@ export const FormDatePicker: Component<{
                           "bg-indigo-600 text-white hover:bg-indigo-700": isSelected()
                         }}
                         onClick={() => onSelect(date)}
-                        disabled={props.maxDate && date > props.maxDate}
+                        disabled={
+                          props.maxDate
+                            ? new Date(stripTime(date)) > new Date(props.maxDate)
+                            : false
+                        }
                       >
                         {date.getDate()}
                       </button>

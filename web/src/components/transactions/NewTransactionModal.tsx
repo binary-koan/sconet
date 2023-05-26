@@ -9,6 +9,7 @@ import { useCategoriesQuery } from "../../graphql/queries/categoriesQuery"
 import { useCurrenciesQuery } from "../../graphql/queries/currenciesQuery"
 import { useCurrentUserQuery } from "../../graphql/queries/currentUserQuery"
 import { CATEGORY_BACKGROUND_COLORS, CategoryColor } from "../../utils/categoryColors"
+import { stripTime } from "../../utils/date"
 import { AccountSelect } from "../accounts/AccountSelect"
 import { Button } from "../base/Button"
 import { InputAddon } from "../base/InputGroup"
@@ -38,7 +39,7 @@ export const NewTransactionModal: Component<{
 
   const [form] = createForm<NewTransactionModalValues>({
     initialValues: {
-      date: props.initialDate && props.initialDate.toISOString().split("T")[0],
+      date: props.initialDate && stripTime(props.initialDate),
       amountType: "expense"
     }
   })
@@ -54,7 +55,6 @@ export const NewTransactionModal: Component<{
   createEffect(() => {
     if (currentUser()?.currentUser?.defaultAccount && !getValue(form, "accountId")) {
       setValue(form, "accountId", currentUser()!.currentUser!.defaultAccount!.id)
-      console.log("setting currency code", currentUser()!.currentUser!.defaultAccount!.currencyCode)
       setValue(form, "currencyCode", currentUser()!.currentUser!.defaultAccount!.currencyCode)
     }
   })
@@ -68,7 +68,7 @@ export const NewTransactionModal: Component<{
     const coercedData = {
       ...data,
       amount: amountType === "expense" ? -integerAmount : integerAmount,
-      date: new Date(date).toISOString().split("T")[0],
+      date: stripTime(new Date(date)),
       includeInReports: Boolean(data.includeInReports)
     }
 
@@ -85,6 +85,14 @@ export const NewTransactionModal: Component<{
   const selectedCategory = () =>
     categories()?.categories.find((category) => category.id === getValue(form, "categoryId"))
 
+  const todayISO = () => {
+    const now = new Date()
+    return `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, "0")}-${now
+      .getDate()
+      .toString()
+      .padStart(2, "0")}`
+  }
+
   return (
     <Modal isOpen={props.isOpen} onClickOutside={props.onClose}>
       <ModalContent class="flex h-[26rem] flex-col">
@@ -99,7 +107,7 @@ export const NewTransactionModal: Component<{
             label="Date"
             labelHidden={true}
             name="date"
-            maxDate={new Date()}
+            maxDate={todayISO()}
             class={isDateSelected() ? "hidden" : ""}
           />
 

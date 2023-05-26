@@ -8,7 +8,7 @@ import {
   CATEGORY_PALE_BACKGROUND_COLORS,
   CategoryColor
 } from "../../utils/categoryColors"
-import { decrementMonth, incrementMonth, isSameDate } from "../../utils/date"
+import { decrementMonth, incrementMonth, isSameDate, stripTime } from "../../utils/date"
 import { Button } from "../base/Button"
 import { NewTransactionModal } from "./NewTransactionModal"
 
@@ -97,8 +97,8 @@ export const TransactionsCalendar: Component<{
                     <Link
                       href={`/transactions/list/${encodeURIComponent(
                         JSON.stringify({
-                          dateFrom: date.toISOString().split("T")[0],
-                          dateUntil: date.toISOString().split("T")[0]
+                          dateFrom: stripTime(date),
+                          dateUntil: stripTime(date)
                         })
                       )}`}
                       class="text-2xs my-auto font-bold"
@@ -168,8 +168,8 @@ export const TransactionsCalendar: Component<{
                     <Link
                       href={`/transactions/list/${encodeURIComponent(
                         JSON.stringify({
-                          dateFrom: date.toISOString().split("T")[0],
-                          dateUntil: date.toISOString().split("T")[0]
+                          dateFrom: stripTime(date),
+                          dateUntil: stripTime(date)
                         })
                       )}`}
                       class="rounded py-0.5 text-center text-xs text-gray-700 hover:text-gray-900"

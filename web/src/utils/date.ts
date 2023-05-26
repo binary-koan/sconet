@@ -30,3 +30,7 @@ export const isSameDate = (first: Date, second: Date) => {
     first.getDate() === second.getDate()
   )
 }
+
+export const stripTime = (date: Date) => {
+  return date.toISOString().split("T")[0]
+}

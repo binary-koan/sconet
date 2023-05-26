@@ -3,6 +3,7 @@ import { Component, lazy } from "solid-js"
 import { useBudgetQuery } from "../graphql/queries/budgetQuery"
 import { useCurrentUserQuery } from "../graphql/queries/currentUserQuery"
 import type { BudgetsPageData } from "../pages/BudgetsPage"
+import { stripTime } from "../utils/date"
 import { lastViewedBudget } from "../utils/transactions/viewPreference"
 
 const budgetsRouteData: RouteDataFunc<unknown, BudgetsPageData> = ({ params }) => {
@@ -16,7 +17,7 @@ const budgetsRouteData: RouteDataFunc<unknown, BudgetsPageData> = ({ params }) =
     currencyCode: currentUser()?.currentUser?.defaultCurrency.code,
     year: parseInt(year()),
     month: parseInt(month()),
-    monthStart: new Date(parseInt(year()), parseInt(month()) - 1, 1).toISOString().split("T")[0]
+    monthStart: stripTime(new Date(parseInt(year()), parseInt(month()) - 1, 1))
   }))
 
   return {

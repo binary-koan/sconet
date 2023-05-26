@@ -1,19 +1,19 @@
 const dateFormats = {
   fullDate: new Intl.DateTimeFormat("en", {
-    timeZone: "Asia/Tokyo",
+    timeZone: "UTC",
     weekday: "short",
     day: "numeric",
     month: "short",
     year: "numeric"
   }),
   fullDateWithoutYear: new Intl.DateTimeFormat("en", {
-    timeZone: "Asia/Tokyo",
+    timeZone: "UTC",
     weekday: "short",
     day: "numeric",
     month: "short"
   }),
   monthYear: new Intl.DateTimeFormat("en", {
-    timeZone: "Asia/Tokyo",
+    timeZone: "UTC",
     month: "long",
     year: "numeric"
   })
