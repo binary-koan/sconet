@@ -2,6 +2,7 @@
 
 Columns
 - `createdAt` timestamp without time zone
+- `currencyCode` text
 - `deletedAt` timestamp without time zone
 - `id` uuid
   - default: `uuid_generate_v4()`

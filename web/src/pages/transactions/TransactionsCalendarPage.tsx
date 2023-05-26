@@ -3,9 +3,9 @@ import { useNavigate, useRouteData } from "@solidjs/router"
 import { TbList } from "solid-icons/tb"
 import { Component, Show, onMount } from "solid-js"
 import { Cell } from "../../components/Cell"
-import { DefaultCurrencySelect } from "../../components/DefaultCurrencySelect"
 import { Button } from "../../components/base/Button"
 import { PageHeader } from "../../components/base/PageHeader"
+import { DefaultCurrencySelect } from "../../components/currencies/DefaultCurrencySelect"
 import { TransactionsCalendar } from "../../components/transactions/TransactionsCalendar"
 import {
   CurrentUserQuery,

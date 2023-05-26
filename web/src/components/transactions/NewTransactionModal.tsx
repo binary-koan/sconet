@@ -1,15 +1,15 @@
 import { createForm, Field, Form, getValue, minRange, setValue } from "@modular-forms/solid"
 import { repeat } from "lodash"
-import { TbCalendarEvent, TbChevronDown, TbSwitch3 } from "solid-icons/tb"
+import { TbCalendarEvent, TbSelector, TbSwitch3 } from "solid-icons/tb"
 import { Component, createEffect, For, Show } from "solid-js"
 import toast from "solid-toast"
 import { CreateTransactionInput } from "../../graphql-types"
 import { useCreateTransaction } from "../../graphql/mutations/createTransactionMutation"
-import { useAccountsQuery } from "../../graphql/queries/accountsQuery"
 import { useCategoriesQuery } from "../../graphql/queries/categoriesQuery"
 import { useCurrenciesQuery } from "../../graphql/queries/currenciesQuery"
 import { useCurrentUserQuery } from "../../graphql/queries/currentUserQuery"
 import { CATEGORY_BACKGROUND_COLORS, CategoryColor } from "../../utils/categoryColors"
+import { AccountSelect } from "../accounts/AccountSelect"
 import { Button } from "../base/Button"
 import { InputAddon } from "../base/InputGroup"
 import { Modal, ModalCloseButton, ModalContent, ModalTitle } from "../base/Modal"
@@ -27,7 +27,6 @@ export const NewTransactionModal: Component<{
 }> = (props) => {
   const categories = useCategoriesQuery()
   const currencies = useCurrenciesQuery()
-  const accounts = useAccountsQuery()
   const currentUser = useCurrentUserQuery()
 
   const createTransaction = useCreateTransaction({
@@ -56,14 +55,10 @@ export const NewTransactionModal: Component<{
   })
 
   createEffect(() => {
-    if (currentUser()?.currentUser && !getValue(form, "currencyCode")) {
-      setValue(form, "currencyCode", currentUser()!.currentUser!.defaultCurrency.code)
-    }
-  })
-
-  createEffect(() => {
-    if (currentUser()?.currentUser && !getValue(form, "accountId")) {
-      setValue(form, "accountId", currentUser()!.currentUser!.defaultAccount?.id || "")
+    if (currentUser()?.currentUser?.defaultAccount && !getValue(form, "accountId")) {
+      setValue(form, "accountId", currentUser()!.currentUser!.defaultAccount!.id)
+      console.log("setting currency code", currentUser()!.currentUser!.defaultAccount!.currencyCode)
+      setValue(form, "currencyCode", currentUser()!.currentUser!.defaultAccount!.currencyCode)
     }
   })
 
@@ -137,6 +132,10 @@ export const NewTransactionModal: Component<{
               />
             </div>
 
+            <Field of={form} name="currencyCode">
+              {(field) => <input type="hidden" value={field.value} />}
+            </Field>
+
             <div class="flex gap-4">
               <Field of={form} name="amountType">
                 {(field) => (
@@ -193,7 +192,7 @@ export const NewTransactionModal: Component<{
                         <span class="min-w-0 truncate">
                           {selectedCategory()?.name || "No category"}
                         </span>
-                        <TbChevronDown class="ml-1" />
+                        <TbSelector class="ml-1" />
                       </Button>
                     </Dropdown>
                   )}
@@ -212,64 +211,26 @@ export const NewTransactionModal: Component<{
             </div>
 
             <div class="mb-2 flex gap-4">
-              <Field of={form} name="currencyCode">
-                {(field) => (
-                  <Dropdown
-                    closeOnItemClick
-                    content={
-                      <For each={currencies()?.currencies}>
-                        {(currency) => (
-                          <DropdownMenuItem
-                            class="text-sm"
-                            onClick={() => setValue(form, "currencyCode", currency.code)}
-                          >
-                            {currency.code}
-                          </DropdownMenuItem>
-                        )}
-                      </For>
-                    }
-                  >
-                    <Button
-                      size="custom"
-                      variant="ghost"
-                      class="rounded border border-gray-100 px-4 py-2 text-xs text-gray-700"
-                    >
-                      {
-                        currencies()?.currencies.find((currency) => currency.code === field.value)
-                          ?.code
-                      }
-                      <TbChevronDown class="ml-1" />
-                    </Button>
-                  </Dropdown>
-                )}
-              </Field>
-
               <Field of={form} name="accountId">
                 {(field) => (
-                  <Dropdown
-                    closeOnItemClick
-                    content={
-                      <For each={accounts()?.accounts}>
-                        {(account) => (
-                          <DropdownMenuItem
-                            class="text-sm"
-                            onClick={() => setValue(form, "accountId", account.id)}
-                          >
-                            {account.name}
-                          </DropdownMenuItem>
-                        )}
-                      </For>
-                    }
+                  <AccountSelect
+                    value={field.value}
+                    onChange={(account) => {
+                      setValue(form, "accountId", account.id)
+                      setValue(form, "currencyCode", account.currencyCode)
+                    }}
                   >
-                    <Button
-                      size="custom"
-                      variant="ghost"
-                      class="rounded border border-gray-100 px-4 py-2 text-xs text-gray-700"
-                    >
-                      {accounts()?.accounts.find((account) => account.id === field.value)?.name}
-                      <TbChevronDown class="ml-1" />
-                    </Button>
-                  </Dropdown>
+                    {(account) => (
+                      <Button
+                        size="custom"
+                        variant="ghost"
+                        class="rounded border border-gray-100 px-4 py-2 text-xs text-gray-700"
+                      >
+                        {account?.name} ({account?.currencyCode})
+                        <TbSelector class="ml-1" />
+                      </Button>
+                    )}
+                  </AccountSelect>
                 )}
               </Field>
             </div>

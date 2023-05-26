@@ -1,3 +1,4 @@
+import { Currencies } from "ts-money"
 import { AccountRecord } from "../db/records/account"
 import { accountsRepo } from "../db/repos/accountsRepo"
 import { transactionsRepo } from "../db/repos/transactionsRepo"
@@ -24,7 +25,12 @@ export const updateAccount: MutationResolvers["updateAccount"] = async (_, { id,
 
   const updates: Partial<AccountRecord> = {
     ...input,
-    name: input.name ?? undefined
+    name: input.name ?? undefined,
+    currencyCode: input.currencyCode ?? undefined
+  }
+
+  if (input.currencyCode && input.currencyCode !== account.currencyCode) {
+    await transactionsRepo.updateAccountTransactions(id, { currencyCode: input.currencyCode })
   }
 
   return await accountsRepo.updateOne(id, updates)
@@ -45,5 +51,7 @@ export const deleteAccount: MutationResolvers["deleteAccount"] = async (_, { id 
 export const Account: Resolvers["Account"] = {
   id: (account) => account.id,
   name: (account) => account.name,
+  currencyCode: (account) => account.currencyCode,
+  currency: (account) => Currencies[account.currencyCode],
   transactions: (account) => transactionsRepo.filter({ filter: { accountId: account.id } }).data
 }

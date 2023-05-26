@@ -23,7 +23,7 @@ const DragDropProviderFixed = DragDropProvider as any
 const SortableProviderFixed = SortableProvider as any
 const DragOverlayFixed = DragOverlay as any
 
-const CategoriesList: Component<{ data: CategoriesQuery }> = (props) => {
+export const CategoriesList: Component<{ data: CategoriesQuery }> = (props) => {
   const deleteCategory = useDeleteCategory({
     onSuccess: () => toast.success("Category deleted"),
     onError: (error: any) => toast.error(error.message)
@@ -169,5 +169,3 @@ const Category: Component<{
     </div>
   )
 }
-
-export default CategoriesList

@@ -19,6 +19,7 @@ export const FullCurrentUserFragment = gql`
     defaultAccount {
       id
       name
+      currencyCode
     }
 
     registeredCredentials {

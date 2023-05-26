@@ -32,6 +32,8 @@ export type Scalars = {
 
 export type Account = {
   __typename?: 'Account';
+  currency: Currency;
+  currencyCode: Scalars['CurrencyCode'];
   id: Scalars['String'];
   name: Scalars['String'];
   transactions: Array<Transaction>;
@@ -72,6 +74,7 @@ export type CategoryBudgetGroup = {
 };
 
 export type CreateAccountInput = {
+  currencyCode: Scalars['CurrencyCode'];
   name: Scalars['String'];
 };
 
@@ -408,6 +411,7 @@ export type TransactionFilter = {
 };
 
 export type UpdateAccountInput = {
+  currencyCode: InputMaybe<Scalars['CurrencyCode']>;
   name: InputMaybe<Scalars['String']>;
 };
 
@@ -592,6 +596,8 @@ export type AuthenticatedDirectiveArgs = { };
 export type AuthenticatedDirectiveResolver<Result, Parent, ContextType = Context, Args = AuthenticatedDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
 
 export type AccountResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Account'] = ResolversParentTypes['Account']> = {
+  currency: Resolver<ResolversTypes['Currency'], ParentType, ContextType>;
+  currencyCode: Resolver<ResolversTypes['CurrencyCode'], ParentType, ContextType>;
   id: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   name: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   transactions: Resolver<Array<ResolversTypes['Transaction']>, ParentType, ContextType>;

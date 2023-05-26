@@ -1,6 +1,8 @@
 type Account {
   id: String!
   name: String!
+  currencyCode: CurrencyCode!
+  currency: Currency!
   transactions: [Transaction!]!
 }
 
@@ -11,10 +13,12 @@ type Query {
 
 input CreateAccountInput {
   name: String!
+  currencyCode: CurrencyCode!
 }
 
 input UpdateAccountInput {
   name: String
+  currencyCode: CurrencyCode
 }
 
 type Mutation {

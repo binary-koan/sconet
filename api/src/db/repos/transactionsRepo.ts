@@ -10,6 +10,10 @@ interface TransactionMethods {
   findSplitTransactionsByIds: (splitFromIds: readonly string[]) => Promise<TransactionRecord[][]>
   softDeleteSplitTransactions: (fromId: string) => Promise<string>
   updateSplitTransactions: (fromId: string, updates: Partial<TransactionRecord>) => Promise<string>
+  updateAccountTransactions: (
+    accountId: string,
+    updates: Partial<TransactionRecord>
+  ) => Promise<void>
 }
 
 export const transactionsRepo = createRepo<TransactionRecord, TransactionMethods>({
@@ -57,6 +61,16 @@ export const transactionsRepo = createRepo<TransactionRecord, TransactionMethods
       await sql`UPDATE "transactions" SET ${sql(fieldsToSet)} WHERE "splitFromId" = ${fromId}`
 
       return fromId
+    },
+
+    async updateAccountTransactions(accountId, fields) {
+      const fieldsToSet = pickBy(fields, (value) => value !== undefined)
+
+      if (isEmpty(fieldsToSet)) {
+        return
+      }
+
+      await sql`UPDATE "transactions" SET ${sql(fieldsToSet)} WHERE "accountId" = ${accountId}`
     }
   }
 })

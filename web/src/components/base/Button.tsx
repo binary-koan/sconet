@@ -25,7 +25,7 @@ const CLASSES = {
 }
 
 export type ButtonVariant = keyof typeof CLASSES
-export type ButtonColor = keyof typeof CLASSES["ghost"]
+export type ButtonColor = keyof (typeof CLASSES)["ghost"]
 
 export interface ButtonCustomProps {
   variant?: ButtonVariant

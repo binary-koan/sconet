@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from "@solidjs/router"
 import type { Component, JSX } from "solid-js"
 import { Toaster } from "solid-toast"
+import { AlertManager } from "./components/AlertManager"
 import { MainLayout } from "./components/MainLayout"
 import { useRequireLogin } from "./hooks/useRequireLogin"
 import { BudgetsRoute } from "./routes/BudgetsRoute"
@@ -34,6 +35,7 @@ const App: Component = () => {
   return (
     <>
       <Toaster position="top-center" />
+      <AlertManager />
       <Routes>
         <Route
           path="/"

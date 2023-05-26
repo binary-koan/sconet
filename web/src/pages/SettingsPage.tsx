@@ -9,7 +9,7 @@ import { Cell } from "../components/Cell"
 import Accounts from "../components/accounts/AccountsList"
 import { Button, LinkButton } from "../components/base/Button"
 import { PageHeader } from "../components/base/PageHeader"
-import CategoriesList from "../components/categories/Categories"
+import { CategoriesList } from "../components/categories/CategoriesList"
 import { CurrentUserProfile } from "../components/user/CurrentUserProfile"
 import { FavoriteCurrencies } from "../components/user/FavoriteCurrencies"
 import {

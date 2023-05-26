@@ -1,6 +1,7 @@
 import { useNavigate, useRouteData } from "@solidjs/router"
 import { Show } from "solid-js"
 import toast from "solid-toast"
+import { showAlert } from "../../components/AlertManager"
 import InnerPageWrapper from "../../components/InnerPageWrapper"
 import AccountForm from "../../components/accounts/AccountForm"
 import {
@@ -27,8 +28,24 @@ const EditAccountPage = () => {
     onError: (error) => toast.error(error.message)
   })
 
-  const onSave = (input: UpdateAccountMutationVariables["input"], id?: string) => {
-    updateAccount({ id: id!, input })
+  const onSave = async (input: UpdateAccountMutationVariables["input"], id?: string) => {
+    let confirmed = true
+
+    if (input.currencyCode !== routeData.data()!.account!.currencyCode) {
+      confirmed = await showAlert({
+        title: "Are you sure?",
+        body: (
+          <>
+            Changing the currency code will update all associated transactions{" "}
+            <strong>without</strong> currency conversion. Are you sure?
+          </>
+        )
+      })
+    }
+
+    if (confirmed) {
+      updateAccount({ id: id!, input })
+    }
   }
 
   return (

@@ -4,10 +4,10 @@ import { TbArrowLeft, TbArrowRight } from "solid-icons/tb"
 import { Show, createEffect } from "solid-js"
 import { Dynamic } from "solid-js/web"
 import { Cell } from "../components/Cell"
-import { DefaultCurrencySelect } from "../components/DefaultCurrencySelect"
 import { Button } from "../components/base/Button"
 import { PageHeader } from "../components/base/PageHeader"
 import { Budgets } from "../components/budgets/Budgets"
+import { DefaultCurrencySelect } from "../components/currencies/DefaultCurrencySelect"
 import {
   BudgetQuery,
   BudgetQueryVariables,
