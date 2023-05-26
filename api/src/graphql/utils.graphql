@@ -1,4 +1,5 @@
 scalar Date
+scalar PastDate
 scalar DateTime
 scalar JSON
 scalar CurrencyCode

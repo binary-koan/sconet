@@ -62,7 +62,7 @@ input CreateTransactionInput {
   originalCurrencyCode: CurrencyCode
   categoryId: String
   accountId: String!
-  date: Date
+  date: PastDate!
   includeInReports: Boolean
 }
 
@@ -74,7 +74,7 @@ input UpdateTransactionInput {
   originalCurrencyCode: CurrencyCode
   categoryId: String
   accountId: String
-  date: Date
+  date: PastDate
   includeInReports: Boolean
 }
 

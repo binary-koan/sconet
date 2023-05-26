@@ -21,7 +21,13 @@ export const TransactionsCalendar: Component<{
 
   const navigate = useNavigate()
 
-  const monthStart = new Date(parseInt(props.year), parseInt(props.month) - 1, 1)
+  const monthStart = () => new Date(parseInt(props.year), parseInt(props.month) - 1, 1)
+
+  const isCurrentMonth = () => {
+    const now = new Date()
+    const thisMonthStart = new Date(now.getFullYear(), now.getMonth(), 1)
+    return monthStart().getTime() === thisMonthStart.getTime()
+  }
 
   const dates = () => monthDates(parseInt(props.year), parseInt(props.month), props.data)
 
@@ -58,13 +64,14 @@ export const TransactionsCalendar: Component<{
         </Button>
 
         <span class="mx-4 font-semibold">
-          {monthStart.toLocaleDateString("default", { month: "long", year: "numeric" })}
+          {monthStart().toLocaleDateString("default", { month: "long", year: "numeric" })}
         </span>
 
         <Button
           size="square"
           aria-label="List"
           onClick={() => changeMonthAndNavigate(incrementMonth)}
+          disabled={isCurrentMonth()}
         >
           <TbArrowRight size="1.25em" />
         </Button>
@@ -94,7 +101,7 @@ export const TransactionsCalendar: Component<{
                           dateUntil: date.toISOString().split("T")[0]
                         })
                       )}`}
-                      class="my-auto text-xs font-bold"
+                      class="text-2xs my-auto font-bold"
                     >
                       {totalSpent}
                     </Link>

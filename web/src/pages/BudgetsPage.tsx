@@ -47,12 +47,11 @@ const BudgetsPage = () => {
 
   const date = () => new Date(parseInt(routeData.year), parseInt(routeData.month) - 1, 1)
 
-  const thisMonthStart = () => {
+  const isCurrentMonth = () => {
     const now = new Date()
-    return new Date(now.getFullYear(), now.getMonth(), 1)
+    const thisMonthStart = new Date(now.getFullYear(), now.getMonth(), 1)
+    return date().getTime() === thisMonthStart.getTime()
   }
-
-  const isCurrentMonth = () => date().getTime() === thisMonthStart().getTime()
 
   return (
     <>

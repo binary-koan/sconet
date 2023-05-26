@@ -1,4 +1,5 @@
 import { Field, FormStore, getValue, setValue } from "@modular-forms/solid"
+import { last } from "lodash"
 import { TbArrowLeft, TbArrowRight } from "solid-icons/tb"
 import { Component, For, JSX, Show, createSignal } from "solid-js"
 import { buildMonthDates } from "../../utils/buildMonthDates"
@@ -13,6 +14,7 @@ export const FormDatePicker: Component<{
   name: string
   type?: string
   class?: string
+  maxDate?: Date
 }> = (props) => {
   const formatDate = (value: Date) => value.toISOString().split("T")[0]
 
@@ -69,6 +71,7 @@ export const FormDatePicker: Component<{
                   variant="ghost"
                   aria-label="Next Month"
                   onClick={() => setDisplayedMonth(incrementMonth(displayedMonth()))}
+                  disabled={props.maxDate && last(dates())!.date >= props.maxDate}
                 >
                   <TbArrowRight size="1.25em" />
                 </Button>
@@ -89,7 +92,7 @@ export const FormDatePicker: Component<{
                     return (
                       <button
                         type="button"
-                        class="flex h-8 w-8 flex-col items-center justify-center rounded-full border text-sm"
+                        class="flex h-8 w-8 flex-col items-center justify-center rounded-full border text-sm disabled:opacity-50"
                         classList={{
                           "border-transparent": !isSameDate(date, new Date()),
                           "border-gray-200": isSameDate(date, new Date()),
@@ -98,6 +101,7 @@ export const FormDatePicker: Component<{
                           "bg-indigo-600 text-white hover:bg-indigo-700": isSelected()
                         }}
                         onClick={() => onSelect(date)}
+                        disabled={props.maxDate && date > props.maxDate}
                       >
                         {date.getDate()}
                       </button>

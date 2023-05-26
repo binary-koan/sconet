@@ -55,6 +55,7 @@ import {
   unfavoriteCurrency
 } from "./resolvers/currentUser"
 import { CurrencyCode } from "./resolvers/scalars/currencyCode"
+import { PastDate } from "./resolvers/scalars/pastDate"
 import { typeDefs } from "./schema-definitions"
 
 const resolvers: Resolvers = {
@@ -110,6 +111,7 @@ const resolvers: Resolvers = {
   UserCredential,
 
   Date: DateResolver,
+  PastDate,
   DateTime: DateTimeResolver,
   JSON: JSONResolver,
   CurrencyCode,

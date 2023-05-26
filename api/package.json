@@ -21,7 +21,7 @@
     "@graphql-tools/utils": "^9.1.4",
     "@simplewebauthn/server": "^7.0.1",
     "dataloader": "^2.1.0",
-    "graphql": "^16.5.0",
+    "graphql": "^16.6.0",
     "graphql-scalars": "^1.18.0",
     "graphql-yoga": "~3.1.0",
     "jose": "^4.11.2",

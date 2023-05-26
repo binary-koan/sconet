@@ -26,6 +26,7 @@ export type Scalars = {
   Date: Date;
   DateTime: Date;
   JSON: any;
+  PastDate: any;
   UtcOffset: string;
 };
 
@@ -94,7 +95,7 @@ export type CreateTransactionInput = {
   amount: Scalars['Int'];
   categoryId: InputMaybe<Scalars['String']>;
   currencyCode: Scalars['CurrencyCode'];
-  date: InputMaybe<Scalars['Date']>;
+  date: Scalars['PastDate'];
   includeInReports: InputMaybe<Scalars['Boolean']>;
   memo: Scalars['String'];
   originalAmount: InputMaybe<Scalars['Int']>;
@@ -429,7 +430,7 @@ export type UpdateTransactionInput = {
   amount: InputMaybe<Scalars['Int']>;
   categoryId: InputMaybe<Scalars['String']>;
   currencyCode: InputMaybe<Scalars['CurrencyCode']>;
-  date: InputMaybe<Scalars['Date']>;
+  date: InputMaybe<Scalars['PastDate']>;
   includeInReports: InputMaybe<Scalars['Boolean']>;
   memo: InputMaybe<Scalars['String']>;
   originalAmount: InputMaybe<Scalars['Int']>;
@@ -534,6 +535,7 @@ export type ResolversTypes = {
   MonthBudget: ResolverTypeWrapper<MonthBudgetResult>;
   Mutation: ResolverTypeWrapper<{}>;
   PaginatedTransactions: ResolverTypeWrapper<FindTransactionsResult>;
+  PastDate: ResolverTypeWrapper<Scalars['PastDate']>;
   Query: ResolverTypeWrapper<{}>;
   SplitTransactionItem: SplitTransactionItem;
   String: ResolverTypeWrapper<Scalars['String']>;
@@ -571,6 +573,7 @@ export type ResolversParentTypes = {
   MonthBudget: MonthBudgetResult;
   Mutation: {};
   PaginatedTransactions: FindTransactionsResult;
+  PastDate: Scalars['PastDate'];
   Query: {};
   SplitTransactionItem: SplitTransactionItem;
   String: Scalars['String'];
@@ -719,6 +722,10 @@ export type PaginatedTransactionsResolvers<ContextType = Context, ParentType ext
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export interface PastDateScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['PastDate'], any> {
+  name: 'PastDate';
+}
+
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   account: Resolver<Maybe<ResolversTypes['Account']>, ParentType, AuthenticatedContext<ContextType>, RequireFields<QueryAccountArgs, 'id'>>;
   accounts: Resolver<Array<ResolversTypes['Account']>, ParentType, AuthenticatedContext<ContextType>>;
@@ -781,6 +788,7 @@ export type Resolvers<ContextType = Context> = {
   MonthBudget: MonthBudgetResolvers<ContextType>;
   Mutation: MutationResolvers<ContextType>;
   PaginatedTransactions: PaginatedTransactionsResolvers<ContextType>;
+  PastDate: GraphQLScalarType;
   Query: QueryResolvers<ContextType>;
   Transaction: TransactionResolvers<ContextType>;
   UserCredential: UserCredentialResolvers<ContextType>;

@@ -107,6 +107,7 @@ export const NewTransactionModal: Component<{
             label="Date"
             labelHidden={true}
             name="date"
+            maxDate={new Date()}
             class={isDateSelected() ? "hidden" : ""}
           />
 

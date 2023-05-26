@@ -16,6 +16,7 @@ export type Scalars = {
   Date: { input: any; output: any; }
   DateTime: { input: any; output: any; }
   JSON: { input: any; output: any; }
+  PastDate: { input: any; output: any; }
   UtcOffset: { input: any; output: any; }
 };
 
@@ -84,7 +85,7 @@ export type CreateTransactionInput = {
   amount: Scalars['Int']['input'];
   categoryId?: InputMaybe<Scalars['String']['input']>;
   currencyCode: Scalars['CurrencyCode']['input'];
-  date?: InputMaybe<Scalars['Date']['input']>;
+  date: Scalars['PastDate']['input'];
   includeInReports?: InputMaybe<Scalars['Boolean']['input']>;
   memo: Scalars['String']['input'];
   originalAmount?: InputMaybe<Scalars['Int']['input']>;
@@ -419,7 +420,7 @@ export type UpdateTransactionInput = {
   amount?: InputMaybe<Scalars['Int']['input']>;
   categoryId?: InputMaybe<Scalars['String']['input']>;
   currencyCode?: InputMaybe<Scalars['CurrencyCode']['input']>;
-  date?: InputMaybe<Scalars['Date']['input']>;
+  date?: InputMaybe<Scalars['PastDate']['input']>;
   includeInReports?: InputMaybe<Scalars['Boolean']['input']>;
   memo?: InputMaybe<Scalars['String']['input']>;
   originalAmount?: InputMaybe<Scalars['Int']['input']>;
