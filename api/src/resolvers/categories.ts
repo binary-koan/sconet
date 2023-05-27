@@ -1,3 +1,4 @@
+import { GraphQLError } from "graphql"
 import { Currencies } from "ts-money"
 import { CategoryRecord } from "../db/records/category"
 import { categoriesRepo } from "../db/repos/categoriesRepo"
@@ -13,10 +14,18 @@ export const category: QueryResolvers["category"] = async (_, { id }) => {
 }
 
 export const createCategory: MutationResolvers["createCategory"] = async (_, { input }) => {
+  if ((input.budget && !input.budgetCurrencyCode) || (input.budgetCurrencyCode && !input.budget)) {
+    throw new GraphQLError("Invalid budget. Make sure budget and budgetCurrencyCode are both set")
+  }
+
   return await categoriesRepo.insert({ ...input, sortOrder: await categoriesRepo.nextSortOrder() })
 }
 
 export const updateCategory: MutationResolvers["updateCategory"] = async (_, { id, input }) => {
+  if ((input.budget && !input.budgetCurrencyCode) || (input.budgetCurrencyCode && !input.budget)) {
+    throw new GraphQLError("Invalid budget. Make sure budget and budgetCurrencyCode are both set")
+  }
+
   const category = await categoriesRepo.get(id)
 
   if (!category) {
