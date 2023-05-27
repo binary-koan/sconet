@@ -5,6 +5,8 @@ if (!value) {
   throw new Error("Expected TURNSTILE_SITEKEY to be present")
 }
 
+console.log(`fly deploy --build-arg TURNSTILE_SITEKEY=${value}`)
+
 Bun.spawnSync(["fly", "deploy", "--build-arg", `TURNSTILE_SITEKEY=${value}`], {
   stdout: "inherit",
   stderr: "inherit"

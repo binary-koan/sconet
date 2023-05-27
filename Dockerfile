@@ -1,5 +1,5 @@
 # Builder
-FROM oven/bun:0.6.3 AS builder
+FROM oven/bun:0.6.4 AS builder
 
 WORKDIR /app
 
@@ -16,6 +16,8 @@ COPY . .
 
 ARG TURNSTILE_SITEKEY
 ENV PRODUCTION_BUILD=1
+
+RUN test -n "$TURNSTILE_SITEKEY" || (echo "TURNSTILE_SITEKEY is not set" && false)
 
 RUN cd api && bun run build
 RUN cd web && bun run build
