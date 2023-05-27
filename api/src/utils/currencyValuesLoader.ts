@@ -48,7 +48,7 @@ export function currencyValuesLoader(
         )
       }
 
-      return new Money(Math.round(original.amount * rate.rate), targetCurrencyCode)
+      return Money.fromDecimal(Math.round(original.amount * rate.rate), targetCurrencyCode)
     })
   })
 }
