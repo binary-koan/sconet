@@ -26,7 +26,7 @@ FROM gcr.io/distroless/cc-debian11 AS runtime
 WORKDIR /app
 
 ENV ENV_TYPE=production
-ENV STATIC_PATH=static
+ENV STATIC_PATHS=static
 ENV MIGRATIONS_PATH=migrations
 ENV TZ=UTC
 
@@ -35,4 +35,4 @@ COPY --from=builder /app/web/build ./static
 COPY --from=builder /app/web/public ./static
 COPY --from=builder /app/api/src/db/migrations ./migrations
 
-CMD ["/app/run", "migrate-and-serve"]
+CMD ["/app/run", "setup-and-serve"]
