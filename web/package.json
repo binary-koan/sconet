@@ -1,5 +1,12 @@
 {
   "name": "web",
+  "scripts": {
+    "watch": "nodemon -e ts,tsx,json --exec bun run bin/build.ts",
+    "build": "bun run bin/build.ts",
+    "codegen": "graphql-codegen",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint ."
+  },
   "dependencies": {
     "@modular-forms/solid": "^0.16.0",
     "@simplewebauthn/browser": "^7.2.0",
@@ -42,12 +49,6 @@
     "postcss": "^8.4.23",
     "tailwindcss": "^3.3.2",
     "typescript": "latest"
-  },
-  "scripts": {
-    "watch": "nodemon -e ts,tsx,json --exec bun run bin/build.ts",
-    "build": "bun run bin/build.ts",
-    "codegen": "graphql-codegen",
-    "typecheck": "tsc --noEmit"
   },
   "module": "index.ts",
   "type": "module"

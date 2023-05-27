@@ -6,6 +6,7 @@
     "build": "mkdir -p build && cd build && bun build --compile ../bin/run.ts --outfile run",
     "codegen": "graphql-codegen",
     "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
     "setup": "TZ=UTC bun bin/run.ts setup",
     "migrate": "TZ=UTC bun bin/run.ts migrate",
     "migrate:create": "TZ=UTC bun bin/run.ts migrate:create",
