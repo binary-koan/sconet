@@ -25,8 +25,8 @@ export const Dropdown: Component<{
   content: JSX.Element
   placement?: DropdownPlacement
   class?: string
-}> = (props) => {
-  props = mergeProps({ placement: "bottomLeft" } as const, props)
+}> = (baseProps) => {
+  const props = mergeProps({ placement: "bottomLeft" } as const, baseProps)
 
   const [internalIsOpen, setInternalIsOpen] = createSignal(false)
 

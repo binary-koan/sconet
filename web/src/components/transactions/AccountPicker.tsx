@@ -36,13 +36,13 @@ const AccountOption: Component<{
     props.valueProps.onChange(props.account)
   }
 
-  const isCurrent = props.valueProps.value?.id === props.account.id
+  const isCurrent = () => props.valueProps.value?.id === props.account.id
 
   return (
     <Button
       size="sm"
-      colorScheme={isCurrent ? "primary" : "neutral"}
-      variant={isCurrent ? "solid" : "ghost"}
+      colorScheme={isCurrent() ? "primary" : "neutral"}
+      variant={isCurrent() ? "solid" : "ghost"}
       onClick={onClick}
     >
       <span class="min-w-0 truncate">

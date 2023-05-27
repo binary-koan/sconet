@@ -13,8 +13,8 @@ const CategoryIndicator: Component<
     isSplit?: boolean
     isIncome?: boolean
   }
-> = (props) => {
-  props = mergeProps({ includeInReports: true, isSplit: false, isIncome: false }, props)
+> = (baseProps) => {
+  const props = mergeProps({ includeInReports: true, isSplit: false, isIncome: false }, baseProps)
 
   const getBackgroundColor = () => {
     if (!props.includeInReports || props.isSplit) return "bg-gray-200"

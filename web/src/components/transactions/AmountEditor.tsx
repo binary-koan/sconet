@@ -18,6 +18,7 @@ export const AmountEditor: Component<{
     }
   })
   const [newAmount, setNewAmount] = createSignal(
+    // eslint-disable-next-line solid/reactivity
     Math.abs(props.transaction.amount.decimalAmount).toString()
   )
 

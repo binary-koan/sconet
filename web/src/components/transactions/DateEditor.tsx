@@ -15,6 +15,7 @@ export const DateEditor: Component<{
       props.stopEditing()
     }
   })
+  // eslint-disable-next-line solid/reactivity
   const [newDate, setNewDate] = createSignal(props.transaction.date)
 
   const doUpdate = async () => {

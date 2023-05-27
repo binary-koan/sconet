@@ -16,6 +16,7 @@ export const FormDatePicker: Component<{
   class?: string
   maxDate?: string
 }> = (props) => {
+  // eslint-disable-next-line solid/reactivity
   const initialValue = getValue(props.of, props.name)
   const [displayedMonth, setDisplayedMonth] = createSignal(
     initialValue

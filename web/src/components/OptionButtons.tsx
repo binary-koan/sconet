@@ -67,7 +67,7 @@ const OptionButton: Component<{
     }
   }
 
-  const isCurrent =
+  const isCurrent = () =>
     typeof props.valueProps.value === "string"
       ? props.valueProps.value === props.optionValue
       : props.valueProps.value?.includes(props.optionValue)
@@ -76,7 +76,7 @@ const OptionButton: Component<{
     <>
       <Button
         size="sm"
-        colorScheme={isCurrent ? "primary" : "neutral"}
+        colorScheme={isCurrent() ? "primary" : "neutral"}
         onClick={onClick}
         {...props}
       >

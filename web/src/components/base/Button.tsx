@@ -35,7 +35,9 @@ export interface ButtonCustomProps {
 
 export const buttonClasses = (props: ButtonCustomProps) =>
   `flex items-center justify-center rounded font-medium transition focus:outline-0 disabled:pointer-events-none disabled:opacity-50 ${
+    // eslint-disable-next-line solid/reactivity
     CLASSES[props.variant || "solid"][props.colorScheme || "neutral"]
+    // eslint-disable-next-line solid/reactivity
   } ${SIZES[props.size || "md"]}`
 
 export type ButtonProps = JSX.IntrinsicElements["button"] & ButtonCustomProps

@@ -1,3 +1,4 @@
+import { debounce } from "@solid-primitives/scheduled"
 import {
   closestCenter,
   createSortable,
@@ -8,7 +9,7 @@ import {
   SortableProvider,
   transformStyle
 } from "@thisbeyond/solid-dnd"
-import { debounce, isEqual, noop, orderBy } from "lodash"
+import { isEqual, noop, orderBy } from "lodash"
 import { TbArrowsSort, TbEdit, TbTrash } from "solid-icons/tb"
 import { Component, createEffect, createSignal, For, Show } from "solid-js"
 import toast from "solid-toast"
@@ -43,6 +44,7 @@ export const CategoriesList: Component<{ data: CategoriesQuery }> = (props) => {
 
   const ids = () => orderedCategories().map((category) => category.id)
 
+  // eslint-disable-next-line solid/reactivity
   const doReorder = debounce(() => {
     if (
       !isEqual(
@@ -108,6 +110,7 @@ const SortableCategory: Component<{
   category: CategoriesQuery["categories"][number]
   onDeleteClick: (id: string) => void
 }> = (props) => {
+  // eslint-disable-next-line solid/reactivity
   const sortable = createSortable(props.category.id)
 
   return (

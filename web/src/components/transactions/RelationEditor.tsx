@@ -30,6 +30,7 @@ const RelationEditor: Component<{
 
     if (
       "currencyCode" in props.transaction &&
+      // eslint-disable-next-line solid/reactivity
       account.currencyCode !== props.transaction.currencyCode
     ) {
       confirmed = await showAlert({
@@ -46,6 +47,7 @@ const RelationEditor: Component<{
     if (confirmed) {
       await updateTransaction({
         id: props.transaction.id,
+        // eslint-disable-next-line solid/reactivity
         input: { accountId: account.id, currencyCode: account.currencyCode }
       })
     }

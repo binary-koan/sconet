@@ -15,6 +15,7 @@ export const MemoEditor: Component<{
       props.stopEditing()
     }
   })
+  // eslint-disable-next-line solid/reactivity
   const [newMemo, setNewMemo] = createSignal(props.transaction.memo)
 
   const doUpdate = async () => {
