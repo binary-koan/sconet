@@ -1,6 +1,6 @@
 import DataLoader from "dataloader"
 import { isError } from "lodash"
-import { Money } from "ts-money"
+import { Currencies, Money } from "ts-money"
 import { CategoryRecord } from "../db/records/category"
 import { TransactionRecord } from "../db/records/transaction"
 import {
@@ -48,7 +48,12 @@ export function currencyValuesLoader(
         )
       }
 
-      return Money.fromDecimal(Math.round(original.amount * rate.rate), targetCurrencyCode)
+      const converted = original.toDecimal() * rate.rate
+
+      return Money.fromDecimal(
+        parseFloat(converted.toFixed(Currencies[targetCurrencyCode].decimal_digits)),
+        targetCurrencyCode
+      )
     })
   })
 }

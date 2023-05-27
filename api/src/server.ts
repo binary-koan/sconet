@@ -15,8 +15,8 @@ export async function startServer(serveStaticPaths?: string[]) {
     context: ({ request }) => buildContext(request),
 
     plugins: [
-      useErrorHandler((error) => {
-        console.error("[GRAPHQL:ERROR]", error)
+      useErrorHandler(({ errors }) => {
+        console.error("[GRAPHQL:ERROR]", errors)
       }),
 
       useLogger({

@@ -64,7 +64,7 @@ export function filterTransactions({
     const notNullIds = filter.categoryIds.filter((categoryId) => categoryId) as string[]
     const hasNullId = filter.categoryIds.some((categoryId) => !categoryId)
 
-    let categoryIdsQuery = sql`0`
+    let categoryIdsQuery = sql`FALSE`
 
     if (notNullIds.length)
       categoryIdsQuery = sql`${categoryIdsQuery} OR "categoryId" IN ${sql(notNullIds)}`

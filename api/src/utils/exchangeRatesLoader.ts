@@ -136,7 +136,6 @@ async function fetchExchangeRates(
   fromCurrencyCode: string,
   date: string
 ): Promise<{ [from: string]: { [to: string]: number } }> {
-  console.log("fetching", fromCurrencyCode, date)
   const response = await fetch(
     `https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/${date}/currencies/${fromCurrencyCode.toLowerCase()}.json`
   )
