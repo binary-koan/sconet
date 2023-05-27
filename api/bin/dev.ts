@@ -1,3 +1,6 @@
+import "../src/extraCurrencies"
+import "../src/polyfills"
+
 import path from "path"
 import { startServer } from "../src/server"
 
