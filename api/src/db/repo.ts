@@ -1,12 +1,12 @@
 import { keyBy, pickBy } from "lodash"
-import { Helper, Sql } from "postgres"
+import { Sql } from "postgres"
 import { sql } from "./database"
 import { joinSql } from "./utils/joinSql"
 
 export type RecordForInsert<Record> = Omit<Record, "id" | "createdAt" | "updatedAt" | "deletedAt">
 
 export type Repo<Record, Methods> = Methods & {
-  tableName: Helper<string>
+  tableName: string
   findAll: (options?: { limit?: number; offset?: number }, sql?: Sql) => Promise<Record[]>
   findByIds: (ids: readonly string[], sql?: Sql) => Promise<Record[]>
   get: (id: string, sql?: Sql) => Promise<Record | undefined>
@@ -46,7 +46,7 @@ export const createRepo = <
   }
 
   return {
-    tableName,
+    tableName: rawTableName,
 
     ...methods,
 

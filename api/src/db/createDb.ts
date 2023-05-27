@@ -3,7 +3,7 @@ import { databaseUrl } from "./databaseUrl"
 
 export async function createDb() {
   const uriWithoutDatabase = databaseUrl.replace(/\/[^/?]+$/, "/postgres")
-  const databaseName = databaseUrl.replace(/.*\//, "")
+  const databaseName = databaseUrl.replace(/.*\//, "").replace(/\?.*/, "")
   const rootSql = postgres(uriWithoutDatabase)
 
   if ((await rootSql`SELECT 1 FROM pg_database WHERE datname = ${databaseName}`).length) {
