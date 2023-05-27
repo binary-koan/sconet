@@ -117,5 +117,3 @@ function streamToString(stream: Readable) {
     stream.on("end", () => resolve(Buffer.concat(chunks).toString("utf8")))
   })
 }
-
-runBackup()

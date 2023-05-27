@@ -15,13 +15,15 @@ export const categoriesRepo = createRepo<CategoryRecord, CategoryMethods>({
     async setOrder(orderedIds) {
       await sql.begin(async (sql) => {
         for (const [index, id] of orderedIds.entries()) {
-          await sql`UPDATE categories SET sortOrder = ${index} WHERE id = ${id}`
+          await sql`UPDATE "categories" SET "sortOrder" = ${index} WHERE "id" = ${id}`
         }
       })
     },
 
     async nextSortOrder() {
-      const result = await sql<Array<{ max: number }>>`SELECT MAX(sortOrder) as max FROM categories`
+      const result = await sql<
+        Array<{ max: number }>
+      >`SELECT MAX("sortOrder") as "max" FROM "categories"`
 
       return (result[0]?.max ?? 0) + 1
     }
