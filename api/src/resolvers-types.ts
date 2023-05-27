@@ -396,6 +396,7 @@ export type QueryTransactionsByDayArgs = {
 
 export type SplitTransactionItem = {
   amount: Scalars['Int'];
+  categoryId: InputMaybe<Scalars['String']>;
   memo: InputMaybe<Scalars['String']>;
 };
 

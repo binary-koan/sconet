@@ -81,6 +81,7 @@ input UpdateTransactionInput {
 input SplitTransactionItem {
   amount: Int!
   memo: String
+  categoryId: String
 }
 
 type Mutation {

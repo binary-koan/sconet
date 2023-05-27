@@ -142,15 +142,14 @@ export const splitTransaction: MutationResolvers["splitTransaction"] = async (
 
   transactionsRepo.deleteSplitTransactions(transaction.id)
 
-  await Promise.all(
-    splits.map((split) => {
-      transactionsRepo.insert({
-        ...omit(transaction, "id"),
-        splitFromId: transaction.id,
-        amount: split.amount,
-        memo: split.memo || transaction.memo
-      })
-    })
+  await transactionsRepo.insertAll(
+    splits.map((split) => ({
+      ...omit(transaction, "id"),
+      splitFromId: transaction.id,
+      amount: split.amount,
+      memo: split.memo || transaction.memo,
+      categoryId: split.categoryId || transaction.categoryId
+    }))
   )
 
   return transaction
