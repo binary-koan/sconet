@@ -53,7 +53,7 @@ export const budget: QueryResolvers["budget"] = async (
   )
 
   const parentTransactions = await transactionsRepo.filter({
-    filter: { dateFrom: start, dateUntil: end }
+    filter: { dateFrom: start, dateUntil: end, includeInReports: true }
   }).data
 
   const transactions = await Promise.all(

@@ -30,7 +30,7 @@ export const balance: QueryResolvers["balance"] = async (_, { year, currencyCode
   const end = new Date(`${year}-12-31T23:59:59Z`)
 
   const transactions = await transactionsRepo.filter({
-    filter: { dateFrom: start, dateUntil: end }
+    filter: { dateFrom: start, dateUntil: end, includeInReports: true }
   }).data
 
   const transactionValues = (

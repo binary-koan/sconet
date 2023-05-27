@@ -4,7 +4,6 @@ import { print } from "graphql"
 import { createYoga, useErrorHandler, useLogger } from "graphql-yoga"
 import { extname } from "path"
 import { buildContext } from "./context"
-import "./polyfills"
 import { schema } from "./schema"
 
 export async function startServer(serveStaticPaths?: string[]) {

@@ -24,6 +24,7 @@ export function filterTransactions({
     maxAmount?: Maybe<number>
     keyword?: Maybe<string>
     categoryIds?: Maybe<Array<string | null>>
+    includeInReports?: Maybe<boolean>
   }>
 }): FindTransactionsResult {
   let where = sql`WHERE "splitFromId" IS NULL AND "deletedAt" IS NULL`
@@ -70,6 +71,10 @@ export function filterTransactions({
     if (hasNullId) categoryIdsQuery = sql`${categoryIdsQuery} OR "categoryId" IS NULL`
 
     where = sql`${where} AND (${categoryIdsQuery})`
+  }
+
+  if (filter?.includeInReports != null) {
+    where = sql`${where} AND "includeInReports" = ${filter.includeInReports}`
   }
 
   if (offset) {
