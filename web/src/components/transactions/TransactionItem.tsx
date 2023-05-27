@@ -77,12 +77,12 @@ const TransactionItem: Component<{
         {(child) => (
           <div
             onClick={navigateToTransaction}
-            class="flex cursor-pointer items-center bg-white py-2 pr-4 pl-10 shadow-sm"
+            class="flex cursor-pointer items-center bg-white py-2 pl-10 pr-4 shadow-sm"
           >
             <CategoryIndicator
               class="mr-4 h-8 w-8 flex-none"
               iconSize="1.25em"
-              icon={child().category?.icon ? namedIcons[child().category?.icon!] : undefined}
+              icon={child().category?.icon ? namedIcons[child().category!.icon!] : undefined}
               color={child().category?.color}
               includeInReports={props.transaction.includeInReports}
               isIncome={props.transaction.amount.decimalAmount > 0}

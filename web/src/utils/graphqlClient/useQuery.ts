@@ -1,6 +1,6 @@
 import { createEffect, createMemo, createSignal, onCleanup, useContext } from "solid-js"
 import { gqlContext } from "./context"
-import { FetchMore, listenToQuery, StoredQuery } from "./listenToQuery"
+import { FetchMore, StoredQuery, listenToQuery } from "./listenToQuery"
 
 export interface QueryResource<Data, Variables> {
   (): Data | undefined
@@ -11,7 +11,7 @@ export interface QueryResource<Data, Variables> {
   fetchMore: FetchMore<Data, Variables>
 }
 
-export function useQuery<Data, Variables = {}>(
+export function useQuery<Data, Variables = Record<string, never>>(
   queryContent: string,
   variables?: () => Variables
 ): QueryResource<Data, Variables> {
@@ -35,6 +35,7 @@ export function useQuery<Data, Variables = {}>(
 
   const resource = () => data()
 
+  // eslint-disable-next-line solid/reactivity
   Object.defineProperties(resource, {
     loading: {
       get: () => storedQuery()?.loading ?? true
@@ -45,8 +46,11 @@ export function useQuery<Data, Variables = {}>(
     }
   })
 
+  // eslint-disable-next-line solid/reactivity
   resource.fetchMore = (...args: Parameters<FetchMore<Data, Variables>>) =>
     storedQuery()?.fetchMore(...args)
+
+  // eslint-disable-next-line solid/reactivity
   resource.refetch = () => storedQuery()?.refetch()
 
   return resource as any

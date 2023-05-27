@@ -80,7 +80,7 @@ export const TransactionsCalendar: Component<{
         <div class="grid grid-cols-7">
           <For each={dates().slice(0, 7)}>
             {({ date }) => (
-              <div class="[&:nth-child(7n)]:border-r-0 border-r border-gray-200 p-1 text-center text-xs font-semibold lg:px-2 lg:text-left">
+              <div class="border-r border-gray-200 p-1 text-center text-xs font-semibold lg:px-2 lg:text-left [&:nth-child(7n)]:border-r-0">
                 {date.toLocaleDateString("default", { weekday: "short" })}
               </div>
             )}
@@ -88,7 +88,7 @@ export const TransactionsCalendar: Component<{
           <For each={dates()}>
             {({ date, isCurrentMonth, totalSpent, expenses, incomes }) => (
               <div
-                class="[&:nth-child(7n)]:border-r-0 flex h-16 flex-col border-t border-r border-gray-200 p-1 text-center text-sm lg:h-32 lg:text-left"
+                class="flex h-16 flex-col border-r border-t border-gray-200 p-1 text-center text-sm lg:h-32 lg:text-left [&:nth-child(7n)]:border-r-0"
                 classList={{ "text-gray-300": !isCurrentMonth }}
               >
                 <div class="flex flex-col lg:flex-row lg:pl-1">
@@ -130,7 +130,7 @@ export const TransactionsCalendar: Component<{
                               ]
                             : "bg-gray-500"]: true
                         }}
-                      ></div>
+                      />
                     )}
                   </For>
 

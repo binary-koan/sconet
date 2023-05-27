@@ -54,7 +54,7 @@ export const TransactionsList: Component<{
       </Show>
       <For each={items()}>
         {({ date, transactions }, index) => {
-          const newMonth =
+          const newMonth = () =>
             index() === 0 ||
             formatDate(items()[index() - 1].date, "monthYear") !== formatDate(date, "monthYear")
           const [dateFrom, dateUntil] = monthRange(new Date(date))
@@ -64,7 +64,7 @@ export const TransactionsList: Component<{
 
           return (
             <>
-              <Show when={newMonth}>
+              <Show when={newMonth()}>
                 <div
                   class="z-docked sticky top-12 bg-gray-50 pt-2 lg:top-28"
                   classList={{
@@ -73,7 +73,7 @@ export const TransactionsList: Component<{
                   }}
                 >
                   <div class="relative">
-                    <div class="absolute top-1/2 left-4 right-4 border-b border-gray-200" />
+                    <div class="absolute left-4 right-4 top-1/2 border-b border-gray-200" />
                     <button
                       type="button"
                       onClick={() => {
@@ -88,7 +88,7 @@ export const TransactionsList: Component<{
                 </div>
               </Show>
 
-              <div class="flex px-2 pt-5 pb-2 text-sm text-gray-600">
+              <div class="flex px-2 pb-2 pt-5 text-sm text-gray-600">
                 <Button
                   variant="ghost"
                   size="custom"

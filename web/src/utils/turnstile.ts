@@ -108,7 +108,7 @@ export { turnstileLoaded, turnstileError }
 export const loadTurnstile = () => {
   if (turnstileLoaded()) return
 
-  var script = document.createElement("script")
+  const script = document.createElement("script")
   script.type = "text/javascript"
   script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
 

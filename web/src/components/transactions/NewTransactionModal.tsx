@@ -160,7 +160,7 @@ export const NewTransactionModal: Component<{
 
               <Show when={getValue(form, "amountType") !== "income"}>
                 <Field of={form} name="categoryId">
-                  {(field) => (
+                  {() => (
                     <Dropdown
                       closeOnItemClick
                       class="min-w-0"

@@ -8,7 +8,7 @@ import {
   SortableProvider,
   transformStyle
 } from "@thisbeyond/solid-dnd"
-import { debounce, isEqual, orderBy } from "lodash"
+import { debounce, isEqual, noop, orderBy } from "lodash"
 import { TbArrowsSort, TbEdit, TbTrash } from "solid-icons/tb"
 import { Component, createEffect, createSignal, For, Show } from "solid-js"
 import toast from "solid-toast"
@@ -97,7 +97,7 @@ export const CategoriesList: Component<{ data: CategoriesQuery }> = (props) => {
 
       <DragOverlayFixed>
         <Show when={draggingItem()}>
-          <Category category={draggingItem()!} onDeleteClick={() => {}} />
+          <Category category={draggingItem()!} onDeleteClick={noop} />
         </Show>
       </DragOverlayFixed>
     </DragDropProviderFixed>

@@ -4,10 +4,10 @@ export const buildMonthDates = (year: number, monthNumber: number) => {
 
   const lastDate = new Date(monthEnd)
 
-  let date = new Date(monthStart)
+  const date = new Date(monthStart)
   date.setDate(date.getDate() - daysBeforeToShow(monthStart.getDay()))
 
-  let dates: Array<{
+  const dates: Array<{
     date: Date
     isCurrentMonth: boolean
   }> = []

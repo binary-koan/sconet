@@ -1,4 +1,5 @@
 import { Form, FormStore } from "@modular-forms/solid"
+import { noop } from "lodash"
 import { Component } from "solid-js"
 import { useCategoriesQuery } from "../../graphql/queries/categoriesQuery"
 import { namedIcons } from "../../utils/namedIcons"
@@ -21,7 +22,7 @@ const TransactionFilters: Component<{
 
   return (
     <div class="mb-4 bg-white p-4 shadow-sm lg:rounded">
-      <Form of={props.form} onSubmit={() => {}}>
+      <Form of={props.form} onSubmit={noop}>
         <FormInput of={props.form} name="keyword" type="search" label="Filter" />
 
         <div class="flex gap-2">

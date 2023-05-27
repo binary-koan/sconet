@@ -17,6 +17,7 @@ export const SplitTransactionModal: Component<{
   const currencyData = useGetCurrencyQuery(() => ({ code: props.transaction.currencyCode }))
 
   const [splits, setSplits] = createSignal(
+    // eslint-disable-next-line solid/reactivity
     props.transaction.splitTo
       .map((child) => ({
         amount: Math.abs(child.amount.decimalAmount).toString(),

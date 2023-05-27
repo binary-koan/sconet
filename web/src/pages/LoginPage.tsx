@@ -58,6 +58,7 @@ const LoginPage: Component = () => {
 
   const [form] = createForm<LoginFormValues>()
 
+  // eslint-disable-next-line prefer-const
   let turnstileContainer: HTMLDivElement | undefined = undefined
 
   createEffect(() => {

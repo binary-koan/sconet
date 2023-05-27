@@ -45,7 +45,7 @@ export const Modal = <T extends AsProp = "div">(
   )
 }
 
-export const ModalContent = <T extends AsProp = "div">(allProps: BasicElementProps<T>) => {
+export const ModalContent = (allProps: BasicElementProps<"div">) => {
   const [props, elementProps] = splitProps(allProps, [
     "as",
     "ref",
@@ -55,19 +55,18 @@ export const ModalContent = <T extends AsProp = "div">(allProps: BasicElementPro
   ])
 
   return (
-    <Dynamic
-      component={props.as || "div"}
+    <div
       ref={props.ref}
-      class={`relative w-full transform rounded-t-lg bg-white p-5 pt-4 text-left shadow-xl sm:my-8 sm:max-w-lg sm:rounded-lg sm:py-5 sm:px-6 ${props.class}`}
+      class={`relative w-full transform rounded-t-lg bg-white p-5 pt-4 text-left shadow-xl sm:my-8 sm:max-w-lg sm:rounded-lg sm:px-6 sm:py-5 ${props.class}`}
       classList={props.classList}
       {...elementProps}
     >
       {props.children}
-    </Dynamic>
+    </div>
   )
 }
 
-export const ModalTitle = <T extends AsProp = "div">(allProps: BasicElementProps<T>) => {
+export const ModalTitle = (allProps: BasicElementProps<"div">) => {
   const [props, elementProps] = splitProps(allProps, [
     "as",
     "ref",
@@ -78,7 +77,6 @@ export const ModalTitle = <T extends AsProp = "div">(allProps: BasicElementProps
 
   return (
     <h2
-      component={props.as || "div"}
       ref={props.ref}
       class={`mb-4 flex items-center text-xl font-semibold ${props.class}`}
       classList={props.classList}
@@ -90,7 +88,7 @@ export const ModalTitle = <T extends AsProp = "div">(allProps: BasicElementProps
 }
 
 export const ModalCloseButton = (props: ButtonProps) => (
-  <Button type="button" variant="ghost" size="square" class="ml-auto -mr-1" {...props}>
+  <Button type="button" variant="ghost" size="square" class="-mr-1 ml-auto" {...props}>
     <TbX />
   </Button>
 )

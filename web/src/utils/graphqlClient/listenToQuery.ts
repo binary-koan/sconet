@@ -37,7 +37,7 @@ export const listenToQuery = <Data>(
   query: string,
   serializedVariables: string
 ) => {
-  let existing: StoredQuery<Data> | undefined = context.queries[query]?.[serializedVariables]
+  const existing: StoredQuery<Data> | undefined = context.queries[query]?.[serializedVariables]
 
   if (existing) {
     // console.trace("adding listener", query, serializedVariables)
@@ -96,6 +96,7 @@ export const listenToQuery = <Data>(
       }
 
       storedQuery.inflightRequest = requestGraphql<Data>(query, JSON.stringify(variables))
+        // eslint-disable-next-line solid/reactivity
         .then((newData) => {
           if (!storedQuery.inflightRequest) {
             // Something has changed in the meantime, we should cancel this

@@ -9,7 +9,11 @@ export interface ClassProps {
   classList?: { [className: string]: boolean | undefined }
 }
 
-export type BasicElementProps<T extends ValidComponent, CustomProps = {}> = CustomProps &
+export type BasicElementProps<
+  T extends ValidComponent,
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  CustomProps = {}
+> = CustomProps &
   ClassProps &
   Omit<ComponentProps<T>, keyof ClassProps | keyof CustomProps> & {
     // TODO: Infer type of 'ref' based on 'as'
@@ -23,6 +27,7 @@ export type BasicElementProps<T extends ValidComponent, CustomProps = {}> = Cust
   }
 
 declare module "solid-js" {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace JSX {
     interface Directives {
       sortable: true

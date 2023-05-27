@@ -69,7 +69,7 @@ const BudgetGroup: Component<{
                             }%`
                           : 0
                       }}
-                    ></div>
+                    />
                   </div>
 
                   <div class="flex">
