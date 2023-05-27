@@ -1,7 +1,7 @@
 import { ASTNode, GraphQLError, GraphQLScalarType, Kind } from "graphql"
 import { Currencies } from "ts-money"
 
-const validate = (value: any, ast?: ASTNode) => {
+const validate = (value: unknown, ast?: ASTNode) => {
   if (typeof value !== "string") {
     throw new GraphQLError(`Value is not string: ${value}`, ast ? { nodes: ast } : undefined)
   }

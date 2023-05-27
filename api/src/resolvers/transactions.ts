@@ -29,7 +29,7 @@ export const transactionsByDay: QueryResolvers["transactionsByDay"] = async (
 
   const dates: DailyTransactionsResult[] = []
 
-  let date = new Date(dateFrom)
+  const date = new Date(dateFrom)
 
   while (date.getTime() <= dateUntil.getTime()) {
     dates.push({
@@ -142,12 +142,10 @@ export const splitTransaction: MutationResolvers["splitTransaction"] = async (
 
   transactionsRepo.deleteSplitTransactions(transaction.id)
 
-  const { id: _id, ...transactionAttributes } = transaction
-
   await Promise.all(
     splits.map((split) => {
       transactionsRepo.insert({
-        ...transactionAttributes,
+        ...omit(transaction, "id"),
         splitFromId: transaction.id,
         amount: split.amount,
         memo: split.memo || transaction.memo

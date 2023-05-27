@@ -226,7 +226,7 @@ function listMigrationFiles() {
 
   return orderBy(allFiles)
     .map((filename) => {
-      const [_, version, name] = UP_FILENAME_PATTERN.exec(filename) || []
+      const [, version, name] = UP_FILENAME_PATTERN.exec(filename) || []
 
       if (!version || !name) return
 

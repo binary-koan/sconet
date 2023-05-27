@@ -89,10 +89,10 @@ const LoginPage: Component = () => {
       <Title>Login</Title>
 
       <div class="flex min-h-screen flex-col pb-20">
-        <img class="mx-auto mt-8 mb-auto w-36" src={fixAssetPath(logoImage)} />
+        <img class="mx-auto mb-auto mt-8 w-36" src={fixAssetPath(logoImage)} />
 
-        <div class="mx-6 mt-2 mb-10 rounded bg-white p-6 shadow-2xl lg:mx-auto lg:w-96">
-          <h1 class="mb-4 flex items-center text-lg font-bold lg:text-2xl">Login</h1>
+        <div class="mx-6 mb-10 mt-2 rounded bg-white p-6 shadow-2xl md:mx-auto md:w-96">
+          <h1 class="mb-4 flex items-center text-lg font-bold md:text-2xl">Login</h1>
           <Form
             of={form}
             onSubmit={(values) => {

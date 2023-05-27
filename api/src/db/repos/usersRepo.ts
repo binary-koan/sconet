@@ -11,6 +11,16 @@ export const usersRepo = createRepo<UserRecord, UserMethods>({
   defaultOrder: { email: "ASC" },
   methods: {
     async getByEmail(email) {
+      console.log("getting user by email", email)
+      try {
+        console.log(
+          "user",
+          await sql<UserRecord[]>`SELECT id FROM "users" WHERE "email" = ${email}`
+        )
+      } catch (e) {
+        console.log("error", e)
+      }
+      await Bun.sleep(100)
       return (await sql<UserRecord[]>`SELECT * FROM "users" WHERE "email" = ${email}`)[0]
     }
   }

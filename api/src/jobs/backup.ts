@@ -50,7 +50,7 @@ export async function runBackup() {
   backupDetails.backupTimestamps[backupIndex] = new Date().toISOString()
 
   for (const repo of REPOS_TO_BACKUP) {
-    await backupRepo(repo, backupIndex, s3)
+    await backupRepo(repo as Repo<unknown, unknown>, backupIndex, s3)
   }
 
   await Bun.write("backup-details.json", JSON.stringify(backupDetails, null, 2) + "\n")
@@ -59,7 +59,7 @@ export async function runBackup() {
   console.log("[BACKUP] Success")
 }
 
-const backupRepo = async (repo: Repo<any, any>, backupIndex: string, s3: Client) => {
+const backupRepo = async (repo: Repo<unknown, unknown>, backupIndex: string, s3: Client) => {
   let offset = 0
 
   while (true) {
@@ -77,7 +77,7 @@ const backupRepo = async (repo: Repo<any, any>, backupIndex: string, s3: Client)
 }
 
 async function getBackupDetails(s3: Client) {
-  const objects: any[] = []
+  const objects: Array<{ name?: string }> = []
   const objectStream = s3.listObjectsV2(Bun.env.BUCKET_NAME!)
 
   await new Promise<void>((resolve, reject) => {

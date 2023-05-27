@@ -1,37 +1,37 @@
 import postgres from "postgres"
 import { databaseUrl } from "./databaseUrl"
 
-const rawSql = postgres(databaseUrl)
+export const sql = postgres(databaseUrl)
 
-export const sql: postgres.Sql<{}> = (template: any, ...parameters: any[]) => {
-  if (Array.isArray(template) && "raw" in template && Array.isArray(template.raw)) {
-    const raw = rawSql(template as TemplateStringsArray, ...parameters)
+// export const sql: postgres.Sql<{}> = (template: any, ...parameters: any[]) => {
+//   if (Array.isArray(template) && "raw" in template && Array.isArray(template.raw)) {
+//     const raw = rawSql(template as TemplateStringsArray, ...parameters)
 
-    if (process.env.LOG_ALL_SQL) {
-      console.log(`[POSTGRES:QUERY] ${(template.raw as any).join(" ? ").replace(/\s+/g, " ")}`)
-      console.log(`[POSTGRES:QUERY BINDINGS]`, parameters)
-    }
+//     if (process.env.LOG_ALL_SQL) {
+//       console.log(`[POSTGRES:QUERY] ${(template.raw as any).join(" ? ").replace(/\s+/g, " ")}`)
+//       console.log(`[POSTGRES:QUERY BINDINGS]`, parameters)
+//     }
 
-    return raw
-  }
+//     return raw
+//   }
 
-  return rawSql(template, ...parameters) as any
-}
+//   return rawSql(template, ...parameters) as any
+// }
 
-sql.CLOSE = rawSql.CLOSE
-sql.END = rawSql.END
-sql.PostgresError = rawSql.PostgresError
-sql.options = rawSql.options
-sql.parameters = rawSql.parameters
-sql.types = rawSql.types
-sql.typed = rawSql.typed
-sql.unsafe = rawSql.unsafe
-sql.end = rawSql.end
-sql.listen = rawSql.listen
-sql.notify = rawSql.notify
-sql.subscribe = rawSql.subscribe
-sql.largeObject = rawSql.largeObject
-sql.begin = rawSql.begin
-sql.array = rawSql.array
-sql.file = rawSql.file
-sql.json = rawSql.json
+// sql.CLOSE = rawSql.CLOSE
+// sql.END = rawSql.END
+// sql.PostgresError = rawSql.PostgresError
+// sql.options = rawSql.options
+// sql.parameters = rawSql.parameters
+// sql.types = rawSql.types
+// sql.typed = rawSql.typed
+// sql.unsafe = rawSql.unsafe
+// sql.end = rawSql.end
+// sql.listen = rawSql.listen
+// sql.notify = rawSql.notify
+// sql.subscribe = rawSql.subscribe
+// sql.largeObject = rawSql.largeObject
+// sql.begin = rawSql.begin
+// sql.array = rawSql.array
+// sql.file = rawSql.file
+// sql.json = rawSql.json

@@ -78,7 +78,7 @@ export const Category: Resolvers["Category"] = {
       context.data.currencyValues
     )) || null,
 
-  budgetCurrency: (category, _, context) =>
+  budgetCurrency: (category) =>
     category.budgetCurrencyCode ? Currencies[category.budgetCurrencyCode] : null,
 
   isRegular: (category) => category.isRegular,

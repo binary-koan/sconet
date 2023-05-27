@@ -1,6 +1,7 @@
 import { file } from "bun"
 import { existsSync, statSync } from "fs"
-import { createYoga } from "graphql-yoga"
+import { print } from "graphql"
+import { createYoga, useErrorHandler, useLogger } from "graphql-yoga"
 import { extname } from "path"
 import { buildContext } from "./context"
 import "./polyfills"
@@ -13,6 +14,25 @@ export async function startServer(serveStaticPaths?: string[]) {
   const yoga = createYoga({
     schema,
     context: ({ request }) => buildContext(request),
+
+    plugins: [
+      useErrorHandler((error) => {
+        console.error("[GRAPHQL:ERROR]", error)
+      }),
+
+      useLogger({
+        skipIntrospection: true,
+        logFn: (eventName, options) => {
+          if (eventName === "execute-start") {
+            console.log("[GRAPHQL:START]", print(options.args.document).split("\n")[0] + " ... }")
+            console.log("[GRAPHQL:VARIABLES]", options.args.variableValues)
+          }
+          if (eventName === "execute-end") {
+            console.log("[GRAPHQL:END]", print(options.args.document).split("\n")[0] + " ... }")
+          }
+        }
+      })
+    ],
 
     cors:
       Bun.env.ENV_TYPE === "production"

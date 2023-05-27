@@ -53,6 +53,13 @@ const commands: { [command: string]: ((...args: string[]) => void | Promise<void
     await migrate()
     startBackupSchedule()
     startServer()
+  },
+
+  user_test: async () => {
+    console.log("fetching user")
+    const user = await sql`SELECT * FROM "users" WHERE "email" = ${"reason.koan@gmail.com"}`
+    console.log("user", user)
+    await sql.end()
   }
 }
 
