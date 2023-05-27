@@ -6,7 +6,7 @@ import { Dynamic } from "solid-js/web"
 
 export const GraphsNavigation: Component = () => {
   return (
-    <div class="mb-4 flex">
+    <div class="mb-4 flex md:mt-3 md:px-4">
       <NavigationItem icon={TbChartPie} text="Budgets" to="/graphs/budgets" />
       <NavigationItem icon={TbChartBar} text="Balance" to="/graphs/balance" />
     </div>
@@ -23,14 +23,14 @@ const NavigationItem: Component<{ icon: Component<IconProps>; text: JSX.Element;
   return (
     <Link
       href={props.to}
-      class="flex flex-1 flex-row items-center justify-center gap-1 border-b-2 py-4"
+      class="flex flex-1 flex-row items-center justify-center gap-1 border-b-2 py-4 md:py-3"
       classList={{
         "text-indigo-600 border-indigo-600": isMatch(),
         "text-gray-600 border-gray-200": !isMatch()
       }}
     >
       <Dynamic component={props.icon} size="1.5em" />
-      <span class="text-xs lg:text-base">{props.text}</span>
+      <span class="text-xs md:text-base">{props.text}</span>
     </Link>
   )
 }

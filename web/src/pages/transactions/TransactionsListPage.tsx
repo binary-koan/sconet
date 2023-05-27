@@ -48,13 +48,13 @@ const TransactionsListPage: Component = () => {
     <>
       <Title>Transactions</Title>
 
-      <PageHeader size="lg" class="z-docked sticky top-0 bg-gray-50 lg:top-9">
+      <PageHeader size="lg" class="z-docked sticky top-0 bg-gray-50 md:top-9">
         <span class="mr-auto">Transactions</span>
         <button
-          class="z-navbar fixed bottom-[calc(66px+1rem+env(safe-area-inset-bottom))] right-4 flex items-center rounded-full border border-gray-200 bg-white py-2 px-5 text-lg text-indigo-600 shadow-lg lg:static lg:z-0 lg:-my-1 lg:mr-2 lg:shadow-none"
+          class="z-navbar fixed bottom-[calc(66px+1rem+env(safe-area-inset-bottom))] right-4 flex items-center rounded-full border border-gray-200 bg-white px-5 py-2 text-lg text-indigo-600 shadow-lg md:static md:z-0 md:-my-1 md:mr-2 md:shadow-none"
           onClick={() => setCreatingTransaction(true)}
         >
-          <TbPlus size="1.25em" class="mr-2 -ml-1" />
+          <TbPlus size="1.25em" class="-ml-1 mr-2" />
           Add
         </button>
         <Button
