@@ -4,6 +4,7 @@ import { TbArrowLeft, TbArrowRight } from "solid-icons/tb"
 import { Component, For, JSX, Show, createSignal } from "solid-js"
 import { buildMonthDates } from "../../utils/buildMonthDates"
 import { decrementMonth, incrementMonth, isSameDate, stripTime } from "../../utils/date"
+import { MonthPickerOverlay } from "../MonthPickerOverlay"
 import { Button } from "../base/Button"
 import { FormControl, FormLabel } from "../base/FormControl"
 
@@ -58,12 +59,22 @@ export const FormDatePicker: Component<{
                   <TbArrowLeft size="1.25em" />
                 </Button>
 
-                <span class="mx-4 flex-1 text-center text-sm font-semibold">
+                <MonthPickerOverlay
+                  class="mx-4 flex-1 text-center text-sm font-semibold"
+                  value={field.value && field.value.replace(/-\d+$/, "")}
+                  disableFutureDates
+                  onChange={(value) =>
+                    setDisplayedMonth({
+                      year: parseInt(value.split("-")[0]),
+                      monthNumber: parseInt(value.split("-")[1])
+                    })
+                  }
+                >
                   {displayedMonthStart().toLocaleDateString("default", {
                     month: "long",
                     year: "numeric"
                   })}
-                </span>
+                </MonthPickerOverlay>
 
                 <Button
                   size="square"

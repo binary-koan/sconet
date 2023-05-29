@@ -9,6 +9,7 @@ import {
   CategoryColor
 } from "../../utils/categoryColors"
 import { decrementMonth, incrementMonth, isSameDate, stripTime } from "../../utils/date"
+import { MonthPickerOverlay } from "../MonthPickerOverlay"
 import { Button } from "../base/Button"
 import { NewTransactionModal } from "./NewTransactionModal"
 
@@ -63,9 +64,19 @@ export const TransactionsCalendar: Component<{
           <TbArrowLeft size="1.25em" />
         </Button>
 
-        <span class="mx-4 font-semibold">
+        <MonthPickerOverlay
+          class="mx-4 font-semibold"
+          value={`${props.year}-${props.month}`}
+          onChange={(value) =>
+            changeMonthAndNavigate(() => ({
+              year: parseInt(value.split("-")[0]),
+              monthNumber: parseInt(value.split("-")[1])
+            }))
+          }
+          disableFutureDates
+        >
           {monthStart().toLocaleDateString("default", { month: "long", year: "numeric" })}
-        </span>
+        </MonthPickerOverlay>
 
         <Button
           size="square"

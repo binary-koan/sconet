@@ -4,6 +4,7 @@ import { TbArrowLeft, TbArrowRight, TbCalendarEvent } from "solid-icons/tb"
 import { Show, createEffect } from "solid-js"
 import { Cell } from "../../components/Cell"
 import { GraphsNavigation } from "../../components/GraphsNavigation"
+import { MonthPickerOverlay } from "../../components/MonthPickerOverlay"
 import { Button } from "../../components/base/Button"
 import { PageHeader } from "../../components/base/PageHeader"
 import { Budgets } from "../../components/budgets/Budgets"
@@ -53,8 +54,6 @@ const BudgetsPage = () => {
     return date().getTime() === thisMonthStart.getTime()
   }
 
-  let monthInput: HTMLInputElement | undefined
-
   return (
     <>
       <Title>Budgets</Title>
@@ -62,22 +61,15 @@ const BudgetsPage = () => {
       <GraphsNavigation />
 
       <PageHeader size="lg">
-        <div
-          class="relative mr-auto flex items-center gap-1"
-          onClick={() => monthInput?.showPicker()}
+        <MonthPickerOverlay
+          class="mr-auto flex items-center gap-1"
+          value={`${routeData.year}-${routeData.month}`}
+          disableFutureDates
+          onChange={(value) => navigate(`/graphs/budgets/${value}`)}
         >
           {date().toLocaleDateString("en", { year: "numeric", month: "long" })}
           <TbCalendarEvent />
-
-          <input
-            ref={monthInput}
-            type="month"
-            class="absolute inset-0 opacity-0"
-            value={`${routeData.year}-${routeData.month}`}
-            max={`${new Date().toISOString().replace(/-\d+T.+/, "")}`}
-            onChange={(e) => navigate(`/graphs/budgets/${e.target.value}`)}
-          />
-        </div>
+        </MonthPickerOverlay>
 
         <Show when={routeData.currentUser()?.currentUser}>
           <DefaultCurrencySelect
