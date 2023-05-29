@@ -328,7 +328,13 @@ export type PaginatedTransactions = {
   __typename?: 'PaginatedTransactions';
   data: Array<Transaction>;
   nextOffset: Maybe<Scalars['String']>;
+  totalAmount: Money;
   totalCount: Scalars['Int'];
+};
+
+
+export type PaginatedTransactionsTotalAmountArgs = {
+  currencyCode: InputMaybe<Scalars['CurrencyCode']>;
 };
 
 export type Query = {
@@ -779,6 +785,7 @@ export type MutationResolvers<ContextType = Context, ParentType extends Resolver
 export type PaginatedTransactionsResolvers<ContextType = Context, ParentType extends ResolversParentTypes['PaginatedTransactions'] = ResolversParentTypes['PaginatedTransactions']> = {
   data: Resolver<Array<ResolversTypes['Transaction']>, ParentType, ContextType>;
   nextOffset: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  totalAmount: Resolver<ResolversTypes['Money'], ParentType, ContextType, Partial<PaginatedTransactionsTotalAmountArgs>>;
   totalCount: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };

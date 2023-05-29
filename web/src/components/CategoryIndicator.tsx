@@ -4,16 +4,16 @@ import { Dynamic } from "solid-js/web"
 import { ClassProps } from "../types"
 import { CATEGORY_BACKGROUND_COLORS, CategoryColor } from "../utils/categoryColors"
 
-const CategoryIndicator: Component<
-  ClassProps & {
-    iconSize?: string
-    color?: string
-    icon?: Component<{ size?: string }>
-    includeInReports?: boolean
-    isSplit?: boolean
-    isIncome?: boolean
-  }
-> = (baseProps) => {
+export type CategoryIndicatorProps = ClassProps & {
+  iconSize?: string
+  color?: string
+  icon?: Component<{ size?: string }>
+  includeInReports?: boolean
+  isSplit?: boolean
+  isIncome?: boolean
+}
+
+const CategoryIndicator: Component<CategoryIndicatorProps> = (baseProps) => {
   const props = mergeProps({ includeInReports: true, isSplit: false, isIncome: false }, baseProps)
 
   const getBackgroundColor = () => {

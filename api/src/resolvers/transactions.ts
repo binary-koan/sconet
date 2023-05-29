@@ -10,7 +10,11 @@ import {
   Resolvers,
   UpdateTransactionInput
 } from "../resolvers-types"
-import { loadTransactionCurrencyValue } from "../utils/currencyValuesLoader"
+import {
+  loadTransactionCurrencyValue,
+  loadTransactionCurrencyValues
+} from "../utils/currencyValuesLoader"
+import { moneySum } from "../utils/money"
 import { sumCurrency } from "./money"
 
 export interface DailyTransactionsResult {
@@ -205,7 +209,16 @@ export const Transaction: Resolvers["Transaction"] = {
 export const PaginatedTransactions: Resolvers["PaginatedTransactions"] = {
   data: (result) => result.data,
   nextOffset: async (result) => (await result.nextOffset) || null,
-  totalCount: (result) => result.totalCount
+  totalCount: (result) => result.totalCount,
+  totalAmount: async (result, { currencyCode }, context) =>
+    moneySum(
+      await loadTransactionCurrencyValues(
+        await result.data,
+        currencyCode || context.currentUser!.settings.defaultCurrencyCode,
+        context.data.currencyValues
+      ),
+      Currencies[currencyCode || context.currentUser!.settings.defaultCurrencyCode]
+    )
 }
 
 export const DailyTransactions: Resolvers["DailyTransactions"] = {

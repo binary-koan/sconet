@@ -317,7 +317,13 @@ export type PaginatedTransactions = {
   __typename?: 'PaginatedTransactions';
   data: Array<Transaction>;
   nextOffset?: Maybe<Scalars['String']['output']>;
+  totalAmount: Money;
   totalCount: Scalars['Int']['output'];
+};
+
+
+export type PaginatedTransactionsTotalAmountArgs = {
+  currencyCode?: InputMaybe<Scalars['CurrencyCode']['input']>;
 };
 
 export type Query = {
@@ -649,10 +655,11 @@ export type BudgetQueryVariables = Exact<{
   year: Scalars['Int']['input'];
   month: Scalars['Int']['input'];
   monthStart: Scalars['Date']['input'];
+  monthEnd: Scalars['Date']['input'];
 }>;
 
 
-export type BudgetQuery = { __typename?: 'Query', budget: { __typename?: 'MonthBudget', id: string, month: number, income: { __typename?: 'Money', decimalAmount: number, formatted: string }, totalSpending: { __typename?: 'Money', decimalAmount: number, formatted: string }, difference: { __typename?: 'Money', decimalAmount: number, formatted: string }, regularCategories: { __typename?: 'CategoryBudgetGroup', totalSpending: { __typename?: 'Money', decimalAmount: number, formatted: string }, categories: Array<{ __typename?: 'CategoryBudget', id: string, category?: { __typename?: 'Category', id: string, name: string, color: string, icon: string, isRegular: boolean, budget?: { __typename?: 'Money', decimalAmount: number, formatted: string } | null } | null, amountSpent: { __typename?: 'Money', decimalAmount: number, formatted: string } }> }, irregularCategories: { __typename?: 'CategoryBudgetGroup', totalSpending: { __typename?: 'Money', decimalAmount: number, formatted: string }, categories: Array<{ __typename?: 'CategoryBudget', id: string, category?: { __typename?: 'Category', id: string, name: string, color: string, icon: string, isRegular: boolean, budget?: { __typename?: 'Money', decimalAmount: number, formatted: string } | null } | null, amountSpent: { __typename?: 'Money', decimalAmount: number, formatted: string } }> } } };
+export type BudgetQuery = { __typename?: 'Query', budget: { __typename?: 'MonthBudget', id: string, month: number, income: { __typename?: 'Money', decimalAmount: number, formatted: string }, totalSpending: { __typename?: 'Money', decimalAmount: number, formatted: string }, difference: { __typename?: 'Money', decimalAmount: number, formatted: string }, regularCategories: { __typename?: 'CategoryBudgetGroup', totalSpending: { __typename?: 'Money', decimalAmount: number, formatted: string }, categories: Array<{ __typename?: 'CategoryBudget', id: string, category?: { __typename?: 'Category', id: string, name: string, color: string, icon: string, isRegular: boolean, budget?: { __typename?: 'Money', decimalAmount: number, formatted: string } | null } | null, amountSpent: { __typename?: 'Money', decimalAmount: number, formatted: string } }> }, irregularCategories: { __typename?: 'CategoryBudgetGroup', totalSpending: { __typename?: 'Money', decimalAmount: number, formatted: string }, categories: Array<{ __typename?: 'CategoryBudget', id: string, category?: { __typename?: 'Category', id: string, name: string, color: string, icon: string, isRegular: boolean, budget?: { __typename?: 'Money', decimalAmount: number, formatted: string } | null } | null, amountSpent: { __typename?: 'Money', decimalAmount: number, formatted: string } }> } }, income: { __typename?: 'PaginatedTransactions', data: Array<{ __typename?: 'Transaction', id: string, memo: string, amount: { __typename?: 'Money', formatted: string, decimalAmount: number } }>, totalAmount: { __typename?: 'Money', formatted: string } } };
 
 export type CategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 

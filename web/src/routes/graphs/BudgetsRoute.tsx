@@ -9,6 +9,12 @@ import { lastViewedBudget } from "../../utils/transactions/viewPreference"
 const budgetsRouteData: RouteDataFunc<unknown, BudgetsPageData> = ({ params }) => {
   const year = () => params.yearmonth.split("-")[0]
   const month = () => params.yearmonth.split("-")[1]
+  const monthStart = () => stripTime(new Date(parseInt(year()), parseInt(month()) - 1, 1))
+  const monthEnd = () => {
+    const date = new Date(parseInt(year()), parseInt(month()), 1)
+    date.setDate(date.getDate() - 1)
+    return stripTime(date)
+  }
 
   const currentUser = useCurrentUserQuery()
 
@@ -17,7 +23,8 @@ const budgetsRouteData: RouteDataFunc<unknown, BudgetsPageData> = ({ params }) =
     currencyCode: currentUser()?.currentUser?.defaultCurrency.code,
     year: parseInt(year()),
     month: parseInt(month()),
-    monthStart: stripTime(new Date(parseInt(year()), parseInt(month()) - 1, 1))
+    monthStart: monthStart(),
+    monthEnd: monthEnd()
   }))
 
   return {

@@ -1,28 +1,34 @@
 import { TbListSearch } from "solid-icons/tb"
 import { Component, For, Show } from "solid-js"
-import { BudgetQuery } from "../../graphql-types"
 import { CATEGORY_BACKGROUND_COLORS, CategoryColor } from "../../utils/categoryColors"
 import { getCssValue } from "../../utils/getCssValue"
-import { namedIcons } from "../../utils/namedIcons"
-import CategoryIndicator from "../CategoryIndicator"
+import CategoryIndicator, { CategoryIndicatorProps } from "../CategoryIndicator"
 import { LinkButton } from "../base/Button"
 import { PieChart } from "./PieChart"
 
-const BudgetGroup: Component<{
+interface BudgetGroupProps {
   title: string
-  group: BudgetQuery["budget"]["regularCategories"]
-  filteredTransactionsRoute: (filters?: any) => string
-}> = (props) => {
+  total: string
+  allTransactionsHref: string
+  items: Array<{
+    indicator: CategoryIndicatorProps
+    name: string
+    color?: CategoryColor
+    budget?: { decimalAmount: number; formatted: string } | null | false
+    total: { decimalAmount: number; formatted: string }
+    href: string
+  }>
+}
+
+const BudgetGroup: Component<BudgetGroupProps> = (props) => {
   return (
     <div class="mt-6 flex flex-col lg:mt-0 lg:flex-row">
       <div class="min-w-0 flex-none lg:flex-1">
         <h2 class="mb-2 flex items-center px-4 font-semibold">
           {props.title}
-          <span class="ml-auto">{props.group.totalSpending.formatted}</span>
+          <span class="ml-auto">{props.total}</span>
           <LinkButton
-            href={props.filteredTransactionsRoute({
-              categoryIds: props.group.categories.map(({ category }) => category?.id || null)
-            })}
+            href={props.allTransactionsHref}
             size="square"
             variant="ghost"
             colorScheme="primary"
@@ -33,76 +39,62 @@ const BudgetGroup: Component<{
           </LinkButton>
         </h2>
         <div class="bg-white pl-6 pr-4 pt-4 shadow-sm lg:mb-6 lg:ml-4">
-          <Show when={!props.group.categories.length}>
-            <div class="pb-4">Nothing spent</div>
+          <Show when={!props.items.length}>
+            <div class="pb-4">No transactions</div>
           </Show>
 
-          <For each={props.group.categories}>
-            {({ category, amountSpent }) => (
+          <For each={props.items}>
+            {({ indicator, name, color, total, budget, href }) => (
               <div class="flex items-center pb-4">
-                <CategoryIndicator
-                  class="mr-3 h-8 w-8"
-                  color={category?.color}
-                  icon={category?.icon ? namedIcons[category.icon] : undefined}
-                />
+                <CategoryIndicator class="mr-3 h-8 w-8" {...indicator} />
                 <div class="min-w-0 flex-1">
-                  <div class="mt-1 flex">
-                    <div class="min-w-0 truncate">{category?.name || "Uncategorized"}</div>
-                    <div class="ml-auto pl-2">{amountSpent.formatted}</div>
+                  <div class="flex" classList={{ "mt-1": budget !== false }}>
+                    <div class="min-w-0 truncate">{name || "Uncategorized"}</div>
+                    <div class="ml-auto pl-2">{total.formatted}</div>
                   </div>
 
-                  <div class="h-1 w-full rounded-full bg-gray-200">
-                    <div
-                      class="h-1 rounded-full"
-                      classList={{
-                        [category?.color
-                          ? CATEGORY_BACKGROUND_COLORS[category.color as CategoryColor]
-                          : "bg-gray-600"]: true
-                      }}
-                      style={{
-                        width: category?.budget
-                          ? `${
-                              Math.min(
-                                amountSpent.decimalAmount / category.budget.decimalAmount,
-                                1
-                              ) * 100
-                            }%`
-                          : 0
-                      }}
-                    />
-                  </div>
+                  <Show when={budget !== false}>
+                    <div class="h-1 w-full rounded-full bg-gray-200">
+                      <div
+                        class="h-1 rounded-full"
+                        classList={{
+                          [color
+                            ? CATEGORY_BACKGROUND_COLORS[color as CategoryColor]
+                            : "bg-gray-600"]: true
+                        }}
+                        style={{
+                          width: budget
+                            ? `${Math.min(total.decimalAmount / budget.decimalAmount, 1) * 100}%`
+                            : 0
+                        }}
+                      />
+                    </div>
 
-                  <div class="flex">
-                    {category?.budget ? (
-                      <>
-                        <span
-                          class="text-xs"
-                          classList={{
-                            "text-danger-600 font-bold":
-                              amountSpent.decimalAmount > category.budget.decimalAmount,
-                            "text-gray-600":
-                              amountSpent.decimalAmount <= category.budget.decimalAmount
-                          }}
-                        >
-                          {(
-                            (amountSpent.decimalAmount / category.budget.decimalAmount) *
-                            100
-                          ).toFixed(0)}
-                          % spent
-                        </span>
-                        <span class="ml-auto text-xs text-gray-600">
-                          {category.budget.formatted} budget
-                        </span>
-                      </>
-                    ) : (
-                      <span class="ml-auto text-xs text-gray-600">No budget</span>
-                    )}
-                  </div>
+                    <div class="flex">
+                      {budget ? (
+                        <>
+                          <span
+                            class="text-xs"
+                            classList={{
+                              "text-danger-600 font-bold":
+                                total.decimalAmount > budget.decimalAmount,
+                              "text-gray-600": total.decimalAmount <= budget.decimalAmount
+                            }}
+                          >
+                            {((total.decimalAmount / budget.decimalAmount) * 100).toFixed(0)}% spent
+                          </span>
+                          <span class="ml-auto text-xs text-gray-600">
+                            {budget.formatted} budget
+                          </span>
+                        </>
+                      ) : (
+                        <span class="ml-auto text-xs text-gray-600">No budget</span>
+                      )}
+                    </div>
+                  </Show>
                 </div>
                 <LinkButton
-                  href={props.filteredTransactionsRoute({
-                    categoryIds: [category?.id || null]
-                  })}
+                  href={href}
                   size="square"
                   variant="ghost"
                   colorScheme="primary"
@@ -117,13 +109,11 @@ const BudgetGroup: Component<{
         </div>
       </div>
       <PieChart
-        data={props.group.categories.map(({ category, amountSpent }) => ({
-          name: category?.name || "Uncategorized",
-          color: category?.color
-            ? getCssValue(`--color-${category.color}-500`)
-            : getCssValue("--color-gray-400"),
-          value: amountSpent.decimalAmount,
-          formattedValue: amountSpent.formatted
+        data={props.items.map(({ name, color, total }) => ({
+          name: name || "Uncategorized",
+          color: color ? getCssValue(`--color-${color}-500`) : getCssValue("--color-gray-400"),
+          value: total.decimalAmount,
+          formattedValue: total.formatted
         }))}
       />
     </div>

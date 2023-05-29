@@ -25,6 +25,7 @@ type PaginatedTransactions {
   data: [Transaction!]!
   nextOffset: String
   totalCount: Int!
+  totalAmount(currencyCode: CurrencyCode): Money!
 }
 
 input TransactionFilter {

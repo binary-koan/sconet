@@ -1,4 +1,5 @@
 import DataLoader from "dataloader"
+import { GraphQLError } from "graphql"
 import { isError } from "lodash"
 import { Currencies, Money } from "ts-money"
 import { CategoryRecord } from "../db/records/category"
@@ -58,26 +59,45 @@ export function currencyValuesLoader(
   })
 }
 
-export function loadTransactionCurrencyValue(
+export async function loadTransactionCurrencyValue(
   transaction: TransactionRecord,
   targetCurrencyCode: string | null | undefined,
   loader: CurrencyValuesLoader,
   field: "amount" | "originalAmount" = "amount"
-) {
-  return loader.load(transactionToCurrencyValue(transaction, targetCurrencyCode, field))
+): Promise<Money> {
+  const result = await loader.load(
+    transactionToCurrencyValue(transaction, targetCurrencyCode, field)
+  )
+  if (isError(result)) {
+    throw new GraphQLError(
+      `Error loading currency value for transaction ${transaction.id}: ${result.message}`,
+      {
+        originalError: result
+      }
+    )
+  }
+  return result
 }
 
-export function loadTransactionCurrencyValues(
+export async function loadTransactionCurrencyValues(
   transactions: TransactionRecord[],
   targetCurrencyCode: string | null | undefined,
   loader: CurrencyValuesLoader,
   field: "amount" | "originalAmount" = "amount"
-) {
-  return loader.loadMany(
+): Promise<Money[]> {
+  const results = await loader.loadMany(
     transactions.map((transaction) =>
       transactionToCurrencyValue(transaction, targetCurrencyCode, field)
     )
   )
+
+  if (results.some(isError)) {
+    throw new GraphQLError(`Error loading currency values: ${results.find(isError)!.message}`, {
+      originalError: results.find(isError)
+    })
+  }
+
+  return results as Money[]
 }
 
 function transactionToCurrencyValue(

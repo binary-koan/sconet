@@ -3,7 +3,13 @@ import { gql } from "../../utils/gql"
 import { useQuery } from "../../utils/graphqlClient/useQuery"
 
 export const BUDGET_QUERY = gql`
-  query Budget($currencyCode: CurrencyCode, $year: Int!, $month: Int!, $monthStart: Date!) {
+  query Budget(
+    $currencyCode: CurrencyCode
+    $year: Int!
+    $month: Int!
+    $monthStart: Date!
+    $monthEnd: Date!
+  ) {
     budget(year: $year, month: $month, currencyCode: $currencyCode) {
       id
       month
@@ -66,6 +72,20 @@ export const BUDGET_QUERY = gql`
             formatted
           }
         }
+      }
+    }
+
+    income: transactions(filter: { dateFrom: $monthStart, dateUntil: $monthEnd, minAmount: 1 }) {
+      data {
+        id
+        memo
+        amount(currencyCode: $currencyCode) {
+          formatted
+          decimalAmount
+        }
+      }
+      totalAmount {
+        formatted
       }
     }
   }
