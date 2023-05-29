@@ -52,7 +52,6 @@ const commands: { [command: string]: ((...args: string[]) => void | Promise<void
   },
 
   setup_and_serve: async () => {
-    await createDb()
     await migrate()
     startBackupSchedule()
     startServer()

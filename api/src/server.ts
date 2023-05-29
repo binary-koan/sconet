@@ -16,6 +16,16 @@ export async function startServer(serveStaticPaths?: string[]) {
 
     plugins: [
       useErrorHandler(({ errors }) => {
+        if (
+          errors.some(
+            (error) =>
+              error.message.includes("CONNECT_TIMEOUT") ||
+              error.message.includes("CONNECTION_CLOSED")
+          )
+        ) {
+          process.exit(1)
+        }
+
         console.error("[GRAPHQL:ERROR]", errors)
       }),
 
