@@ -37,6 +37,7 @@ const FormInput: Component<
               value={field.value}
               {...inputProps}
               {...fieldProps}
+              onBlur={inputProps.onBlur}
               ref={inputProps.ref}
             />
             <Show when={field.error}>

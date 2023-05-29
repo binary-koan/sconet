@@ -8,6 +8,7 @@ import { useCreateTransaction } from "../../graphql/mutations/createTransactionM
 import { useCategoriesQuery } from "../../graphql/queries/categoriesQuery"
 import { useCurrenciesQuery } from "../../graphql/queries/currenciesQuery"
 import { useCurrentUserQuery } from "../../graphql/queries/currentUserQuery"
+import { useTransactionsForPopulationQuery } from "../../graphql/queries/transactionsForPopulation"
 import { CATEGORY_BACKGROUND_COLORS, CategoryColor } from "../../utils/categoryColors"
 import { stripTime } from "../../utils/date"
 import { AccountSelect } from "../accounts/AccountSelect"
@@ -29,6 +30,7 @@ export const NewTransactionModal: Component<{
   const categories = useCategoriesQuery()
   const currencies = useCurrenciesQuery()
   const currentUser = useCurrentUserQuery()
+  const transactions = useTransactionsForPopulationQuery()
 
   const createTransaction = useCreateTransaction({
     onSuccess: () => {
@@ -119,6 +121,20 @@ export const NewTransactionModal: Component<{
                 ref={memoInput}
                 label="Memo"
                 name="memo"
+                onBlur={(e) => {
+                  const recent = transactions()?.transactions.data.find(
+                    (transaction) =>
+                      transaction.memo.toLowerCase().replace(/[^\w]+/, "") ===
+                      e.target.value.toLowerCase().replace(/[^\w]+/, "")
+                  )
+
+                  console.log(recent, transactions()?.transactions.data)
+
+                  if (recent) {
+                    setValue(form, "categoryId", recent.categoryId)
+                    setValue(form, "accountId", recent.accountId)
+                  }
+                }}
               />
 
               <FormInputGroup

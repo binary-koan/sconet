@@ -706,6 +706,11 @@ export type TransactionsByDayQueryVariables = Exact<{
 
 export type TransactionsByDayQuery = { __typename?: 'Query', transactionsByDay: Array<{ __typename?: 'DailyTransactions', date?: any | null, totalSpent: { __typename?: 'Money', formattedShort: string }, transactions: Array<{ __typename?: 'Transaction', id: string, memo: string, date: any, currencyCode: any, originalCurrencyCode?: any | null, includeInReports: boolean, splitFromId?: string | null, amount: { __typename?: 'Money', decimalAmount: number, formatted: string }, originalAmount?: { __typename?: 'Money', decimalAmount: number, formatted: string } | null, category?: { __typename?: 'Category', id: string, name: string, color: string, icon: string } | null, account: { __typename?: 'Account', id: string, name: string, currencyCode: any }, splitTo: Array<{ __typename?: 'Transaction', id: string, memo: string, includeInReports: boolean, amount: { __typename?: 'Money', decimalAmount: number, formatted: string }, category?: { __typename?: 'Category', id: string, name: string, icon: string, color: string } | null }> }> }> };
 
+export type TransactionsForPopulationQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type TransactionsForPopulationQuery = { __typename?: 'Query', transactions: { __typename?: 'PaginatedTransactions', data: Array<{ __typename?: 'Transaction', id: string, memo: string, accountId: string, categoryId?: string | null }> } };
+
 export type TransactionsQueryVariables = Exact<{
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['String']['input']>;
