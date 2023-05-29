@@ -1,14 +1,14 @@
 import { Link, useLocation } from "@solidjs/router"
 import { IconProps } from "solid-icons"
-import { TbChartBar, TbChartPie } from "solid-icons/tb"
+import { TbCalendarStats, TbChartLine } from "solid-icons/tb"
 import { Component, JSX } from "solid-js"
 import { Dynamic } from "solid-js/web"
 
 export const GraphsNavigation: Component = () => {
   return (
     <div class="mb-4 flex md:mt-3 md:px-4">
-      <NavigationItem icon={TbChartPie} text="Budgets" to="/graphs/budgets" />
-      <NavigationItem icon={TbChartBar} text="Balance" to="/graphs/balance" />
+      <NavigationItem icon={TbCalendarStats} text="Budgets" to="/graphs/budgets" />
+      <NavigationItem icon={TbChartLine} text="Balance" to="/graphs/balance" />
     </div>
   )
 }

@@ -1,6 +1,6 @@
 import { Title } from "@solidjs/meta"
 import { useNavigate, useRouteData } from "@solidjs/router"
-import { TbArrowLeft, TbArrowRight } from "solid-icons/tb"
+import { TbArrowLeft, TbArrowRight, TbCalendarEvent } from "solid-icons/tb"
 import { Show, createEffect } from "solid-js"
 import { Cell } from "../../components/Cell"
 import { GraphsNavigation } from "../../components/GraphsNavigation"
@@ -53,6 +53,8 @@ const BudgetsPage = () => {
     return date().getTime() === thisMonthStart.getTime()
   }
 
+  let monthInput: HTMLInputElement | undefined
+
   return (
     <>
       <Title>Budgets</Title>
@@ -60,9 +62,22 @@ const BudgetsPage = () => {
       <GraphsNavigation />
 
       <PageHeader size="lg">
-        <span class="mr-auto">
+        <div
+          class="relative mr-auto flex items-center gap-1"
+          onClick={() => monthInput?.showPicker()}
+        >
           {date().toLocaleDateString("en", { year: "numeric", month: "long" })}
-        </span>
+          <TbCalendarEvent />
+
+          <input
+            ref={monthInput}
+            type="month"
+            class="absolute inset-0 opacity-0"
+            value={`${routeData.year}-${routeData.month}`}
+            max={`${new Date().toISOString().replace(/-\d+T.+/, "")}`}
+            onChange={(e) => navigate(`/graphs/budgets/${e.target.value}`)}
+          />
+        </div>
 
         <Show when={routeData.currentUser()?.currentUser}>
           <DefaultCurrencySelect
