@@ -1,7 +1,4 @@
-import { PRODUCTION_BUILD } from "../../../env"
 import { loginToken } from "../auth"
-
-const BASE_URL = PRODUCTION_BUILD ? "" : "http://localhost:4444"
 
 export class GraphQLError extends Error {
   constructor(private errorsResponse: any) {
@@ -19,7 +16,7 @@ export const requestGraphql = async <Result>(
 ): Promise<Result> => {
   const token = loginToken()
 
-  const response = await fetch(`${BASE_URL}/graphql`, {
+  const response = await fetch("/graphql", {
     method: "POST",
     body: `{"query":${JSON.stringify(query)},"variables":${serializedVariables}}`,
     headers: {

@@ -43,14 +43,6 @@ export async function startServer(serveStaticPaths?: string[]) {
       })
     ],
 
-    cors:
-      Bun.env.ENV_TYPE === "production"
-        ? undefined
-        : {
-            origin: Bun.env.WEB_URL || "http://localhost:1235",
-            allowedHeaders: ["Authorization", "Content-Type"]
-          },
-
     maskedErrors: Bun.env.ENV_TYPE !== "production"
   })
 

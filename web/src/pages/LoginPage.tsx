@@ -5,10 +5,10 @@ import { useLocation, useNavigate } from "@solidjs/router"
 import { TbFingerprint } from "solid-icons/tb"
 import { Component, createEffect, createSignal, Show } from "solid-js"
 import toast from "solid-toast"
-import { TURNSTILE_SITEKEY } from "../../env"
+// import { TURNSTILE_SITEKEY } from "../../env"
 import logoImage from "../assets/logo.svg"
 import { Button } from "../components/base/Button"
-import { FieldError } from "../components/forms/FieldError"
+// import { FieldError } from "../components/forms/FieldError"
 import FormInput from "../components/forms/FormInput"
 import { LoginMutationVariables } from "../graphql-types"
 import { useGenerateCredentialLoginOptionsMutation } from "../graphql/mutations/generateCredentialLoginOptions"
@@ -16,14 +16,14 @@ import { useLoginMutation } from "../graphql/mutations/loginMutation"
 import { useLoginViaCredentialMutation } from "../graphql/mutations/loginViaCredentialMutation"
 import { isLoggedIn, lastUserId, setLoginToken } from "../utils/auth"
 import { fixAssetPath } from "../utils/fixAssetPath"
-import { loadTurnstile, turnstileError, turnstileLoaded } from "../utils/turnstile"
+// import { loadTurnstile, turnstileError, turnstileLoaded } from "../utils/turnstile"
 
 type LoginFormValues = Omit<LoginMutationVariables, "turnstileToken">
 
 const LoginPage: Component = () => {
-  loadTurnstile()
+  // loadTurnstile()
 
-  const [token, setToken] = createSignal<string>()
+  // const [token, setToken] = createSignal<string>()
   const [submittedValues, setSubmittedValues] = createSignal<{ email: string; password: string }>()
 
   const navigate = useNavigate()
@@ -58,8 +58,7 @@ const LoginPage: Component = () => {
 
   const [form] = createForm<LoginFormValues>()
 
-  // eslint-disable-next-line prefer-const
-  let turnstileContainer: HTMLDivElement | undefined = undefined
+  // let turnstileContainer: HTMLDivElement | undefined
 
   createEffect(() => {
     if (isLoggedIn()) {
@@ -67,23 +66,23 @@ const LoginPage: Component = () => {
     }
   })
 
-  createEffect(() => {
-    if (turnstileLoaded() && turnstileContainer) {
-      window.turnstile?.render(turnstileContainer, {
-        sitekey: TURNSTILE_SITEKEY,
-        callback: (token) => setToken(token)
-      })
-    }
-  })
+  // createEffect(() => {
+  //   if (turnstileLoaded() && turnstileContainer) {
+  //     window.turnstile?.render(turnstileContainer, {
+  //       sitekey: TURNSTILE_SITEKEY,
+  //       callback: (token) => setToken(token)
+  //     })
+  //   }
+  // })
 
-  createEffect(() => {
-    if (token() && submittedValues()) {
-      login({
-        turnstileToken: token()!,
-        ...submittedValues()!
-      })
-    }
-  })
+  // createEffect(() => {
+  //   if (token() && submittedValues()) {
+  //     login({
+  //       turnstileToken: token()!,
+  //       ...submittedValues()!
+  //     })
+  //   }
+  // })
 
   return (
     <>
@@ -98,24 +97,28 @@ const LoginPage: Component = () => {
             of={form}
             onSubmit={(values) => {
               setSubmittedValues(values)
+
+              // remove when turnstile is enabled again
+              login({ ...values, turnstileToken: "" })
             }}
           >
             <FormInput of={form} type="text" name="email" label="Email" />
             <FormInput of={form} type="password" name="password" label="Password" />
 
-            <div ref={turnstileContainer} />
+            {/* <div ref={turnstileContainer} /> */}
 
             <Button
               type="submit"
               colorScheme="primary"
-              disabled={Boolean(submittedValues() || login.loading || turnstileError())}
+              disabled={Boolean(submittedValues() || login.loading)}
+              // disabled={Boolean(submittedValues() || login.loading || turnstileError())}
             >
               Login
             </Button>
 
-            <Show when={turnstileError()}>
+            {/* <Show when={turnstileError()}>
               <FieldError error={`Error verifying browser: ${turnstileError()}`} />
-            </Show>
+            </Show> */}
           </Form>
         </div>
 
