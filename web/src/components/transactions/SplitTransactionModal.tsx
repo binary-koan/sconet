@@ -1,5 +1,6 @@
 import { evaluate, sum } from "mathjs"
 import { Component, For, createSignal } from "solid-js"
+import toast from "solid-toast"
 import { ListingTransactionFragment } from "../../graphql-types"
 import { useSplitTransaction } from "../../graphql/mutations/splitTransactionMutation"
 import { useGetCurrencyQuery } from "../../graphql/queries/getCurrencyQuery"
@@ -13,7 +14,12 @@ export const SplitTransactionModal: Component<{
   onClose: () => void
   onFinish: () => void
 }> = (props) => {
-  const splitTransaction = useSplitTransaction()
+  const splitTransaction = useSplitTransaction({
+    onSuccess: () => {
+      toast.success("Transaction split")
+      props.onFinish()
+    }
+  })
   const currencyData = useGetCurrencyQuery(() => ({ code: props.transaction.currencyCode }))
 
   const [splits, setSplits] = createSignal(
@@ -65,8 +71,6 @@ export const SplitTransactionModal: Component<{
         amount: Math.round(numericAmount * 10 ** (currencyData()?.currency?.decimalDigits || 0))
       }))
     })
-
-    props.onFinish()
   }
 
   const setField = (updateIndex: number, field: "amount" | "memo", newValue: string) => {

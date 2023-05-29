@@ -1,6 +1,7 @@
 import { omit, pick, sum } from "lodash"
 import { Currencies, Money } from "ts-money"
 import { AuthenticatedContext, Context } from "../context"
+import { sql } from "../db/database"
 import { TransactionRecord } from "../db/records/transaction"
 import { transactionsRepo } from "../db/repos/transactionsRepo"
 import {
@@ -142,15 +143,20 @@ export const splitTransaction: MutationResolvers["splitTransaction"] = async (
 
   transactionsRepo.deleteSplitTransactions(transaction.id)
 
-  await transactionsRepo.insertAll(
-    splits.map((split) => ({
-      ...omit(transaction, "id"),
-      splitFromId: transaction.id,
-      amount: split.amount,
-      memo: split.memo || transaction.memo,
-      categoryId: split.categoryId || transaction.categoryId
-    }))
-  )
+  await sql.begin(async (sql) => {
+    for (const split of splits) {
+      await transactionsRepo.insert(
+        {
+          ...omit(transaction, "id"),
+          splitFromId: transaction.id,
+          amount: split.amount,
+          memo: split.memo || transaction.memo,
+          categoryId: split.categoryId || transaction.categoryId
+        },
+        sql
+      )
+    }
+  })
 
   return transaction
 }

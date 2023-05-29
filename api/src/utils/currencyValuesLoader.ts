@@ -88,7 +88,7 @@ function transactionToCurrencyValue(
   const currencyCode = transaction[field === "amount" ? "currencyCode" : "originalCurrencyCode"]
   const amount = transaction[field]
 
-  if (!amount || !currencyCode) {
+  if (amount == null || !currencyCode) {
     throw new Error(`Transaction ${transaction.id} has no ${field}`)
   }
 
