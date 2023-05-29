@@ -1,6 +1,5 @@
 import { omit, pick, sum } from "lodash"
-import { Currencies, Money } from "ts-money"
-import { AuthenticatedContext, Context } from "../context"
+import { Currencies } from "ts-money"
 import { sql } from "../db/database"
 import { TransactionRecord } from "../db/records/transaction"
 import { transactionsRepo } from "../db/repos/transactionsRepo"
@@ -15,7 +14,6 @@ import {
   loadTransactionCurrencyValues
 } from "../utils/currencyValuesLoader"
 import { moneySum } from "../utils/money"
-import { sumCurrency } from "./money"
 
 export interface DailyTransactionsResult {
   date: Date
@@ -225,15 +223,13 @@ export const DailyTransactions: Resolvers["DailyTransactions"] = {
   date: (result) => result.date,
 
   totalSpent: async (result, { currencyCode }, context) =>
-    sumCurrency({
-      amounts: await Promise.all(
-        result.transactions.map(
-          async (transaction) => new Money(transaction.amount, transaction.currencyCode)
-        )
+    moneySum(
+      await loadTransactionCurrencyValues(
+        result.transactions,
+        currencyCode || context.currentUser!.settings.defaultCurrencyCode,
+        context.data.currencyValues
       ),
-      target: currencyCode ? { currencyCode, date: result.date } : undefined,
-      context: context as AuthenticatedContext<Context>
-    }),
-
+      Currencies[currencyCode || context.currentUser!.settings.defaultCurrencyCode]
+    ),
   transactions: (result) => result.transactions
 }
