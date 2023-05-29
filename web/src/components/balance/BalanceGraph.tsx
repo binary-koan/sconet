@@ -1,12 +1,16 @@
+import { useNavigate } from "@solidjs/router"
 import * as echarts from "echarts"
 import { Component, createEffect, onCleanup } from "solid-js"
 
 export const BalanceGraph: Component<{
+  year: string
   currencySymbol: string
   incomes: number[]
   spendings: number[]
   balances: number[]
 }> = (props) => {
+  const navigate = useNavigate()
+
   let container: HTMLDivElement | undefined
 
   createEffect(() => {
@@ -71,6 +75,15 @@ export const BalanceGraph: Component<{
           data: props.balances
         }
       ]
+    })
+
+    // eslint-disable-next-line solid/reactivity
+    chart.on("click", (params) => {
+      if (params.componentType === "series") {
+        navigate(
+          `/graphs/budgets/${props.year}-${(params.dataIndex + 1).toString().padStart(2, "0")}`
+        )
+      }
     })
 
     const resizeListener = () => chart.resize()
