@@ -8,6 +8,22 @@ jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      JWT_SECRET: testing
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/sconet
+
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
