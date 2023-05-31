@@ -5,6 +5,9 @@ setup categories and budgets, and break down your spending, all in multiple curr
 
 It's 🚧 **super WIP and incomplete** 🚧 so expect to find broken things everywhere - at the moment this is more of a testing ground for me to experiment with using [Bun](https://bun.sh/) and [SolidJS](https://www.solidjs.com/), creating a semi-custom GraphQL client and server, etc rather than something I recommend actually using!
 
+![CI](https://github.com/binary-koan/sconet/actions/workflows/playwright.yml/badge.svg?branch=main)
+![Lint](https://github.com/binary-koan/sconet/actions/workflows/lint.yml/badge.svg?branch=main)
+
 ## Local development
 
 Requirements
