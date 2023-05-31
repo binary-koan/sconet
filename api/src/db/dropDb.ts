@@ -5,8 +5,6 @@ export async function dropDb() {
   const uriWithoutDatabase = databaseUrl.replace(/\/[^/?]+$/, "/postgres")
   const databaseName = databaseUrl.replace(/.*\//, "").replace(/\?.*/, "")
 
-  console.log("connecting to", uriWithoutDatabase)
-
   const rootSql = postgres(uriWithoutDatabase)
 
   if ((await rootSql`SELECT 1 FROM pg_database WHERE datname = ${databaseName}`).length) {

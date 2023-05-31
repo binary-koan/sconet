@@ -62,7 +62,7 @@ const BudgetsPage = () => {
 
       <PageHeader size="lg">
         <MonthPickerOverlay
-          class="mr-auto flex items-center gap-1"
+          class="-ml-1 mr-auto flex items-center gap-1 rounded px-1 transition hover:bg-gray-200"
           value={`${routeData.year}-${routeData.month}`}
           disableFutureDates
           onChange={(value) => navigate(`/graphs/budgets/${value}`)}

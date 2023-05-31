@@ -31,6 +31,16 @@ export const isSameDate = (first: Date, second: Date) => {
   )
 }
 
+export const isAfterDate = (first: Date, second: Date) => {
+  return (
+    first.getFullYear() > second.getFullYear() ||
+    (first.getFullYear() === second.getFullYear() && first.getMonth() > second.getMonth()) ||
+    (first.getFullYear() === second.getFullYear() &&
+      first.getMonth() === second.getMonth() &&
+      first.getDate() > second.getDate())
+  )
+}
+
 export const stripTime = (date: Date) => {
   return date.toISOString().split("T")[0]
 }

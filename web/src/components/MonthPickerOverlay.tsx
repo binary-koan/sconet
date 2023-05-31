@@ -16,7 +16,7 @@ export const MonthPickerOverlay: Component<{
       <input
         ref={monthInput}
         type="month"
-        class="absolute inset-0 opacity-0"
+        class="absolute inset-0 cursor-pointer opacity-0"
         value={props.value}
         max={
           props.disableFutureDates

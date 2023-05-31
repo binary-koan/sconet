@@ -1,7 +1,10 @@
 import { createAccount, createCategory, createTransaction } from "../factories"
 import { expect, test } from "../fixtures"
+import { resetDb } from "../helpers"
 
 test("shows transactions and days in between", async ({ page }) => {
+  await resetDb()
+
   const account = await createAccount({ name: "test", currencyCode: "USD" })
 
   await createTransaction({
@@ -38,6 +41,8 @@ test("shows transactions and days in between", async ({ page }) => {
 })
 
 test("supports pagination", async ({ page }) => {
+  await resetDb()
+
   const account = await createAccount({ name: "test", currencyCode: "USD" })
 
   await createTransaction({
@@ -76,7 +81,9 @@ test("supports pagination", async ({ page }) => {
   await expect(page.getByTestId("transaction-item").getByTestId("memo").nth(2)).toHaveText("test")
 })
 
-test.only("supports filtering", async ({ page }) => {
+test("supports filtering", async ({ page }) => {
+  await resetDb()
+
   const account = await createAccount({ name: "Sock Account", currencyCode: "USD" })
   const category = await createCategory({
     name: "Socks",

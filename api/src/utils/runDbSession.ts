@@ -1,13 +1,32 @@
+import { Plugin } from "graphql-yoga"
 import { sql } from "../db/database"
 
 export async function runDbSession(runner: () => void | Promise<void>) {
+  await startDbSession()
+  await runner()
+  await endDbSession()
+}
+
+export const dbSessionPlugin: Plugin = {
+  async onExecute() {
+    await startDbSession()
+
+    return {
+      async onExecuteDone() {
+        await endDbSession()
+      }
+    }
+  }
+}
+
+async function startDbSession() {
   if (Bun.env.ENV_TYPE !== "production") {
     console.log("[POSTGRESQL] Starting session")
     await sql`SELECT pg_stat_statements_reset()`
   }
+}
 
-  await runner()
-
+async function endDbSession() {
   if (Bun.env.ENV_TYPE !== "production") {
     const queries = await sql`SELECT * FROM pg_stat_statements`
 

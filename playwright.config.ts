@@ -79,7 +79,7 @@ export default defineConfig({
   webServer: {
     command: "bun dev:test",
     url: "http://localhost:4445",
-    stdout: "pipe",
+    stdout: process.env.SERVER_OUTPUT ? "pipe" : "ignore",
     reuseExistingServer: !process.env.CI,
     timeout: 10000,
     env: {

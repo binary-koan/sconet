@@ -128,8 +128,6 @@ export const NewTransactionModal: Component<{
                       e.target.value.toLowerCase().replace(/[^\w]+/, "")
                   )
 
-                  console.log(recent, transactions()?.transactions.data)
-
                   if (recent) {
                     setValue(form, "categoryId", recent.categoryId)
                     setValue(form, "accountId", recent.accountId)

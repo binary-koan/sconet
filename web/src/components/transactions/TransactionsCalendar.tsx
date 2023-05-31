@@ -8,7 +8,13 @@ import {
   CATEGORY_PALE_BACKGROUND_COLORS,
   CategoryColor
 } from "../../utils/categoryColors"
-import { decrementMonth, incrementMonth, isSameDate, stripTime } from "../../utils/date"
+import {
+  decrementMonth,
+  incrementMonth,
+  isAfterDate,
+  isSameDate,
+  stripTime
+} from "../../utils/date"
 import { MonthPickerOverlay } from "../MonthPickerOverlay"
 import { Button } from "../base/Button"
 import { NewTransactionModal } from "./NewTransactionModal"
@@ -55,7 +61,7 @@ export const TransactionsCalendar: Component<{
         />
       </Show>
 
-      <div class="mx-auto mb-4 flex items-center rounded bg-gray-200">
+      <div class="mx-auto mb-4 flex rounded bg-gray-200">
         <Button
           size="square"
           aria-label="List"
@@ -65,7 +71,7 @@ export const TransactionsCalendar: Component<{
         </Button>
 
         <MonthPickerOverlay
-          class="mx-4 font-semibold"
+          class="flex items-center rounded px-4 font-semibold transition hover:bg-gray-300"
           value={`${props.year}-${props.month}`}
           onChange={(value) =>
             changeMonthAndNavigate(() => ({
@@ -91,7 +97,7 @@ export const TransactionsCalendar: Component<{
         <div class="grid grid-cols-7">
           <For each={dates().slice(0, 7)}>
             {({ date }) => (
-              <div class="border-r border-gray-200 p-1 text-center text-xs font-semibold lg:px-2 lg:text-left [&:nth-child(7n)]:border-r-0">
+              <div class="border-r border-gray-200 p-1 text-center text-xs font-semibold md:px-2 md:text-left [&:nth-child(7n)]:border-r-0">
                 {date.toLocaleDateString("default", { weekday: "short" })}
               </div>
             )}
@@ -99,11 +105,12 @@ export const TransactionsCalendar: Component<{
           <For each={dates()}>
             {({ date, isCurrentMonth, totalSpent, expenses, incomes }) => (
               <div
-                class="flex h-16 flex-col border-r border-t border-gray-200 p-1 text-center text-sm lg:h-32 lg:text-left [&:nth-child(7n)]:border-r-0"
+                class="flex h-16 flex-col border-r border-t border-gray-200 p-1 text-center text-sm md:h-32 md:text-left [&:nth-child(7n)]:border-r-0"
                 classList={{ "text-gray-300": !isCurrentMonth }}
+                data-testid={isSameDate(date, new Date()) ? "calendar-today" : "calendar-day"}
               >
-                <div class="flex flex-col lg:flex-row lg:pl-1">
-                  <span class="lg:mr-auto lg:font-semibold">{date.getDate()}</span>
+                <div class="flex flex-col md:flex-row md:pl-1">
+                  <span class="md:mr-auto md:font-semibold">{date.getDate()}</span>
                   <Show when={expenses.length}>
                     <Link
                       href={`/transactions/list/${encodeURIComponent(
@@ -117,11 +124,11 @@ export const TransactionsCalendar: Component<{
                       {totalSpent}
                     </Link>
                   </Show>
-                  <Show when={isCurrentMonth}>
+                  <Show when={isCurrentMonth && !isAfterDate(new Date(date), new Date())}>
                     <Button
                       variant="ghost"
                       size="custom"
-                      class="ml-2 hidden h-5 w-5 text-xs lg:flex"
+                      class="ml-2 hidden h-5 w-5 text-xs md:flex"
                       onClick={() => setNewTransactionDate(date)}
                     >
                       <TbPlus />
@@ -129,7 +136,7 @@ export const TransactionsCalendar: Component<{
                   </Show>
                 </div>
 
-                <div class="mt-1 flex justify-center gap-1 lg:hidden">
+                <div class="mt-1 flex justify-center gap-1 md:hidden">
                   <For each={expenses.concat(incomes).slice(0, 3)}>
                     {(transaction) => (
                       <div
@@ -150,7 +157,7 @@ export const TransactionsCalendar: Component<{
                   </Show>
                 </div>
 
-                <div class="mt-1 hidden flex-col gap-0.5 lg:flex">
+                <div class="mt-1 hidden flex-col gap-0.5 md:flex">
                   <For each={expenses.concat(incomes).slice(0, 3)}>
                     {(transaction) => (
                       <Link
@@ -163,6 +170,7 @@ export const TransactionsCalendar: Component<{
                               ]
                             : "bg-gray-200"]: true
                         }}
+                        data-testid="transaction-item"
                       >
                         <span class="truncate">{transaction.memo}</span>
                         <span

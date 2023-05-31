@@ -5,6 +5,7 @@ import { createYoga, useErrorHandler, useLogger } from "graphql-yoga"
 import { extname } from "path"
 import { buildContext } from "./context"
 import { schema } from "./schema"
+import { dbSessionPlugin } from "./utils/runDbSession"
 
 export async function startServer(serveStaticPaths?: string[]) {
   const port = Bun.env.PORT || 4444
@@ -40,7 +41,9 @@ export async function startServer(serveStaticPaths?: string[]) {
             console.log("[GRAPHQL:END]", print(options.args.document).split("\n")[0] + " ... }")
           }
         }
-      })
+      }),
+
+      dbSessionPlugin
     ],
 
     maskedErrors: Bun.env.ENV_TYPE !== "production"
@@ -49,8 +52,6 @@ export async function startServer(serveStaticPaths?: string[]) {
   function serveStaticFile(pathname: string) {
     for (const staticPath of staticPaths) {
       const path = `${staticPath}${pathname}`
-
-      console.log("serving", pathname, "looking for", path)
 
       if (existsSync(path) && statSync(path).isFile()) {
         return new Response(file(path))

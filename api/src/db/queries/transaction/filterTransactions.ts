@@ -1,5 +1,6 @@
 import { memoize } from "lodash"
 import { Maybe } from "../../../types"
+import { stripTime } from "../../../utils/date"
 import { sql } from "../../database"
 import { TransactionRecord } from "../../records/transaction"
 
@@ -34,11 +35,11 @@ export function filterTransactions({
   }
 
   if (filter?.dateFrom) {
-    where = sql`${where} AND "date" >= ${filter.dateFrom}`
+    where = sql`${where} AND "date" >= ${stripTime(filter.dateFrom)}`
   }
 
   if (filter?.dateUntil) {
-    where = sql`${where} AND "date" <= ${filter.dateUntil}`
+    where = sql`${where} AND "date" <= ${stripTime(filter.dateUntil)}`
   }
 
   if (filter?.minAmount != null) {
@@ -93,7 +94,7 @@ export function filterTransactions({
     async () =>
       await sql<
         TransactionRecord[]
-      >`SELECT * FROM "transactions" ${where} ORDER BY "date" DESC, "amount" DESC, "id" ASC ${limitClause}`
+      >`SELECT * FROM "transactions" ${where} ORDER BY "date" DESC, "amount" ASC, "id" ASC ${limitClause}`
   )
 
   const totalCount = memoize(

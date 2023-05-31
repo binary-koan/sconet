@@ -3,7 +3,6 @@ import "../src/polyfills"
 
 import { createDb } from "../src/db/createDb"
 import { sql } from "../src/db/database"
-import { dropDb } from "../src/db/dropDb"
 import { createMigration, down, migrate, rollback, up, writeSchema } from "../src/db/migrate"
 import { seed } from "../src/db/seeds/seed"
 import { startBackupSchedule } from "../src/jobs/backup"
@@ -13,8 +12,6 @@ const commands: { [command: string]: ((...args: string[]) => void | Promise<void
   server: () => startServer(),
 
   db_create: () => createDb(),
-
-  db_drop: () => dropDb(),
 
   migrate_create: (name: string) => createMigration(name),
 
