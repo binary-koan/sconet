@@ -86,7 +86,7 @@ export function filterTransactions({
   let limitClause = sql``
 
   if (limit) {
-    limitClause = sql`LIMIT ${limit}`
+    limitClause = sql`LIMIT ${limit + 1}`
   }
 
   const data = memoize(

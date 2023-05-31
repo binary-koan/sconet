@@ -20,7 +20,7 @@ test("can create an expense transaction", async ({ page }) => {
   )
 })
 
-test.only("can create a transaction with category and account", async ({ page, request }) => {
+test("can create a transaction with category and account", async ({ page, request }) => {
   await createAccount({ name: "My Account", currencyCode: "JPY" })
   await createCategory({
     name: "My Category",

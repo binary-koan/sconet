@@ -88,7 +88,10 @@ export const TransactionsList: Component<{
                 </div>
               </Show>
 
-              <div class="flex px-2 pb-2 pt-5 text-sm text-gray-600">
+              <div
+                class="flex px-2 pb-2 pt-5 text-sm text-gray-600"
+                data-testid="transactions-date"
+              >
                 <Button
                   variant="ghost"
                   size="custom"

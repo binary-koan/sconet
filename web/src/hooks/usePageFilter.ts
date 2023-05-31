@@ -8,19 +8,23 @@ const usePageFilter = <FilterValues extends { [key: string]: any }>({
   basePath,
   paramName,
   localStorageKey,
-  initialValues
+  initialValues,
+  parse,
+  serialize
 }: {
   basePath: string
   paramName: string
   localStorageKey?: string
   initialValues: PartialValues<FilterValues>
+  serialize: (values: PartialValues<FilterValues>) => string
+  parse: (value: string) => FilterValues
 }) => {
   const params = useParams()
   const navigate = useNavigate()
 
   const paramFilterValues = () => ({
     ...initialValues,
-    ...JSON.parse(
+    ...parse(
       (params[paramName] && decodeURIComponent(params[paramName])) ||
         (localStorageKey && localStorage.getItem(localStorageKey)) ||
         "{}"
@@ -29,7 +33,7 @@ const usePageFilter = <FilterValues extends { [key: string]: any }>({
 
   const hasFilterValues = (value: any): boolean => {
     if (isArray(value)) {
-      return value.some((value) => hasFilterValues(value))
+      return value.length > 0
     }
 
     if (isPlainObject(value)) {
@@ -67,7 +71,7 @@ const usePageFilter = <FilterValues extends { [key: string]: any }>({
       return
     }
 
-    updateFilters(JSON.stringify(data()))
+    updateFilters(serialize(data() as PartialValues<FilterValues>))
   })
 
   return {

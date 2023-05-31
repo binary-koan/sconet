@@ -6,8 +6,9 @@ import { Cell } from "../../components/Cell"
 import { Button } from "../../components/base/Button"
 import { PageHeader } from "../../components/base/PageHeader"
 import { NewTransactionModal } from "../../components/transactions/NewTransactionModal"
-import TransactionFilters, {
-  TransactionFilterValues
+import {
+  TransactionFilterValues,
+  TransactionFilters
 } from "../../components/transactions/TransactionFilters"
 import { TransactionsList } from "../../components/transactions/TransactionsList"
 import { TransactionsQuery, TransactionsQueryVariables } from "../../graphql-types"
@@ -41,7 +42,24 @@ const TransactionsListPage: Component = () => {
       basePath: "/transactions/list",
       paramName: "filter",
       localStorageKey: FILTERS_KEY,
-      initialValues: BLANK_FILTERS
+      initialValues: BLANK_FILTERS,
+      parse: (value) => {
+        const data = JSON.parse(value)
+        return {
+          ...data,
+          minAmount: data.minAmount?.toString(),
+          maxAmount: data.minAmount?.toString(),
+          categoryIds: data.categoryIds?.map((categoryId: string | null) => categoryId || "") || []
+        }
+      },
+      serialize: (value) => {
+        return JSON.stringify({
+          ...value,
+          minAmount: value.minAmount != null ? parseInt(value.minAmount) : undefined,
+          maxAmount: value.maxAmount != null ? parseInt(value.maxAmount) : undefined,
+          categoryIds: value.categoryIds?.map((categoryId) => categoryId || null)
+        })
+      }
     })
 
   return (
