@@ -8,39 +8,39 @@ export const BudgetSummary: Component<{
   filteredTransactions: (filters?: any) => string
 }> = (props) => {
   return (
-    <div class="flex items-center px-4 lg:pb-6">
+    <div class="flex items-center gap-1 px-4 md:gap-2 md:pb-6">
       <LinkButton
         href={props.filteredTransactions({ minAmount: 0 })}
         size="custom"
-        class="mr-2 flex flex-1 flex-col items-center p-2"
+        class="flex flex-1 flex-col items-center px-1 py-2"
       >
-        <div class="text-sm lg:text-xl">{props.budget.income.formatted}</div>
+        <div class="text-sm md:text-xl">{props.budget.income.formatted}</div>
         <div class="truncate text-xs">Income</div>
       </LinkButton>
 
       <Show when={props.showDifference}>
-        <div class="text-2xl">-</div>
+        <div class="md:text-2xl">-</div>
       </Show>
 
       <LinkButton
         href={props.filteredTransactions({ maxAmount: 0 })}
         size="custom"
-        class="ml-2 flex flex-1 flex-col items-center p-2"
+        class="flex flex-1 flex-col items-center px-1 py-2"
       >
-        <div class="text-sm lg:text-xl">{props.budget.totalSpending.formatted}</div>
+        <div class="text-sm md:text-xl">{props.budget.totalSpending.formatted}</div>
         <div class="truncate text-xs">Spending</div>
       </LinkButton>
 
       <Show when={props.showDifference}>
-        <div class="ml-2 text-2xl">=</div>
+        <div class="md:text-2xl">=</div>
 
         <LinkButton
           href={props.filteredTransactions()}
           size="custom"
-          class="ml-2 flex flex-1 flex-col items-center p-2"
+          class="flex flex-1 flex-col items-center px-1 py-2"
         >
           <div
-            class="text-sm lg:text-xl"
+            class="text-sm md:text-xl"
             classList={{
               "text-red-600": props.budget.difference.decimalAmount < 0,
               "text-green-600": props.budget.difference.decimalAmount >= 0

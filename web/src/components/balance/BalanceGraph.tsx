@@ -1,6 +1,7 @@
 import { useNavigate } from "@solidjs/router"
 import * as echarts from "echarts"
 import { Component, createEffect, onCleanup } from "solid-js"
+import { getCssValue } from "../../utils/getCssValue"
 
 export const BalanceGraph: Component<{
   year: string
@@ -23,36 +24,66 @@ export const BalanceGraph: Component<{
       }
     )
 
-    const colors = ["#5470C6", "#91CC75", "#EE6666"]
+    const colors = [
+      getCssValue("--color-green-400"),
+      getCssValue("--color-red-400"),
+      getCssValue("--color-gray-800")
+    ]
 
     chart.setOption({
+      grid: {
+        containLabel: true
+      },
       tooltip: {
         trigger: "axis",
+        valueFormatter: (value: number) => `${props.currencySymbol}${value.toFixed(2)}`,
         axisPointer: {
           type: "cross"
+        },
+        textStyle: {
+          fontFamily: getComputedStyle(document.body).fontFamily
         }
       },
       color: colors,
       legend: {
-        data: ["Income", "Spending", "Balance"]
+        data: ["Income", "Spending", "Balance"],
+        textStyle: {
+          fontFamily: getComputedStyle(document.body).fontFamily
+        }
       },
       xAxis: [
         {
           type: "category",
-          data: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+          data: [
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dec"
+          ],
+          axisLabel: {
+            fontFamily: getComputedStyle(document.body).fontFamily
+          }
         }
       ],
       yAxis: [
         {
           type: "value",
-          name: props.currencySymbol,
           position: "left",
           alignTicks: true,
           axisLine: {
             show: true
           },
           axisLabel: {
-            formatter: `${props.currencySymbol}{value}`
+            formatter: (value: number) => `${props.currencySymbol}${value.toFixed(2)}`,
+            fontFamily: getComputedStyle(document.body).fontFamily
           }
         }
       ],
@@ -72,7 +103,9 @@ export const BalanceGraph: Component<{
         {
           name: "Balance",
           type: "line",
-          data: props.balances
+          data: props.balances,
+          symbol: "circle",
+          symbolSize: 8
         }
       ]
     })
@@ -96,7 +129,5 @@ export const BalanceGraph: Component<{
     })
   })
 
-  return (
-    <div class="relative mx-auto mt-8 aspect-square w-screen max-w-xl lg:mx-0" ref={container} />
-  )
+  return <div class="relative mt-8 h-[60vh] w-full" ref={container} />
 }
