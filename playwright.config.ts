@@ -1,4 +1,5 @@
 import { defineConfig, devices } from "@playwright/test"
+import { isEmpty } from "lodash"
 
 /**
  * Read environment variables from file.
@@ -39,15 +40,19 @@ export default defineConfig({
       use: { ...devices["Desktop Chrome"] }
     },
 
-    {
-      name: "firefox",
-      use: { ...devices["Desktop Firefox"] }
-    },
+    process.env.FIREFOX
+      ? {
+          name: "firefox",
+          use: { ...devices["Desktop Firefox"] }
+        }
+      : {},
 
-    {
-      name: "webkit",
-      use: { ...devices["Desktop Safari"] }
-    }
+    process.env.SAFARI
+      ? {
+          name: "webkit",
+          use: { ...devices["Desktop Safari"] }
+        }
+      : {}
 
     /* Test against mobile viewports. */
     // {
@@ -68,7 +73,7 @@ export default defineConfig({
     //   name: 'Google Chrome',
     //   use: { ..devices['Desktop Chrome'], channel: 'chrome' },
     // },
-  ],
+  ].filter((browser) => !isEmpty(browser)),
 
   /* Run your local dev server before starting the tests */
   webServer: {

@@ -64,19 +64,24 @@ const RelationEditor: Component<{
       onChangeAccount={updateAccount}
     >
       {props.children || (
-        <CategoryIndicator
-          class={props.parent ? "h-8 w-8" : "h-10 w-10"}
-          iconSize="1.25em"
-          icon={
-            props.transaction.category?.icon
-              ? namedIcons[props.transaction.category?.icon]
-              : undefined
-          }
-          color={props.transaction.category?.color}
-          isSplit={"splitTo" in props.transaction && props.transaction.splitTo?.length > 0}
-          includeInReports={props.includeInReports}
-          isIncome={props.transaction.amount.decimalAmount > 0}
-        />
+        <>
+          <CategoryIndicator
+            class={props.parent ? "h-8 w-8" : "h-10 w-10"}
+            iconSize="1.25em"
+            icon={
+              props.transaction.category?.icon
+                ? namedIcons[props.transaction.category?.icon]
+                : undefined
+            }
+            color={props.transaction.category?.color}
+            isSplit={"splitTo" in props.transaction && props.transaction.splitTo?.length > 0}
+            includeInReports={props.includeInReports}
+            isIncome={props.transaction.amount.decimalAmount > 0}
+          />
+          <span class="sr-only" data-testid="category-name">
+            {props.transaction.category?.name || "No category"}
+          </span>
+        </>
       )}
     </RelationEditInput>
   )

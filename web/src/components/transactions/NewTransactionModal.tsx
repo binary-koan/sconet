@@ -185,6 +185,7 @@ export const NewTransactionModal: Component<{
                           {(category) => (
                             <DropdownMenuItem
                               class="text-sm"
+                              data-testid="category-item"
                               onClick={() => setValue(form, "categoryId", category.id)}
                             >
                               <div
@@ -202,6 +203,7 @@ export const NewTransactionModal: Component<{
                         size="custom"
                         variant="ghost"
                         class="w-full rounded border border-gray-100 px-4 py-2 text-xs text-gray-700"
+                        data-testid="category-select"
                       >
                         <Show when={selectedCategory()}>
                           <div
@@ -246,6 +248,7 @@ export const NewTransactionModal: Component<{
                         size="custom"
                         variant="ghost"
                         class="rounded border border-gray-100 px-4 py-2 text-xs text-gray-700"
+                        data-testid="account-select"
                       >
                         {account?.name} ({account?.currencyCode})
                         <TbSelector class="ml-1" />

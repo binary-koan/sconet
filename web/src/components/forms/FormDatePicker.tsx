@@ -107,6 +107,7 @@ export const FormDatePicker: Component<{
                       <button
                         type="button"
                         class="flex h-8 w-8 flex-col items-center justify-center rounded-full border text-sm disabled:opacity-50"
+                        data-testid="datepicker-date"
                         classList={{
                           "border-transparent": !isSameDate(date, new Date()),
                           "border-gray-200": isSameDate(date, new Date()),

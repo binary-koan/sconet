@@ -50,6 +50,8 @@ export async function startServer(serveStaticPaths?: string[]) {
     for (const staticPath of staticPaths) {
       const path = `${staticPath}${pathname}`
 
+      console.log("serving", pathname, "looking for", path)
+
       if (existsSync(path) && statSync(path).isFile()) {
         return new Response(file(path))
       }

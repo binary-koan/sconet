@@ -1,4 +1,5 @@
 import { Field, FormStore, ValidateField } from "@modular-forms/solid"
+import { uniqueId } from "lodash"
 import { Component, JSX, Show, splitProps } from "solid-js"
 import { FormControl, FormLabel } from "../base/FormControl"
 import { InputProps } from "../base/Input"
@@ -16,6 +17,8 @@ const FormInputGroup: Component<
     placeholderLabel?: boolean
   }
 > = (allProps) => {
+  const id = uniqueId("form-input-group-")
+
   const [props, inputProps] = splitProps(allProps, [
     "of",
     "label",
@@ -29,13 +32,16 @@ const FormInputGroup: Component<
 
   return (
     <FormControl>
-      <FormLabel class={props.placeholderLabel ? "sr-only" : ""}>{props.label}</FormLabel>
+      <FormLabel for={id} class={props.placeholderLabel ? "sr-only" : ""}>
+        {props.label}
+      </FormLabel>
       <Field name={props.name} of={props.of} validate={props.validate}>
         {(field, fieldProps) => (
           <>
             <InputGroup>
               {props.before}
               <InputGroupInput
+                id={id}
                 {...inputProps}
                 value={field.value}
                 placeholder={

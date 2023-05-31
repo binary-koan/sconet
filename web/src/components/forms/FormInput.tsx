@@ -1,4 +1,5 @@
 import { Field, FormStore, ValidateField } from "@modular-forms/solid"
+import { uniqueId } from "lodash"
 import { Component, JSX, Show, splitProps } from "solid-js"
 import { FormControl, FormLabel } from "../base/FormControl"
 import { Input, InputProps } from "../base/Input"
@@ -14,6 +15,8 @@ const FormInput: Component<
     wrapperClass?: string
   }
 > = (allProps) => {
+  const id = uniqueId("form-input-")
+
   const [props, inputProps] = splitProps(allProps, [
     "of",
     "label",
@@ -25,11 +28,14 @@ const FormInput: Component<
 
   return (
     <FormControl class={props.wrapperClass}>
-      <FormLabel class={props.placeholderLabel ? "sr-only" : ""}>{props.label}</FormLabel>
+      <FormLabel for={id} class={props.placeholderLabel ? "sr-only" : ""}>
+        {props.label}
+      </FormLabel>
       <Field name={props.name} of={props.of} validate={props.validate}>
         {(field, fieldProps) => (
           <>
             <Input
+              id={id}
               class="w-full"
               placeholder={
                 props.placeholderLabel && typeof props.label === "string" ? props.label : ""

@@ -5,64 +5,78 @@ import { accountsRepo } from "../repos/accountsRepo"
 import { categoriesRepo } from "../repos/categoriesRepo"
 import { usersRepo } from "../repos/usersRepo"
 
-export async function seed() {
+export async function seed(
+  { users, categories, accounts }: { users?: boolean; categories?: boolean; accounts?: boolean } = {
+    users: true,
+    categories: true,
+    accounts: true
+  }
+) {
   console.log("Starting seed")
 
   await runDbSession(async () => {
-    for (const email of process.env.USER_EMAILS?.split(",") || []) {
-      const existing = await sql`SELECT * FROM users WHERE email = ${email}`
+    if (categories) {
+      const existingCategories = await sql`SELECT * FROM categories`
 
-      if (!existing.length) {
-        await usersRepo.insert({
-          email,
-          encryptedPassword: await hashPassword("changeme"),
-          webauthnChallenge: null,
-          settings: {
-            defaultCurrencyCode: "USD",
-            favoriteCurrencyCodes: [],
-            defaultAccountId: null
-          }
+      if (!existingCategories.some((category) => category.name === "First")) {
+        await categoriesRepo.insert({
+          name: "First",
+          color: "red",
+          icon: "ShoppingCart",
+          isRegular: true,
+          budget: null,
+          budgetCurrencyCode: null,
+          sortOrder: 0
         })
-        console.log(`Created user ${email}`)
+        console.log(`Created category 'First'`)
+      }
+
+      if (!existingCategories.some((category) => category.name === "Second")) {
+        await categoriesRepo.insert({
+          name: "Second",
+          color: "green",
+          icon: "ShoppingCart",
+          isRegular: true,
+          budget: null,
+          budgetCurrencyCode: null,
+          sortOrder: 1
+        })
+        console.log(`Created category 'Second'`)
       }
     }
 
-    const existingCategories = await sql`SELECT * FROM categories`
+    if (accounts) {
+      const existingAccounts = await sql`SELECT * FROM accounts`
 
-    if (!existingCategories.some((category) => category.name === "First")) {
-      await categoriesRepo.insert({
-        name: "First",
-        color: "red",
-        icon: "ShoppingCart",
-        isRegular: true,
-        budget: null,
-        budgetCurrencyCode: null,
-        sortOrder: 0
-      })
-      console.log(`Created category 'First'`)
+      if (!existingAccounts.some((account) => account.name === "Test")) {
+        await accountsRepo.insert({
+          name: "Test",
+          currencyCode: "USD"
+        })
+        console.log(`Created account 'Test'`)
+      }
     }
 
-    if (!existingCategories.some((category) => category.name === "Second")) {
-      await categoriesRepo.insert({
-        name: "Second",
-        color: "green",
-        icon: "ShoppingCart",
-        isRegular: true,
-        budget: null,
-        budgetCurrencyCode: null,
-        sortOrder: 1
-      })
-      console.log(`Created category 'Second'`)
-    }
+    if (users) {
+      const defaultAccountId = (await sql`SELECT id FROM accounts LIMIT 1`)[0]?.id
 
-    const existingAccounts = await sql`SELECT * FROM accounts`
+      for (const email of process.env.USER_EMAILS?.split(",") || []) {
+        const existing = await sql`SELECT * FROM users WHERE email = ${email}`
 
-    if (!existingAccounts.some((account) => account.name === "Test")) {
-      await accountsRepo.insert({
-        name: "Test",
-        currencyCode: "USD"
-      })
-      console.log(`Created account 'Test'`)
+        if (!existing.length) {
+          await usersRepo.insert({
+            email,
+            encryptedPassword: await hashPassword("changeme"),
+            webauthnChallenge: null,
+            settings: {
+              defaultCurrencyCode: "USD",
+              favoriteCurrencyCodes: [],
+              defaultAccountId
+            }
+          })
+          console.log(`Created user ${email}`)
+        }
+      }
     }
   })
 }

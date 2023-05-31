@@ -10,6 +10,8 @@ if (existsSync("./build")) {
   }
 }
 
+console.log("Building ...")
+
 await Bun.build({
   entrypoints: ["./src/index.tsx"],
   outdir: "./build",

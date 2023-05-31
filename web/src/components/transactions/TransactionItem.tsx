@@ -44,6 +44,7 @@ const TransactionItem: Component<{
           "pl-10": !!props.parent,
           "pl-4": !props.parent
         }}
+        data-testid="transaction-item"
       >
         <div class="flex flex-1 items-center" onClick={navigateToTransaction}>
           <RelationEditor
@@ -56,6 +57,7 @@ const TransactionItem: Component<{
             <div
               class="truncate leading-none"
               classList={{ "text-gray-600 line-through": !includeInReports() }}
+              data-testid="memo"
             >
               {props.transaction.memo}
             </div>
@@ -65,6 +67,7 @@ const TransactionItem: Component<{
             classList={{
               "text-gray-600 line-through": !includeInReports()
             }}
+            data-testid="amount"
           >
             {props.transaction.amount.formatted}
           </div>

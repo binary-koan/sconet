@@ -20,7 +20,11 @@ export const AccountSelect: Component<{
       content={
         <For each={accounts()?.accounts}>
           {(account) => (
-            <DropdownMenuItem class="text-sm" onClick={() => props.onChange(account)}>
+            <DropdownMenuItem
+              data-testid="account-item"
+              class="text-sm"
+              onClick={() => props.onChange(account)}
+            >
               {account.name} ({account.currencyCode})
             </DropdownMenuItem>
           )}
