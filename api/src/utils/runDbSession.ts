@@ -20,14 +20,14 @@ export const dbSessionPlugin: Plugin = {
 }
 
 async function startDbSession() {
-  if (Bun.env.ENV_TYPE !== "production") {
+  if (Bun.env.PG_STAT_STATEMENTS) {
     console.log("[POSTGRESQL] Starting session")
     await sql`SELECT pg_stat_statements_reset()`
   }
 }
 
 async function endDbSession() {
-  if (Bun.env.ENV_TYPE !== "production") {
+  if (Bun.env.PG_STAT_STATEMENTS) {
     const queries = await sql`SELECT * FROM pg_stat_statements`
 
     console.log("[POSTGRESQL] Queries during session")

@@ -19,7 +19,7 @@ export async function createDb() {
 
   await dbSql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`
 
-  if (Bun.env.ENV_TYPE !== "production") {
+  if (Bun.env.PG_STAT_STATEMENTS) {
     await dbSql`CREATE EXTENSION IF NOT EXISTS "pg_stat_statements"`
   }
 
