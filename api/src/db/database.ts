@@ -1,7 +1,9 @@
 import postgres from "postgres"
 import { databaseUrl } from "./databaseUrl"
 
-export const sql = postgres(databaseUrl)
+export const sql = postgres(databaseUrl, {
+  connect_timeout: 5
+})
 
 // export const sql: postgres.Sql<{}> = (template: any, ...parameters: any[]) => {
 //   if (Array.isArray(template) && "raw" in template && Array.isArray(template.raw)) {
