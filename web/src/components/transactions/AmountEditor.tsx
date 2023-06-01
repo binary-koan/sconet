@@ -1,4 +1,4 @@
-import { repeat } from "lodash"
+import { repeat, uniqueId } from "lodash"
 import { Component, createSignal, onMount } from "solid-js"
 import toast from "solid-toast"
 import { FullTransactionFragment } from "../../graphql-types"
@@ -11,6 +11,8 @@ export const AmountEditor: Component<{
   transaction: FullTransactionFragment
   stopEditing: () => void
 }> = (props) => {
+  const id = uniqueId("amount-editor-")
+
   const updateTransaction = useUpdateTransaction({
     onSuccess() {
       toast.success("Amount updated")
@@ -56,10 +58,14 @@ export const AmountEditor: Component<{
 
   return (
     <div class="flex">
+      <label class="sr-only" for={id}>
+        Edit amount
+      </label>
       <InputGroup class="flex-1">
         <InputAddon>{props.transaction.currency.symbol}</InputAddon>
         <InputGroupInput
           ref={input}
+          id={id}
           type="number"
           value={newAmount()}
           step={

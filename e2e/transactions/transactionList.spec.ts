@@ -38,6 +38,11 @@ test("shows transactions and days in between", async ({ page }) => {
   await expect(page.locator('[data-testid="transactions-date"]')).toHaveCount(7)
   await expect(page.locator('[data-testid="transactions-date"]').nth(0)).toHaveText("Tue, Jan 7")
   await expect(page.locator('[data-testid="transactions-date"]').nth(6)).toHaveText("Wed, Jan 1")
+
+  await page.getByTestId("transaction-item").nth(0).click()
+
+  await expect(page).toHaveURL(/\/transactions\/[\w\-]+/)
+  await expect(page.getByText("test2")).toBeVisible()
 })
 
 test("supports pagination", async ({ page }) => {

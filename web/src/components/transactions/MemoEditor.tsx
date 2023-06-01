@@ -1,3 +1,4 @@
+import { uniqueId } from "lodash"
 import { Component, createSignal, onMount } from "solid-js"
 import toast from "solid-toast"
 import { useUpdateTransaction } from "../../graphql/mutations/updateTransactionMutation"
@@ -9,6 +10,8 @@ export const MemoEditor: Component<{
   transaction: { id: string; memo: string }
   stopEditing: () => void
 }> = (props) => {
+  const id = uniqueId("memo-editor-")
+
   const updateTransaction = useUpdateTransaction({
     onSuccess() {
       toast.success("Memo updated")
@@ -33,8 +36,12 @@ export const MemoEditor: Component<{
 
   return (
     <div class={`flex ${props.class}`}>
+      <label class="sr-only" for={id}>
+        Edit memo
+      </label>
       <Input
         ref={input}
+        id={id}
         value={newMemo()}
         onInput={(e) => setNewMemo(e.currentTarget.value)}
         onEnter={doUpdate}

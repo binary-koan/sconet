@@ -1,3 +1,4 @@
+import { uniqueId } from "lodash"
 import { Component, createSignal, onMount } from "solid-js"
 import toast from "solid-toast"
 import { useUpdateTransaction } from "../../graphql/mutations/updateTransactionMutation"
@@ -9,6 +10,8 @@ export const DateEditor: Component<{
   transaction: { id: string; date: string }
   stopEditing: () => void
 }> = (props) => {
+  const id = uniqueId("date-editor-")
+
   const updateTransaction = useUpdateTransaction({
     onSuccess() {
       toast.success("Date updated")
@@ -33,8 +36,12 @@ export const DateEditor: Component<{
 
   return (
     <div class={`flex ${props.class}`}>
+      <label class="sr-only" for={id}>
+        Edit date
+      </label>
       <Input
         ref={input}
+        id={id}
         type="date"
         value={newDate()}
         onInput={(e) => setNewDate(e.currentTarget.value)}

@@ -82,7 +82,27 @@ export const TransactionView: Component<{
             </Show>
           </FormControl>
 
-          <Show when={!transaction().splitTo.length}>
+          <Show when={!transaction().includeInReports || transaction().amount.decimalAmount > 0}>
+            <FormControl>
+              <FormLabel>Category</FormLabel>
+              <div class="flex items-center">
+                <CategoryIndicator
+                  class="mr-3 h-8 w-8"
+                  isIncome={transaction().amount.decimalAmount > 0}
+                  includeInReports={transaction().includeInReports}
+                />
+                {transaction().includeInReports ? "Income" : "Hidden from reports"}
+              </div>
+            </FormControl>
+          </Show>
+
+          <Show
+            when={
+              !transaction().splitTo.length &&
+              transaction().includeInReports &&
+              transaction().amount.decimalAmount <= 0
+            }
+          >
             <FormControl>
               <FormLabel>Category</FormLabel>
               <RelationEditor
