@@ -1,8 +1,8 @@
 import { createAccount, createCategory, createTransaction } from "../factories"
 import { expect, test } from "../fixtures"
-import { resetDb } from "../helpers"
+import { expectToast, resetDb } from "../helpers"
 
-test.only("supports editing transaction properties", async ({ page }) => {
+test("supports editing transaction properties", async ({ page }) => {
   await resetDb()
 
   const account = await createAccount({ name: "test-account", currencyCode: "USD" })
@@ -98,4 +98,77 @@ test.only("supports editing transaction properties", async ({ page }) => {
 
   await expect(page.getByRole("button", { name: "some-category" })).not.toBeVisible()
   await expect(page.getByText("some-category")).toBeVisible()
+})
+
+test("showing and hiding transaction in reports", async ({ page }) => {
+  await resetDb()
+
+  const account = await createAccount({ name: "test-account", currencyCode: "USD" })
+
+  const transaction = await createTransaction({
+    date: "2020-01-01",
+    amount: -123,
+    currencyCode: "USD",
+    memo: "test-memo",
+    accountId: account.id
+  })
+
+  await page.goto(`/transactions/${transaction.id}`)
+
+  // Hide in reports
+
+  await page.getByRole("button", { name: "Hide from reports" }).click()
+
+  await expect(page.getByText("Hidden from reports")).toBeVisible()
+
+  await page.goto("/graphs/budgets/2020-01")
+
+  await expect(page.getByTestId("total-spending")).toHaveText("$0.00")
+
+  // Show in reports
+
+  await page.goto(`/transactions/${transaction.id}`)
+
+  await page.getByRole("button", { name: "Show in reports" }).click()
+
+  await expect(page.getByText("Hidden from reports")).not.toBeVisible()
+
+  await page.goto("/graphs/budgets/2020-01")
+
+  await expect(page.getByTestId("total-spending")).toHaveText("$1.23")
+})
+
+test.only("splitting a transaction", async ({ page }) => {
+  await resetDb()
+
+  const account = await createAccount({ name: "test-account", currencyCode: "USD" })
+
+  const transaction = await createTransaction({
+    date: "2020-01-01",
+    amount: -1234,
+    currencyCode: "USD",
+    memo: "test-memo",
+    accountId: account.id
+  })
+
+  await page.goto(`/transactions/${transaction.id}`)
+
+  await page.getByRole("button", { name: "Split" }).click()
+
+  await page.getByPlaceholder("Memo").fill("split 1")
+  await page.getByPlaceholder("Amount").fill("3")
+
+  await page.getByPlaceholder("Memo").nth(1).fill("split 2")
+  await page.getByPlaceholder("Amount").nth(1).fill("5.20")
+
+  await page.getByRole("dialog").getByRole("button", { name: "Split" }).click()
+
+  await expectToast(page, "Transaction split")
+
+  await expect(page.getByText("split 1")).toBeVisible()
+  await expect(page.getByText("-$3.00")).toBeVisible()
+  await expect(page.getByText("split 2")).toBeVisible()
+  await expect(page.getByText("-$5.20")).toBeVisible()
+  // Remainder
+  await expect(page.getByText("-$4.14")).toBeVisible()
 })

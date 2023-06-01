@@ -30,7 +30,7 @@ export const Modal = <T extends AsProp = "div">(
       >
         <div class="fixed inset-0 bg-gray-500 bg-opacity-75" />
 
-        <div class="z-modal fixed inset-0 overflow-y-auto">
+        <div class="z-modal fixed inset-0 overflow-y-auto" role="dialog">
           <div
             class="flex min-h-full items-end justify-center text-center sm:items-center"
             onClick={(e) => {
