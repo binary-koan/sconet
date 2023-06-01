@@ -43,6 +43,10 @@ export const FullTransactionFragment = gql`
         decimalAmount
         formatted
       }
+      originalAmount {
+        decimalAmount
+        formatted
+      }
       category {
         id
         name
@@ -89,6 +93,10 @@ export const ListingTransactionFragment = gql`
       id
       memo
       amount {
+        decimalAmount
+        formatted
+      }
+      originalAmount {
         decimalAmount
         formatted
       }

@@ -135,7 +135,9 @@ export const splitTransaction: MutationResolvers["splitTransaction"] = async (
     throw new Error("Not found")
   }
 
-  if (sum(splits.map((split) => split.amount)) !== transaction.amount) {
+  if (
+    sum(splits.map((split) => split.amount)) !== (transaction.originalAmount || transaction.amount)
+  ) {
     throw new Error("Transaction amounts do not match")
   }
 
@@ -145,13 +147,22 @@ export const splitTransaction: MutationResolvers["splitTransaction"] = async (
 
   transactionsRepo.deleteSplitTransactions(transaction.id)
 
+  const splitsWithAmount = splits.map((split) => ({
+    ...split,
+    originalAmount: split.amount,
+    amount: transaction.originalAmount
+      ? Math.round((transaction.amount / transaction.originalAmount) * split.amount)
+      : split.amount
+  }))
+
   await sql.begin(async (sql) => {
-    for (const split of splits) {
+    for (const split of splitsWithAmount) {
       await transactionsRepo.insert(
         {
           ...omit(transaction, "id"),
           splitFromId: transaction.id,
           amount: split.amount,
+          originalAmount: split.originalAmount,
           memo: split.memo || transaction.memo,
           categoryId: split.categoryId
         },

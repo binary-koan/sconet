@@ -1,7 +1,7 @@
 import { last } from "lodash"
 import { evaluate, sum } from "mathjs"
 import { TbMinus } from "solid-icons/tb"
-import { Component, For, Show, createEffect } from "solid-js"
+import { Component, For, Show } from "solid-js"
 import { createStore } from "solid-js/store"
 import toast from "solid-toast"
 import { ListingTransactionFragment } from "../../graphql-types"
@@ -49,20 +49,16 @@ export const SplitTransactionModal: Component<{
     }
   }
 
+  const originalAmount = () =>
+    props.transaction.originalAmount?.decimalAmount || props.transaction.amount.decimalAmount
+
   const remainder = () =>
     parseFloat(
       (
-        Math.abs(props.transaction.amount.decimalAmount) -
+        Math.abs(originalAmount()) -
         sum(splits.flatMap(({ splits }) => splits.map((split) => split.numericAmount)))
       ).toFixed(currencyData()?.currency?.decimalDigits || 0)
     )
-
-  createEffect(() =>
-    console.log(
-      "splits",
-      splits.flatMap(({ splits }) => splits.map((split) => split.numericAmount))
-    )
-  )
 
   const doUpdate = async () => {
     let splitsToSend = splits
@@ -80,7 +76,7 @@ export const SplitTransactionModal: Component<{
       })
     }
 
-    if (props.transaction.amount.decimalAmount < 0) {
+    if (originalAmount() < 0) {
       splitsToSend = splitsToSend.map((split) => ({
         ...split,
         numericAmount: -split.numericAmount
@@ -146,8 +142,7 @@ export const SplitTransactionModal: Component<{
     setSplits((splits) => splits.filter((split) => split.category?.id !== category?.id))
   }
 
-  const canSplitCategories = () =>
-    props.transaction.amount.decimalAmount < 0 && props.transaction.includeInReports
+  const canSplitCategories = () => originalAmount() < 0 && props.transaction.includeInReports
 
   return (
     <Modal onClickOutside={props.onClose} isOpen={props.isOpen}>
@@ -275,9 +270,13 @@ function getCurrentSplits(transaction: ListingTransactionFragment): SplitValues 
     const existing = mapping.find(({ category }) => (category?.id || null) === categoryId)
 
     const value = {
-      amount: Math.abs(transaction.amount.decimalAmount).toString(),
+      amount: Math.abs(
+        transaction.originalAmount?.decimalAmount || transaction.amount.decimalAmount
+      ).toString(),
       memo: transaction.memo,
-      numericAmount: Math.abs(transaction.amount.decimalAmount)
+      numericAmount: Math.abs(
+        transaction.originalAmount?.decimalAmount || transaction.amount.decimalAmount
+      )
     }
 
     if (existing) {

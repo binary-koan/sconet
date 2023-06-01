@@ -160,7 +160,14 @@ export const TransactionView: Component<{
                       stopEditing={() => setEditingMemo(undefined)}
                     />
                   </Show>
-                  <div>{child.amount.formatted}</div>
+                  <div class="text-right">
+                    {child.amount.formatted}
+                    <Show when={child.originalAmount}>
+                      {(originalAmount) => (
+                        <div class="text-xs text-gray-500">{originalAmount().formatted}</div>
+                      )}
+                    </Show>
+                  </div>
                   <Button
                     size="sm"
                     variant="ghost"
