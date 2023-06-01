@@ -138,7 +138,7 @@ test("showing and hiding transaction in reports", async ({ page }) => {
   await expect(page.getByTestId("total-spending")).toHaveText("$1.23")
 })
 
-test.only("splitting a transaction", async ({ page }) => {
+test("splitting a transaction", async ({ page }) => {
   await resetDb()
 
   const account = await createAccount({ name: "test-account", currencyCode: "USD" })
