@@ -153,7 +153,7 @@ export const splitTransaction: MutationResolvers["splitTransaction"] = async (
           splitFromId: transaction.id,
           amount: split.amount,
           memo: split.memo || transaction.memo,
-          categoryId: split.categoryId || transaction.categoryId
+          categoryId: split.categoryId
         },
         sql
       )

@@ -33,6 +33,11 @@ const ShowTransactionPage: Component = () => {
                 input: { includeInReports: !routeData.data()!.transaction!.includeInReports }
               })
             }
+            aria-label={
+              routeData.data()?.transaction?.includeInReports
+                ? "Hide from reports"
+                : "Show in reports"
+            }
           >
             {routeData.data()?.transaction?.includeInReports ? <TbEye /> : <TbEyeOff />}
           </Button>

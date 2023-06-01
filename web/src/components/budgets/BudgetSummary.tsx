@@ -14,7 +14,9 @@ export const BudgetSummary: Component<{
         size="custom"
         class="flex flex-1 flex-col items-center px-1 py-2"
       >
-        <div class="text-sm md:text-xl">{props.budget.income.formatted}</div>
+        <div class="text-sm md:text-xl" data-testid="total-income">
+          {props.budget.income.formatted}
+        </div>
         <div class="truncate text-xs">Income</div>
       </LinkButton>
 
@@ -27,7 +29,9 @@ export const BudgetSummary: Component<{
         size="custom"
         class="flex flex-1 flex-col items-center px-1 py-2"
       >
-        <div class="text-sm md:text-xl">{props.budget.totalSpending.formatted}</div>
+        <div class="text-sm md:text-xl" data-testid="total-spending">
+          {props.budget.totalSpending.formatted}
+        </div>
         <div class="truncate text-xs">Spending</div>
       </LinkButton>
 

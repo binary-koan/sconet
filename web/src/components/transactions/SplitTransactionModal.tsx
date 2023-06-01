@@ -1,12 +1,25 @@
+import { last } from "lodash"
 import { evaluate, sum } from "mathjs"
-import { Component, For, createSignal } from "solid-js"
+import { TbMinus } from "solid-icons/tb"
+import { Component, For, Show, createEffect } from "solid-js"
+import { createStore } from "solid-js/store"
 import toast from "solid-toast"
 import { ListingTransactionFragment } from "../../graphql-types"
 import { useSplitTransaction } from "../../graphql/mutations/splitTransactionMutation"
 import { useGetCurrencyQuery } from "../../graphql/queries/getCurrencyQuery"
+import { namedIcons } from "../../utils/namedIcons"
+import CategoryIndicator from "../CategoryIndicator"
 import { Button } from "../base/Button"
 import { Input } from "../base/Input"
 import { Modal, ModalCloseButton, ModalContent, ModalTitle } from "../base/Modal"
+import { CategorySelect } from "../categories/CategorySelect"
+
+type SplitCategory = { id: string; name: string; icon: string; color: string }
+
+type SplitValues = Array<{
+  category: SplitCategory | null
+  splits: Array<{ amount: string; memo: string; numericAmount: number }>
+}>
 
 export const SplitTransactionModal: Component<{
   transaction: ListingTransactionFragment
@@ -22,15 +35,9 @@ export const SplitTransactionModal: Component<{
   })
   const currencyData = useGetCurrencyQuery(() => ({ code: props.transaction.currencyCode }))
 
-  const [splits, setSplits] = createSignal(
+  const [splits, setSplits] = createStore<SplitValues>(
     // eslint-disable-next-line solid/reactivity
-    props.transaction.splitTo
-      .map((child) => ({
-        amount: Math.abs(child.amount.decimalAmount).toString(),
-        memo: child.memo,
-        numericAmount: Math.abs(child.amount.decimalAmount)
-      }))
-      .concat({ amount: "", memo: "", numericAmount: 0 })
+    getCurrentSplits(props.transaction)
   )
 
   const parseNumericAmount = (amount: string) => {
@@ -46,15 +53,31 @@ export const SplitTransactionModal: Component<{
     parseFloat(
       (
         Math.abs(props.transaction.amount.decimalAmount) -
-        sum(splits().map((split) => split.numericAmount))
+        sum(splits.flatMap(({ splits }) => splits.map((split) => split.numericAmount)))
       ).toFixed(currencyData()?.currency?.decimalDigits || 0)
     )
 
+  createEffect(() =>
+    console.log(
+      "splits",
+      splits.flatMap(({ splits }) => splits.map((split) => split.numericAmount))
+    )
+  )
+
   const doUpdate = async () => {
-    let splitsToSend = splits().filter((split) => split.amount && split.memo)
+    let splitsToSend = splits
+      .flatMap(({ splits, category }) =>
+        splits.map((split) => ({ ...split, categoryId: category?.id || null }))
+      )
+      .filter((split) => split.amount && split.memo)
 
     if (remainder() > 0) {
-      splitsToSend.push({ amount: "", memo: "", numericAmount: remainder() })
+      splitsToSend.push({
+        amount: "",
+        memo: "",
+        numericAmount: remainder(),
+        categoryId: props.transaction.category?.id || null
+      })
     }
 
     if (props.transaction.amount.decimalAmount < 0) {
@@ -66,30 +89,65 @@ export const SplitTransactionModal: Component<{
 
     await splitTransaction({
       id: props.transaction.id,
-      splits: splitsToSend.map(({ memo, numericAmount }) => ({
+      splits: splitsToSend.map(({ memo, categoryId, numericAmount }) => ({
         memo,
+        categoryId,
         amount: Math.round(numericAmount * 10 ** (currencyData()?.currency?.decimalDigits || 0))
       }))
     })
   }
 
-  const setField = (updateIndex: number, field: "amount" | "memo", newValue: string) => {
-    setSplits((splits) => {
-      const newSplits = splits.map((split, index) => {
-        if (index === updateIndex) {
-          split[field] = newValue
-          split.numericAmount = parseNumericAmount(splits[updateIndex].amount)
-        }
-        return split
+  const setField = (
+    updateCategoryId: string | null,
+    updateIndex: number,
+    field: "amount" | "memo",
+    newValue: string
+  ) => {
+    setSplits(
+      (split) => (split.category?.id || null) === updateCategoryId,
+      "splits",
+      updateIndex,
+      (split) => ({
+        ...split,
+        [field]: newValue,
+        numericAmount: parseNumericAmount(field === "amount" ? newValue : split.amount)
       })
+    )
 
-      if (newSplits[newSplits.length - 1]?.amount) {
-        newSplits.push({ amount: "", memo: "", numericAmount: 0 })
-      }
+    if (
+      last(splits.find((split) => (split.category?.id || null) === updateCategoryId)?.splits)
+        ?.amount
+    ) {
+      setSplits(
+        (split) => (split.category?.id || null) === updateCategoryId,
+        "splits",
+        (splits) => [...splits, { amount: "", memo: "", numericAmount: 0 }]
+      )
+    }
+  }
 
-      return newSplits
+  const setCategory = (oldCategoryId: string | null, newCategory: SplitCategory) => {
+    setSplits((split) => (split.category?.id || null) === oldCategoryId, "category", {
+      ...newCategory
     })
   }
+
+  const addCategory = () => {
+    setSplits([
+      ...splits,
+      {
+        category: null,
+        splits: [{ amount: "", memo: "", numericAmount: 0 }]
+      }
+    ])
+  }
+
+  const removeCategory = (category: SplitCategory | null) => {
+    setSplits((splits) => splits.filter((split) => split.category?.id !== category?.id))
+  }
+
+  const canSplitCategories = () =>
+    props.transaction.amount.decimalAmount < 0 && props.transaction.includeInReports
 
   return (
     <Modal onClickOutside={props.onClose} isOpen={props.isOpen}>
@@ -98,24 +156,89 @@ export const SplitTransactionModal: Component<{
           Split Transaction <ModalCloseButton onClick={props.onClose} />
         </ModalTitle>
         <div class="flex flex-col gap-2">
-          <For each={splits()}>
-            {({ amount, memo }, index) => (
-              <div class="grid grid-cols-5 gap-2">
-                <Input
-                  class="col-span-3"
-                  value={memo}
-                  placeholder="Memo"
-                  onInput={(e) => setField(index(), "memo", e.currentTarget.value)}
-                />
-                <Input
-                  class="col-span-2"
-                  value={amount}
-                  placeholder="Amount"
-                  onInput={(e) => setField(index(), "amount", e.currentTarget.value)}
-                />
+          <For each={splits}>
+            {(categorySplit) => (
+              <div class="mb-6 flex flex-col gap-2">
+                <Show when={canSplitCategories()}>
+                  <div class="flex items-center">
+                    <CategorySelect
+                      value={categorySplit.category?.id}
+                      onChange={(newCategory) =>
+                        setCategory(categorySplit.category?.id || null, newCategory)
+                      }
+                      filter={(selectable) =>
+                        !splits.some(({ category }) => category?.id === selectable.id)
+                      }
+                    >
+                      {(selectedCategory) => (
+                        <div class="mb-1 flex items-center gap-2 font-semibold">
+                          <CategoryIndicator
+                            class="h-8 w-8"
+                            icon={
+                              selectedCategory?.icon
+                                ? namedIcons[selectedCategory?.icon]
+                                : undefined
+                            }
+                            color={selectedCategory?.color}
+                          />
+                          {selectedCategory?.name || "Uncategorized"}
+                        </div>
+                      )}
+                    </CategorySelect>
+                    <Button
+                      variant="ghost"
+                      class="-mr-2 ml-auto"
+                      aria-label="Remove category"
+                      onClick={() => removeCategory(categorySplit.category)}
+                    >
+                      <TbMinus />
+                    </Button>
+                  </div>
+                </Show>
+                <For each={categorySplit.splits}>
+                  {(split, index) => (
+                    <div class="grid grid-cols-5 gap-2">
+                      <Input
+                        class="col-span-3"
+                        value={split.memo}
+                        placeholder="Memo"
+                        onInput={(e) =>
+                          setField(
+                            categorySplit.category?.id || null,
+                            index(),
+                            "memo",
+                            e.currentTarget.value
+                          )
+                        }
+                      />
+                      <Input
+                        class="col-span-2"
+                        value={split.amount}
+                        placeholder="Amount"
+                        onInput={(e) =>
+                          setField(
+                            categorySplit.category?.id || null,
+                            index(),
+                            "amount",
+                            e.currentTarget.value
+                          )
+                        }
+                      />
+                    </div>
+                  )}
+                </For>
               </div>
             )}
           </For>
+          <Show when={canSplitCategories()}>
+            <Button
+              class="mb-6"
+              onClick={addCategory}
+              disabled={splits.some((split) => !split.category)}
+            >
+              Add category
+            </Button>
+          </Show>
           <div class="mb-6">Remainder: {remainder()}</div>
         </div>
 
@@ -125,4 +248,47 @@ export const SplitTransactionModal: Component<{
       </ModalContent>
     </Modal>
   )
+}
+
+function getCurrentSplits(transaction: ListingTransactionFragment): SplitValues {
+  const transactions = transaction.splitTo
+
+  if (!transactions.length) {
+    return [
+      {
+        category: transaction.category ? { ...transaction.category } : null,
+        splits: [
+          {
+            amount: "",
+            memo: "",
+            numericAmount: 0
+          }
+        ]
+      }
+    ]
+  }
+
+  const mapping: SplitValues = []
+
+  transactions.forEach((transaction) => {
+    const categoryId = transaction.category?.id || null
+    const existing = mapping.find(({ category }) => (category?.id || null) === categoryId)
+
+    const value = {
+      amount: Math.abs(transaction.amount.decimalAmount).toString(),
+      memo: transaction.memo,
+      numericAmount: Math.abs(transaction.amount.decimalAmount)
+    }
+
+    if (existing) {
+      existing.splits.push(value)
+    } else {
+      mapping.push({
+        category: transaction.category ? { ...transaction.category } : null,
+        splits: [value]
+      })
+    }
+  })
+
+  return mapping
 }

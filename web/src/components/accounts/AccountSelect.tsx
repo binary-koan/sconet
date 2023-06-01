@@ -6,7 +6,7 @@ import { Dropdown, DropdownMenuItem } from "../Dropdown"
 export const AccountSelect: Component<{
   value?: string
   onChange: (account: FullAccountFragment) => void
-  children: (selectedCurrency: FullAccountFragment | undefined) => JSX.Element
+  children: (selectedAccount: FullAccountFragment | undefined) => JSX.Element
 }> = (props) => {
   const accounts = useAccountsQuery()
 
