@@ -1,6 +1,6 @@
 import { createForm, Field, Form, getValue, minRange, setValue } from "@modular-forms/solid"
 import { repeat } from "lodash"
-import { TbCalendarEvent, TbSelector, TbSwitch3 } from "solid-icons/tb"
+import { TbCalendarEvent, TbPlus, TbSelector, TbSwitch3 } from "solid-icons/tb"
 import { Component, createEffect, For, Show } from "solid-js"
 import toast from "solid-toast"
 import { CreateTransactionInput } from "../../graphql-types"
@@ -15,6 +15,7 @@ import { AccountSelect } from "../accounts/AccountSelect"
 import { Button } from "../base/Button"
 import { InputAddon } from "../base/InputGroup"
 import { Modal, ModalCloseButton, ModalContent, ModalTitle } from "../base/Modal"
+import { CurrencySelect } from "../currencies/CurrencySelect"
 import { Dropdown, DropdownMenuItem } from "../Dropdown"
 import { FormDatePicker } from "../forms/FormDatePicker"
 import FormInput from "../forms/FormInput"
@@ -61,17 +62,36 @@ export const NewTransactionModal: Component<{
     }
   })
 
-  const onSave = ({ amount, amountType, date, ...data }: NewTransactionModalValues) => {
+  const onSave = ({
+    amount,
+    amountType,
+    date,
+    originalAmount,
+    originalCurrencyCode,
+    ...data
+  }: NewTransactionModalValues) => {
     const currency = currencies()?.currencies.find(
       (currency) => currency.code === data.currencyCode
     )
     const integerAmount = Math.round(amount * 10 ** (currency?.decimalDigits || 0))
 
-    const coercedData = {
+    const coercedData: CreateTransactionInput = {
       ...data,
       amount: amountType === "expense" ? -integerAmount : integerAmount,
       date: stripTime(new Date(date)),
       includeInReports: Boolean(data.includeInReports)
+    }
+
+    if (originalCurrencyCode && originalAmount) {
+      const originalCurrency = currencies()?.currencies.find(
+        (currency) => currency.code === originalCurrencyCode
+      )
+      const integerOriginalAmount = Math.round(
+        originalAmount * 10 ** (originalCurrency?.decimalDigits || 0)
+      )
+      coercedData.originalAmount =
+        amountType === "expense" ? -integerOriginalAmount : integerOriginalAmount
+      coercedData.originalCurrencyCode = originalCurrencyCode
     }
 
     createTransaction({ input: coercedData })
@@ -83,6 +103,11 @@ export const NewTransactionModal: Component<{
 
   const selectedCurrency = () =>
     currencies()?.currencies.find((currency) => currency.code === getValue(form, "currencyCode"))
+
+  const selectedOriginalCurrency = () =>
+    currencies()?.currencies.find(
+      (currency) => currency.code === getValue(form, "originalCurrencyCode")
+    )
 
   const selectedCategory = () =>
     categories()?.categories.find((category) => category.id === getValue(form, "categoryId"))
@@ -97,7 +122,7 @@ export const NewTransactionModal: Component<{
 
   return (
     <Modal isOpen={props.isOpen} onClickOutside={props.onClose}>
-      <ModalContent class="flex h-[26rem] flex-col">
+      <ModalContent class="flex h-[28rem] flex-col">
         <ModalTitle>
           New Transaction
           <ModalCloseButton onClick={props.onClose} />
@@ -149,6 +174,23 @@ export const NewTransactionModal: Component<{
                     : "1"
                 }
               />
+
+              <Show when={getValue(form, "originalCurrencyCode")}>
+                <FormInputGroup
+                  of={form}
+                  label="Original amount"
+                  name="originalAmount"
+                  type="number"
+                  placeholderLabel={true}
+                  validate={minRange(0, "Must be zero or more")}
+                  before={<InputAddon>{selectedOriginalCurrency()?.symbol}</InputAddon>}
+                  step={
+                    selectedOriginalCurrency()?.decimalDigits
+                      ? `0.${repeat("0", selectedOriginalCurrency()!.decimalDigits - 1)}1`
+                      : "1"
+                  }
+                />
+              </Show>
             </div>
 
             <Field of={form} name="currencyCode">
@@ -253,6 +295,29 @@ export const NewTransactionModal: Component<{
                       </Button>
                     )}
                   </AccountSelect>
+                )}
+              </Field>
+
+              <Field of={form} name="originalCurrencyCode">
+                {(field) => (
+                  <CurrencySelect
+                    value={field.value}
+                    onChange={(currencyCode) =>
+                      setValue(form, "originalCurrencyCode", currencyCode)
+                    }
+                  >
+                    {(currency) => (
+                      <Button
+                        size="custom"
+                        variant="ghost"
+                        class="gap-1 rounded border border-gray-100 px-4 py-2 text-xs text-gray-700"
+                        data-testid="account-select"
+                      >
+                        {currency ? `Originally ${currency.code}` : "Original currency"}
+                        {currency ? <TbSelector /> : <TbPlus />}
+                      </Button>
+                    )}
+                  </CurrencySelect>
                 )}
               </Field>
             </div>

@@ -63,13 +63,19 @@ const TransactionItem: Component<{
             </div>
           </div>
           <div
-            class="ml-2 whitespace-nowrap"
+            class="ml-2 whitespace-nowrap text-right"
             classList={{
               "text-gray-600 line-through": !includeInReports()
             }}
             data-testid="amount"
           >
             {props.transaction.amount.formatted}
+
+            <Show when={props.transaction.originalAmount}>
+              {(originalAmount) => (
+                <div class="ml-1 text-xs text-gray-600">{originalAmount().formatted}</div>
+              )}
+            </Show>
           </div>
         </div>
         <Show when={!props.parent} fallback={<div class="w-10" />}>

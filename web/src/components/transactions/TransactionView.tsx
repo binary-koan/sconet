@@ -58,6 +58,11 @@ export const TransactionView: Component<{
           </FormControl>
 
           <FormControl>
+            <FormLabel>Original amount</FormLabel>
+            <div>{transaction().originalAmount?.formatted}</div>
+          </FormControl>
+
+          <FormControl>
             <FormLabel>Account</FormLabel>
             <RelationEditor
               transaction={transaction()}
