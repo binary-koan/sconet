@@ -21,28 +21,22 @@ ENV PRODUCTION_BUILD=1
 
 RUN test -n "$TURNSTILE_SITEKEY" || (echo "TURNSTILE_SITEKEY is not set" && false)
 
+RUN cd api && bun run build
 RUN cd web && bun run build
 
 # Runtime
-FROM oven/bun:0.7.0 AS runtime
+FROM gcr.io/distroless/cc-debian11 AS runtime
 
 WORKDIR /app
 
 ENV ENV_TYPE=production
 ENV STATIC_PATHS=static
-ENV MIGRATIONS_PATH=src/db/migrations
+ENV MIGRATIONS_PATH=migrations
 ENV TZ=UTC
 
-# Just copying the package.json and lockfile seems to break --frozen-lockfile
-COPY . ./
+COPY --from=builder /app/api/build .
+COPY --from=builder /app/web/build ./static
+COPY --from=builder /app/web/public ./static
+COPY --from=builder /app/api/src/db/migrations ./migrations
 
-# This fails with --production on Fly builders for some reason (error linking - FileNotFound)
-# RUN bun install --production
-RUN bun install --frozen-lockfile
-
-WORKDIR /app/api
-
-RUN mkdir static
-COPY --from=builder /app/web/build static
-
-CMD ["bun", "./bin/run.ts", "setup-and-serve"]
+CMD ["/app/run", "setup-and-serve"]

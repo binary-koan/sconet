@@ -5,9 +5,12 @@ if (!value) {
   throw new Error("Expected TURNSTILE_SITEKEY to be present")
 }
 
-console.log(`fly deploy --build-arg TURNSTILE_SITEKEY=${value}`)
+console.log(`fly deploy --build-arg TURNSTILE_SITEKEY=${value} ${Bun.argv.slice(2).join(" ")}`)
 
-Bun.spawnSync(["fly", "deploy", "--build-arg", `TURNSTILE_SITEKEY=${value}`], {
-  stdout: "inherit",
-  stderr: "inherit"
-})
+Bun.spawnSync(
+  ["fly", "deploy", "--build-arg", `TURNSTILE_SITEKEY=${value}`, ...Bun.argv.slice(2)],
+  {
+    stdout: "inherit",
+    stderr: "inherit"
+  }
+)
