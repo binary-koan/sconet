@@ -46,21 +46,19 @@ const TransactionItem: Component<{
         }}
         data-testid="transaction-item"
       >
-        <div class="flex flex-1 items-center" onClick={navigateToTransaction}>
+        <div class="flex min-w-0 flex-1 items-center" onClick={navigateToTransaction}>
           <RelationEditor
             parent={props.parent}
             transaction={props.transaction}
             includeInReports={includeInReports()}
           />
 
-          <div class="ml-2 min-w-0 flex-1 px-2">
-            <div
-              class="truncate leading-none"
-              classList={{ "text-gray-600 line-through": !includeInReports() }}
-              data-testid="memo"
-            >
-              {props.transaction.memo}
-            </div>
+          <div
+            class="ml-2 min-w-0 flex-1 truncate px-2 leading-none"
+            classList={{ "text-gray-600 line-through": !includeInReports() }}
+            data-testid="memo"
+          >
+            {props.transaction.memo}
           </div>
           <div
             class="ml-2 whitespace-nowrap text-right"
@@ -99,7 +97,7 @@ const TransactionItem: Component<{
 
             <div class="mr-2 min-w-0 truncate text-sm">{child().memos}</div>
 
-            <div class="ml-auto ml-auto mr-1 flex h-6 w-6 flex-none items-center justify-center rounded-full bg-gray-200 text-xs">
+            <div class="ml-auto mr-1 flex h-6 w-6 flex-none items-center justify-center rounded-full bg-gray-200 text-xs">
               {child().count}
             </div>
           </div>
