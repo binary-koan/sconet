@@ -1,5 +1,5 @@
 # Builder
-FROM oven/bun:0.6.4 AS builder
+FROM oven/bun:0.7.0 AS builder
 
 WORKDIR /app
 
