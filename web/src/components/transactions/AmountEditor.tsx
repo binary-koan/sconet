@@ -1,10 +1,12 @@
 import { repeat, uniqueId } from "lodash"
+import { TbSelector } from "solid-icons/tb"
 import { Component, createSignal, onMount } from "solid-js"
 import toast from "solid-toast"
 import { FullTransactionFragment } from "../../graphql-types"
 import { useUpdateTransaction } from "../../graphql/mutations/updateTransactionMutation"
-import { showAlert } from "../AlertManager"
+import { Button } from "../base/Button"
 import { InputAddon, InputGroup, InputGroupInput } from "../base/InputGroup"
+import { CurrencySelect } from "../currencies/CurrencySelect"
 import ConfirmCancelButtons from "./ConfirmCancelButtons"
 
 export const AmountEditor: Component<{
@@ -30,36 +32,36 @@ export const AmountEditor: Component<{
           props.transaction.amount?.decimalAmount) || 0
     ).toString()
   )
+  const [newCurrencyCode, setNewCurrencyCode] = createSignal(
+    // eslint-disable-next-line solid/reactivity
+    props.field === "originalAmount"
+      ? // eslint-disable-next-line solid/reactivity
+        props.transaction.originalCurrencyCode
+      : // eslint-disable-next-line solid/reactivity
+        null
+  )
 
   const doUpdate = async () => {
-    let confirmed = true
+    let amount = Math.round(
+      parseFloat(newAmount()) * 10 ** props.transaction.currency.decimalDigits
+    )
 
-    if (props.transaction.splitTo.length > 0) {
-      confirmed = await showAlert({
-        title: "Split transactions will be deleted",
-        body: "Changing the amount will delete split transactions. Are you sure?"
-      })
+    if (
+      (props.transaction.amount && props.transaction.amount.decimalAmount < 0) ||
+      (props.transaction.originalAmount && props.transaction.originalAmount.decimalAmount < 0)
+    ) {
+      amount = -amount
     }
 
-    if (confirmed) {
-      let amount = Math.round(
-        parseFloat(newAmount()) * 10 ** props.transaction.currency.decimalDigits
-      )
+    const input =
+      props.field === "originalAmount"
+        ? { originalAmount: amount, originalCurrencyCode: newCurrencyCode() }
+        : { amount }
 
-      if (
-        (props.transaction.amount && props.transaction.amount.decimalAmount < 0) ||
-        (props.transaction.originalAmount && props.transaction.originalAmount.decimalAmount < 0)
-      ) {
-        amount = -amount
-      }
-
-      const input = props.field === "originalAmount" ? { originalAmount: amount } : { amount }
-
-      await updateTransaction({
-        id: props.transaction.id,
-        input
-      })
-    }
+    await updateTransaction({
+      id: props.transaction.id,
+      input
+    })
   }
 
   let input: HTMLInputElement | undefined
@@ -74,7 +76,24 @@ export const AmountEditor: Component<{
         Edit amount
       </label>
       <InputGroup class="flex-1">
-        <InputAddon>{props.transaction.currency.symbol}</InputAddon>
+        <InputAddon>
+          {props.field === "originalAmount" ? (
+            <CurrencySelect
+              value={newCurrencyCode()}
+              onChange={setNewCurrencyCode}
+              filter={(currency) => currency.code !== props.transaction.currency.code}
+            >
+              {(currency) => (
+                <Button size="xs">
+                  <span class="flex-1 text-left">{currency?.code || "..."}</span>
+                  <TbSelector class="ml-1" />
+                </Button>
+              )}
+            </CurrencySelect>
+          ) : (
+            props.transaction.currency.symbol
+          )}
+        </InputAddon>
         <InputGroupInput
           ref={input}
           id={id}

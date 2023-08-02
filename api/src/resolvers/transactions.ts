@@ -71,7 +71,7 @@ export const updateTransaction: MutationResolvers["updateTransaction"] = async (
     throw new Error("Not found")
   }
 
-  const parentAttributes = ["date", "accountId", "currencyCode"]
+  const parentAttributes = ["date", "accountId", "currencyCode", "originalCurrencyCode"]
 
   let updateInput: Partial<UpdateTransactionInput> = input
   if (transaction.splitFromId) {
@@ -94,8 +94,8 @@ export const updateTransaction: MutationResolvers["updateTransaction"] = async (
     updates.amount === updates.originalAmount &&
     updates.currencyCode === updates.originalCurrencyCode
   ) {
-    updates.originalAmount = undefined
-    updates.originalCurrencyCode = undefined
+    updates.originalAmount = null
+    updates.originalCurrencyCode = null
   }
 
   const updatedTransaction = await transactionsRepo.updateOne(id, updates)
