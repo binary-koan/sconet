@@ -21,7 +21,7 @@ export const AmountEditor: Component<{
   })
   const [newAmount, setNewAmount] = createSignal(
     // eslint-disable-next-line solid/reactivity
-    Math.abs(props.transaction.amount.decimalAmount).toString()
+    Math.abs(props.transaction.amount?.decimalAmount || 0).toString()
   )
 
   const doUpdate = async () => {
@@ -39,7 +39,10 @@ export const AmountEditor: Component<{
         parseFloat(newAmount()) * 10 ** props.transaction.currency.decimalDigits
       )
 
-      if (props.transaction.amount.decimalAmount < 0) {
+      if (
+        (props.transaction.amount && props.transaction.amount.decimalAmount < 0) ||
+        (props.transaction.originalAmount && props.transaction.originalAmount.decimalAmount < 0)
+      ) {
         amount = -amount
       }
 

@@ -67,7 +67,7 @@ const TransactionItem: Component<{
             }}
             data-testid="amount"
           >
-            {props.transaction.amount.formatted}
+            {props.transaction.amount?.formatted ?? <em>Pending</em>}
 
             <Show when={props.transaction.originalAmount}>
               {(originalAmount) => (
@@ -92,7 +92,9 @@ const TransactionItem: Component<{
               icon={child().category?.icon ? namedIcons[child().category!.icon!] : undefined}
               color={child().category?.color}
               includeInReports={props.transaction.includeInReports}
-              isIncome={props.transaction.amount.decimalAmount > 0}
+              isIncome={Boolean(
+                props.transaction.amount && props.transaction.amount.decimalAmount > 0
+              )}
             />
 
             <div class="mr-2 min-w-0 truncate text-sm">{child().memos}</div>

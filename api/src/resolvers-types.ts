@@ -107,7 +107,7 @@ export type CreateCurrencyInput = {
 
 export type CreateTransactionInput = {
   accountId: Scalars['String'];
-  amount: Scalars['Int'];
+  amount: InputMaybe<Scalars['Int']>;
   categoryId: InputMaybe<Scalars['String']>;
   currencyCode: Scalars['CurrencyCode'];
   date: Scalars['PastDate'];
@@ -410,7 +410,7 @@ export type Transaction = {
   __typename?: 'Transaction';
   account: Account;
   accountId: Scalars['String'];
-  amount: Money;
+  amount: Maybe<Money>;
   category: Maybe<Category>;
   categoryId: Maybe<Scalars['String']>;
   currency: Currency;
@@ -812,7 +812,7 @@ export type QueryResolvers<ContextType = Context, ParentType extends ResolversPa
 export type TransactionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Transaction'] = ResolversParentTypes['Transaction']> = {
   account: Resolver<ResolversTypes['Account'], ParentType, ContextType>;
   accountId: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  amount: Resolver<ResolversTypes['Money'], ParentType, ContextType, Partial<TransactionAmountArgs>>;
+  amount: Resolver<Maybe<ResolversTypes['Money']>, ParentType, ContextType, Partial<TransactionAmountArgs>>;
   category: Resolver<Maybe<ResolversTypes['Category']>, ParentType, ContextType>;
   categoryId: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   currency: Resolver<ResolversTypes['Currency'], ParentType, ContextType>;

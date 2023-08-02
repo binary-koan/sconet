@@ -90,7 +90,10 @@ export const budget: QueryResolvers["budget"] = async (
     category: id ? categoriesById[id] : null,
     amountSpent: moneyAbs(
       transactionValues
-        .filter(({ transaction }) => transaction.amount < 0 && transaction.categoryId === id)
+        .filter(
+          ({ transaction }) =>
+            transaction.amount && transaction.amount < 0 && transaction.categoryId === id
+        )
         .reduce((total, transaction) => total.add(transaction.value), new Money(0, outputCurrency))
     ),
     currency: outputCurrency
@@ -101,11 +104,11 @@ export const budget: QueryResolvers["budget"] = async (
     year,
     month,
     income: transactionValues
-      .filter(({ transaction }) => transaction.amount > 0)
+      .filter(({ transaction }) => transaction.amount && transaction.amount > 0)
       .reduce((total, transaction) => total.add(transaction.value), new Money(0, outputCurrency)),
     totalSpending: moneyAbs(
       transactionValues
-        .filter(({ transaction }) => transaction.amount < 0)
+        .filter(({ transaction }) => transaction.amount && transaction.amount < 0)
         .reduce((total, transaction) => total.add(transaction.value), new Money(0, outputCurrency))
     ),
     currency: outputCurrency,

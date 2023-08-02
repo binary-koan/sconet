@@ -7,6 +7,7 @@ export const CurrencySelect: Component<{
   value: string
   onChange: (code: string) => void
   children: (selectedCurrency: FullCurrencyFragment | undefined) => JSX.Element
+  filter?: (currency: FullCurrencyFragment) => boolean
 }> = (props) => {
   const currencies = useCurrenciesQuery()
 
@@ -18,7 +19,7 @@ export const CurrencySelect: Component<{
     <Dropdown
       closeOnItemClick
       content={
-        <For each={currencies()?.currencies}>
+        <For each={currencies()?.currencies.filter(props.filter || (() => true))}>
           {(currency) => (
             <DropdownMenuItem class="text-sm" onClick={() => props.onChange(currency.code)}>
               {currency.code}

@@ -3,7 +3,7 @@ type Transaction {
   date: Date!
   memo: String!
 
-  amount(currencyCode: CurrencyCode): Money!
+  amount(currencyCode: CurrencyCode): Money
   currency: Currency!
   currencyCode: CurrencyCode!
 
@@ -57,7 +57,7 @@ type Query {
 
 input CreateTransactionInput {
   memo: String!
-  amount: Int!
+  amount: Int
   currencyCode: CurrencyCode!
   originalAmount: Int
   originalCurrencyCode: CurrencyCode

@@ -175,9 +175,13 @@ export const TransactionsCalendar: Component<{
                         <span class="truncate">{transaction.memo}</span>
                         <span
                           class="ml-auto whitespace-nowrap"
-                          classList={{ "text-green-600": transaction.amount.decimalAmount > 0 }}
+                          classList={{
+                            "text-green-600": Boolean(
+                              transaction.amount && transaction.amount.decimalAmount > 0
+                            )
+                          }}
                         >
-                          {transaction.amount.formatted}
+                          {transaction.amount?.formatted ?? "?"}
                         </span>
                       </Link>
                     )}
@@ -219,9 +223,14 @@ const monthDates = (year: number, month: number, result: TransactionsByDayQuery)
       totalSpent: day?.totalSpent.formattedShort,
 
       expenses:
-        day?.transactions.filter((transaction) => transaction.amount.decimalAmount < 0) || [],
+        day?.transactions.filter(
+          (transaction) => transaction.amount && transaction.amount.decimalAmount < 0
+        ) || [],
 
-      incomes: day?.transactions.filter((transaction) => transaction.amount.decimalAmount > 0) || []
+      incomes:
+        day?.transactions.filter(
+          (transaction) => transaction.amount && transaction.amount.decimalAmount > 0
+        ) || []
     }
   })
 }

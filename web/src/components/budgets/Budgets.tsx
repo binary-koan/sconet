@@ -85,7 +85,7 @@ export const Budgets: Component<{
           indicator: { isIncome: true },
           name: transaction.memo,
           budget: false,
-          total: transaction.amount,
+          total: transaction.amount || { decimalAmount: 0, formatted: "?" },
           href: `/transactions/${transaction.id}`
         }))}
       />

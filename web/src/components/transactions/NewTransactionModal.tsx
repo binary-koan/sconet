@@ -73,11 +73,15 @@ export const NewTransactionModal: Component<{
     const currency = currencies()?.currencies.find(
       (currency) => currency.code === data.currencyCode
     )
-    const integerAmount = Math.round(amount * 10 ** (currency?.decimalDigits || 0))
+    const integerAmount = Math.round((amount || 0) * 10 ** (currency?.decimalDigits || 0))
 
     const coercedData: CreateTransactionInput = {
       ...data,
-      amount: amountType === "expense" ? -integerAmount : integerAmount,
+      amount: originalCurrencyCode
+        ? null
+        : amountType === "expense"
+        ? -integerAmount
+        : integerAmount,
       date: stripTime(new Date(date)),
       includeInReports: Boolean(data.includeInReports)
     }
@@ -160,22 +164,25 @@ export const NewTransactionModal: Component<{
                 }}
               />
 
-              <FormInputGroup
-                of={form}
-                label="Amount"
-                name="amount"
-                type="number"
-                placeholderLabel={true}
-                validate={minRange(0, "Must be zero or more")}
-                before={<InputAddon>{selectedCurrency()?.symbol}</InputAddon>}
-                step={
-                  selectedCurrency()?.decimalDigits
-                    ? `0.${repeat("0", selectedCurrency()!.decimalDigits - 1)}1`
-                    : "1"
+              <Show
+                when={getValue(form, "originalCurrencyCode")}
+                fallback={
+                  <FormInputGroup
+                    of={form}
+                    label="Amount"
+                    name="amount"
+                    type="number"
+                    placeholderLabel={true}
+                    validate={minRange(0, "Must be zero or more")}
+                    before={<InputAddon>{selectedCurrency()?.symbol}</InputAddon>}
+                    step={
+                      selectedCurrency()?.decimalDigits
+                        ? `0.${repeat("0", selectedCurrency()!.decimalDigits - 1)}1`
+                        : "1"
+                    }
+                  />
                 }
-              />
-
-              <Show when={getValue(form, "originalCurrencyCode")}>
+              >
                 <FormInputGroup
                   of={form}
                   label="Original amount"
@@ -305,6 +312,7 @@ export const NewTransactionModal: Component<{
                     onChange={(currencyCode) =>
                       setValue(form, "originalCurrencyCode", currencyCode)
                     }
+                    filter={(currency) => currency.code !== selectedCurrency()?.code}
                   >
                     {(currency) => (
                       <Button

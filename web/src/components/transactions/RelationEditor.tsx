@@ -55,7 +55,7 @@ const RelationEditor: Component<{
 
   return (
     <RelationEditInput
-      isIncome={props.transaction.amount.decimalAmount > 0}
+      isIncome={Boolean(props.transaction.amount && props.transaction.amount.decimalAmount > 0)}
       category={props.transaction.category ?? undefined}
       account={"account" in props.transaction ? props.transaction.account : undefined}
       showAccount={props.showAccount ?? true}
@@ -76,7 +76,9 @@ const RelationEditor: Component<{
             color={props.transaction.category?.color}
             isSplit={"splitTo" in props.transaction && props.transaction.splitTo?.length > 0}
             includeInReports={props.includeInReports}
-            isIncome={props.transaction.amount.decimalAmount > 0}
+            isIncome={Boolean(
+              props.transaction.amount && props.transaction.amount.decimalAmount > 0
+            )}
           />
           <span class="sr-only" data-testid="category-name">
             {props.transaction.category?.name || "No category"}

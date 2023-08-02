@@ -50,7 +50,7 @@ export const SplitTransactionModal: Component<{
   }
 
   const originalAmount = () =>
-    props.transaction.originalAmount?.decimalAmount || props.transaction.amount.decimalAmount
+    props.transaction.originalAmount?.decimalAmount || props.transaction.amount?.decimalAmount || 0
 
   const remainder = () =>
     parseFloat(
@@ -271,11 +271,11 @@ function getCurrentSplits(transaction: ListingTransactionFragment): SplitValues 
 
     const value = {
       amount: Math.abs(
-        transaction.originalAmount?.decimalAmount || transaction.amount.decimalAmount
+        transaction.originalAmount?.decimalAmount || transaction.amount?.decimalAmount || 0
       ).toString(),
       memo: transaction.memo,
       numericAmount: Math.abs(
-        transaction.originalAmount?.decimalAmount || transaction.amount.decimalAmount
+        transaction.originalAmount?.decimalAmount || transaction.amount?.decimalAmount || 0
       )
     }
 

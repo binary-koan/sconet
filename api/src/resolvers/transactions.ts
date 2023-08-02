@@ -100,8 +100,48 @@ export const updateTransaction: MutationResolvers["updateTransaction"] = async (
 
   const updatedTransaction = await transactionsRepo.updateOne(id, updates)
 
-  if (updates.amount !== undefined && updates.amount !== transaction.amount) {
-    await transactionsRepo.deleteSplitTransactions(id)
+  if (updates.amount != null && updates.amount !== transaction.amount) {
+    const splits = (await transactionsRepo.findSplitTransactionsByIds([id]))[0]
+
+    const totalSplitAmount = sum(splits.map((split) => split.amount || split.originalAmount || 0))
+
+    const ratio = updates.amount / totalSplitAmount
+
+    const updatedSplits = splits.map((split) => ({
+      ...split,
+      amount: Math.floor((split.amount || split.originalAmount || 0) * ratio)
+    }))
+
+    let updateIndex = 0
+    while (true) {
+      const total = sum(updatedSplits.map((split) => split.amount))
+
+      if (total === updates.amount) {
+        break
+      }
+
+      if (total > updates.amount) {
+        updatedSplits[updateIndex].amount! -= 1
+      } else {
+        updatedSplits[updateIndex].amount! += 1
+      }
+
+      updateIndex = (updateIndex + 1) % updatedSplits.length
+    }
+
+    await sql.begin(async (sql) => {
+      await Promise.all(
+        updatedSplits.map((split) =>
+          transactionsRepo.updateOne(
+            split.id,
+            {
+              amount: split.amount
+            },
+            sql
+          )
+        )
+      )
+    })
   } else {
     await transactionsRepo.updateSplitTransactions(
       id,
@@ -150,9 +190,11 @@ export const splitTransaction: MutationResolvers["splitTransaction"] = async (
   const splitsWithAmount = splits.map((split) => ({
     ...split,
     originalAmount: split.amount,
-    amount: transaction.originalAmount
-      ? Math.round((transaction.amount / transaction.originalAmount) * split.amount)
-      : split.amount
+    amount: transaction.amount
+      ? transaction.originalAmount
+        ? Math.round((transaction.amount / transaction.originalAmount) * split.amount)
+        : split.amount
+      : null
   }))
 
   await sql.begin(async (sql) => {
@@ -181,12 +223,14 @@ export const Transaction: Resolvers["Transaction"] = {
   memo: (transaction) => transaction.memo,
   includeInReports: (transaction) => transaction.includeInReports,
 
-  amount: async (transaction, { currencyCode }, context) =>
-    loadTransactionCurrencyValue(transaction, currencyCode, context.data.currencyValues),
+  amount: (transaction, { currencyCode }, context) =>
+    transaction.amount
+      ? loadTransactionCurrencyValue(transaction, currencyCode, context.data.currencyValues)
+      : null,
   currencyCode: (transaction) => transaction.currencyCode,
-  currency: async (transaction) => Currencies[transaction.currencyCode],
+  currency: (transaction) => Currencies[transaction.currencyCode],
 
-  originalAmount: async (transaction, { currencyCode }, context) =>
+  originalAmount: (transaction, { currencyCode }, context) =>
     transaction.originalAmount
       ? loadTransactionCurrencyValue(
           transaction,

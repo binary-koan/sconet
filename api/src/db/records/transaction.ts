@@ -4,7 +4,7 @@ export interface TransactionRecord {
   date: Date
   includeInReports: boolean
 
-  amount: number
+  amount: number | null
   currencyCode: string
 
   originalAmount: number | null

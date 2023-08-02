@@ -55,14 +55,14 @@ export const balance: QueryResolvers["balance"] = async (_, { year, currencyCode
 
     income: moneySum(
       transactionValues
-        .filter(({ transaction }) => transaction.amount > 0)
+        .filter(({ transaction }) => transaction.amount && transaction.amount > 0)
         .map(({ value }) => value),
       outputCurrency
     ),
     totalSpending: moneyAbs(
       moneySum(
         transactionValues
-          .filter(({ transaction }) => transaction.amount < 0)
+          .filter(({ transaction }) => transaction.amount && transaction.amount < 0)
           .map(({ value }) => value),
         outputCurrency
       )

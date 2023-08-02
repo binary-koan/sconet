@@ -47,7 +47,9 @@ export const TransactionView: Component<{
             <Show
               when={editingAmount()}
               fallback={
-                <div onClick={() => setEditingAmount(true)}>{transaction().amount?.formatted}</div>
+                <div onClick={() => setEditingAmount(true)}>
+                  {transaction().amount?.formatted ?? <em>Pending</em>}
+                </div>
               }
             >
               <AmountEditor
@@ -87,13 +89,15 @@ export const TransactionView: Component<{
             </Show>
           </FormControl>
 
-          <Show when={!transaction().includeInReports || transaction().amount.decimalAmount > 0}>
+          <Show
+            when={!transaction().includeInReports || (transaction().amount?.decimalAmount || 0) > 0}
+          >
             <FormControl>
               <FormLabel>Category</FormLabel>
               <div class="flex items-center">
                 <CategoryIndicator
                   class="mr-3 h-8 w-8"
-                  isIncome={transaction().amount.decimalAmount > 0}
+                  isIncome={(transaction().amount?.decimalAmount || 0) > 0}
                   includeInReports={transaction().includeInReports}
                 />
                 {transaction().includeInReports ? "Income" : "Hidden from reports"}
@@ -105,7 +109,8 @@ export const TransactionView: Component<{
             when={
               !transaction().splitTo.length &&
               transaction().includeInReports &&
-              transaction().amount.decimalAmount <= 0
+              transaction().amount &&
+              transaction().amount!.decimalAmount <= 0
             }
           >
             <FormControl>
@@ -161,7 +166,7 @@ export const TransactionView: Component<{
                     />
                   </Show>
                   <div class="text-right">
-                    {child.amount.formatted}
+                    {child.amount?.formatted ?? <em>Pending</em>}
                     <Show when={child.originalAmount}>
                       {(originalAmount) => (
                         <div class="text-xs text-gray-500">{originalAmount().formatted}</div>
