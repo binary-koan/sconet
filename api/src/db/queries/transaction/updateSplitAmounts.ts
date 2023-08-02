@@ -11,6 +11,10 @@ export async function updateSplitAmounts(
 
   const splits = (await transactionsRepo.findSplitTransactionsByIds([id]))[0]
 
+  if (!splits.length) {
+    return
+  }
+
   const totalSplitAmount = sum(splits.map((split) => split[field] || split[alternateField] || 0))
 
   const ratio = updatedAmount / totalSplitAmount
