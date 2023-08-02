@@ -4,6 +4,7 @@ import { Component, createSignal, onMount } from "solid-js"
 import toast from "solid-toast"
 import { FullTransactionFragment } from "../../graphql-types"
 import { useUpdateTransaction } from "../../graphql/mutations/updateTransactionMutation"
+import { useCurrenciesQuery } from "../../graphql/queries/currenciesQuery"
 import { Button } from "../base/Button"
 import { InputAddon, InputGroup, InputGroupInput } from "../base/InputGroup"
 import { CurrencySelect } from "../currencies/CurrencySelect"
@@ -14,6 +15,7 @@ export const AmountEditor: Component<{
   field?: "amount" | "originalAmount"
   stopEditing: () => void
 }> = (props) => {
+  const currencies = useCurrenciesQuery()
   const id = uniqueId("amount-editor-")
 
   const updateTransaction = useUpdateTransaction({
@@ -42,9 +44,14 @@ export const AmountEditor: Component<{
   )
 
   const doUpdate = async () => {
-    let amount = Math.round(
-      parseFloat(newAmount()) * 10 ** props.transaction.currency.decimalDigits
-    )
+    let currency = props.transaction.currency
+
+    if (props.field === "originalAmount") {
+      currency =
+        currencies()?.currencies.find((currency) => currency.code === newCurrencyCode()) || currency
+    }
+
+    let amount = Math.round(parseFloat(newAmount()) * 10 ** currency.decimalDigits)
 
     if (
       (props.transaction.amount && props.transaction.amount.decimalAmount < 0) ||
