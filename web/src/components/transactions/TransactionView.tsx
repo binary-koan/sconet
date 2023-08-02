@@ -17,6 +17,7 @@ export const TransactionView: Component<{
 }> = (props) => {
   const [editingMemo, setEditingMemo] = createSignal<string>()
   const [editingAmount, setEditingAmount] = createSignal(false)
+  const [editingOriginalAmount, setEditingOriginalAmount] = createSignal(false)
   const [editingDate, setEditingDate] = createSignal(false)
 
   const updateTransaction = useUpdateTransaction()
@@ -61,7 +62,20 @@ export const TransactionView: Component<{
 
           <FormControl>
             <FormLabel>Original amount</FormLabel>
-            <div>{transaction().originalAmount?.formatted}</div>
+            <Show
+              when={editingOriginalAmount()}
+              fallback={
+                <div onClick={() => setEditingOriginalAmount(true)}>
+                  {transaction().originalAmount?.formatted ?? <em>None</em>}
+                </div>
+              }
+            >
+              <AmountEditor
+                transaction={transaction()}
+                field="originalAmount"
+                stopEditing={() => setEditingOriginalAmount(false)}
+              />
+            </Show>
           </FormControl>
 
           <FormControl>

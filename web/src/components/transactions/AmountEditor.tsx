@@ -9,6 +9,7 @@ import ConfirmCancelButtons from "./ConfirmCancelButtons"
 
 export const AmountEditor: Component<{
   transaction: FullTransactionFragment
+  field?: "amount" | "originalAmount"
   stopEditing: () => void
 }> = (props) => {
   const id = uniqueId("amount-editor-")
@@ -20,8 +21,14 @@ export const AmountEditor: Component<{
     }
   })
   const [newAmount, setNewAmount] = createSignal(
-    // eslint-disable-next-line solid/reactivity
-    Math.abs(props.transaction.amount?.decimalAmount || 0).toString()
+    Math.abs(
+      // eslint-disable-next-line solid/reactivity
+      (props.field === "originalAmount"
+        ? // eslint-disable-next-line solid/reactivity
+          props.transaction.originalAmount?.decimalAmount
+        : // eslint-disable-next-line solid/reactivity
+          props.transaction.amount?.decimalAmount) || 0
+    ).toString()
   )
 
   const doUpdate = async () => {
@@ -46,9 +53,11 @@ export const AmountEditor: Component<{
         amount = -amount
       }
 
+      const input = props.field === "originalAmount" ? { originalAmount: amount } : { amount }
+
       await updateTransaction({
         id: props.transaction.id,
-        input: { amount }
+        input
       })
     }
   }

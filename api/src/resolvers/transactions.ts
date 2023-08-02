@@ -101,53 +101,17 @@ export const updateTransaction: MutationResolvers["updateTransaction"] = async (
   const updatedTransaction = await transactionsRepo.updateOne(id, updates)
 
   if (updates.amount != null && updates.amount !== transaction.amount) {
-    const splits = (await transactionsRepo.findSplitTransactionsByIds([id]))[0]
-
-    const totalSplitAmount = sum(splits.map((split) => split.amount || split.originalAmount || 0))
-
-    const ratio = updates.amount / totalSplitAmount
-
-    const updatedSplits = splits.map((split) => ({
-      ...split,
-      amount: Math.floor((split.amount || split.originalAmount || 0) * ratio)
-    }))
-
-    let updateIndex = 0
-    while (true) {
-      const total = sum(updatedSplits.map((split) => split.amount))
-
-      if (total === updates.amount) {
-        break
-      }
-
-      if (total > updates.amount) {
-        updatedSplits[updateIndex].amount! -= 1
-      } else {
-        updatedSplits[updateIndex].amount! += 1
-      }
-
-      updateIndex = (updateIndex + 1) % updatedSplits.length
-    }
-
-    await sql.begin(async (sql) => {
-      await Promise.all(
-        updatedSplits.map((split) =>
-          transactionsRepo.updateOne(
-            split.id,
-            {
-              amount: split.amount
-            },
-            sql
-          )
-        )
-      )
-    })
-  } else {
-    await transactionsRepo.updateSplitTransactions(
-      id,
-      pick(updates, ...parentAttributes, "includeInReports")
-    )
+    await transactionsRepo.updateSplitAmounts(id, updates.amount)
   }
+
+  if (updates.originalAmount != null && updates.originalAmount !== transaction.originalAmount) {
+    await transactionsRepo.updateSplitAmounts(id, updates.originalAmount, "originalAmount")
+  }
+
+  await transactionsRepo.updateSplitTransactions(
+    id,
+    pick(updates, ...parentAttributes, "includeInReports")
+  )
 
   return updatedTransaction
 }
