@@ -21,7 +21,8 @@ export async function startServer(serveStaticPaths?: string[]) {
           errors.some(
             (error) =>
               error.message.includes("CONNECT_TIMEOUT") ||
-              error.message.includes("CONNECTION_CLOSED")
+              error.message.includes("CONNECTION_CLOSED") ||
+              error.message.includes("connection error: timed out")
           )
         ) {
           process.exit(1)
