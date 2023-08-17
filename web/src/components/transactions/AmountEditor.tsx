@@ -44,6 +44,11 @@ export const AmountEditor: Component<{
   )
 
   const doUpdate = async () => {
+    if (props.field === "originalAmount" && !newCurrencyCode()) {
+      toast.error("Please select a currency")
+      return
+    }
+
     let currency = props.transaction.currency
 
     if (props.field === "originalAmount") {
