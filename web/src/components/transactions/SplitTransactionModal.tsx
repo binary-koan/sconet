@@ -33,7 +33,9 @@ export const SplitTransactionModal: Component<{
       props.onFinish()
     }
   })
-  const currencyData = useGetCurrencyQuery(() => ({ code: props.transaction.currencyCode }))
+  const currencyData = useGetCurrencyQuery(() => ({
+    code: props.transaction.originalCurrencyCode || props.transaction.currencyCode
+  }))
 
   const [splits, setSplits] = createStore<SplitValues>(
     // eslint-disable-next-line solid/reactivity
