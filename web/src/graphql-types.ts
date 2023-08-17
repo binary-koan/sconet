@@ -504,7 +504,7 @@ export type CreateTransactionMutationVariables = Exact<{
 }>;
 
 
-export type CreateTransactionMutation = { __typename?: 'Mutation', createTransaction: { __typename?: 'Transaction', id: string } };
+export type CreateTransactionMutation = { __typename?: 'Mutation', createTransaction: { __typename?: 'Transaction', id: string, memo: string, date: any, currencyCode: any, originalCurrencyCode?: any | null, includeInReports: boolean, splitFromId?: string | null, amount?: { __typename?: 'Money', decimalAmount: number, formatted: string } | null, currency: { __typename?: 'Currency', code: any, symbol: string, decimalDigits: number }, originalAmount?: { __typename?: 'Money', decimalAmount: number, formatted: string } | null, category?: { __typename?: 'Category', id: string, name: string, color: string, icon: string } | null, account: { __typename?: 'Account', id: string, name: string, currencyCode: any }, splitTo: Array<{ __typename?: 'Transaction', id: string, memo: string, includeInReports: boolean, amount?: { __typename?: 'Money', decimalAmount: number, formatted: string } | null, originalAmount?: { __typename?: 'Money', decimalAmount: number, formatted: string } | null, category?: { __typename?: 'Category', id: string, name: string, icon: string, color: string } | null }> } };
 
 export type DeleteAccountMutationVariables = Exact<{
   id: Scalars['String']['input'];

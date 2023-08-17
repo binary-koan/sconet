@@ -1,9 +1,17 @@
-import { createForm, Field, Form, getValue, minRange, setValue } from "@modular-forms/solid"
+import {
+  createForm,
+  Field,
+  Form,
+  getValue,
+  minRange,
+  setValue,
+  SubmitEvent
+} from "@modular-forms/solid"
 import { repeat } from "lodash"
-import { TbCalendarEvent, TbPlus, TbSelector, TbSwitch3 } from "solid-icons/tb"
-import { Component, createEffect, For, Show } from "solid-js"
+import { TbArrowsSplit2, TbCalendarEvent, TbPlus, TbSelector, TbSwitch3 } from "solid-icons/tb"
+import { Component, createEffect, createSignal, For, Show } from "solid-js"
 import toast from "solid-toast"
-import { CreateTransactionInput } from "../../graphql-types"
+import { CreateTransactionInput, FullTransactionFragment } from "../../graphql-types"
 import { useCreateTransaction } from "../../graphql/mutations/createTransactionMutation"
 import { useCategoriesQuery } from "../../graphql/queries/categoriesQuery"
 import { useCurrenciesQuery } from "../../graphql/queries/currenciesQuery"
@@ -20,6 +28,7 @@ import { Dropdown, DropdownMenuItem } from "../Dropdown"
 import { FormDatePicker } from "../forms/FormDatePicker"
 import FormInput from "../forms/FormInput"
 import FormInputGroup from "../forms/FormInputGroup"
+import { SplitTransactionModal } from "./SplitTransactionModal"
 
 type NewTransactionModalValues = CreateTransactionInput & { amountType: "expense" | "income" }
 
@@ -33,10 +42,12 @@ export const NewTransactionModal: Component<{
   const currentUser = useCurrentUserQuery()
   const transactions = useTransactionsForPopulationQuery()
 
+  const [splittingTransaction, setSplittingTransaction] =
+    createSignal<FullTransactionFragment | null>(null)
+
   const createTransaction = useCreateTransaction({
     onSuccess: () => {
       toast.success("Transaction created")
-      props.onClose()
     }
   })
 
@@ -62,14 +73,17 @@ export const NewTransactionModal: Component<{
     }
   })
 
-  const onSave = ({
-    amount,
-    amountType,
-    date,
-    originalAmount,
-    originalCurrencyCode,
-    ...data
-  }: NewTransactionModalValues) => {
+  const onSave = async (
+    {
+      amount,
+      amountType,
+      date,
+      originalAmount,
+      originalCurrencyCode,
+      ...data
+    }: NewTransactionModalValues,
+    event: SubmitEvent
+  ) => {
     const currency = currencies()?.currencies.find(
       (currency) => currency.code === data.currencyCode
     )
@@ -98,7 +112,13 @@ export const NewTransactionModal: Component<{
       coercedData.originalCurrencyCode = originalCurrencyCode
     }
 
-    createTransaction({ input: coercedData })
+    const result = await createTransaction({ input: coercedData })
+
+    if (result && event.submitter.dataset.action === "split") {
+      setSplittingTransaction(result.createTransaction)
+    } else {
+      props.onClose()
+    }
   }
 
   const isDateSelected = () => {
@@ -125,222 +145,252 @@ export const NewTransactionModal: Component<{
   }
 
   return (
-    <Modal isOpen={props.isOpen} onClickOutside={props.onClose}>
-      <ModalContent class="flex h-[28rem] flex-col">
-        <ModalTitle>
-          New Transaction
-          <ModalCloseButton onClick={props.onClose} />
-        </ModalTitle>
+    <>
+      <Show when={!splittingTransaction()}>
+        <Modal isOpen={props.isOpen} onClickOutside={props.onClose}>
+          <ModalContent class="flex h-[28rem] flex-col">
+            <ModalTitle>
+              New Transaction
+              <ModalCloseButton onClick={props.onClose} />
+            </ModalTitle>
 
-        <Form of={form} onSubmit={onSave} class="flex flex-1 flex-col justify-center">
-          <FormDatePicker
-            of={form}
-            label="Date"
-            labelHidden={true}
-            name="date"
-            maxDate={todayISO()}
-            class={isDateSelected() ? "hidden" : ""}
-          />
-
-          <div classList={{ hidden: !isDateSelected() }} class="flex flex-1 flex-col gap-4">
-            <div class="my-auto flex flex-col gap-2">
-              <FormInput
-                placeholderLabel={true}
+            <Form of={form} onSubmit={onSave} class="flex flex-1 flex-col justify-center">
+              <FormDatePicker
                 of={form}
-                ref={memoInput}
-                label="Memo"
-                name="memo"
-                onBlur={(e) => {
-                  const recent = transactions()?.transactions.data.find(
-                    (transaction) =>
-                      transaction.memo.toLowerCase().replace(/[^\w]+/, "") ===
-                      e.target.value.toLowerCase().replace(/[^\w]+/, "")
-                  )
-
-                  if (recent) {
-                    setValue(form, "categoryId", recent.categoryId)
-                    setValue(form, "accountId", recent.accountId)
-                  }
-                }}
+                label="Date"
+                labelHidden={true}
+                name="date"
+                maxDate={todayISO()}
+                class={isDateSelected() ? "hidden" : ""}
               />
 
-              <Show
-                when={getValue(form, "originalCurrencyCode")}
-                fallback={
-                  <FormInputGroup
-                    of={form}
-                    label="Amount"
-                    name="amount"
-                    type="number"
+              <div classList={{ hidden: !isDateSelected() }} class="flex flex-1 flex-col gap-4">
+                <div class="my-auto flex flex-col gap-2">
+                  <FormInput
                     placeholderLabel={true}
-                    validate={minRange(0, "Must be zero or more")}
-                    before={<InputAddon>{selectedCurrency()?.symbol}</InputAddon>}
-                    step={
-                      selectedCurrency()?.decimalDigits
-                        ? `0.${repeat("0", selectedCurrency()!.decimalDigits - 1)}1`
-                        : "1"
-                    }
-                  />
-                }
-              >
-                <FormInputGroup
-                  of={form}
-                  label="Original amount"
-                  name="originalAmount"
-                  type="number"
-                  placeholderLabel={true}
-                  validate={minRange(0, "Must be zero or more")}
-                  before={<InputAddon>{selectedOriginalCurrency()?.symbol}</InputAddon>}
-                  step={
-                    selectedOriginalCurrency()?.decimalDigits
-                      ? `0.${repeat("0", selectedOriginalCurrency()!.decimalDigits - 1)}1`
-                      : "1"
-                  }
-                />
-              </Show>
-            </div>
+                    of={form}
+                    ref={memoInput}
+                    label="Memo"
+                    name="memo"
+                    onBlur={(e) => {
+                      const recent = transactions()?.transactions.data.find(
+                        (transaction) =>
+                          transaction.memo.toLowerCase().replace(/[^\w]+/, "") ===
+                          e.target.value.toLowerCase().replace(/[^\w]+/, "")
+                      )
 
-            <Field of={form} name="currencyCode">
-              {(field) => <input type="hidden" value={field.value} />}
-            </Field>
-
-            <div class="flex gap-4">
-              <Field of={form} name="amountType">
-                {(field) => (
-                  <Button
-                    size="custom"
-                    variant="ghost"
-                    class="rounded border border-gray-100 px-4 py-2 text-xs text-gray-700"
-                    onClick={() =>
-                      setValue(form, "amountType", field.value === "income" ? "expense" : "income")
-                    }
-                  >
-                    {field.value === "income" ? "Income" : "Expense"}
-                    <TbSwitch3 class="ml-1" />
-                  </Button>
-                )}
-              </Field>
-
-              <Show when={getValue(form, "amountType") !== "income"}>
-                <Field of={form} name="categoryId">
-                  {() => (
-                    <Dropdown
-                      closeOnItemClick
-                      class="min-w-0"
-                      content={
-                        <For each={categories()?.categories}>
-                          {(category) => (
-                            <DropdownMenuItem
-                              class="text-sm"
-                              data-testid="category-item"
-                              onClick={() => setValue(form, "categoryId", category.id)}
-                            >
-                              <div
-                                class={`h-2 w-2 rounded-full ${
-                                  CATEGORY_BACKGROUND_COLORS[category.color as CategoryColor]
-                                }`}
-                              />
-                              {category.name}
-                            </DropdownMenuItem>
-                          )}
-                        </For>
+                      if (recent) {
+                        setValue(form, "categoryId", recent.categoryId)
+                        setValue(form, "accountId", recent.accountId)
                       }
-                    >
-                      <Button
-                        size="custom"
-                        variant="ghost"
-                        class="w-full rounded border border-gray-100 px-4 py-2 text-xs text-gray-700"
-                        data-testid="category-select"
-                      >
-                        <Show when={selectedCategory()}>
-                          <div
-                            class={`mr-2 h-2 w-2 rounded-full ${
-                              CATEGORY_BACKGROUND_COLORS[selectedCategory()!.color as CategoryColor]
-                            }`}
-                          />
-                        </Show>
-                        <span class="min-w-0 truncate">
-                          {selectedCategory()?.name || "No category"}
-                        </span>
-                        <TbSelector class="ml-1" />
-                      </Button>
-                    </Dropdown>
-                  )}
-                </Field>
-              </Show>
-
-              <Button
-                size="custom"
-                variant="ghost"
-                class="whitespace-nowrap rounded border border-gray-100 px-4 py-2 text-xs text-gray-700"
-                onClick={() => setValue(form, "date", "")}
-              >
-                <TbCalendarEvent class="mr-1" />
-                {getValue(form, "date")}
-              </Button>
-            </div>
-
-            <div class="mb-2 flex gap-4">
-              <Field of={form} name="accountId">
-                {(field) => (
-                  <AccountSelect
-                    value={field.value}
-                    onChange={(account) => {
-                      setValue(form, "accountId", account.id)
-                      setValue(form, "currencyCode", account.currencyCode)
                     }}
+                  />
+
+                  <Show
+                    when={getValue(form, "originalCurrencyCode")}
+                    fallback={
+                      <FormInputGroup
+                        of={form}
+                        label="Amount"
+                        name="amount"
+                        type="number"
+                        placeholderLabel={true}
+                        validate={minRange(0, "Must be zero or more")}
+                        before={<InputAddon>{selectedCurrency()?.symbol}</InputAddon>}
+                        step={
+                          selectedCurrency()?.decimalDigits
+                            ? `0.${repeat("0", selectedCurrency()!.decimalDigits - 1)}1`
+                            : "1"
+                        }
+                      />
+                    }
                   >
-                    {(account) => (
+                    <FormInputGroup
+                      of={form}
+                      label="Original amount"
+                      name="originalAmount"
+                      type="number"
+                      placeholderLabel={true}
+                      validate={minRange(0, "Must be zero or more")}
+                      before={<InputAddon>{selectedOriginalCurrency()?.symbol}</InputAddon>}
+                      step={
+                        selectedOriginalCurrency()?.decimalDigits
+                          ? `0.${repeat("0", selectedOriginalCurrency()!.decimalDigits - 1)}1`
+                          : "1"
+                      }
+                    />
+                  </Show>
+                </div>
+
+                <Field of={form} name="currencyCode">
+                  {(field) => <input type="hidden" value={field.value} />}
+                </Field>
+
+                <div class="flex gap-4">
+                  <Field of={form} name="amountType">
+                    {(field) => (
                       <Button
                         size="custom"
                         variant="ghost"
                         class="rounded border border-gray-100 px-4 py-2 text-xs text-gray-700"
-                        data-testid="account-select"
+                        onClick={() =>
+                          setValue(
+                            form,
+                            "amountType",
+                            field.value === "income" ? "expense" : "income"
+                          )
+                        }
                       >
-                        {account?.name} ({account?.currencyCode})
-                        <TbSelector class="ml-1" />
+                        {field.value === "income" ? "Income" : "Expense"}
+                        <TbSwitch3 class="ml-1" />
                       </Button>
                     )}
-                  </AccountSelect>
-                )}
-              </Field>
+                  </Field>
 
-              <Field of={form} name="originalCurrencyCode">
-                {(field) => (
-                  <CurrencySelect
-                    value={field.value}
-                    onChange={(currencyCode) =>
-                      setValue(form, "originalCurrencyCode", currencyCode)
-                    }
-                    filter={(currency) => currency.code !== selectedCurrency()?.code}
+                  <Show when={getValue(form, "amountType") !== "income"}>
+                    <Field of={form} name="categoryId">
+                      {() => (
+                        <Dropdown
+                          closeOnItemClick
+                          class="min-w-0"
+                          content={
+                            <For each={categories()?.categories}>
+                              {(category) => (
+                                <DropdownMenuItem
+                                  class="text-sm"
+                                  data-testid="category-item"
+                                  onClick={() => setValue(form, "categoryId", category.id)}
+                                >
+                                  <div
+                                    class={`h-2 w-2 rounded-full ${
+                                      CATEGORY_BACKGROUND_COLORS[category.color as CategoryColor]
+                                    }`}
+                                  />
+                                  {category.name}
+                                </DropdownMenuItem>
+                              )}
+                            </For>
+                          }
+                        >
+                          <Button
+                            size="custom"
+                            variant="ghost"
+                            class="w-full rounded border border-gray-100 px-4 py-2 text-xs text-gray-700"
+                            data-testid="category-select"
+                          >
+                            <Show when={selectedCategory()}>
+                              <div
+                                class={`mr-2 h-2 w-2 rounded-full ${
+                                  CATEGORY_BACKGROUND_COLORS[
+                                    selectedCategory()!.color as CategoryColor
+                                  ]
+                                }`}
+                              />
+                            </Show>
+                            <span class="min-w-0 truncate">
+                              {selectedCategory()?.name || "No category"}
+                            </span>
+                            <TbSelector class="ml-1" />
+                          </Button>
+                        </Dropdown>
+                      )}
+                    </Field>
+                  </Show>
+
+                  <Button
+                    size="custom"
+                    variant="ghost"
+                    class="whitespace-nowrap rounded border border-gray-100 px-4 py-2 text-xs text-gray-700"
+                    onClick={() => setValue(form, "date", "")}
                   >
-                    {(currency) => (
-                      <Button
-                        size="custom"
-                        variant="ghost"
-                        class="gap-1 rounded border border-gray-100 px-4 py-2 text-xs text-gray-700"
-                        data-testid="account-select"
-                      >
-                        {currency ? `Originally ${currency.code}` : "Original currency"}
-                        {currency ? <TbSelector /> : <TbPlus />}
-                      </Button>
-                    )}
-                  </CurrencySelect>
-                )}
-              </Field>
-            </div>
+                    <TbCalendarEvent class="mr-1" />
+                    {getValue(form, "date")}
+                  </Button>
+                </div>
 
-            <Button
-              type="submit"
-              colorScheme="primary"
-              class="mt-auto w-full"
-              disabled={createTransaction.loading}
-            >
-              Save
-            </Button>
-          </div>
-        </Form>
-      </ModalContent>
-    </Modal>
+                <div class="mb-2 flex gap-4">
+                  <Field of={form} name="accountId">
+                    {(field) => (
+                      <AccountSelect
+                        value={field.value}
+                        onChange={(account) => {
+                          setValue(form, "accountId", account.id)
+                          setValue(form, "currencyCode", account.currencyCode)
+                        }}
+                      >
+                        {(account) => (
+                          <Button
+                            size="custom"
+                            variant="ghost"
+                            class="rounded border border-gray-100 px-4 py-2 text-xs text-gray-700"
+                            data-testid="account-select"
+                          >
+                            {account?.name} ({account?.currencyCode})
+                            <TbSelector class="ml-1" />
+                          </Button>
+                        )}
+                      </AccountSelect>
+                    )}
+                  </Field>
+
+                  <Field of={form} name="originalCurrencyCode">
+                    {(field) => (
+                      <CurrencySelect
+                        value={field.value}
+                        onChange={(currencyCode) =>
+                          setValue(form, "originalCurrencyCode", currencyCode)
+                        }
+                        filter={(currency) => currency.code !== selectedCurrency()?.code}
+                      >
+                        {(currency) => (
+                          <Button
+                            size="custom"
+                            variant="ghost"
+                            class="gap-1 rounded border border-gray-100 px-4 py-2 text-xs text-gray-700"
+                            data-testid="account-select"
+                          >
+                            {currency ? `Originally ${currency.code}` : "Original currency"}
+                            {currency ? <TbSelector /> : <TbPlus />}
+                          </Button>
+                        )}
+                      </CurrencySelect>
+                    )}
+                  </Field>
+                </div>
+
+                <Button
+                  type="submit"
+                  colorScheme="primary"
+                  class="mt-auto w-full"
+                  disabled={createTransaction.loading}
+                >
+                  Save
+                </Button>
+                <Button
+                  type="submit"
+                  colorScheme="neutral"
+                  variant="ghost"
+                  class="-mt-2"
+                  disabled={createTransaction.loading}
+                  data-action="split"
+                >
+                  <TbArrowsSplit2 class="mr-2" /> Save & split
+                </Button>
+              </div>
+            </Form>
+          </ModalContent>
+        </Modal>
+      </Show>
+      <Show when={splittingTransaction()}>
+        {(splittingTransaction) => (
+          <SplitTransactionModal
+            isOpen={true}
+            onClose={props.onClose}
+            onFinish={props.onClose}
+            transaction={splittingTransaction()}
+          />
+        )}
+      </Show>
+    </>
   )
 }

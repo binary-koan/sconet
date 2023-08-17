@@ -10,15 +10,15 @@ export interface MutationOptions<Data> {
   onError?: (error: any) => void
 }
 
-export interface MutationFunction<Variables> {
-  (variables: Variables): Promise<void>
+export interface MutationFunction<Data, Variables> {
+  (variables: Variables): Promise<Data | undefined>
   loading: boolean
 }
 
 export function useMutation<Data, Variables>(
   mutation: string,
   { refetchQueries, onSuccess, onError }: MutationOptions<Data> = {}
-): MutationFunction<Variables> {
+): MutationFunction<Data, Variables> {
   const context = useContext(gqlContext)
   const [loading, setLoading] = createSignal(false)
 
@@ -33,6 +33,8 @@ export function useMutation<Data, Variables>(
       refetchList?.forEach((query) => {
         Object.values(context.queries[query] || {}).forEach(({ refetch }) => refetch())
       })
+
+      return data
     } catch (error) {
       console.error(error)
       if (onError) {
@@ -53,5 +55,5 @@ export function useMutation<Data, Variables>(
     }
   })
 
-  return mutate as MutationFunction<Variables>
+  return mutate as MutationFunction<Data, Variables>
 }
