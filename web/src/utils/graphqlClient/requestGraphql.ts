@@ -1,3 +1,4 @@
+import toast from "solid-toast"
 import { loginToken } from "../auth"
 
 export class GraphQLError extends Error {
@@ -16,14 +17,16 @@ export const requestGraphql = async <Result>(
 ): Promise<Result> => {
   const token = loginToken()
 
-  const response = await fetch("/graphql", {
-    method: "POST",
-    body: `{"query":${JSON.stringify(query)},"variables":${serializedVariables}}`,
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: token ? `Bearer ${token}` : ""
-    }
-  })
+  const response = await fetchWithRetry(() =>
+    fetch("/graphql", {
+      method: "POST",
+      body: `{"query":${JSON.stringify(query)},"variables":${serializedVariables}}`,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token ? `Bearer ${token}` : ""
+      }
+    })
+  )
 
   const { data, errors } = (await response.json()) as any
 
@@ -32,4 +35,24 @@ export const requestGraphql = async <Result>(
   }
 
   return data
+}
+
+const maxRetries = 10
+
+const fetchWithRetry = async (fetch: () => Promise<Response>, retries = 0): Promise<Response> => {
+  const response = await fetch()
+
+  if (response.status < 500) {
+    return response
+  }
+
+  if (retries === 0) {
+    toast("Having some connection problems, retrying ... this may take a minute.")
+  }
+
+  if (retries < maxRetries) {
+    return fetchWithRetry(fetch, retries + 1)
+  }
+
+  throw new Error("Still getting 50x errors after max retries exceeded. Plesae try again later.")
 }
