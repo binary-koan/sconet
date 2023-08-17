@@ -154,7 +154,7 @@ export const splitTransaction: MutationResolvers["splitTransaction"] = async (
 
   const splitsWithAmount = splits.map((split) => ({
     ...split,
-    originalAmount: split.amount,
+    originalAmount: transaction.originalAmount ? split.amount : null,
     amount: transaction.amount
       ? transaction.originalAmount
         ? Math.round((transaction.amount / transaction.originalAmount) * split.amount)
