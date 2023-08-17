@@ -91,6 +91,7 @@ export const updateTransaction: MutationResolvers["updateTransaction"] = async (
   }
 
   if (
+    updates.amount &&
     updates.amount === updates.originalAmount &&
     updates.currencyCode === updates.originalCurrencyCode
   ) {
