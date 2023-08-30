@@ -7,7 +7,11 @@ export const FullCategoryFragment = gql`
     color
     icon
     budget {
+      decimalAmount
       formatted
+    }
+    budgetCurrency {
+      code
     }
     isRegular
     sortOrder

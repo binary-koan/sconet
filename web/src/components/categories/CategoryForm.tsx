@@ -1,7 +1,7 @@
 import { createForm, Form, getValue } from "@modular-forms/solid"
 import { repeat } from "lodash"
 import { Component } from "solid-js"
-import { CreateCategoryMutationVariables } from "../../graphql-types"
+import { CreateCategoryMutationVariables, FullCategoryFragment } from "../../graphql-types"
 import { useCurrenciesQuery } from "../../graphql/queries/currenciesQuery"
 import { Button } from "../base/Button"
 import { InputAddon } from "../base/InputGroup"
@@ -15,13 +15,13 @@ type CategoryFormValues = {
   name: string
   color: string
   icon: string
-  budget?: number
+  budget?: string
   budgetCurrencyCode?: string
-  isRegular?: string
+  isRegular?: boolean
 }
 
 const CategoryForm: Component<{
-  category?: any
+  category?: FullCategoryFragment
   onSave: (input: CreateCategoryMutationVariables["input"], id?: string) => void
   loading: boolean
 }> = (props) => {
@@ -31,21 +31,25 @@ const CategoryForm: Component<{
       name: props.category?.name,
       color: props.category?.color,
       icon: props.category?.icon,
-      budget: props.category?.budget?.decimalAmount,
-      budgetCurrencyCode: props.category?.budgetCurrencyCode,
+      budget: props.category?.budget?.decimalAmount.toString(),
+      budgetCurrencyCode: props.category?.budgetCurrency?.code,
       isRegular: props.category?.isRegular != null ? props.category.isRegular : true
     }
   })
 
   const selectedCurrency = () =>
-    currencies()?.currencies.find((currency) => currency.code === getValue(form, "budgetCurrencyCode"))
+    currencies()?.currencies.find(
+      (currency) => currency.code === getValue(form, "budgetCurrencyCode")
+    )
 
   const onSave = (data: CategoryFormValues) => {
     props.onSave(
       {
         ...data,
         budget: data.budget
-          ? Math.floor(data.budget * 10 ** (selectedCurrency()?.decimalDigits || 0))
+          ? Math.floor(
+              parseFloat(data.budget || "0") * 10 ** (selectedCurrency()?.decimalDigits || 0)
+            )
           : null,
         isRegular: Boolean(data.isRegular)
       },
@@ -93,7 +97,7 @@ const CategoryForm: Component<{
         of={form}
         label="Budget"
         name="budget"
-        type="number"
+        inputmode="decimal"
         before={<InputAddon>{selectedCurrency()?.symbol}</InputAddon>}
         step={
           selectedCurrency()?.decimalDigits

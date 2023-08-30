@@ -109,7 +109,7 @@ export const AmountEditor: Component<{
         <InputGroupInput
           ref={input}
           id={id}
-          type="number"
+          inputmode="decimal"
           value={newAmount()}
           step={
             props.transaction.currency.decimalDigits > 0

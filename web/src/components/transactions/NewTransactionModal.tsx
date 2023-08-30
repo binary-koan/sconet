@@ -30,7 +30,11 @@ import FormInput from "../forms/FormInput"
 import FormInputGroup from "../forms/FormInputGroup"
 import { SplitTransactionModal } from "./SplitTransactionModal"
 
-type NewTransactionModalValues = CreateTransactionInput & { amountType: "expense" | "income" }
+type NewTransactionModalValues = Omit<CreateTransactionInput, "amount" | "originalAmount"> & {
+  amountType: "expense" | "income"
+  amount?: string
+  originalAmount?: string
+}
 
 export const NewTransactionModal: Component<{
   initialDate?: Date
@@ -87,7 +91,9 @@ export const NewTransactionModal: Component<{
     const currency = currencies()?.currencies.find(
       (currency) => currency.code === data.currencyCode
     )
-    const integerAmount = Math.round((amount || 0) * 10 ** (currency?.decimalDigits || 0))
+    const integerAmount = Math.round(
+      parseFloat(amount || "0") * 10 ** (currency?.decimalDigits || 0)
+    )
 
     const coercedData: CreateTransactionInput = {
       ...data,
@@ -105,7 +111,7 @@ export const NewTransactionModal: Component<{
         (currency) => currency.code === originalCurrencyCode
       )
       const integerOriginalAmount = Math.round(
-        originalAmount * 10 ** (originalCurrency?.decimalDigits || 0)
+        parseFloat(originalAmount || "0") * 10 ** (originalCurrency?.decimalDigits || 0)
       )
       coercedData.originalAmount =
         amountType === "expense" ? -integerOriginalAmount : integerOriginalAmount
@@ -193,7 +199,7 @@ export const NewTransactionModal: Component<{
                         of={form}
                         label="Amount"
                         name="amount"
-                        type="number"
+                        inputmode="decimal"
                         placeholderLabel={true}
                         validate={minRange(0, "Must be zero or more")}
                         before={<InputAddon>{selectedCurrency()?.symbol}</InputAddon>}
@@ -209,7 +215,7 @@ export const NewTransactionModal: Component<{
                       of={form}
                       label="Original amount"
                       name="originalAmount"
-                      type="number"
+                      inputmode="decimal"
                       placeholderLabel={true}
                       validate={minRange(0, "Must be zero or more")}
                       before={<InputAddon>{selectedOriginalCurrency()?.symbol}</InputAddon>}
