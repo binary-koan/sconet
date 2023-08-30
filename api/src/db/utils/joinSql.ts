@@ -1,10 +1,10 @@
 import { PendingQuery } from "postgres"
-import { sql } from "../database"
+import { db } from "../database"
 
 const JOIN_WITH_SEPARATOR = {
-  ",": (first: PendingQuery<any>, second: PendingQuery<any>) => sql`${first}, ${second}`,
-  AND: (first: PendingQuery<any>, second: PendingQuery<any>) => sql`${first} AND ${second}`,
-  OR: (first: PendingQuery<any>, second: PendingQuery<any>) => sql`${first} OR ${second}`
+  ",": (first: PendingQuery<any>, second: PendingQuery<any>) => db.sql`${first}, ${second}`,
+  AND: (first: PendingQuery<any>, second: PendingQuery<any>) => db.sql`${first} AND ${second}`,
+  OR: (first: PendingQuery<any>, second: PendingQuery<any>) => db.sql`${first} OR ${second}`
 }
 
 export function joinSql(queries: Array<PendingQuery<any>>, separator: "," | "AND" | "OR") {

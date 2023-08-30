@@ -1,6 +1,6 @@
 import { omit, pick, sum } from "lodash"
 import { Currencies } from "ts-money"
-import { sql } from "../db/database"
+import { db } from "../db/database"
 import { TransactionRecord } from "../db/records/transaction"
 import { transactionsRepo } from "../db/repos/transactionsRepo"
 import {
@@ -162,7 +162,7 @@ export const splitTransaction: MutationResolvers["splitTransaction"] = async (
       : null
   }))
 
-  await sql.begin(async (sql) => {
+  await db.sql.begin(async (sql) => {
     for (const split of splitsWithAmount) {
       await transactionsRepo.insert(
         {

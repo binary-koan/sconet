@@ -1,5 +1,5 @@
 import { isEmpty, pickBy } from "lodash"
-import { sql } from "../database"
+import { db } from "../database"
 import { filterTransactions } from "../queries/transaction/filterTransactions"
 import { updateSplitAmounts } from "../queries/transaction/updateSplitAmounts"
 import { TransactionRecord } from "../records/transaction"
@@ -32,7 +32,7 @@ export const transactionsRepo = createRepo<TransactionRecord, TransactionMethods
     updateSplitAmounts,
 
     async deleteSplitTransactions(fromId) {
-      await sql`DELETE FROM "transactions" WHERE "splitFromId" = ${fromId}`
+      await db.sql`DELETE FROM "transactions" WHERE "splitFromId" = ${fromId}`
 
       return fromId
     },
@@ -42,9 +42,9 @@ export const transactionsRepo = createRepo<TransactionRecord, TransactionMethods
         return []
       }
 
-      const allTransactions = await sql<
+      const allTransactions = await db.sql<
         TransactionRecord[]
-      >`SELECT * FROM "transactions" WHERE "splitFromId" IN ${sql(
+      >`SELECT * FROM "transactions" WHERE "splitFromId" IN ${db.sql(
         splitFromIds
       )} ORDER BY date DESC, amount ASC, id ASC`
 
@@ -54,7 +54,7 @@ export const transactionsRepo = createRepo<TransactionRecord, TransactionMethods
     },
 
     async softDeleteSplitTransactions(fromId) {
-      await sql`UPDATE "transactions" SET "deletedAt" = ${new Date()} WHERE "splitFromId" = ${fromId}`
+      await db.sql`UPDATE "transactions" SET "deletedAt" = ${new Date()} WHERE "splitFromId" = ${fromId}`
 
       return fromId
     },
@@ -66,7 +66,7 @@ export const transactionsRepo = createRepo<TransactionRecord, TransactionMethods
         return fromId
       }
 
-      await sql`UPDATE "transactions" SET ${sql(fieldsToSet)} WHERE "splitFromId" = ${fromId}`
+      await db.sql`UPDATE "transactions" SET ${db.sql(fieldsToSet)} WHERE "splitFromId" = ${fromId}`
 
       return fromId
     },
@@ -78,7 +78,9 @@ export const transactionsRepo = createRepo<TransactionRecord, TransactionMethods
         return
       }
 
-      await sql`UPDATE "transactions" SET ${sql(fieldsToSet)} WHERE "accountId" = ${accountId}`
+      await db.sql`UPDATE "transactions" SET ${db.sql(
+        fieldsToSet
+      )} WHERE "accountId" = ${accountId}`
     }
   }
 })

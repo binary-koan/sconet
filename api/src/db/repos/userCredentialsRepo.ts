@@ -1,4 +1,4 @@
-import { sql } from "../database"
+import { db } from "../database"
 import { UserCredentialRecord } from "../records/userCredential"
 import { createRepo } from "../repo"
 
@@ -12,7 +12,7 @@ export const userCredentialsRepo = createRepo<UserCredentialRecord, UserCredenti
 
   methods: {
     async findForUser(userId: string) {
-      return await sql`SELECT * FROM "userCredentials" WHERE "userId" = ${userId} AND "deletedAt" IS NULL ORDER BY "createdAt" ASC, "id" ASC`
+      return await db.sql`SELECT * FROM "userCredentials" WHERE "userId" = ${userId} AND "deletedAt" IS NULL ORDER BY "createdAt" ASC, "id" ASC`
     }
   }
 })

@@ -1,5 +1,5 @@
 import { sum } from "lodash"
-import { sql } from "../../database"
+import { db } from "../../database"
 import { transactionsRepo } from "../../repos/transactionsRepo"
 
 export async function updateSplitAmounts(
@@ -41,7 +41,7 @@ export async function updateSplitAmounts(
     updateIndex = (updateIndex + 1) % updatedSplits.length
   }
 
-  await sql.begin(async (sql) => {
+  await db.sql.begin(async (sql) => {
     await Promise.all(
       updatedSplits.map((split) =>
         transactionsRepo.updateOne(split.id, { [field]: split[field] }, sql)

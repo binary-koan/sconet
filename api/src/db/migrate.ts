@@ -1,7 +1,7 @@
 import fs from "fs"
 import { groupBy, map, orderBy } from "lodash"
 import { runDbSession } from "../utils/runDbSession"
-import { sql } from "./database"
+import { db } from "./database"
 
 const UP_FILENAME_PATTERN = /^(\d+)-(\w+)-up\.sql$/
 const BASE_PATH = process.env.MIGRATIONS_PATH || `${import.meta.dir}/migrations`
@@ -68,7 +68,7 @@ export async function down(version: string) {
 }
 
 export async function writeSchema() {
-  const columns = await sql<
+  const columns = await db.sql<
     Array<{
       table_name: string
       column_name: string
@@ -82,7 +82,7 @@ export async function writeSchema() {
     WHERE table_schema = 'public'
   `
 
-  const constraints = await sql<
+  const constraints = await db.sql<
     Array<{
       table_name: string
       column_name: string
@@ -94,7 +94,7 @@ export async function writeSchema() {
     WHERE table_schema = 'public'
   `
 
-  const indexes = await sql<
+  const indexes = await db.sql<
     Array<{
       tablename: string
       indexname: string
@@ -175,7 +175,7 @@ export async function isMigrationNeeded() {
 }
 
 async function createMigrationsTable() {
-  await sql`
+  await db.sql`
     CREATE TABLE IF NOT EXISTS "schemaMigrations" (
       version TEXT PRIMARY KEY
     )
@@ -188,9 +188,9 @@ async function runMigration(upPath: string, version: string, name: string) {
   await runDbSession(async () => {
     const query = await Bun.file(upPath).text()
 
-    await sql.unsafe(query)
+    await db.sql.unsafe(query)
 
-    await sql`INSERT INTO "schemaMigrations" (version) VALUES (${sql({ version })})`
+    await db.sql`INSERT INTO "schemaMigrations" (version) VALUES (${db.sql({ version })})`
   })
 
   console.log("Complete")
@@ -206,9 +206,9 @@ async function rollbackMigration(downPath: string | undefined, version: string, 
   await runDbSession(async () => {
     const query = await Bun.file(downPath).text()
 
-    await sql.unsafe(query)
+    await db.sql.unsafe(query)
 
-    await sql`DELETE FROM "schemaMigrations" WHERE version = ${version}`
+    await db.sql`DELETE FROM "schemaMigrations" WHERE version = ${version}`
   })
 
   console.log("Complete")
@@ -243,5 +243,5 @@ function listMigrationFiles() {
 }
 
 async function getCompletedMigrations() {
-  return (await sql`SELECT * FROM "schemaMigrations"`).map((row) => row.version as string)
+  return (await db.sql`SELECT * FROM "schemaMigrations"`).map((row) => row.version as string)
 }

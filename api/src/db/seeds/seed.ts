@@ -1,6 +1,6 @@
 import { runDbSession } from "../../utils/runDbSession"
 import { hashPassword } from "../../utils/scrypt"
-import { sql } from "../database"
+import { db } from "../database"
 import { accountsRepo } from "../repos/accountsRepo"
 import { categoriesRepo } from "../repos/categoriesRepo"
 import { usersRepo } from "../repos/usersRepo"
@@ -16,7 +16,7 @@ export async function seed(
 
   await runDbSession(async () => {
     if (categories) {
-      const existingCategories = await sql`SELECT * FROM categories`
+      const existingCategories = await db.sql`SELECT * FROM categories`
 
       if (!existingCategories.some((category) => category.name === "First")) {
         await categoriesRepo.insert({
@@ -46,7 +46,7 @@ export async function seed(
     }
 
     if (accounts) {
-      const existingAccounts = await sql`SELECT * FROM accounts`
+      const existingAccounts = await db.sql`SELECT * FROM accounts`
 
       if (!existingAccounts.some((account) => account.name === "Test")) {
         await accountsRepo.insert({
@@ -58,10 +58,10 @@ export async function seed(
     }
 
     if (users) {
-      const defaultAccountId = (await sql`SELECT id FROM accounts LIMIT 1`)[0]?.id
+      const defaultAccountId = (await db.sql`SELECT id FROM accounts LIMIT 1`)[0]?.id
 
       for (const email of process.env.USER_EMAILS?.split(",") || []) {
-        const existing = await sql`SELECT * FROM users WHERE email = ${email}`
+        const existing = await db.sql`SELECT * FROM users WHERE email = ${email}`
 
         if (!existing.length) {
           await usersRepo.insert({

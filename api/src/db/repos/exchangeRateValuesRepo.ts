@@ -1,4 +1,4 @@
-import { sql } from "../database"
+import { db } from "../database"
 import { DailyExchangeRateRecord } from "../records/dailyExchangeRate"
 import { ExchangeRateValueRecord } from "../records/exchangeRateValue"
 import { createRepo } from "../repo"
@@ -17,11 +17,13 @@ export const exchangeRateValuesRepo = createRepo<ExchangeRateValueRecord, Exchan
 
     methods: {
       findForRate: async (dailyExchangeRate) => {
-        return await sql`SELECT * FROM exchangeRateValues WHERE dailyExchangeRateId = ${dailyExchangeRate.id}`
+        return await db.sql`SELECT * FROM exchangeRateValues WHERE dailyExchangeRateId = ${dailyExchangeRate.id}`
       },
 
       findForRates: async (ids) => {
-        return await sql`SELECT * FROM exchangeRateValues WHERE dailyExchangeRateId IN ${sql(ids)}`
+        return await db.sql`SELECT * FROM exchangeRateValues WHERE dailyExchangeRateId IN ${db.sql(
+          ids
+        )}`
       }
     }
   }

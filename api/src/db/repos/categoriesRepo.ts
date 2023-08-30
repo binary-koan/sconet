@@ -1,4 +1,4 @@
-import { sql } from "../database"
+import { db } from "../database"
 import { CategoryRecord } from "../records/category"
 import { createRepo } from "../repo"
 
@@ -13,7 +13,7 @@ export const categoriesRepo = createRepo<CategoryRecord, CategoryMethods>({
 
   methods: {
     async setOrder(orderedIds) {
-      await sql.begin(async (sql) => {
+      await db.sql.begin(async (sql) => {
         for (const [index, id] of orderedIds.entries()) {
           await sql`UPDATE "categories" SET "sortOrder" = ${index} WHERE "id" = ${id}`
         }
@@ -21,7 +21,7 @@ export const categoriesRepo = createRepo<CategoryRecord, CategoryMethods>({
     },
 
     async nextSortOrder() {
-      const result = await sql<
+      const result = await db.sql<
         Array<{ max: number }>
       >`SELECT MAX("sortOrder") as "max" FROM "categories"`
 

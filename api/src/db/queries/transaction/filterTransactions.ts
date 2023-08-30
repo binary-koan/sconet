@@ -1,7 +1,7 @@
 import { memoize } from "lodash"
 import { Maybe } from "../../../types"
 import { stripTime } from "../../../utils/date"
-import { sql } from "../../database"
+import { db } from "../../database"
 import { TransactionRecord } from "../../records/transaction"
 
 export interface FindTransactionsResult {
@@ -28,30 +28,30 @@ export function filterTransactions({
     includeInReports?: Maybe<boolean>
   }>
 }): FindTransactionsResult {
-  let where = sql`WHERE "splitFromId" IS NULL AND "deletedAt" IS NULL`
+  let where = db.sql`WHERE "splitFromId" IS NULL AND "deletedAt" IS NULL`
 
   if (filter?.accountId) {
-    where = sql`${where} AND "accountId" = ${filter.accountId}`
+    where = db.sql`${where} AND "accountId" = ${filter.accountId}`
   }
 
   if (filter?.dateFrom) {
-    where = sql`${where} AND "date" >= ${stripTime(filter.dateFrom)}`
+    where = db.sql`${where} AND "date" >= ${stripTime(filter.dateFrom)}`
   }
 
   if (filter?.dateUntil) {
-    where = sql`${where} AND "date" <= ${stripTime(filter.dateUntil)}`
+    where = db.sql`${where} AND "date" <= ${stripTime(filter.dateUntil)}`
   }
 
   if (filter?.minAmount != null) {
-    where = sql`${where} AND "amount" >= ${filter.minAmount}`
+    where = db.sql`${where} AND "amount" >= ${filter.minAmount}`
   }
 
   if (filter?.maxAmount != null) {
-    where = sql`${where} AND "amount" <= ${filter.maxAmount}`
+    where = db.sql`${where} AND "amount" <= ${filter.maxAmount}`
   }
 
   if (filter?.keyword) {
-    where = sql`${where} AND (
+    where = db.sql`${where} AND (
       "memo" LIKE ${filter.keyword}
       OR EXISTS (
         SELECT 1 FROM "transactions" "other"
@@ -65,40 +65,40 @@ export function filterTransactions({
     const notNullIds = filter.categoryIds.filter((categoryId) => categoryId) as string[]
     const hasNullId = filter.categoryIds.some((categoryId) => !categoryId)
 
-    let categoryIdsQuery = sql`FALSE`
+    let categoryIdsQuery = db.sql`FALSE`
 
     if (notNullIds.length)
-      categoryIdsQuery = sql`${categoryIdsQuery} OR "categoryId" IN ${sql(notNullIds)}`
-    if (hasNullId) categoryIdsQuery = sql`${categoryIdsQuery} OR "categoryId" IS NULL`
+      categoryIdsQuery = db.sql`${categoryIdsQuery} OR "categoryId" IN ${db.sql(notNullIds)}`
+    if (hasNullId) categoryIdsQuery = db.sql`${categoryIdsQuery} OR "categoryId" IS NULL`
 
-    where = sql`${where} AND (${categoryIdsQuery})`
+    where = db.sql`${where} AND (${categoryIdsQuery})`
   }
 
   if (filter?.includeInReports != null) {
-    where = sql`${where} AND "includeInReports" = ${filter.includeInReports}`
+    where = db.sql`${where} AND "includeInReports" = ${filter.includeInReports}`
   }
 
   if (offset) {
     const date = new Date(JSON.parse(Buffer.from(offset, "base64").toString("utf-8")).date)
 
-    where = sql`${where} AND "date" <= ${date}`
+    where = db.sql`${where} AND "date" <= ${date}`
   }
 
-  let limitClause = sql``
+  let limitClause = db.sql``
 
   if (limit) {
-    limitClause = sql`LIMIT ${limit + 1}`
+    limitClause = db.sql`LIMIT ${limit + 1}`
   }
 
   const data = memoize(
     async () =>
-      await sql<
+      await db.sql<
         TransactionRecord[]
       >`SELECT * FROM "transactions" ${where} ORDER BY "date" DESC, "amount" ASC, "id" ASC ${limitClause}`
   )
 
   const totalCount = memoize(
-    async () => (await sql`SELECT COUNT(*) AS "count" FROM "transactions" ${where}`)[0].count
+    async () => (await db.sql`SELECT COUNT(*) AS "count" FROM "transactions" ${where}`)[0].count
   )
 
   return {

@@ -2,7 +2,7 @@ import "../src/extraCurrencies"
 import "../src/polyfills"
 
 import { createDb } from "../src/db/createDb"
-import { sql } from "../src/db/database"
+import { db } from "../src/db/database"
 import { createMigration, down, migrate, rollback, up, writeSchema } from "../src/db/migrate"
 import { seed } from "../src/db/seeds/seed"
 import { startBackupSchedule } from "../src/jobs/backup"
@@ -17,38 +17,38 @@ const commands: { [command: string]: ((...args: string[]) => void | Promise<void
 
   migrate: async () => {
     await migrate()
-    await sql.end()
+    await db.sql.end()
   },
 
   migrate_rollback: async () => {
     await rollback()
-    await sql.end()
+    await db.sql.end()
   },
 
   migrate_up: async (version: string) => {
     await up(version)
-    await sql.end()
+    await db.sql.end()
   },
 
   migrate_down: async (version: string) => {
     await down(version)
-    await sql.end()
+    await db.sql.end()
   },
 
   schema_write: async () => {
     await writeSchema()
-    await sql.end()
+    await db.sql.end()
   },
 
   setup: async () => {
     await createDb()
     await migrate()
-    await sql.end()
+    await db.sql.end()
   },
 
   seed: async () => {
     await seed()
-    await sql.end()
+    await db.sql.end()
   },
 
   setup_and_serve: async () => {

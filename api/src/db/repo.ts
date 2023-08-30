@@ -1,6 +1,6 @@
 import { keyBy, pickBy } from "lodash"
 import { Sql } from "postgres"
-import { sql } from "./database"
+import { db } from "./database"
 import { joinSql } from "./utils/joinSql"
 
 export type RecordForInsert<Record> = Omit<Record, "id" | "createdAt" | "updatedAt" | "deletedAt">
@@ -41,9 +41,9 @@ export const createRepo = <
   defaultOrder: { [key in keyof Record]?: "ASC" | "DESC" }
   methods: Methods
 }): Repo<Record, Methods> => {
-  const tableName = sql(rawTableName)
+  const tableName = db.sql(rawTableName)
 
-  const insertAll = (recordsForInsert: Array<RecordForInsert<Record>>, s = sql) =>
+  const insertAll = (recordsForInsert: Array<RecordForInsert<Record>>, s = db.sql) =>
     withTimeout(async () => {
       const records = recordsForInsert.map(
         (recordForInsert) =>
@@ -70,7 +70,7 @@ export const createRepo = <
       {} as Methods
     ),
 
-    async findAll({ limit, offset }: { limit?: number; offset?: number } = {}, s = sql) {
+    async findAll({ limit, offset }: { limit?: number; offset?: number } = {}, s = db.sql) {
       return withTimeout(async () => {
         const order = joinSql(
           Object.entries(defaultOrder).map(
@@ -91,7 +91,7 @@ export const createRepo = <
       })
     },
 
-    async findByIds(ids, s = sql) {
+    async findByIds(ids, s = db.sql) {
       return withTimeout(async () => {
         const results = keyBy(
           await s<Record[]>`SELECT * FROM ${tableName} WHERE "deletedAt" IS NULL AND id IN ${s(
@@ -104,7 +104,7 @@ export const createRepo = <
       })
     },
 
-    async get(id, s = sql) {
+    async get(id, s = db.sql) {
       return withTimeout(async () => {
         const result = await s<Record[]>`SELECT * FROM ${tableName} WHERE id = ${id}`
 
@@ -112,19 +112,19 @@ export const createRepo = <
       })
     },
 
-    async insert(recordForInsert, s = sql) {
+    async insert(recordForInsert, s = db.sql) {
       return withTimeout(async () => {
         return (await insertAll([recordForInsert], s))[0]
       })
     },
 
-    async insertAll(recordsForInsert, s = sql) {
+    async insertAll(recordsForInsert, s = db.sql) {
       return withTimeout(async () => {
         return await insertAll(recordsForInsert, s)
       })
     },
 
-    async updateOne(id, fields, s = sql) {
+    async updateOne(id, fields, s = db.sql) {
       return withTimeout(async () => {
         const fieldsToSet = {
           ...(pickBy(fields, (value) => value !== undefined) as Partial<Record>),
@@ -143,7 +143,7 @@ export const createRepo = <
       })
     },
 
-    async softDelete(id, s = sql) {
+    async softDelete(id, s = db.sql) {
       return withTimeout(async () => {
         await s`UPDATE ${tableName} SET "deletedAt" = ${new Date()} WHERE "id" = ${id}`
       })

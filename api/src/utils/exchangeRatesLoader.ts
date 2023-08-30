@@ -1,6 +1,6 @@
 import DataLoader from "dataloader"
 import { groupBy, isEqual, uniqWith } from "lodash"
-import { sql } from "../db/database"
+import { db } from "../db/database"
 import { dailyExchangeRatesRepo } from "../db/repos/dailyExchangeRatesRepo"
 import { exchangeRateValuesRepo } from "../db/repos/exchangeRateValuesRepo"
 import { joinSql } from "../db/utils/joinSql"
@@ -82,14 +82,14 @@ async function fetchExistingRates(neededExchangeRates: ExchangeRateIdentifier[])
   const queries = joinSql(
     neededExchangeRates.map(
       ({ fromCurrencyCode, toCurrencyCode, date }) =>
-        sql`"fromCurrencyCode" = ${fromCurrencyCode} AND "toCurrencyCode" = ${toCurrencyCode} AND "date" = ${
+        db.sql`"fromCurrencyCode" = ${fromCurrencyCode} AND "toCurrencyCode" = ${toCurrencyCode} AND "date" = ${
           date.toISOString().split("T")[0]
         }`
     ),
     "OR"
   )
 
-  return await sql<Array<ResolvedExchangeRate>>`
+  return await db.sql<Array<ResolvedExchangeRate>>`
     SELECT "fromCurrencyCode", "toCurrencyCode", "date", "rate" FROM "dailyExchangeRates"
     INNER JOIN "exchangeRateValues" ON "dailyExchangeRates"."id" = "exchangeRateValues"."dailyExchangeRateId"
     WHERE ${queries}
@@ -147,7 +147,7 @@ async function saveRates(mapping: ExchangeRateMap) {
     return
   }
 
-  await sql.begin(async (sql) => {
+  await db.sql.begin(async (sql) => {
     const dailyRates = await dailyExchangeRatesRepo.insertAll(
       mapping.values().map(({ fromCurrencyCode, date }) => ({
         fromCurrencyCode,

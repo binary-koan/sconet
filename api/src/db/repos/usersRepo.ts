@@ -1,4 +1,4 @@
-import { sql } from "../database"
+import { db } from "../database"
 import { UserRecord } from "../records/user"
 import { createRepo } from "../repo"
 
@@ -11,7 +11,7 @@ export const usersRepo = createRepo<UserRecord, UserMethods>({
   defaultOrder: { email: "ASC" },
   methods: {
     async getByEmail(email) {
-      return (await sql<UserRecord[]>`SELECT * FROM "users" WHERE "email" = ${email}`)[0]
+      return (await db.sql<UserRecord[]>`SELECT * FROM "users" WHERE "email" = ${email}`)[0]
     }
   }
 })
