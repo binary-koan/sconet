@@ -4,6 +4,7 @@ import { print } from "graphql"
 import { createYoga, useErrorHandler, useLogger } from "graphql-yoga"
 import { extname } from "path"
 import { buildContext } from "./context"
+import { db } from "./db/database"
 import { schema } from "./schema"
 import { dbSessionPlugin } from "./utils/runDbSession"
 
@@ -16,7 +17,7 @@ export async function startServer(serveStaticPaths?: string[]) {
     context: ({ request }) => buildContext(request),
 
     plugins: [
-      useErrorHandler(({ errors }) => {
+      useErrorHandler(async ({ errors }) => {
         if (
           errors.some(
             (error) =>
@@ -25,7 +26,7 @@ export async function startServer(serveStaticPaths?: string[]) {
               error.message.includes("connection error: timed out")
           )
         ) {
-          process.exit(1)
+          await db.reconnect()
         }
 
         console.error("[GRAPHQL:ERROR]", errors)
