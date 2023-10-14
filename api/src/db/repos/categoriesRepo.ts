@@ -7,11 +7,13 @@ interface CategoryMethods {
   nextSortOrder: () => Promise<number>
 }
 
-export const categoriesRepo = createRepo<CategoryRecord, CategoryMethods>({
+export const categoriesRepo = createRepo<CategoryRecord, Record<string, never>, CategoryMethods>({
   tableName: "categories",
   defaultOrder: { sortOrder: "ASC", name: "ASC" },
 
-  methods: {
+  methods: {},
+
+  asyncMethods: {
     async setOrder(orderedIds) {
       await db.sql.begin(async (sql) => {
         for (const [index, id] of orderedIds.entries()) {

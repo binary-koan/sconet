@@ -10,21 +10,25 @@ interface ExchangeRateValueMethods {
   findForRates: (ids: string[]) => Promise<ExchangeRateValueRecord[]>
 }
 
-export const exchangeRateValuesRepo = createRepo<ExchangeRateValueRecord, ExchangeRateValueMethods>(
-  {
-    tableName: "exchangeRateValues",
-    defaultOrder: { id: "ASC" },
+export const exchangeRateValuesRepo = createRepo<
+  ExchangeRateValueRecord,
+  Record<string, never>,
+  ExchangeRateValueMethods
+>({
+  tableName: "exchangeRateValues",
+  defaultOrder: { id: "ASC" },
 
-    methods: {
-      findForRate: async (dailyExchangeRate) => {
-        return await db.sql`SELECT * FROM exchangeRateValues WHERE dailyExchangeRateId = ${dailyExchangeRate.id}`
-      },
+  methods: {},
 
-      findForRates: async (ids) => {
-        return await db.sql`SELECT * FROM exchangeRateValues WHERE dailyExchangeRateId IN ${db.sql(
-          ids
-        )}`
-      }
+  asyncMethods: {
+    findForRate: async (dailyExchangeRate) => {
+      return await db.sql`SELECT * FROM exchangeRateValues WHERE dailyExchangeRateId = ${dailyExchangeRate.id}`
+    },
+
+    findForRates: async (ids) => {
+      return await db.sql`SELECT * FROM exchangeRateValues WHERE dailyExchangeRateId IN ${db.sql(
+        ids
+      )}`
     }
   }
-)
+})

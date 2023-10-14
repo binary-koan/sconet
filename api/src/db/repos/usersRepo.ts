@@ -6,10 +6,11 @@ interface UserMethods {
   getByEmail(email: string): Promise<UserRecord | undefined>
 }
 
-export const usersRepo = createRepo<UserRecord, UserMethods>({
+export const usersRepo = createRepo<UserRecord, Record<string, never>, UserMethods>({
   tableName: "users",
   defaultOrder: { email: "ASC" },
-  methods: {
+  methods: {},
+  asyncMethods: {
     async getByEmail(email) {
       return (await db.sql<UserRecord[]>`SELECT * FROM "users" WHERE "email" = ${email}`)[0]
     }

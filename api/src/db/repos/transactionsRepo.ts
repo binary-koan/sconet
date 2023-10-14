@@ -7,6 +7,9 @@ import { createRepo } from "../repo"
 
 interface TransactionMethods {
   filter: typeof filterTransactions
+}
+
+interface TransactionAsyncMethods {
   updateSplitAmounts: (
     id: string,
     updatedAmount: number,
@@ -22,13 +25,17 @@ interface TransactionMethods {
   ) => Promise<void>
 }
 
-export const transactionsRepo = createRepo<TransactionRecord, TransactionMethods>({
+export const transactionsRepo = createRepo<
+  TransactionRecord,
+  TransactionMethods,
+  TransactionAsyncMethods
+>({
   tableName: "transactions",
   defaultOrder: { date: "DESC", amount: "ASC", id: "ASC" },
 
-  methods: {
-    filter: filterTransactions,
+  methods: { filter: filterTransactions },
 
+  asyncMethods: {
     updateSplitAmounts,
 
     async deleteSplitTransactions(fromId) {

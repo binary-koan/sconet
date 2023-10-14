@@ -16,7 +16,7 @@ export type Repo<Record, Methods> = Methods & {
   softDelete: (id: string, sql?: Sql) => Promise<void>
 }
 
-const withTimeout = async <Result>(query: () => Result) => {
+export const withTimeout = async <Result>(query: () => Promise<Result>): Promise<Result> => {
   const timeout = setTimeout(() => {
     console.error("Query time limit of 5s exceeded, the postgres connection may be broken")
     process.exit(1)
@@ -30,20 +30,23 @@ const withTimeout = async <Result>(query: () => Result) => {
 }
 
 export const createRepo = <
-  Record extends { id: string; createdAt: Date; updatedAt: Date; deletedAt?: Date | null },
-  Methods extends object
+  RecordType extends { id: string; createdAt: Date; updatedAt: Date; deletedAt?: Date | null },
+  Methods extends object = Record<string, never>,
+  AsyncMethods extends object = Record<string, never>
 >({
   tableName: rawTableName,
   defaultOrder,
-  methods
+  methods,
+  asyncMethods
 }: {
   tableName: string
-  defaultOrder: { [key in keyof Record]?: "ASC" | "DESC" }
+  defaultOrder: { [key in keyof RecordType]?: "ASC" | "DESC" }
   methods: Methods
-}): Repo<Record, Methods> => {
+  asyncMethods: AsyncMethods
+}): Repo<RecordType, Methods & AsyncMethods> => {
   const tableName = db.sql(rawTableName)
 
-  const insertAll = (recordsForInsert: Array<RecordForInsert<Record>>, s = db.sql) =>
+  const insertAll = (recordsForInsert: Array<RecordForInsert<RecordType>>, s = db.sql) =>
     withTimeout(async () => {
       const records = recordsForInsert.map(
         (recordForInsert) =>
@@ -54,7 +57,7 @@ export const createRepo = <
           } as any)
       )
 
-      const result = await s<Record[]>`INSERT INTO ${tableName} ${s(records)} RETURNING *`
+      const result = await s<RecordType[]>`INSERT INTO ${tableName} ${s(records)} RETURNING *`
 
       return result
     })
@@ -62,12 +65,14 @@ export const createRepo = <
   return {
     tableName: rawTableName,
 
-    ...Object.entries(methods).reduce<Methods>(
+    ...methods,
+
+    ...Object.entries(asyncMethods).reduce<AsyncMethods>(
       (methods, [name, method]) => ({
         ...methods,
         [name]: (...args: any[]) => withTimeout(() => method(...args))
       }),
-      {} as Methods
+      {} as AsyncMethods
     ),
 
     async findAll({ limit, offset }: { limit?: number; offset?: number } = {}, s = db.sql) {
@@ -81,7 +86,7 @@ export const createRepo = <
 
         const query = s`SELECT * FROM ${tableName} WHERE "deletedAt" IS NULL ORDER BY ${order}`
 
-        const result = await s<Record[]>`
+        const result = await s<RecordType[]>`
         ${query}
         ${limit ? s`LIMIT ${parseInt(limit.toString())}` : s``}
         ${offset ? s`OFFSET ${parseInt(offset.toString())}` : s``}
@@ -94,7 +99,7 @@ export const createRepo = <
     async findByIds(ids, s = db.sql) {
       return withTimeout(async () => {
         const results = keyBy(
-          await s<Record[]>`SELECT * FROM ${tableName} WHERE "deletedAt" IS NULL AND id IN ${s(
+          await s<RecordType[]>`SELECT * FROM ${tableName} WHERE "deletedAt" IS NULL AND id IN ${s(
             ids
           )}`,
           (record) => record.id
@@ -106,7 +111,7 @@ export const createRepo = <
 
     async get(id, s = db.sql) {
       return withTimeout(async () => {
-        const result = await s<Record[]>`SELECT * FROM ${tableName} WHERE id = ${id}`
+        const result = await s<RecordType[]>`SELECT * FROM ${tableName} WHERE id = ${id}`
 
         return result[0]
       })
@@ -127,11 +132,11 @@ export const createRepo = <
     async updateOne(id, fields, s = db.sql) {
       return withTimeout(async () => {
         const fieldsToSet = {
-          ...(pickBy(fields, (value) => value !== undefined) as Partial<Record>),
+          ...(pickBy(fields, (value) => value !== undefined) as Partial<RecordType>),
           updatedAt: new Date()
         } as any
 
-        const result = await s<Record[]>`UPDATE ${tableName} SET ${s(
+        const result = await s<RecordType[]>`UPDATE ${tableName} SET ${s(
           fieldsToSet
         )} WHERE "id" = ${id} RETURNING *`
 

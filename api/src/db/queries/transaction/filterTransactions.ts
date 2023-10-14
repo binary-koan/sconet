@@ -3,6 +3,7 @@ import { Maybe } from "../../../types"
 import { stripTime } from "../../../utils/date"
 import { db } from "../../database"
 import { TransactionRecord } from "../../records/transaction"
+import { withTimeout } from "../../repo"
 
 export interface FindTransactionsResult {
   data: Promise<TransactionRecord[]>
@@ -90,15 +91,19 @@ export function filterTransactions({
     limitClause = db.sql`LIMIT ${limit + 1}`
   }
 
-  const data = memoize(
-    async () =>
-      await db.sql<
-        TransactionRecord[]
-      >`SELECT * FROM "transactions" ${where} ORDER BY "date" DESC, "amount" ASC, "id" ASC ${limitClause}`
+  const data = memoize(() =>
+    withTimeout(
+      () =>
+        db.sql<
+          TransactionRecord[]
+        >`SELECT * FROM "transactions" ${where} ORDER BY "date" DESC, "amount" ASC, "id" ASC ${limitClause}`
+    )
   )
 
-  const totalCount = memoize(
-    async () => (await db.sql`SELECT COUNT(*) AS "count" FROM "transactions" ${where}`)[0].count
+  const totalCount = memoize(() =>
+    withTimeout(
+      async () => (await db.sql`SELECT COUNT(*) AS "count" FROM "transactions" ${where}`)[0].count
+    )
   )
 
   return {
