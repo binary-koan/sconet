@@ -34,7 +34,7 @@ const EditCategoryPage: Component = () => {
     <InnerPageWrapper heading="Edit Category" backLink="/settings">
       <Show when={routeData.data()}>
         <CategoryForm
-          category={routeData.data()!.category}
+          category={routeData.data()!.category!}
           onSave={onSave}
           loading={updateCategory.loading}
         />
