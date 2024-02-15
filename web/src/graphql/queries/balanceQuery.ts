@@ -3,35 +3,35 @@ import { gql } from "../../utils/gql"
 import { useQuery } from "../../utils/graphqlClient/useQuery"
 
 export const BALANCE_QUERY = gql`
-  query Balance($currencyCode: CurrencyCode, $year: Int!) {
-    balance(year: $year, currencyCode: $currencyCode) {
+  query Balance($currencyId: ID, $year: Int!) {
+    balance(year: $year, currencyId: $currencyId) {
       currency {
         symbol
       }
       income {
-        decimalAmount
+        amountDecimal
         formatted
       }
       totalSpending {
-        decimalAmount
+        amountDecimal
         formatted
       }
       difference {
-        decimalAmount
+        amountDecimal
         formatted
       }
       months {
         month
         income {
-          decimalAmount
+          amountDecimal
           formatted
         }
         totalSpending {
-          decimalAmount
+          amountDecimal
           formatted
         }
         difference {
-          decimalAmount
+          amountDecimal
           formatted
         }
       }

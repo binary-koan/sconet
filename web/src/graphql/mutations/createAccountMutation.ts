@@ -4,9 +4,11 @@ import { MutationOptions, useMutation } from "../../utils/graphqlClient/useMutat
 import { ACCOUNTS_QUERY } from "../queries/accountsQuery"
 
 const CREATE_ACCOUNT_MUTATION = gql`
-  mutation CreateAccount($input: CreateAccountInput!) {
-    createAccount(input: $input) {
-      id
+  mutation CreateAccount($input: AccountInput!) {
+    accountCreate(input: { accountInput: $input }) {
+      account {
+        id
+      }
     }
   }
 `

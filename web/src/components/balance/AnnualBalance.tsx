@@ -27,9 +27,9 @@ export const AnnualBalance: Component<{
       <BalanceGraph
         year={props.year}
         currencySymbol={props.data.balance.currency.symbol}
-        incomes={props.data.balance.months.map((month) => month.income.decimalAmount)}
-        spendings={props.data.balance.months.map((month) => -month.totalSpending.decimalAmount)}
-        balances={props.data.balance.months.map((month) => month.difference.decimalAmount)}
+        incomes={props.data.balance.months.map((month) => month.income.amountDecimal)}
+        spendings={props.data.balance.months.map((month) => -month.totalSpending.amountDecimal)}
+        balances={props.data.balance.months.map((month) => month.difference.amountDecimal)}
       />
     </>
   )

@@ -7,8 +7,8 @@ import { Dropdown, DropdownMenuItem } from "../Dropdown"
 import { Button } from "../base/Button"
 
 export const DefaultCurrencySelect: Component<{
-  defaultCurrency: FullCurrencyFragment
-  favoriteCurrencies: FullCurrencyFragment[]
+  defaultCurrency: FullCurrencyFragment | null | undefined
+  favouriteCurrencies: FullCurrencyFragment[]
 }> = (props) => {
   const navigate = useNavigate()
   const setDefaultCurrency = useSetDefaultCurrency()
@@ -19,9 +19,9 @@ export const DefaultCurrencySelect: Component<{
       class="text-base font-normal"
       content={
         <>
-          <For each={props.favoriteCurrencies}>
+          <For each={props.favouriteCurrencies}>
             {(currency) => (
-              <DropdownMenuItem onClick={() => setDefaultCurrency({ code: currency.code })}>
+              <DropdownMenuItem onClick={() => setDefaultCurrency({ id: currency.id })}>
                 {currency.code}
               </DropdownMenuItem>
             )}
@@ -34,7 +34,7 @@ export const DefaultCurrencySelect: Component<{
       }
     >
       <Button variant="ghost">
-        {props.defaultCurrency.code}
+        {props.defaultCurrency?.code || "-"}
         <TbChevronDown class="ml-1" />
       </Button>
     </Dropdown>

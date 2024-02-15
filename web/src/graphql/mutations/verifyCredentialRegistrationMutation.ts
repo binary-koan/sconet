@@ -8,7 +8,11 @@ import { CURRENT_USER_QUERY } from "../queries/currentUserQuery"
 
 const MUTATION = gql`
   mutation VerifyCredentialRegistration($response: JSON!, $device: String!) {
-    verifyCredentialRegistration(response: $response, device: $device)
+    credentialRegister(input: { response: $response, device: $device }) {
+      currentUser {
+        id
+      }
+    }
   }
 `
 

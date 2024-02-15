@@ -16,7 +16,7 @@ type CategoryFormValues = {
   color: string
   icon: string
   budget?: string
-  budgetCurrencyCode?: string
+  budgetCurrencyId?: string
   isRegular?: boolean
 }
 
@@ -31,22 +31,20 @@ const CategoryForm: Component<{
       name: props.category?.name,
       color: props.category?.color,
       icon: props.category?.icon,
-      budget: props.category?.budget?.decimalAmount.toString(),
-      budgetCurrencyCode: props.category?.budgetCurrency?.code,
+      budget: props.category?.budget?.budget.amountDecimal.toString(),
+      budgetCurrencyId: props.category?.budget?.currency.id,
       isRegular: props.category?.isRegular != null ? props.category.isRegular : true
     }
   })
 
   const selectedCurrency = () =>
-    currencies()?.currencies.find(
-      (currency) => currency.code === getValue(form, "budgetCurrencyCode")
-    )
+    currencies()?.currencies.find((currency) => currency.id === getValue(form, "budgetCurrencyId"))
 
   const onSave = (data: CategoryFormValues) => {
     props.onSave(
       {
         ...data,
-        budget: data.budget
+        budgetCents: data.budget
           ? Math.floor(
               parseFloat(data.budget || "0") * 10 ** (selectedCurrency()?.decimalDigits || 0)
             )

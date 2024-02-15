@@ -69,9 +69,9 @@ const TransactionItem: Component<{
           >
             {props.transaction.amount?.formatted ?? <em>Pending</em>}
 
-            <Show when={props.transaction.originalAmount}>
-              {(originalAmount) => (
-                <div class="ml-1 text-xs text-gray-600">{originalAmount().formatted}</div>
+            <Show when={props.transaction.shopAmount}>
+              {(shopAmount) => (
+                <div class="ml-1 text-xs text-gray-600">{shopAmount().formatted}</div>
               )}
             </Show>
           </div>
@@ -93,7 +93,7 @@ const TransactionItem: Component<{
               color={child().category?.color}
               includeInReports={props.transaction.includeInReports}
               isIncome={Boolean(
-                props.transaction.amount && props.transaction.amount.decimalAmount > 0
+                props.transaction.amount && props.transaction.amount.amountDecimal > 0
               )}
             />
 

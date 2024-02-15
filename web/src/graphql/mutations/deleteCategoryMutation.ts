@@ -4,9 +4,11 @@ import { MutationOptions, useMutation } from "../../utils/graphqlClient/useMutat
 import { CATEGORIES_QUERY } from "../queries/categoriesQuery"
 
 const DELETE_CATEGORY_MUTATION = gql`
-  mutation DeleteCategory($id: String!) {
-    deleteCategory(id: $id) {
-      id
+  mutation DeleteCategory($id: ID!) {
+    categoryDelete(input: { id: $id }) {
+      category {
+        id
+      }
     }
   }
 `

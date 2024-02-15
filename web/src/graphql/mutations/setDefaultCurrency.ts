@@ -7,9 +7,11 @@ import { MutationOptions, useMutation } from "../../utils/graphqlClient/useMutat
 import { CURRENT_USER_QUERY } from "../queries/currentUserQuery"
 
 const MUTATION = gql`
-  mutation SetDefaultCurrency($code: CurrencyCode!) {
-    setDefaultCurrency(code: $code) {
-      id
+  mutation SetDefaultCurrency($id: ID!) {
+    currentUserUpdate(input: { userInput: { defaultCurrencyId: $id } }) {
+      currentUser {
+        id
+      }
     }
   }
 `

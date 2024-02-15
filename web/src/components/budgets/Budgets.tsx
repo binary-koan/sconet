@@ -48,7 +48,7 @@ export const Budgets: Component<{
           },
           name: category?.name || "Uncategorized",
           color: category?.color as CategoryColor,
-          budget: category?.budget,
+          budget: category?.budget?.budget,
           total: amountSpent,
           href: filteredTransactions({ categoryIds: [category?.id || null] })
         }))}
@@ -70,7 +70,7 @@ export const Budgets: Component<{
             },
             name: category?.name || "Uncategorized",
             color: category?.color as CategoryColor,
-            budget: category?.budget,
+            budget: category?.budget?.budget,
             total: amountSpent,
             href: filteredTransactions({ categoryIds: [category?.id || null] })
           })
@@ -79,13 +79,13 @@ export const Budgets: Component<{
 
       <BudgetGroup
         title="Income"
-        total={props.data.income.totalAmount.formatted}
+        total={props.data.budget.income.formatted}
         allTransactionsHref={filteredTransactions({ minAmount: 1 })}
-        items={props.data.income.data.map((transaction) => ({
+        items={props.data.income.nodes.map((transaction) => ({
           indicator: { isIncome: true },
           name: transaction.memo,
           budget: false,
-          total: transaction.amount || { decimalAmount: 0, formatted: "?" },
+          total: transaction.amount || { amountDecimal: 0, formatted: "?" },
           href: `/transactions/${transaction.id}`
         }))}
       />

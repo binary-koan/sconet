@@ -17,7 +17,7 @@ export const TransactionView: Component<{
 }> = (props) => {
   const [editingMemo, setEditingMemo] = createSignal<string>()
   const [editingAmount, setEditingAmount] = createSignal(false)
-  const [editingOriginalAmount, setEditingOriginalAmount] = createSignal(false)
+  const [editingshopAmount, setEditingshopAmount] = createSignal(false)
   const [editingDate, setEditingDate] = createSignal(false)
 
   const updateTransaction = useUpdateTransaction()
@@ -63,17 +63,17 @@ export const TransactionView: Component<{
           <FormControl>
             <FormLabel>Original amount</FormLabel>
             <Show
-              when={editingOriginalAmount()}
+              when={editingshopAmount()}
               fallback={
-                <div onClick={() => setEditingOriginalAmount(true)}>
-                  {transaction().originalAmount?.formatted ?? <em>None</em>}
+                <div onClick={() => setEditingshopAmount(true)}>
+                  {transaction().shopAmount?.formatted ?? <em>None</em>}
                 </div>
               }
             >
               <AmountEditor
                 transaction={transaction()}
-                field="originalAmount"
-                stopEditing={() => setEditingOriginalAmount(false)}
+                field="shopAmount"
+                stopEditing={() => setEditingshopAmount(false)}
               />
             </Show>
           </FormControl>
@@ -85,7 +85,7 @@ export const TransactionView: Component<{
               includeInReports={transaction().includeInReports}
               showCategory={false}
             >
-              {transaction().account.name} ({transaction().account.currencyCode})
+              {transaction().account.name} ({transaction().account.currency.code})
             </RelationEditor>
           </FormControl>
 
@@ -104,14 +104,14 @@ export const TransactionView: Component<{
           </FormControl>
 
           <Show
-            when={!transaction().includeInReports || (transaction().amount?.decimalAmount || 0) > 0}
+            when={!transaction().includeInReports || (transaction().amount?.amountDecimal || 0) > 0}
           >
             <FormControl>
               <FormLabel>Category</FormLabel>
               <div class="flex items-center">
                 <CategoryIndicator
                   class="mr-3 h-8 w-8"
-                  isIncome={(transaction().amount?.decimalAmount || 0) > 0}
+                  isIncome={(transaction().amount?.amountDecimal || 0) > 0}
                   includeInReports={transaction().includeInReports}
                 />
                 {transaction().includeInReports ? "Income" : "Hidden from reports"}
@@ -124,7 +124,7 @@ export const TransactionView: Component<{
               !transaction().splitTo.length &&
               transaction().includeInReports &&
               transaction().amount &&
-              transaction().amount!.decimalAmount <= 0
+              transaction().amount!.amountDecimal <= 0
             }
           >
             <FormControl>
@@ -181,9 +181,9 @@ export const TransactionView: Component<{
                   </Show>
                   <div class="text-right">
                     {child.amount?.formatted ?? <em>Pending</em>}
-                    <Show when={child.originalAmount}>
-                      {(originalAmount) => (
-                        <div class="text-xs text-gray-500">{originalAmount().formatted}</div>
+                    <Show when={child.shopAmount}>
+                      {(shopAmount) => (
+                        <div class="text-xs text-gray-500">{shopAmount().formatted}</div>
                       )}
                     </Show>
                   </div>

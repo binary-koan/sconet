@@ -12,7 +12,7 @@ import ConfirmCancelButtons from "./ConfirmCancelButtons"
 
 export const AmountEditor: Component<{
   transaction: FullTransactionFragment
-  field?: "amount" | "originalAmount"
+  field?: "amount" | "shopAmount"
   stopEditing: () => void
 }> = (props) => {
   const currencies = useCurrenciesQuery()
@@ -27,48 +27,48 @@ export const AmountEditor: Component<{
   const [newAmount, setNewAmount] = createSignal(
     Math.abs(
       // eslint-disable-next-line solid/reactivity
-      (props.field === "originalAmount"
+      (props.field === "shopAmount"
         ? // eslint-disable-next-line solid/reactivity
-          props.transaction.originalAmount?.decimalAmount
+          props.transaction.shopAmount?.amountDecimal
         : // eslint-disable-next-line solid/reactivity
-          props.transaction.amount?.decimalAmount) || 0
+          props.transaction.amount?.amountDecimal) || 0
     ).toString()
   )
-  const [newCurrencyCode, setNewCurrencyCode] = createSignal(
+  const [newCurrencyId, setNewCurrencyId] = createSignal(
     // eslint-disable-next-line solid/reactivity
-    props.field === "originalAmount"
+    props.field === "shopAmount"
       ? // eslint-disable-next-line solid/reactivity
-        props.transaction.originalCurrencyCode
+        props.transaction.shopCurrency?.id || null
       : // eslint-disable-next-line solid/reactivity
         null
   )
 
   const doUpdate = async () => {
-    if (props.field === "originalAmount" && !newCurrencyCode()) {
+    if (props.field === "shopAmount" && !newCurrencyId()) {
       toast.error("Please select a currency")
       return
     }
 
-    let currency = props.transaction.currency
+    let currency = props.transaction.currency!
 
-    if (props.field === "originalAmount") {
+    if (props.field === "shopAmount") {
       currency =
-        currencies()?.currencies.find((currency) => currency.code === newCurrencyCode()) || currency
+        currencies()?.currencies.find((currency) => currency.code === newCurrencyId()) || currency
     }
 
     let amount = Math.round(parseFloat(newAmount()) * 10 ** currency.decimalDigits)
 
     if (
-      (props.transaction.amount && props.transaction.amount.decimalAmount < 0) ||
-      (props.transaction.originalAmount && props.transaction.originalAmount.decimalAmount < 0)
+      (props.transaction.amount && props.transaction.amount.amountDecimal < 0) ||
+      (props.transaction.shopAmount && props.transaction.shopAmount.amountDecimal < 0)
     ) {
       amount = -amount
     }
 
     const input =
-      props.field === "originalAmount"
-        ? { originalAmount: amount, originalCurrencyCode: newCurrencyCode() }
-        : { amount }
+      props.field === "shopAmount"
+        ? { shopAmountCents: amount, shopCurrencyId: newCurrencyId() }
+        : { amountCents: amount }
 
     await updateTransaction({
       id: props.transaction.id,
@@ -89,11 +89,11 @@ export const AmountEditor: Component<{
       </label>
       <InputGroup class="flex-1">
         <InputAddon>
-          {props.field === "originalAmount" ? (
+          {props.field === "shopAmount" ? (
             <CurrencySelect
-              value={newCurrencyCode()}
-              onChange={setNewCurrencyCode}
-              filter={(currency) => currency.code !== props.transaction.currency.code}
+              value={newCurrencyId()}
+              onChange={setNewCurrencyId}
+              filter={(currency) => currency.code !== props.transaction.currency?.id}
             >
               {(currency) => (
                 <Button size="xs">
@@ -103,7 +103,7 @@ export const AmountEditor: Component<{
               )}
             </CurrencySelect>
           ) : (
-            props.transaction.currency.symbol
+            props.transaction.currency?.symbol
           )}
         </InputAddon>
         <InputGroupInput
@@ -112,7 +112,7 @@ export const AmountEditor: Component<{
           inputmode="decimal"
           value={newAmount()}
           step={
-            props.transaction.currency.decimalDigits > 0
+            props.transaction.currency && props.transaction.currency.decimalDigits > 0
               ? `0.${repeat("0", props.transaction.currency.decimalDigits - 1)}1`
               : "1"
           }

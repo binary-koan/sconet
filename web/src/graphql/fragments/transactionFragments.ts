@@ -3,25 +3,28 @@ import { gql } from "../../utils/gql"
 export const FullTransactionFragment = gql`
   fragment FullTransaction on Transaction {
     id
+    shop
     memo
     date
 
     amount {
-      decimalAmount
+      amountDecimal
       formatted
     }
-    currencyCode
     currency {
+      id
       code
       symbol
       decimalDigits
     }
 
-    originalAmount {
-      decimalAmount
+    shopAmount {
+      amountDecimal
       formatted
     }
-    originalCurrencyCode
+    shopCurrency {
+      id
+    }
 
     includeInReports
     category {
@@ -33,18 +36,20 @@ export const FullTransactionFragment = gql`
     account {
       id
       name
-      currencyCode
+      currency {
+        id
+        code
+      }
     }
-    splitFromId
     splitTo {
       id
       memo
       amount {
-        decimalAmount
+        amountDecimal
         formatted
       }
-      originalAmount {
-        decimalAmount
+      shopAmount {
+        amountDecimal
         formatted
       }
       category {
@@ -65,16 +70,20 @@ export const ListingTransactionFragment = gql`
     date
 
     amount {
-      decimalAmount
+      amountDecimal
       formatted
     }
-    currencyCode
+    currency {
+      id
+    }
 
-    originalAmount {
-      decimalAmount
+    shopAmount {
+      amountDecimal
       formatted
     }
-    originalCurrencyCode
+    shopCurrency {
+      id
+    }
 
     includeInReports
     category {
@@ -86,18 +95,19 @@ export const ListingTransactionFragment = gql`
     account {
       id
       name
-      currencyCode
+      currency {
+        id
+      }
     }
-    splitFromId
     splitTo {
       id
       memo
       amount {
-        decimalAmount
+        amountDecimal
         formatted
       }
-      originalAmount {
-        decimalAmount
+      shopAmount {
+        amountDecimal
         formatted
       }
       category {

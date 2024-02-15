@@ -6,12 +6,14 @@ export const FullCategoryFragment = gql`
     name
     color
     icon
-    budget {
-      decimalAmount
-      formatted
-    }
-    budgetCurrency {
-      code
+    budget(date: $today) {
+      budget {
+        amountDecimal
+        formatted
+      }
+      currency {
+        id
+      }
     }
     isRegular
     sortOrder

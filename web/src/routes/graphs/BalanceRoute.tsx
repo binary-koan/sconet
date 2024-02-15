@@ -10,7 +10,7 @@ const balanceRouteData: RouteDataFunc<unknown, BalancePageData> = ({ params }) =
 
   // TODO: This currently fetches twice, maybe add a skip option to useQuery
   const data = useBalanceQuery(() => ({
-    currencyCode: currentUser()?.currentUser?.defaultCurrency.code,
+    currencyId: currentUser()?.currentUser?.defaultCurrency?.id,
     year: parseInt(params.year)
   }))
 

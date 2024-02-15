@@ -2,9 +2,9 @@ import { TbStar } from "solid-icons/tb"
 import { Component, For, Show } from "solid-js"
 import toast from "solid-toast"
 import { CurrenciesQuery, CurrentUserQuery, FullCurrencyFragment } from "../../graphql-types"
-import { useFavoriteCurrency } from "../../graphql/mutations/favoriteCurrency"
+import { useFavouriteCurrency } from "../../graphql/mutations/favouriteCurrency"
 import { useSetDefaultCurrency } from "../../graphql/mutations/setDefaultCurrency"
-import { useUnfavoriteCurrency } from "../../graphql/mutations/unfavoriteCurrency"
+import { useUnfavouriteCurrency } from "../../graphql/mutations/unfavouriteCurrency"
 import { Button } from "../base/Button"
 
 export const CurrenciesList: Component<{
@@ -12,20 +12,20 @@ export const CurrenciesList: Component<{
   currentUser?: CurrentUserQuery
 }> = (props) => {
   const defaultCurrency = () => props.currentUser?.currentUser?.defaultCurrency
-  const favoriteCurrencies = () => props.currentUser?.currentUser?.favoriteCurrencies || []
+  const favouriteCurrencies = () => props.currentUser?.currentUser?.favouriteCurrencies || []
   const otherCurrencies = () =>
     props.data.currencies.filter(
-      (currency) => !favoriteCurrencies().some((favorite) => favorite.code === currency.code)
+      (currency) => !favouriteCurrencies().some((favourite) => favourite.code === currency.code)
     )
 
-  const favoriteCurrency = useFavoriteCurrency({
+  const favouriteCurrency = useFavouriteCurrency({
     onSuccess: () => {
-      toast.success("Added to favorites")
+      toast.success("Added to favourites")
     }
   })
-  const unfavoriteCurrency = useUnfavoriteCurrency({
+  const unfavouriteCurrency = useUnfavouriteCurrency({
     onSuccess: () => {
-      toast.success("Removed from favorites")
+      toast.success("Removed from favourites")
     }
   })
   const setDefaultCurrency = useSetDefaultCurrency({
@@ -45,17 +45,17 @@ export const CurrenciesList: Component<{
         </div>
       </div>
 
-      <Show when={favoriteCurrencies().length === 0}>
+      <Show when={favouriteCurrencies().length === 0}>
         <div class="text-center italic">No favourite currencies</div>
       </Show>
 
-      <For each={favoriteCurrencies()}>
+      <For each={favouriteCurrencies()}>
         {(currency) => (
           <Currency
             currency={currency}
             isFavorite={true}
-            onFavorite={() => unfavoriteCurrency({ code: currency.code })}
-            onSetDefault={() => setDefaultCurrency({ code: currency.code })}
+            onFavorite={() => unfavouriteCurrency({ id: currency.id })}
+            onSetDefault={() => setDefaultCurrency({ id: currency.id })}
           />
         )}
       </For>
@@ -67,8 +67,8 @@ export const CurrenciesList: Component<{
           <Currency
             currency={currency}
             isFavorite={false}
-            onFavorite={() => favoriteCurrency({ code: currency.code })}
-            onSetDefault={() => setDefaultCurrency({ code: currency.code })}
+            onFavorite={() => favouriteCurrency({ id: currency.id })}
+            onSetDefault={() => setDefaultCurrency({ id: currency.id })}
           />
         )}
       </For>

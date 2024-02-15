@@ -6,7 +6,7 @@ import { FullTransactionFragment } from "../fragments/transactionFragments"
 export const GET_TRANSACTION_QUERY = gql`
   ${FullTransactionFragment}
 
-  query GetTransaction($id: String!) {
+  query GetTransaction($id: ID!) {
     transaction(id: $id) {
       ...FullTransaction
     }

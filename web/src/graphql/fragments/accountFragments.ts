@@ -4,6 +4,9 @@ export const FullAccountFragment = gql`
   fragment FullAccount on Account {
     id
     name
-    currencyCode
+    currency {
+      id
+      code
+    }
   }
 `

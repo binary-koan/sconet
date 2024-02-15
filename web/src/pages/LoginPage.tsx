@@ -14,16 +14,13 @@ import { LoginMutationVariables } from "../graphql-types"
 import { useGenerateCredentialLoginOptionsMutation } from "../graphql/mutations/generateCredentialLoginOptions"
 import { useLoginMutation } from "../graphql/mutations/loginMutation"
 import { useLoginViaCredentialMutation } from "../graphql/mutations/loginViaCredentialMutation"
-import { isLoggedIn, lastUserId, setLoginToken } from "../utils/auth"
+import { isLoggedIn, lastUserEmail, setLoginToken } from "../utils/auth"
 import { fixAssetPath } from "../utils/fixAssetPath"
 // import { loadTurnstile, turnstileError, turnstileLoaded } from "../utils/turnstile"
 
 type LoginFormValues = Omit<LoginMutationVariables, "turnstileToken">
 
 const LoginPage: Component = () => {
-  // loadTurnstile()
-
-  // const [token, setToken] = createSignal<string>()
   const [submittedValues, setSubmittedValues] = createSignal<{ email: string; password: string }>()
 
   const navigate = useNavigate()
@@ -31,7 +28,7 @@ const LoginPage: Component = () => {
 
   const login = useLoginMutation({
     onSuccess: (data) => {
-      setLoginToken(data.login)
+      setLoginToken(data.login.token, data.login.currentUser.email)
       setSubmittedValues(undefined)
       toast.success("Logged in")
     },
@@ -43,14 +40,14 @@ const LoginPage: Component = () => {
 
   const startCredentialLogin = useGenerateCredentialLoginOptionsMutation({
     onSuccess: async (data) => {
-      const response = await startAuthentication(data.generateCredentialLoginOptions)
-      await loginViaCredential({ response })
+      const response = await startAuthentication(data.credentialLoginStart.options)
+      await loginViaCredential({ email: lastUserEmail()!, response })
     }
   })
 
   const loginViaCredential = useLoginViaCredentialMutation({
     onSuccess: (data) => {
-      setLoginToken(data.loginViaCredential)
+      setLoginToken(data.login.token, data.login.currentUser.email)
       setSubmittedValues(undefined)
       toast.success("Logged in")
     }
@@ -58,31 +55,11 @@ const LoginPage: Component = () => {
 
   const [form] = createForm<LoginFormValues>()
 
-  // let turnstileContainer: HTMLDivElement | undefined
-
   createEffect(() => {
     if (isLoggedIn()) {
       navigate(location.state?.returnTo || "/")
     }
   })
-
-  // createEffect(() => {
-  //   if (turnstileLoaded() && turnstileContainer) {
-  //     window.turnstile?.render(turnstileContainer, {
-  //       sitekey: TURNSTILE_SITEKEY,
-  //       callback: (token) => setToken(token)
-  //     })
-  //   }
-  // })
-
-  // createEffect(() => {
-  //   if (token() && submittedValues()) {
-  //     login({
-  //       turnstileToken: token()!,
-  //       ...submittedValues()!
-  //     })
-  //   }
-  // })
 
   return (
     <>
@@ -97,35 +74,26 @@ const LoginPage: Component = () => {
             of={form}
             onSubmit={(values) => {
               setSubmittedValues(values)
-
-              // remove when turnstile is enabled again
-              login({ ...values, turnstileToken: "" })
+              login(values)
             }}
           >
             <FormInput of={form} type="text" name="email" label="Email" />
             <FormInput of={form} type="password" name="password" label="Password" />
 
-            {/* <div ref={turnstileContainer} /> */}
-
             <Button
               type="submit"
               colorScheme="primary"
               disabled={Boolean(submittedValues() || login.loading)}
-              // disabled={Boolean(submittedValues() || login.loading || turnstileError())}
             >
               Login
             </Button>
-
-            {/* <Show when={turnstileError()}>
-              <FieldError error={`Error verifying browser: ${turnstileError()}`} />
-            </Show> */}
           </Form>
         </div>
 
-        <Show when={lastUserId()}>
+        <Show when={lastUserEmail()}>
           <button
             class="mx-auto rounded-full border-2 border-gray-300 p-4 text-gray-400 transition hover:bg-gray-200"
-            onClick={() => startCredentialLogin({ userId: lastUserId()! })}
+            onClick={() => startCredentialLogin({ email: lastUserEmail()! })}
           >
             <TbFingerprint size="2em" />
           </button>

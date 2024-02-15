@@ -30,7 +30,7 @@ const EditAccountPage = () => {
   const onSave = async (input: UpdateAccountMutationVariables["input"], id?: string) => {
     let confirmed = true
 
-    if (input.currencyCode !== routeData.data()!.account!.currencyCode) {
+    if (input.currencyId !== routeData.data()!.account!.currency.id) {
       confirmed = await showAlert({
         title: "Are you sure?",
         body: (

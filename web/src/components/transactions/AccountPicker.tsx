@@ -6,7 +6,7 @@ import { Button } from "../base/Button"
 export interface AccountBasicDetails {
   id: string
   name: string
-  currencyCode: string
+  currency: { id: string }
 }
 
 export type ValueProps = {
@@ -46,7 +46,7 @@ const AccountOption: Component<{
       onClick={onClick}
     >
       <span class="min-w-0 truncate">
-        {props.account.name} ({props.account.currencyCode})
+        {props.account.name} ({props.account.currency.code})
       </span>
     </Button>
   )

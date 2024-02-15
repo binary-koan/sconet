@@ -14,8 +14,8 @@ interface BudgetGroupProps {
     indicator: CategoryIndicatorProps
     name: string
     color?: CategoryColor
-    budget?: { decimalAmount: number; formatted: string } | null | false
-    total: { decimalAmount: number; formatted: string }
+    budget?: { amountDecimal: number; formatted: string } | null | false
+    total: { amountDecimal: number; formatted: string }
     href: string
   }>
 }
@@ -64,7 +64,7 @@ const BudgetGroup: Component<BudgetGroupProps> = (props) => {
                         }}
                         style={{
                           width: budget
-                            ? `${Math.min(total.decimalAmount / budget.decimalAmount, 1) * 100}%`
+                            ? `${Math.min(total.amountDecimal / budget.amountDecimal, 1) * 100}%`
                             : 0
                         }}
                       />
@@ -77,11 +77,11 @@ const BudgetGroup: Component<BudgetGroupProps> = (props) => {
                             class="text-xs"
                             classList={{
                               "text-danger-600 font-bold":
-                                total.decimalAmount > budget.decimalAmount,
-                              "text-gray-600": total.decimalAmount <= budget.decimalAmount
+                                total.amountDecimal > budget.amountDecimal,
+                              "text-gray-600": total.amountDecimal <= budget.amountDecimal
                             }}
                           >
-                            {((total.decimalAmount / budget.decimalAmount) * 100).toFixed(0)}% spent
+                            {((total.amountDecimal / budget.amountDecimal) * 100).toFixed(0)}% spent
                           </span>
                           <span class="ml-auto text-xs text-gray-600">
                             {budget.formatted} budget
@@ -112,7 +112,7 @@ const BudgetGroup: Component<BudgetGroupProps> = (props) => {
         data={props.items.map(({ name, color, total }) => ({
           name: name || "Uncategorized",
           color: color ? getCssValue(`--color-${color}-500`) : getCssValue("--color-gray-400"),
-          value: total.decimalAmount,
+          value: total.amountDecimal,
           formattedValue: total.formatted
         }))}
       />

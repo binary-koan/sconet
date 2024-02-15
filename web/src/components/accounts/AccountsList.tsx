@@ -32,7 +32,7 @@ const AccountsList: Component<{
         <div class="flex items-center bg-white px-4 py-2 shadow-sm">
           <div class="mr-4 min-w-0 flex-1">
             <h3 class="mb-1 truncate leading-none">{account.name}</h3>
-            <p class="text-xs leading-tight text-gray-600">{account.currencyCode}</p>
+            <p class="text-xs leading-tight text-gray-600">{account.currency.code}</p>
           </div>
           <Button
             size="sm"

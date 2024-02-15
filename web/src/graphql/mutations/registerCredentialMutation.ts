@@ -7,7 +7,9 @@ import { MutationOptions, useMutation } from "../../utils/graphqlClient/useMutat
 
 const MUTATION = gql`
   mutation RegisterCredential {
-    registerCredential
+    credentialRegistrationStart(input: {}) {
+      options
+    }
   }
 `
 

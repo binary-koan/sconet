@@ -14,7 +14,7 @@ const transactionsData: RouteDataFunc<unknown, TransactionsCalendarPageData> = (
 
   // TODO: This currently fetches twice, maybe add a skip option to useQuery
   const data = useTransactionsByDayQuery(() => ({
-    currencyCode: currentUser()?.currentUser?.defaultCurrency.code,
+    currencyId: currentUser()?.currentUser?.defaultCurrency?.id,
     dateFrom: `${year()}-${month()}-01`,
     dateUntil: `${year()}-${month()}-${lastDateOfMonth()}`
   }))

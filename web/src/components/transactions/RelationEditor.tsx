@@ -6,7 +6,7 @@ import { showAlert } from "../AlertManager"
 import CategoryIndicator from "../CategoryIndicator"
 import RelationEditInput from "./RelationEditInput"
 
-type SplitTransaction = TransactionsQuery["transactions"]["data"][number]["splitTo"][number]
+type SplitTransaction = TransactionsQuery["transactions"]["nodes"][number]["splitTo"][number]
 
 const RelationEditor: Component<{
   parent?: ListingTransactionFragment | null
@@ -25,13 +25,13 @@ const RelationEditor: Component<{
     })
   }
 
-  const updateAccount = async (account: { id: string; currencyCode: string }) => {
+  const updateAccount = async (account: { id: string; currency: { id: string } }) => {
     let confirmed = true
 
     if (
-      "currencyCode" in props.transaction &&
+      "currency" in props.transaction &&
       // eslint-disable-next-line solid/reactivity
-      account.currencyCode !== props.transaction.currencyCode
+      account.currency.id !== props.transaction.currency?.id
     ) {
       confirmed = await showAlert({
         title: "Change account?",
@@ -48,14 +48,14 @@ const RelationEditor: Component<{
       await updateTransaction({
         id: props.transaction.id,
         // eslint-disable-next-line solid/reactivity
-        input: { accountId: account.id, currencyCode: account.currencyCode }
+        input: { accountId: account.id, currencyId: account.currency.id }
       })
     }
   }
 
   return (
     <RelationEditInput
-      isIncome={Boolean(props.transaction.amount && props.transaction.amount.decimalAmount > 0)}
+      isIncome={Boolean(props.transaction.amount && props.transaction.amount.amountDecimal > 0)}
       category={props.transaction.category ?? undefined}
       account={"account" in props.transaction ? props.transaction.account : undefined}
       showAccount={props.showAccount ?? true}
@@ -77,7 +77,7 @@ const RelationEditor: Component<{
             isSplit={"splitTo" in props.transaction && props.transaction.splitTo?.length > 0}
             includeInReports={props.includeInReports}
             isIncome={Boolean(
-              props.transaction.amount && props.transaction.amount.decimalAmount > 0
+              props.transaction.amount && props.transaction.amount.amountDecimal > 0
             )}
           />
           <span class="sr-only" data-testid="category-name">

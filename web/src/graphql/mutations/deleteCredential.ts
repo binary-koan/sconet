@@ -4,9 +4,11 @@ import { MutationOptions, useMutation } from "../../utils/graphqlClient/useMutat
 import { CURRENT_USER_QUERY } from "../queries/currentUserQuery"
 
 const MUTATION = gql`
-  mutation DeleteCredential($id: String!) {
-    deleteCredential(id: $id) {
-      id
+  mutation DeleteCredential($id: ID!) {
+    credentialDelete(input: { id: $id }) {
+      currentUser {
+        id
+      }
     }
   }
 `

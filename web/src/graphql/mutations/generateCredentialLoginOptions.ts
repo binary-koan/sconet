@@ -6,8 +6,10 @@ import { gql } from "../../utils/gql"
 import { MutationOptions, useMutation } from "../../utils/graphqlClient/useMutation"
 
 const MUTATION = gql`
-  mutation GenerateCredentialLoginOptions($userId: String!) {
-    generateCredentialLoginOptions(userId: $userId)
+  mutation GenerateCredentialLoginOptions($email: String!) {
+    credentialLoginStart(input: { email: $email }) {
+      options
+    }
   }
 `
 

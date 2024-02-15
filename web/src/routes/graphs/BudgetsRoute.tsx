@@ -20,7 +20,7 @@ const budgetsRouteData: RouteDataFunc<unknown, BudgetsPageData> = ({ params }) =
 
   // TODO: This currently fetches twice, maybe add a skip option to useQuery
   const data = useBudgetQuery(() => ({
-    currencyCode: currentUser()?.currentUser?.defaultCurrency.code,
+    currencyId: currentUser()?.currentUser?.defaultCurrency?.id,
     year: parseInt(year()),
     month: parseInt(month()),
     monthStart: monthStart(),

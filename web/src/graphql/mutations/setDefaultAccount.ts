@@ -4,9 +4,11 @@ import { MutationOptions, useMutation } from "../../utils/graphqlClient/useMutat
 import { CURRENT_USER_QUERY } from "../queries/currentUserQuery"
 
 const MUTATION = gql`
-  mutation SetDefaultAccount($id: String!) {
-    setDefaultAccount(id: $id) {
-      id
+  mutation SetDefaultAccount($id: ID!) {
+    currentUserUpdate(input: { userInput: { defaultAccountId: $id } }) {
+      currentUser {
+        id
+      }
     }
   }
 `

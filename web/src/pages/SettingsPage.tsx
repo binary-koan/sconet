@@ -11,7 +11,7 @@ import { Button, LinkButton } from "../components/base/Button"
 import { PageHeader } from "../components/base/PageHeader"
 import { CategoriesList } from "../components/categories/CategoriesList"
 import { CurrentUserProfile } from "../components/user/CurrentUserProfile"
-import { FavoriteCurrencies } from "../components/user/FavoriteCurrencies"
+import { favouriteCurrencies } from "../components/user/FavouriteCurrencies"
 import {
   AccountsQuery,
   AccountsQueryVariables,
@@ -38,7 +38,7 @@ const SettingsPage: Component = () => {
   const data = useRouteData<SettingsPageData>()
   const registerCredential = useRegisterCredential({
     onSuccess: async (data) => {
-      const response = await startRegistration(data.registerCredential)
+      const response = await startRegistration(data.credentialRegistrationStart.options)
       const { client, device, os } = deviceDetector.parse(navigator.userAgent)
       const deviceString = [
         client?.name || "Unknown browser",
@@ -124,7 +124,7 @@ const SettingsPage: Component = () => {
         </LinkButton>
       </PageHeader>
 
-      <Cell data={data.currentUser} success={FavoriteCurrencies} />
+      <Cell data={data.currentUser} success={favouriteCurrencies} />
 
       <PageHeader size="lg" class="mt-4">
         Categories

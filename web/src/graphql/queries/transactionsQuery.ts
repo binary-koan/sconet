@@ -6,12 +6,14 @@ import { ListingTransactionFragment } from "../fragments/transactionFragments"
 export const TRANSACTIONS_QUERY = gql`
   ${ListingTransactionFragment}
 
-  query Transactions($limit: Int, $offset: String, $filter: TransactionFilter) {
-    transactions(limit: $limit, offset: $offset, filter: $filter) {
-      data {
+  query Transactions($limit: Int, $offset: String, $filter: TransactionFilterInput) {
+    transactions(first: $limit, after: $offset, filter: $filter) {
+      nodes {
         ...ListingTransaction
       }
-      nextOffset
+      pageInfo {
+        endCursor
+      }
     }
   }
 `

@@ -4,9 +4,11 @@ import { MutationOptions, useMutation } from "../../utils/graphqlClient/useMutat
 import { ACCOUNTS_QUERY } from "../queries/accountsQuery"
 
 const DELETE_ACCOUNT_MUTATION = gql`
-  mutation DeleteAccount($id: String!) {
-    deleteAccount(id: $id) {
-      id
+  mutation DeleteAccount($id: ID!) {
+    accountDelete(input: { id: $id }) {
+      account {
+        id
+      }
     }
   }
 `

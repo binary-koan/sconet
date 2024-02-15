@@ -4,7 +4,7 @@ import { useAccountsQuery } from "../../graphql/queries/accountsQuery"
 import { Dropdown, DropdownMenuItem } from "../Dropdown"
 
 export const AccountSelect: Component<{
-  value?: string
+  value: string | null
   onChange: (account: FullAccountFragment) => void
   children: (selectedAccount: FullAccountFragment | undefined) => JSX.Element
 }> = (props) => {
@@ -25,7 +25,7 @@ export const AccountSelect: Component<{
               class="text-sm"
               onClick={() => props.onChange(account)}
             >
-              {account.name} ({account.currencyCode})
+              {account.name} ({account.currency.code})
             </DropdownMenuItem>
           )}
         </For>

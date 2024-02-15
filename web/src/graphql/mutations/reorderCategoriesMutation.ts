@@ -4,9 +4,11 @@ import { MutationOptions, useMutation } from "../../utils/graphqlClient/useMutat
 import { CATEGORIES_QUERY } from "../queries/categoriesQuery"
 
 const REORDER_CATEGORIES_MUTATION = gql`
-  mutation ReorderCategories($orderedIds: [String!]!) {
-    reorderCategories(orderedIds: $orderedIds) {
-      id
+  mutation ReorderCategories($orderedIds: [ID!]!) {
+    categoriesReorder(input: { orderedIds: $orderedIds }) {
+      categories {
+        id
+      }
     }
   }
 `

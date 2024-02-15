@@ -146,7 +146,9 @@ const Category: Component<{
       <div class="me-4 ml-4 min-w-0 flex-1">
         <h3 class="mb-1 truncate leading-none">{props.category.name}</h3>
         <p class="truncate text-xs leading-tight text-gray-600">
-          {props.category.budget ? `Budget: ${props.category.budget.formatted}` : "No budget"}
+          {props.category.budget
+            ? `Budget: ${props.category.budget.budget.formatted}`
+            : "No budget"}
         </p>
       </div>
       <LinkButton

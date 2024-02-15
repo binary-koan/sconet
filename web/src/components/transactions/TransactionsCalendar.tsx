@@ -97,7 +97,7 @@ export const TransactionsCalendar: Component<{
         <div class="grid grid-cols-7">
           <For each={dates().slice(0, 7)}>
             {({ date }) => (
-              <div class="border-r border-gray-200 p-1 text-center text-xs font-semibold md:px-2 md:text-left [&:nth-child(7n)]:border-r-0">
+              <div class="[&:nth-child(7n)]:border-r-0 border-r border-gray-200 p-1 text-center text-xs font-semibold md:px-2 md:text-left">
                 {date.toLocaleDateString("default", { weekday: "short" })}
               </div>
             )}
@@ -105,7 +105,7 @@ export const TransactionsCalendar: Component<{
           <For each={dates()}>
             {({ date, isCurrentMonth, totalSpent, expenses, incomes }) => (
               <div
-                class="flex h-16 flex-col border-r border-t border-gray-200 p-1 text-center text-sm md:h-32 md:text-left [&:nth-child(7n)]:border-r-0"
+                class="[&:nth-child(7n)]:border-r-0 flex h-16 flex-col border-r border-t border-gray-200 p-1 text-center text-sm md:h-32 md:text-left"
                 classList={{ "text-gray-300": !isCurrentMonth }}
                 data-testid={isSameDate(date, new Date()) ? "calendar-today" : "calendar-day"}
               >
@@ -177,7 +177,7 @@ export const TransactionsCalendar: Component<{
                           class="ml-auto whitespace-nowrap"
                           classList={{
                             "text-green-600": Boolean(
-                              transaction.amount && transaction.amount.decimalAmount > 0
+                              transaction.amount && transaction.amount.amountDecimal > 0
                             )
                           }}
                         >
@@ -224,12 +224,12 @@ const monthDates = (year: number, month: number, result: TransactionsByDayQuery)
 
       expenses:
         day?.transactions.filter(
-          (transaction) => transaction.amount && transaction.amount.decimalAmount < 0
+          (transaction) => transaction.amount && transaction.amount.amountDecimal < 0
         ) || [],
 
       incomes:
         day?.transactions.filter(
-          (transaction) => transaction.amount && transaction.amount.decimalAmount > 0
+          (transaction) => transaction.amount && transaction.amount.amountDecimal > 0
         ) || []
     }
   })

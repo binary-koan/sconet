@@ -5,9 +5,11 @@ import { GET_TRANSACTION_QUERY } from "../queries/getTransactionQuery"
 import { TRANSACTIONS_QUERY } from "../queries/transactionsQuery"
 
 const MUTATION = gql`
-  mutation SplitTransaction($id: String!, $splits: [SplitTransactionItem!]!) {
-    splitTransaction(id: $id, splits: $splits) {
-      id
+  mutation SplitTransaction($id: ID!, $splits: [TransactionSplitItemInput!]!) {
+    transactionSplit(input: { id: $id, splits: $splits }) {
+      transaction {
+        id
+      }
     }
   }
 `

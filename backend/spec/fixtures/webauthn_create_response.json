@@ -1,0 +1,14 @@
+{
+  "id": "7KgYAmRHYqgeWq7SCOnjLTQ9M7U",
+  "rawId": "7KgYAmRHYqgeWq7SCOnjLTQ9M7U",
+  "response": {
+    "attestationObject": "o2NmbXRkbm9uZWdhdHRTdG10oGhhdXRoRGF0YViYdKbqkhPJnC90siSSsyDPQCYqlMGpUKA5fyklC2CEHvBdAAAAAPv8MAcVTk7MjAtuAgVX170AFOyoGAJkR2KoHlqu0gjp4y00PTO1pQECAyYgASFYIPxeiTzJ5HMGgHUTVIsrNbuiOwqBqWpW5qSa7vU4PQJFIlgg98O8lJrS7p0z4wJ92eaGsAL5N4NhBF1FZ8MOr2ndqZE",
+    "clientDataJSON": "eyJjaGFsbGVuZ2UiOiI4VWZzcDgtNFVKSXhzMy1zNUtqNVVMeWhqWFBWZXNXLWk5RlJCVVp4azY2NXRGYnJ1TFlRSWkzN1loQlB5OUM1V0JwemM5XzlnMXdCQzM5YjlOM19lQSIsIm9yaWdpbiI6Imh0dHBzOi8vd2ViYXV0aG4uaW8iLCJ0eXBlIjoid2ViYXV0aG4uY3JlYXRlIn0",
+    "transports": ["internal"],
+    "publicKeyAlgorithm": -7,
+    "publicKey": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE_F6JPMnkcwaAdRNUiys1u6I7CoGpalbmpJru9Tg9AkX3w7yUmtLunTPjAn3Z5oawAvk3g2EEXUVnww6vad2pkQ",
+    "authenticatorData": "dKbqkhPJnC90siSSsyDPQCYqlMGpUKA5fyklC2CEHvBdAAAAAPv8MAcVTk7MjAtuAgVX170AFOyoGAJkR2KoHlqu0gjp4y00PTO1pQECAyYgASFYIPxeiTzJ5HMGgHUTVIsrNbuiOwqBqWpW5qSa7vU4PQJFIlgg98O8lJrS7p0z4wJ92eaGsAL5N4NhBF1FZ8MOr2ndqZE"
+  },
+  "type": "public-key",
+  "clientExtensionResults": {}
+}

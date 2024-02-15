@@ -11,7 +11,7 @@ import { repeat } from "lodash"
 import { TbArrowsSplit2, TbCalendarEvent, TbPlus, TbSelector, TbSwitch3 } from "solid-icons/tb"
 import { Component, createEffect, createSignal, For, Show } from "solid-js"
 import toast from "solid-toast"
-import { CreateTransactionInput, FullTransactionFragment } from "../../graphql-types"
+import { TransactionInput, FullTransactionFragment } from "../../graphql-types"
 import { useCreateTransaction } from "../../graphql/mutations/createTransactionMutation"
 import { useCategoriesQuery } from "../../graphql/queries/categoriesQuery"
 import { useCurrenciesQuery } from "../../graphql/queries/currenciesQuery"
@@ -30,10 +30,10 @@ import FormInput from "../forms/FormInput"
 import FormInputGroup from "../forms/FormInputGroup"
 import { SplitTransactionModal } from "./SplitTransactionModal"
 
-type NewTransactionModalValues = Omit<CreateTransactionInput, "amount" | "originalAmount"> & {
+type NewTransactionModalValues = Omit<TransactionInput, "amount" | "shopAmount"> & {
   amountType: "expense" | "income"
   amount?: string
-  originalAmount?: string
+  shopAmount?: string
 }
 
 export const NewTransactionModal: Component<{
@@ -73,31 +73,22 @@ export const NewTransactionModal: Component<{
   createEffect(() => {
     if (currentUser()?.currentUser?.defaultAccount && !getValue(form, "accountId")) {
       setValue(form, "accountId", currentUser()!.currentUser!.defaultAccount!.id)
-      setValue(form, "currencyCode", currentUser()!.currentUser!.defaultAccount!.currencyCode)
+      setValue(form, "currencyId", currentUser()!.currentUser!.defaultAccount!.currency.id)
     }
   })
 
   const onSave = async (
-    {
-      amount,
-      amountType,
-      date,
-      originalAmount,
-      originalCurrencyCode,
-      ...data
-    }: NewTransactionModalValues,
+    { amount, amountType, date, shopAmount, shopCurrencyId, ...data }: NewTransactionModalValues,
     event: SubmitEvent
   ) => {
-    const currency = currencies()?.currencies.find(
-      (currency) => currency.code === data.currencyCode
-    )
+    const currency = currencies()?.currencies.find((currency) => currency.id === data.currencyId)
     const integerAmount = Math.round(
       parseFloat(amount || "0") * 10 ** (currency?.decimalDigits || 0)
     )
 
-    const coercedData: CreateTransactionInput = {
+    const coercedData: TransactionInput = {
       ...data,
-      amount: originalCurrencyCode
+      amountCents: shopCurrencyId
         ? null
         : amountType === "expense"
         ? -integerAmount
@@ -106,22 +97,22 @@ export const NewTransactionModal: Component<{
       includeInReports: Boolean(data.includeInReports)
     }
 
-    if (originalCurrencyCode && originalAmount) {
-      const originalCurrency = currencies()?.currencies.find(
-        (currency) => currency.code === originalCurrencyCode
+    if (shopCurrencyId && shopAmount) {
+      const shopCurrency = currencies()?.currencies.find(
+        (currency) => currency.code === shopCurrencyId
       )
-      const integerOriginalAmount = Math.round(
-        parseFloat(originalAmount || "0") * 10 ** (originalCurrency?.decimalDigits || 0)
+      const integerShopAmount = Math.round(
+        parseFloat(shopAmount || "0") * 10 ** (shopCurrency?.decimalDigits || 0)
       )
-      coercedData.originalAmount =
-        amountType === "expense" ? -integerOriginalAmount : integerOriginalAmount
-      coercedData.originalCurrencyCode = originalCurrencyCode
+      coercedData.shopAmountCents =
+        amountType === "expense" ? -integerShopAmount : integerShopAmount
+      coercedData.shopCurrencyId = shopCurrencyId
     }
 
     const result = await createTransaction({ input: coercedData })
 
     if (result && event.submitter.dataset.action === "split") {
-      setSplittingTransaction(result.createTransaction)
+      setSplittingTransaction(result.transactionCreate.transaction)
     } else {
       props.onClose()
     }
@@ -132,12 +123,10 @@ export const NewTransactionModal: Component<{
   }
 
   const selectedCurrency = () =>
-    currencies()?.currencies.find((currency) => currency.code === getValue(form, "currencyCode"))
+    currencies()?.currencies.find((currency) => currency.id === getValue(form, "currencyId"))
 
-  const selectedOriginalCurrency = () =>
-    currencies()?.currencies.find(
-      (currency) => currency.code === getValue(form, "originalCurrencyCode")
-    )
+  const selectedShopCurrency = () =>
+    currencies()?.currencies.find((currency) => currency.id === getValue(form, "shopCurrencyId"))
 
   const selectedCategory = () =>
     categories()?.categories.find((category) => category.id === getValue(form, "categoryId"))
@@ -179,21 +168,22 @@ export const NewTransactionModal: Component<{
                     label="Memo"
                     name="memo"
                     onBlur={(e) => {
-                      const recent = transactions()?.transactions.data.find(
+                      const recent = transactions()?.transactions.nodes.find(
                         (transaction) =>
                           transaction.memo.toLowerCase().replace(/[^\w]+/, "") ===
                           e.target.value.toLowerCase().replace(/[^\w]+/, "")
                       )
 
                       if (recent) {
-                        setValue(form, "categoryId", recent.categoryId)
-                        setValue(form, "accountId", recent.accountId)
+                        setValue(form, "categoryId", recent.category?.id)
+                        setValue(form, "accountId", recent.account.id)
+                        setValue(form, "currencyId", recent.account.currency.id)
                       }
                     }}
                   />
 
                   <Show
-                    when={getValue(form, "originalCurrencyCode")}
+                    when={getValue(form, "shopCurrencyId")}
                     fallback={
                       <FormInputGroup
                         of={form}
@@ -214,22 +204,22 @@ export const NewTransactionModal: Component<{
                     <FormInputGroup
                       of={form}
                       label="Original amount"
-                      name="originalAmount"
+                      name="shopAmount"
                       inputmode="decimal"
                       placeholderLabel={true}
                       validate={minRange(0, "Must be zero or more")}
-                      before={<InputAddon>{selectedOriginalCurrency()?.symbol}</InputAddon>}
+                      before={<InputAddon>{selectedShopCurrency()?.symbol}</InputAddon>}
                       step={
-                        selectedOriginalCurrency()?.decimalDigits
-                          ? `0.${repeat("0", selectedOriginalCurrency()!.decimalDigits - 1)}1`
+                        selectedShopCurrency()?.decimalDigits
+                          ? `0.${repeat("0", selectedShopCurrency()!.decimalDigits - 1)}1`
                           : "1"
                       }
                     />
                   </Show>
                 </div>
 
-                <Field of={form} name="currencyCode">
-                  {(field) => <input type="hidden" value={field.value} />}
+                <Field of={form} name="currencyId">
+                  {(field) => <input type="hidden" value={field.value || undefined} />}
                 </Field>
 
                 <div class="flex gap-4">
@@ -318,10 +308,10 @@ export const NewTransactionModal: Component<{
                   <Field of={form} name="accountId">
                     {(field) => (
                       <AccountSelect
-                        value={field.value}
+                        value={field.value || null}
                         onChange={(account) => {
                           setValue(form, "accountId", account.id)
-                          setValue(form, "currencyCode", account.currencyCode)
+                          setValue(form, "currencyId", account.currency.id)
                         }}
                       >
                         {(account) => (
@@ -331,7 +321,7 @@ export const NewTransactionModal: Component<{
                             class="rounded border border-gray-100 px-4 py-2 text-xs text-gray-700"
                             data-testid="account-select"
                           >
-                            {account?.name} ({account?.currencyCode})
+                            {account?.name} ({account?.currency.code})
                             <TbSelector class="ml-1" />
                           </Button>
                         )}
@@ -339,14 +329,12 @@ export const NewTransactionModal: Component<{
                     )}
                   </Field>
 
-                  <Field of={form} name="originalCurrencyCode">
+                  <Field of={form} name="shopCurrencyId">
                     {(field) => (
                       <CurrencySelect
-                        value={field.value}
-                        onChange={(currencyCode) =>
-                          setValue(form, "originalCurrencyCode", currencyCode)
-                        }
-                        filter={(currency) => currency.code !== selectedCurrency()?.code}
+                        value={field.value || null}
+                        onChange={(currencyId) => setValue(form, "shopCurrencyId", currencyId)}
+                        filter={(currency) => currency.id !== selectedCurrency()?.id}
                       >
                         {(currency) => (
                           <Button

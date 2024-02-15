@@ -5,9 +5,11 @@ import { GET_TRANSACTION_QUERY } from "../queries/getTransactionQuery"
 import { TRANSACTIONS_QUERY } from "../queries/transactionsQuery"
 
 const DELETE_TRANSACTION_MUTATION = gql`
-  mutation DeleteTransaction($id: String!) {
-    deleteTransaction(id: $id) {
-      id
+  mutation DeleteTransaction($id: ID!) {
+    transactionDelete(input: { id: $id }) {
+      transaction {
+        id
+      }
     }
   }
 `

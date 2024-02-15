@@ -12,14 +12,16 @@ export const FullCurrentUserFragment = gql`
       ...FullCurrency
     }
 
-    favoriteCurrencies {
+    favouriteCurrencies {
       ...FullCurrency
     }
 
     defaultAccount {
       id
       name
-      currencyCode
+      currency {
+        id
+      }
     }
 
     registeredCredentials {

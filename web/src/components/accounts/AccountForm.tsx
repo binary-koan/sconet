@@ -1,23 +1,23 @@
 import { createForm, Field, Form, required, setValue } from "@modular-forms/solid"
 import { TbSelector } from "solid-icons/tb"
 import { Component } from "solid-js"
-import { CreateAccountInput, FullAccountFragment } from "../../graphql-types"
+import { AccountInput, FullAccountFragment } from "../../graphql-types"
 import { Button } from "../base/Button"
 import { FormControl, FormLabel } from "../base/FormControl"
 import { CurrencySelect } from "../currencies/CurrencySelect"
 import FormInput from "../forms/FormInput"
 
-type AccountFormValues = CreateAccountInput
+type AccountFormValues = AccountInput
 
 const AccountForm: Component<{
   account?: FullAccountFragment | null
-  onSave: (input: CreateAccountInput, id?: string) => void
+  onSave: (input: AccountInput, id?: string) => void
   loading: boolean
 }> = (props) => {
   const [form] = createForm<AccountFormValues>({
     initialValues: {
       name: props.account?.name,
-      currencyCode: props.account?.currencyCode
+      currencyId: props.account?.currency.id
     }
   })
 
@@ -29,12 +29,12 @@ const AccountForm: Component<{
 
       <FormControl>
         <FormLabel>Currency</FormLabel>
-        <Field of={form} name="currencyCode">
+        <Field of={form} name="currencyId">
           {(field) => (
             <CurrencySelect
-              value={field.value}
-              onChange={(code) => {
-                setValue(form, "currencyCode", code)
+              value={field.value || null}
+              onChange={(id) => {
+                setValue(form, "currencyId", id)
               }}
             >
               {(currency) => (

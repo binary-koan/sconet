@@ -1,22 +1,28 @@
 import { decodeJwt } from "jose"
 import { createSignal } from "solid-js"
+import { FullCurrentUserFragment } from "../graphql-types"
 
 const LOGIN_TOKEN_KEY = "sconet.loginToken"
-const LAST_USER_ID_KEY = "sconet.userId"
+const LAST_USER_EMAIL_KEY = "sconet.userEmail"
 
 const [loginToken, setLoginTokenSignal] = createSignal(localStorage.getItem(LOGIN_TOKEN_KEY))
-const [lastUserId, setLastUserIdSignal] = createSignal(localStorage.getItem(LAST_USER_ID_KEY))
+const [lastUserEmail, setLastUserEmailSignal] = createSignal(
+  localStorage.getItem(LAST_USER_EMAIL_KEY)
+)
 
-export { loginToken, lastUserId }
+export { loginToken, lastUserEmail }
 
-export function setLoginToken(token: string | null) {
+export function setLoginToken(token: string, email: string): void
+export function setLoginToken(token: null): void
+export function setLoginToken(token: string | null, email?: string) {
   if (token) {
     setLoginTokenSignal(token)
     localStorage.setItem(LOGIN_TOKEN_KEY, token)
 
-    const userId = decodeJwt(token).sub!
-    setLastUserIdSignal(userId)
-    localStorage.setItem(LAST_USER_ID_KEY, userId)
+    if (email) {
+      setLastUserEmailSignal(email)
+      localStorage.setItem(LAST_USER_EMAIL_KEY, email)
+    }
   } else {
     setLoginTokenSignal(null)
     localStorage.removeItem(LOGIN_TOKEN_KEY)

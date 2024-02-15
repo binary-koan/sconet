@@ -4,30 +4,30 @@ import { useQuery } from "../../utils/graphqlClient/useQuery"
 
 export const BUDGET_QUERY = gql`
   query Budget(
-    $currencyCode: CurrencyCode
+    $currencyId: ID
     $year: Int!
     $month: Int!
-    $monthStart: Date!
-    $monthEnd: Date!
+    $monthStart: ISO8601Date!
+    $monthEnd: ISO8601Date!
   ) {
-    budget(year: $year, month: $month, currencyCode: $currencyCode) {
+    budget(year: $year, month: $month, currencyId: $currencyId) {
       id
       month
       income {
-        decimalAmount
+        amountDecimal
         formatted
       }
       totalSpending {
-        decimalAmount
+        amountDecimal
         formatted
       }
       difference {
-        decimalAmount
+        amountDecimal
         formatted
       }
       regularCategories {
         totalSpending {
-          decimalAmount
+          amountDecimal
           formatted
         }
         categories {
@@ -38,20 +38,22 @@ export const BUDGET_QUERY = gql`
             color
             icon
             isRegular
-            budget(currencyCode: $currencyCode, date: $monthStart) {
-              decimalAmount
-              formatted
+            budget(date: $monthStart) {
+              budget(currencyId: $currencyId) {
+                amountDecimal
+                formatted
+              }
             }
           }
           amountSpent {
-            decimalAmount
+            amountDecimal
             formatted
           }
         }
       }
       irregularCategories {
         totalSpending {
-          decimalAmount
+          amountDecimal
           formatted
         }
         categories {
@@ -62,30 +64,31 @@ export const BUDGET_QUERY = gql`
             color
             icon
             isRegular
-            budget {
-              decimalAmount
-              formatted
+            budget(date: $monthStart) {
+              budget(currencyId: $currencyId) {
+                amountDecimal
+                formatted
+              }
             }
           }
           amountSpent {
-            decimalAmount
+            amountDecimal
             formatted
           }
         }
       }
     }
 
-    income: transactions(filter: { dateFrom: $monthStart, dateUntil: $monthEnd, minAmount: 1 }) {
-      data {
+    income: transactions(
+      filter: { dateFrom: $monthStart, dateUntil: $monthEnd, minAmountCents: 1 }
+    ) {
+      nodes {
         id
         memo
-        amount(currencyCode: $currencyCode) {
+        amount(currencyId: $currencyId) {
           formatted
-          decimalAmount
+          amountDecimal
         }
-      }
-      totalAmount {
-        formatted
       }
     }
   }

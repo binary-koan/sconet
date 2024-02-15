@@ -16,7 +16,7 @@ export const TransactionsList: Component<{
   const [showingModalForDate, setShowingModalForDate] = createSignal<Date>()
 
   const items = createMemo(() => {
-    const transactions = props.data.transactions.data
+    const transactions = props.data.transactions.nodes
 
     if (!transactions.length) return []
 
@@ -111,7 +111,7 @@ export const TransactionsList: Component<{
         }}
       </For>
 
-      <Show when={props.fetchMore && props.data.transactions.nextOffset}>
+      <Show when={props.fetchMore && props.data.transactions.pageInfo.endCursor}>
         <Button variant="ghost" class="mt-2" onClick={props.fetchMore}>
           Fetch more
         </Button>

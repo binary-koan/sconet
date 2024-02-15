@@ -123,13 +123,13 @@ const TransactionsListPage: Component = () => {
             routeData.data.fetchMore(
               {
                 ...routeData.variables,
-                offset: routeData.data()?.transactions.nextOffset
+                offset: routeData.data()?.transactions.pageInfo.endCursor
               },
               (existingData, newData) => ({
                 ...newData,
                 transactions: {
                   ...newData.transactions,
-                  data: existingData.transactions.data.concat(newData.transactions.data)
+                  nodes: existingData.transactions.nodes.concat(newData.transactions.nodes)
                 }
               })
             )

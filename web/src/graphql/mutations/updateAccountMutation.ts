@@ -8,9 +8,11 @@ import { GET_ACCOUNT_QUERY } from "../queries/getAccountQuery"
 const UPDATE_ACCOUNT_MUTATION = gql`
   ${FullAccountFragment}
 
-  mutation UpdateAccount($id: String!, $input: UpdateAccountInput!) {
-    updateAccount(id: $id, input: $input) {
-      ...FullAccount
+  mutation UpdateAccount($id: ID!, $input: AccountInput!) {
+    accountUpdate(input: { id: $id, accountInput: $input }) {
+      account {
+        id
+      }
     }
   }
 `

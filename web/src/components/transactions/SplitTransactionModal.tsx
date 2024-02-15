@@ -34,7 +34,7 @@ export const SplitTransactionModal: Component<{
     }
   })
   const currencyData = useGetCurrencyQuery(() => ({
-    code: props.transaction.originalCurrencyCode || props.transaction.currencyCode
+    id: (props.transaction.shopCurrency?.id || props.transaction.currency?.id)!
   }))
 
   const [splits, setSplits] = createStore<SplitValues>(
@@ -51,13 +51,13 @@ export const SplitTransactionModal: Component<{
     }
   }
 
-  const originalAmount = () =>
-    props.transaction.originalAmount?.decimalAmount || props.transaction.amount?.decimalAmount || 0
+  const shopAmount = () =>
+    props.transaction.shopAmount?.amountDecimal || props.transaction.amount?.amountDecimal || 0
 
   const remainder = () =>
     parseFloat(
       (
-        Math.abs(originalAmount()) -
+        Math.abs(shopAmount()) -
         sum(splits.flatMap(({ splits }) => splits.map((split) => split.numericAmount)))
       ).toFixed(currencyData()?.currency?.decimalDigits || 0)
     )
@@ -78,7 +78,7 @@ export const SplitTransactionModal: Component<{
       })
     }
 
-    if (originalAmount() < 0) {
+    if (shopAmount() < 0) {
       splitsToSend = splitsToSend.map((split) => ({
         ...split,
         numericAmount: -split.numericAmount
@@ -90,7 +90,9 @@ export const SplitTransactionModal: Component<{
       splits: splitsToSend.map(({ memo, categoryId, numericAmount }) => ({
         memo,
         categoryId,
-        amount: Math.round(numericAmount * 10 ** (currencyData()?.currency?.decimalDigits || 0))
+        amountCents: Math.round(
+          numericAmount * 10 ** (currencyData()?.currency?.decimalDigits || 0)
+        )
       }))
     })
   }
@@ -144,7 +146,7 @@ export const SplitTransactionModal: Component<{
     setSplits((splits) => splits.filter((split) => split.category?.id !== category?.id))
   }
 
-  const canSplitCategories = () => originalAmount() < 0 && props.transaction.includeInReports
+  const canSplitCategories = () => shopAmount() < 0 && props.transaction.includeInReports
 
   return (
     <Modal onClickOutside={props.onClose} isOpen={props.isOpen}>
@@ -273,11 +275,11 @@ function getCurrentSplits(transaction: ListingTransactionFragment): SplitValues 
 
     const value = {
       amount: Math.abs(
-        transaction.originalAmount?.decimalAmount || transaction.amount?.decimalAmount || 0
+        transaction.shopAmount?.amountDecimal || transaction.amount?.amountDecimal || 0
       ).toString(),
       memo: transaction.memo,
       numericAmount: Math.abs(
-        transaction.originalAmount?.decimalAmount || transaction.amount?.decimalAmount || 0
+        transaction.shopAmount?.amountDecimal || transaction.amount?.amountDecimal || 0
       )
     }
 

@@ -6,8 +6,13 @@ import { gql } from "../../utils/gql"
 import { MutationOptions, useMutation } from "../../utils/graphqlClient/useMutation"
 
 const MUTATION = gql`
-  mutation LoginViaCredential($response: JSON!) {
-    loginViaCredential(response: $response)
+  mutation LoginViaCredential($email: String!, $response: JSON!) {
+    login(input: { email: $email, webauthnResponse: $response }) {
+      token
+      currentUser {
+        email
+      }
+    }
   }
 `
 

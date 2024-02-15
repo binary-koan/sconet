@@ -6,7 +6,7 @@ import { FullCategoryFragment } from "../fragments/categoryFragments"
 export const GET_CATEGORY_QUERY = gql`
   ${FullCategoryFragment}
 
-  query GetCategory($id: String!) {
+  query GetCategory($id: ID!, $today: ISO8601Date!) {
     category(id: $id) {
       ...FullCategory
     }

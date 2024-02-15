@@ -6,8 +6,8 @@ import { useCurrentUserQuery } from "../../graphql/queries/currentUserQuery"
 import { Dropdown, DropdownMenuItem } from "../Dropdown"
 
 export const CurrencySelect: Component<{
-  value: string
-  onChange: (code: string) => void
+  value: string | null
+  onChange: (id: string) => void
   children: (selectedCurrency: FullCurrencyFragment | undefined) => JSX.Element
   filter?: (currency: FullCurrencyFragment) => boolean
 }> = (props) => {
@@ -15,7 +15,7 @@ export const CurrencySelect: Component<{
   const currentUser = useCurrentUserQuery()
 
   const toggle = children(() =>
-    props.children(currencies()?.currencies.find((currency) => currency.code === props.value))
+    props.children(currencies()?.currencies.find((currency) => currency.id === props.value))
   )
 
   const orderedCurrencies = () =>
@@ -23,10 +23,10 @@ export const CurrencySelect: Component<{
       (currency) =>
         -(
           currentUser()
-            ?.currentUser?.favoriteCurrencies.map((currency) => currency.code)
-            .indexOf(currency.code) ?? 99999
+            ?.currentUser?.favouriteCurrencies.map((currency) => currency.id)
+            .indexOf(currency.id) ?? 99999
         ),
-      (currency) => currency.code
+      (currency) => currency.id
     ])
 
   return (
@@ -35,8 +35,8 @@ export const CurrencySelect: Component<{
       content={
         <For each={orderedCurrencies().filter(props.filter || (() => true))}>
           {(currency) => (
-            <DropdownMenuItem class="text-sm" onClick={() => props.onChange(currency.code)}>
-              {currency.code}
+            <DropdownMenuItem class="text-sm" onClick={() => props.onChange(currency.id)}>
+              {currency.id}
             </DropdownMenuItem>
           )}
         </For>

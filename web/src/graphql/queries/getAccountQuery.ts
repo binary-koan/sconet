@@ -6,7 +6,7 @@ import { FullAccountFragment } from "../fragments/accountFragments"
 export const GET_ACCOUNT_QUERY = gql`
   ${FullAccountFragment}
 
-  query GetAccount($id: String!) {
+  query GetAccount($id: ID!) {
     account(id: $id) {
       ...FullAccount
     }

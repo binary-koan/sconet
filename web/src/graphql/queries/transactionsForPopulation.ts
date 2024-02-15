@@ -7,12 +7,19 @@ import { useQuery } from "../../utils/graphqlClient/useQuery"
 
 export const TRANSACTIONS_FOR_POPULATION_QUERY = gql`
   query TransactionsForPopulation {
-    transactions(limit: 200) {
-      data {
+    transactions(first: 200) {
+      nodes {
         id
         memo
-        accountId
-        categoryId
+        account {
+          id
+          currency {
+            id
+          }
+        }
+        category {
+          id
+        }
       }
     }
   }

@@ -37,7 +37,7 @@ const BalancePage = () => {
 
         <Show when={routeData.currentUser()?.currentUser}>
           <DefaultCurrencySelect
-            favoriteCurrencies={routeData.currentUser()!.currentUser!.favoriteCurrencies}
+            favouriteCurrencies={routeData.currentUser()!.currentUser!.favouriteCurrencies}
             defaultCurrency={routeData.currentUser()!.currentUser!.defaultCurrency}
           />
         </Show>

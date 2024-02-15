@@ -4,9 +4,11 @@ import { MutationOptions, useMutation } from "../../utils/graphqlClient/useMutat
 import { CATEGORIES_QUERY } from "../queries/categoriesQuery"
 
 const CREATE_CATEGORY_MUTATION = gql`
-  mutation CreateCategory($input: CreateCategoryInput!) {
-    createCategory(input: $input) {
-      id
+  mutation CreateCategory($input: CategoryInput!) {
+    categoryCreate(input: { categoryInput: $input }) {
+      category {
+        id
+      }
     }
   }
 `
