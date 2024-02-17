@@ -1,40 +1,62 @@
-# Builder
-FROM oven/bun:1.0 AS builder
+FROM ruby:3.3-slim as base
 
-WORKDIR /app
+LABEL fly_launch_runtime="rails"
 
-RUN mkdir api && mkdir web
+# Rails app lives here
+WORKDIR /rails
 
-COPY bun.lockb ./
-COPY package.json ./
-COPY api/package.json ./api
-COPY web/package.json ./web
+# Set production environment
+ENV BUNDLE_DEPLOYMENT="1" \
+    BUNDLE_PATH="/usr/local/bundle" \
+    BUNDLE_WITHOUT="development:test" \
+    RAILS_ENV="production"
 
-RUN bun install
+# Update gems and bundler
+RUN gem update --system --no-document && \
+    gem install -N bundler
 
+
+# Throw-away build stage to reduce size of final image
+FROM base as build
+
+# Install packages needed to build gems
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y build-essential curl libpq-dev unzip
+
+# Install application gems
+COPY Gemfile Gemfile.lock ./
+RUN bundle install && \
+    bundle exec bootsnap precompile --gemfile && \
+    rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git
+
+# Copy application code
 COPY . .
 
-ARG TURNSTILE_SITEKEY
-ENV PRODUCTION_BUILD=1
+# Precompile bootsnap code for faster boot times
+RUN bundle exec bootsnap precompile app/ lib/
 
-RUN test -n "$TURNSTILE_SITEKEY" || (echo "TURNSTILE_SITEKEY is not set" && false)
 
-RUN cd api && bun run build
-RUN cd web && bun run build
+# Final stage for app image
+FROM base
 
-# Runtime
-FROM gcr.io/distroless/cc-debian11 AS runtime
+# Install packages needed for deployment
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y curl postgresql-client && \
+    rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
-WORKDIR /app
+# Copy built artifacts: gems, application
+COPY --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"
+COPY --from=build /rails /rails
 
-ENV ENV_TYPE=production
-ENV STATIC_PATHS=static
-ENV MIGRATIONS_PATH=migrations
-ENV TZ=UTC
+# Run and own only the runtime files as a non-root user for security
+RUN groupadd --system --gid 1000 rails && \
+    useradd rails --uid 1000 --gid 1000 --create-home --shell /bin/bash && \
+    chown -R 1000:1000 db log storage tmp
+USER 1000:1000
 
-COPY --from=builder /app/api/build .
-COPY --from=builder /app/web/build ./static
-COPY --from=builder /app/web/public ./static
-COPY --from=builder /app/api/src/db/migrations ./migrations
+# Entrypoint prepares the database.
+ENTRYPOINT ["/rails/bin/docker-entrypoint"]
 
-CMD ["/app/run", "setup-and-serve"]
+# Start the server by default, this can be overwritten at runtime
+EXPOSE 3000
+CMD ["./bin/rails", "server"]

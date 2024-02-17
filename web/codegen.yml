@@ -1,4 +1,4 @@
-schema: ../backend/schema.graphql
+schema: ../schema.graphql
 documents: src/**/*.{ts,tsx}
 generates:
   ./src/graphql-types.ts:

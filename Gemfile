@@ -60,3 +60,5 @@ gem "webauthn", "~> 3.1"
 gem "faraday", "~> 2.9"
 
 gem "faraday-retry", "~> 2.2", require: "faraday/retry"
+
+gem "dockerfile-rails", ">= 1.6", :group => :development
