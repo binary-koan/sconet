@@ -1,4 +1,4 @@
-FROM ruby:3.3-slim as base
+FROM ruby:3.3-alpine as base
 
 LABEL fly_launch_runtime="rails"
 
@@ -20,8 +20,8 @@ RUN gem update --system --no-document && \
 FROM base as build
 
 # Install packages needed to build gems
-RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential curl libpq-dev unzip
+RUN apk add --update-cache build-base curl libpq-dev unzip && \
+    rm -rf /var/cache/apk/*
 
 # Install application gems
 COPY Gemfile Gemfile.lock ./
@@ -40,17 +40,16 @@ RUN bundle exec bootsnap precompile app/ lib/
 FROM base
 
 # Install packages needed for deployment
-RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl postgresql-client && \
-    rm -rf /var/lib/apt/lists /var/cache/apt/archives
+RUN apk add --update-cache bash curl postgresql15-client && \
+    rm -rf /var/cache/apk/*
 
 # Copy built artifacts: gems, application
 COPY --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"
 COPY --from=build /rails /rails
 
 # Run and own only the runtime files as a non-root user for security
-RUN groupadd --system --gid 1000 rails && \
-    useradd rails --uid 1000 --gid 1000 --create-home --shell /bin/bash && \
+RUN addgroup --system --gid 1000 rails && \
+    adduser rails --disabled-password --uid 1000 --ingroup rails --shell /bin/bash && \
     chown -R 1000:1000 db log storage tmp
 USER 1000:1000
 
