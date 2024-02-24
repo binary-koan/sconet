@@ -9,7 +9,7 @@ class ExchangeRates::Fetch
   end
 
   def call
-    response = fetch_exchange_rate(date) || fetch_exchange_rate("latest") || raise FetchFailedError, "Failed to fetch exchange rate"
+    response = fetch_exchange_rate(date) || fetch_exchange_rate("latest") || raise(FetchFailedError, "Failed to fetch exchange rate")
     return if response.nil?
 
     save_exchange_rates(response)

@@ -168,7 +168,7 @@ GEM
     optimist (3.1.0)
     patience_diff (1.2.0)
       optimist (~> 3.0)
-    pg (1.5.4)
+    pg (1.5.5)
     pry (0.14.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
@@ -298,7 +298,7 @@ DEPENDENCIES
   webauthn (~> 3.1)
 
 RUBY VERSION
-   ruby 3.3.0p0
+   ruby 3.2.3p157
 
 BUNDLED WITH
    2.5.3
