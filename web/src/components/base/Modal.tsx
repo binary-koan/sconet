@@ -1,4 +1,4 @@
-import { TbX } from "solid-icons/tb"
+import { IconX } from "@tabler/icons-solidjs"
 import { splitProps } from "solid-js"
 import { Dynamic, Portal } from "solid-js/web"
 import { AsProp, BasicElementProps } from "../../types"
@@ -89,6 +89,6 @@ export const ModalTitle = (allProps: BasicElementProps<"div">) => {
 
 export const ModalCloseButton = (props: ButtonProps) => (
   <Button type="button" variant="ghost" size="square" class="-mr-1 ml-auto" {...props}>
-    <TbX />
+    <IconX />
   </Button>
 )

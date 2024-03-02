@@ -1,4 +1,4 @@
-import { TbPlus } from "solid-icons/tb"
+import { IconPlus } from "@tabler/icons-solidjs"
 import { Component, createMemo, createSignal, For, Show } from "solid-js"
 import { ListingTransactionFragment, TransactionsQuery } from "../../graphql-types"
 import { monthRange, stripTime } from "../../utils/date"
@@ -98,7 +98,7 @@ export const TransactionsList: Component<{
                   class="mr-1 h-5 gap-1 px-2 text-xs text-gray-500"
                   onClick={() => setShowingModalForDate(date)}
                 >
-                  <TbPlus />
+                  <IconPlus />
                 </Button>
                 {formatDate(date, "fullDateWithoutYear")}
               </div>

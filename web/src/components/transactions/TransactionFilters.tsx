@@ -1,12 +1,13 @@
 import { Form, FormStore, getValue } from "@modular-forms/solid"
 import { noop } from "lodash"
-import { TbFilter } from "solid-icons/tb"
+import { IconFilter } from "@tabler/icons-solidjs"
 import { Component, JSX, Show } from "solid-js"
 import { useCategoriesQuery } from "../../graphql/queries/categoriesQuery"
 import { namedIcons } from "../../utils/namedIcons"
 import CategoryIndicator from "../CategoryIndicator"
 import FormInput from "../forms/FormInput"
 import FormOptionButtons from "../forms/FormOptionButtons"
+import { stripTime } from "../../utils/date"
 
 export type TransactionFilterValues = {
   dateFrom?: string
@@ -21,7 +22,7 @@ export type TransactionFilterValues = {
 export const TransactionFilters: Component<{
   form: FormStore<TransactionFilterValues, undefined>
 }> = (props) => {
-  const data = useCategoriesQuery()
+  const data = useCategoriesQuery(() => ({ today: stripTime(new Date()) }))
 
   return (
     <div class="mb-4 bg-white p-4 shadow-sm lg:rounded" data-testid="filters-container">
@@ -119,7 +120,7 @@ const FilterLabel: Component<{
       {props.label}
       <Show when={isActive()}>
         <span class="text-indigo-500">
-          <TbFilter />
+          <IconFilter />
         </span>
       </Show>
     </span>

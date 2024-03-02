@@ -10,7 +10,7 @@ export const TRANSACTIONS_FOR_POPULATION_QUERY = gql`
     transactions(first: 200) {
       nodes {
         id
-        memo
+        shop
         account {
           id
           currency {

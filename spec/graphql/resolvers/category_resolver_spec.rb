@@ -81,6 +81,9 @@ describe Resolvers::CategoryResolver do
               createdAt
               updatedAt
             }
+            budget(date: "2020-01-15") {
+              id
+            }
           }
         }
       GRAPHQL
@@ -106,7 +109,10 @@ describe Resolvers::CategoryResolver do
             "id" => budget2.id,
             "updatedAt" => budget2.updated_at.iso8601,
           }
-        ]
+        ],
+        "budget" => {
+          "id" => budget1.id
+        }
       )
     end
 

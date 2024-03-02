@@ -4,6 +4,7 @@ import { FullCategoryFragment } from "../../graphql-types"
 import { useCategoriesQuery } from "../../graphql/queries/categoriesQuery"
 import { CATEGORY_BACKGROUND_COLORS, CategoryColor } from "../../utils/categoryColors"
 import { Dropdown, DropdownMenuItem } from "../Dropdown"
+import { stripTime } from "../../utils/date"
 
 export const CategorySelect: Component<{
   value?: string
@@ -11,7 +12,7 @@ export const CategorySelect: Component<{
   children: (selectedCategory: FullCategoryFragment | undefined) => JSX.Element
   filter?: (category: FullCategoryFragment) => boolean
 }> = (props) => {
-  const categories = useCategoriesQuery()
+  const categories = useCategoriesQuery(() => ({ today: stripTime(new Date()) }))
 
   const toggle = children(() =>
     props.children(categories()?.categories.find((account) => account.id === props.value))

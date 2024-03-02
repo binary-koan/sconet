@@ -8,7 +8,13 @@ import {
   SubmitEvent
 } from "@modular-forms/solid"
 import { repeat } from "lodash"
-import { TbArrowsSplit2, TbCalendarEvent, TbPlus, TbSelector, TbSwitch3 } from "solid-icons/tb"
+import {
+  IconArrowsSplit2,
+  IconCalendarEvent,
+  IconPlus,
+  IconSelector,
+  IconSwitch3
+} from "@tabler/icons-solidjs"
 import { Component, createEffect, createSignal, For, Show } from "solid-js"
 import toast from "solid-toast"
 import { TransactionInput, FullTransactionFragment } from "../../graphql-types"
@@ -41,7 +47,7 @@ export const NewTransactionModal: Component<{
   isOpen: boolean
   onClose: () => void
 }> = (props) => {
-  const categories = useCategoriesQuery()
+  const categories = useCategoriesQuery(() => ({ today: stripTime(new Date()) }))
   const currencies = useCurrenciesQuery()
   const currentUser = useCurrentUserQuery()
   const transactions = useTransactionsForPopulationQuery()
@@ -165,13 +171,14 @@ export const NewTransactionModal: Component<{
                     placeholderLabel={true}
                     of={form}
                     ref={memoInput}
-                    label="Memo"
-                    name="memo"
+                    label="Where?"
+                    name="shop"
                     onBlur={(e) => {
+                      const normalize = (string: string) =>
+                        string.toLowerCase().replace(/[^\w]+/, "")
+
                       const recent = transactions()?.transactions.nodes.find(
-                        (transaction) =>
-                          transaction.memo.toLowerCase().replace(/[^\w]+/, "") ===
-                          e.target.value.toLowerCase().replace(/[^\w]+/, "")
+                        (transaction) => normalize(transaction.shop) === normalize(e.target.value)
                       )
 
                       if (recent) {
@@ -180,6 +187,14 @@ export const NewTransactionModal: Component<{
                         setValue(form, "currencyId", recent.account.currency.id)
                       }
                     }}
+                  />
+
+                  <FormInput
+                    placeholderLabel={true}
+                    of={form}
+                    ref={memoInput}
+                    label="What?"
+                    name="memo"
                   />
 
                   <Show
@@ -238,7 +253,7 @@ export const NewTransactionModal: Component<{
                         }
                       >
                         {field.value === "income" ? "Income" : "Expense"}
-                        <TbSwitch3 class="ml-1" />
+                        <IconSwitch3 class="ml-1" />
                       </Button>
                     )}
                   </Field>
@@ -286,7 +301,7 @@ export const NewTransactionModal: Component<{
                             <span class="min-w-0 truncate">
                               {selectedCategory()?.name || "No category"}
                             </span>
-                            <TbSelector class="ml-1" />
+                            <IconSelector class="ml-1" />
                           </Button>
                         </Dropdown>
                       )}
@@ -299,7 +314,7 @@ export const NewTransactionModal: Component<{
                     class="whitespace-nowrap rounded border border-gray-100 px-4 py-2 text-xs text-gray-700"
                     onClick={() => setValue(form, "date", "")}
                   >
-                    <TbCalendarEvent class="mr-1" />
+                    <IconCalendarEvent class="mr-1" />
                     {getValue(form, "date")}
                   </Button>
                 </div>
@@ -322,7 +337,7 @@ export const NewTransactionModal: Component<{
                             data-testid="account-select"
                           >
                             {account?.name} ({account?.currency.code})
-                            <TbSelector class="ml-1" />
+                            <IconSelector class="ml-1" />
                           </Button>
                         )}
                       </AccountSelect>
@@ -344,7 +359,7 @@ export const NewTransactionModal: Component<{
                             data-testid="account-select"
                           >
                             {currency ? `Originally ${currency.code}` : "Original currency"}
-                            {currency ? <TbSelector /> : <TbPlus />}
+                            {currency ? <IconSelector /> : <IconPlus />}
                           </Button>
                         )}
                       </CurrencySelect>
@@ -368,7 +383,7 @@ export const NewTransactionModal: Component<{
                   disabled={createTransaction.loading}
                   data-action="split"
                 >
-                  <TbArrowsSplit2 class="mr-2" /> Save & split
+                  <IconArrowsSplit2 class="mr-2" /> Save & split
                 </Button>
               </div>
             </Form>

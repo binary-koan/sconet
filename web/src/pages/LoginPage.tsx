@@ -2,7 +2,7 @@ import { createForm, Form } from "@modular-forms/solid"
 import { startAuthentication } from "@simplewebauthn/browser"
 import { Title } from "@solidjs/meta"
 import { useLocation, useNavigate } from "@solidjs/router"
-import { TbFingerprint } from "solid-icons/tb"
+import { IconFingerprint } from "@tabler/icons-solidjs"
 import { Component, createEffect, createSignal, Show } from "solid-js"
 import toast from "solid-toast"
 // import { TURNSTILE_SITEKEY } from "../../env"
@@ -28,7 +28,7 @@ const LoginPage: Component = () => {
 
   const login = useLoginMutation({
     onSuccess: (data) => {
-      setLoginToken(data.login.token, data.login.currentUser.email)
+      setLoginToken(data.login.user.token, data.login.user.email)
       setSubmittedValues(undefined)
       toast.success("Logged in")
     },
@@ -47,7 +47,7 @@ const LoginPage: Component = () => {
 
   const loginViaCredential = useLoginViaCredentialMutation({
     onSuccess: (data) => {
-      setLoginToken(data.login.token, data.login.currentUser.email)
+      setLoginToken(data.login.user.token, data.login.user.email)
       setSubmittedValues(undefined)
       toast.success("Logged in")
     }
@@ -95,7 +95,7 @@ const LoginPage: Component = () => {
             class="mx-auto rounded-full border-2 border-gray-300 p-4 text-gray-400 transition hover:bg-gray-200"
             onClick={() => startCredentialLogin({ email: lastUserEmail()! })}
           >
-            <TbFingerprint size="2em" />
+            <IconFingerprint size="2em" />
           </button>
         </Show>
 

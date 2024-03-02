@@ -1,5 +1,5 @@
 import { repeat, uniqueId } from "lodash"
-import { TbSelector } from "solid-icons/tb"
+import { IconSelector } from "@tabler/icons-solidjs"
 import { Component, createSignal, onMount } from "solid-js"
 import toast from "solid-toast"
 import { FullTransactionFragment } from "../../graphql-types"
@@ -98,7 +98,7 @@ export const AmountEditor: Component<{
               {(currency) => (
                 <Button size="xs">
                   <span class="flex-1 text-left">{currency?.code || "..."}</span>
-                  <TbSelector class="ml-1" />
+                  <IconSelector class="ml-1" />
                 </Button>
               )}
             </CurrencySelect>

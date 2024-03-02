@@ -1,4 +1,4 @@
-import { TbAsterisk } from "solid-icons/tb"
+import { IconAsterisk } from "@tabler/icons-solidjs"
 import { Component, For, Show } from "solid-js"
 import toast from "solid-toast"
 import { CurrentUserQuery } from "../../graphql-types"
@@ -31,7 +31,7 @@ export const favouriteCurrencies: Component<{
               }
               onClick={() => setDefaultCurrency({ id: currency.id })}
             >
-              <TbAsterisk />
+              <IconAsterisk />
             </Button>
           </div>
         )}

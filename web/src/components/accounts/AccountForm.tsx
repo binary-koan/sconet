@@ -1,5 +1,5 @@
 import { createForm, Field, Form, required, setValue } from "@modular-forms/solid"
-import { TbSelector } from "solid-icons/tb"
+import { IconSelector } from "@tabler/icons-solidjs"
 import { Component } from "solid-js"
 import { AccountInput, FullAccountFragment } from "../../graphql-types"
 import { Button } from "../base/Button"
@@ -40,7 +40,7 @@ const AccountForm: Component<{
               {(currency) => (
                 <Button class="w-full">
                   <span class="flex-1 text-left">{currency?.code || "Select currency"}</span>
-                  <TbSelector class="ml-1" />
+                  <IconSelector class="ml-1" />
                 </Button>
               )}
             </CurrencySelect>

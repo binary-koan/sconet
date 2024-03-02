@@ -1,6 +1,6 @@
 import { Field, FormStore, getValue, setValue } from "@modular-forms/solid"
 import { last } from "lodash"
-import { TbArrowLeft, TbArrowRight } from "solid-icons/tb"
+import { IconArrowLeft, IconArrowRight } from "@tabler/icons-solidjs"
 import { Component, For, JSX, Show, createSignal } from "solid-js"
 import { buildMonthDates } from "../../utils/buildMonthDates"
 import { decrementMonth, incrementMonth, isSameDate, stripTime } from "../../utils/date"
@@ -56,7 +56,7 @@ export const FormDatePicker: Component<{
                   aria-label="Previous Month"
                   onClick={() => setDisplayedMonth(decrementMonth(displayedMonth()))}
                 >
-                  <TbArrowLeft size="1.25em" />
+                  <IconArrowLeft size="1.25em" />
                 </Button>
 
                 <MonthPickerOverlay
@@ -87,7 +87,7 @@ export const FormDatePicker: Component<{
                       : false
                   }
                 >
-                  <TbArrowRight size="1.25em" />
+                  <IconArrowRight size="1.25em" />
                 </Button>
               </div>
 

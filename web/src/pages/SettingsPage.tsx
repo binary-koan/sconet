@@ -2,7 +2,7 @@ import { startRegistration } from "@simplewebauthn/browser"
 import { Title } from "@solidjs/meta"
 import { useRouteData } from "@solidjs/router"
 import DeviceDetector from "device-detector-js"
-import { TbFingerprint, TbKey, TbTrash } from "solid-icons/tb"
+import { IconFingerprint, IconKey, IconTrash } from "@tabler/icons-solidjs"
 import { Component, For } from "solid-js"
 import toast from "solid-toast"
 import { Cell } from "../components/Cell"
@@ -98,12 +98,12 @@ const SettingsPage: Component = () => {
       </PageHeader>
 
       <div class="flex items-center gap-2 bg-white py-2 px-4 shadow-sm">
-        <TbKey /> Password
+        <IconKey /> Password
       </div>
       <For each={data.currentUser()?.currentUser?.registeredCredentials}>
         {(credential) => (
           <div class="flex items-center gap-2 bg-white  py-2 px-4 shadow-sm">
-            <TbFingerprint /> {credential.device} (created on {credential.createdAt})
+            <IconFingerprint /> {credential.device} (created on {credential.createdAt})
             <Button
               size="sm"
               variant="ghost"
@@ -111,7 +111,7 @@ const SettingsPage: Component = () => {
               class="ml-auto"
               onClick={() => deleteCredential({ id: credential.id })}
             >
-              <TbTrash />
+              <IconTrash />
             </Button>
           </div>
         )}

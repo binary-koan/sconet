@@ -1,6 +1,10 @@
 import { Link, useLocation } from "@solidjs/router"
-import { IconProps } from "solid-icons"
-import { TbAdjustmentsHorizontal, TbChartPie, TbReportMoney } from "solid-icons/tb"
+import {
+  TablerIconsProps,
+  IconAdjustmentsHorizontal,
+  IconChartPie,
+  IconReportMoney
+} from "@tabler/icons-solidjs"
 import { Component, JSX } from "solid-js"
 import { Dynamic } from "solid-js/web"
 import logoImage from "../assets/logo.svg"
@@ -13,17 +17,19 @@ const MainNavigation: Component = () => {
         <Link href="/" class="mr-4 hidden md:block">
           <img class="w-24" src={fixAssetPath(logoImage)} />
         </Link>
-        <NavigationItem icon={TbReportMoney} text="History" to="/transactions" />
-        <NavigationItem icon={TbChartPie} text="Graphs" to="/graphs" />
-        <NavigationItem icon={TbAdjustmentsHorizontal} text="Settings" to="/settings" />
+        <NavigationItem icon={IconReportMoney} text="History" to="/transactions" />
+        <NavigationItem icon={IconChartPie} text="Graphs" to="/graphs" />
+        <NavigationItem icon={IconAdjustmentsHorizontal} text="Settings" to="/settings" />
       </div>
     </div>
   )
 }
 
-const NavigationItem: Component<{ icon: Component<IconProps>; text: JSX.Element; to: string }> = (
-  props
-) => {
+const NavigationItem: Component<{
+  icon: Component<TablerIconsProps>
+  text: JSX.Element
+  to: string
+}> = (props) => {
   const location = useLocation()
 
   const isMatch = () => location.pathname.startsWith(props.to)

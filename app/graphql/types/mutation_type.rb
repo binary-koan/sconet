@@ -13,7 +13,6 @@ module Types
     field :credential_login_start, mutation: Mutations::CredentialLoginStart
     field :credential_register, mutation: Mutations::CredentialRegister
     field :credential_registration_start, mutation: Mutations::CredentialRegistrationStart
-    field :current_user_token_generate, mutation: Mutations::CurrentUserTokenGenerate
     field :current_user_update, mutation: Mutations::CurrentUserUpdate
     field :favourite_currency_toggle, mutation: Mutations::FavouriteCurrencyToggle
     field :login, mutation: Mutations::Login

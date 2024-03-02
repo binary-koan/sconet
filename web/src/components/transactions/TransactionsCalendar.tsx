@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "@solidjs/router"
-import { TbArrowLeft, TbArrowRight, TbDots, TbPlus } from "solid-icons/tb"
+import { IconArrowLeft, IconArrowRight, IconDots, IconPlus } from "@tabler/icons-solidjs"
 import { Component, For, Show, createSignal } from "solid-js"
 import { TransactionsByDayQuery } from "../../graphql-types"
 import { buildMonthDates } from "../../utils/buildMonthDates"
@@ -67,7 +67,7 @@ export const TransactionsCalendar: Component<{
           aria-label="List"
           onClick={() => changeMonthAndNavigate(decrementMonth)}
         >
-          <TbArrowLeft size="1.25em" />
+          <IconArrowLeft size="1.25em" />
         </Button>
 
         <MonthPickerOverlay
@@ -90,7 +90,7 @@ export const TransactionsCalendar: Component<{
           onClick={() => changeMonthAndNavigate(incrementMonth)}
           disabled={isCurrentMonth()}
         >
-          <TbArrowRight size="1.25em" />
+          <IconArrowRight size="1.25em" />
         </Button>
       </div>
       <div class="rounded bg-white shadow-sm">
@@ -131,7 +131,7 @@ export const TransactionsCalendar: Component<{
                       class="ml-2 hidden h-5 w-5 text-xs md:flex"
                       onClick={() => setNewTransactionDate(date)}
                     >
-                      <TbPlus />
+                      <IconPlus />
                     </Button>
                   </Show>
                 </div>
@@ -153,7 +153,7 @@ export const TransactionsCalendar: Component<{
                   </For>
 
                   <Show when={expenses.concat(incomes).length > 3}>
-                    <TbDots size="0.5rem" />
+                    <IconDots size="0.5rem" />
                   </Show>
                 </div>
 

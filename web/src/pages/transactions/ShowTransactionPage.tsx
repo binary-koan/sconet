@@ -1,5 +1,5 @@
 import { useRouteData } from "@solidjs/router"
-import { TbArrowsSplit, TbEye, TbEyeOff } from "solid-icons/tb"
+import { IconArrowsSplit, IconEye, IconEyeOff } from "@tabler/icons-solidjs"
 import { Component, Show, createSignal } from "solid-js"
 import { Cell } from "../../components/Cell"
 import InnerPageWrapper from "../../components/InnerPageWrapper"
@@ -39,11 +39,11 @@ const ShowTransactionPage: Component = () => {
                 : "Show in reports"
             }
           >
-            {routeData.data()?.transaction?.includeInReports ? <TbEye /> : <TbEyeOff />}
+            {routeData.data()?.transaction?.includeInReports ? <IconEye /> : <IconEyeOff />}
           </Button>
 
           <Button onClick={() => setSplitModalVisible(true)}>
-            <TbArrowsSplit class="mr-2" />
+            <IconArrowsSplit class="mr-2" />
             Split
           </Button>
         </div>

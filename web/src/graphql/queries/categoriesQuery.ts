@@ -13,5 +13,5 @@ export const CATEGORIES_QUERY = gql`
   }
 `
 
-export const useCategoriesQuery = () =>
-  useQuery<CategoriesQuery, CategoriesQueryVariables>(CATEGORIES_QUERY)
+export const useCategoriesQuery = (variables: () => CategoriesQueryVariables) =>
+  useQuery<CategoriesQuery, CategoriesQueryVariables>(CATEGORIES_QUERY, variables)

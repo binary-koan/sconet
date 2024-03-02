@@ -66,6 +66,7 @@ export const FullTransactionFragment = gql`
 export const ListingTransactionFragment = gql`
   fragment ListingTransaction on Transaction {
     id
+    shop
     memo
     date
 

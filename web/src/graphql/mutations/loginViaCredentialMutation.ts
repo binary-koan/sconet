@@ -8,8 +8,8 @@ import { MutationOptions, useMutation } from "../../utils/graphqlClient/useMutat
 const MUTATION = gql`
   mutation LoginViaCredential($email: String!, $response: JSON!) {
     login(input: { email: $email, webauthnResponse: $response }) {
-      token
-      currentUser {
+      user {
+        token
         email
       }
     }

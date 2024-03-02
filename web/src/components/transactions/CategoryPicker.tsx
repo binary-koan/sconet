@@ -5,6 +5,7 @@ import { useCategoriesQuery } from "../../graphql/queries/categoriesQuery"
 import { namedIcons } from "../../utils/namedIcons"
 import CategoryIndicator from "../CategoryIndicator"
 import { Button } from "../base/Button"
+import { stripTime } from "../../utils/date"
 
 export interface CategoryBasicDetails {
   id: string
@@ -26,7 +27,7 @@ export type ValueProps =
     }
 
 const CategoryPicker: Component<ValueProps> = (props) => {
-  const data = useCategoriesQuery()
+  const data = useCategoriesQuery(() => ({ today: stripTime(new Date()) }))
 
   return (
     <div class="flex flex-wrap gap-2">

@@ -1,5 +1,5 @@
 import { useNavigate } from "@solidjs/router"
-import { TbChevronDown, TbExternalLink } from "solid-icons/tb"
+import { IconChevronDown, IconExternalLink } from "@tabler/icons-solidjs"
 import { Component, For } from "solid-js"
 import { FullCurrencyFragment } from "../../graphql-types"
 import { useSetDefaultCurrency } from "../../graphql/mutations/setDefaultCurrency"
@@ -28,14 +28,14 @@ export const DefaultCurrencySelect: Component<{
           </For>
           <DropdownMenuItem class="text-xs" onClick={() => navigate("/settings/currencies")}>
             Manage favorites
-            <TbExternalLink />
+            <IconExternalLink />
           </DropdownMenuItem>
         </>
       }
     >
       <Button variant="ghost">
         {props.defaultCurrency?.code || "-"}
-        <TbChevronDown class="ml-1" />
+        <IconChevronDown class="ml-1" />
       </Button>
     </Dropdown>
   )

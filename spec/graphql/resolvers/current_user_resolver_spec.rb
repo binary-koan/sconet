@@ -8,7 +8,7 @@ describe Resolvers::CurrentUserResolver do
   it "requires authentication" do
     execute_graphql query_string: <<~GRAPHQL
       query {
-        categories { id }
+        currentUser { id }
       }
     GRAPHQL
 
@@ -42,6 +42,19 @@ describe Resolvers::CurrentUserResolver do
       "updatedAt" => current_user.updated_at.iso8601,
       "registeredCredentials" => [],
     )
+  end
+
+  it "generates a token" do
+    execute_graphql current_user:, query_string: <<~GRAPHQL
+      query {
+        currentUser {
+          token
+        }
+      }
+    GRAPHQL
+
+    expect_graphql_success
+    expect(JWT.decode(graphql_data["currentUser"]["token"], nil, false).first).to include("user_id" => current_user.id)
   end
 
   context "for a user with a bunch of stuff" do

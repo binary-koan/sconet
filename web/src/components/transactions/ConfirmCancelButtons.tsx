@@ -1,4 +1,4 @@
-import { TbCheck, TbX } from "solid-icons/tb"
+import { IconCheck, IconX } from "@tabler/icons-solidjs"
 import { Component } from "solid-js"
 import { Button } from "../base/Button"
 import { InputAddon } from "../base/InputGroup"
@@ -14,7 +14,7 @@ const ConfirmCancelButtons: Component<{ onConfirm: () => void; onCancel: () => v
         aria-label="Confirm"
         onClick={props.onConfirm}
       >
-        <TbCheck />
+        <IconCheck />
       </Button>
       <Button
         class="ml-1 flex-1"
@@ -22,7 +22,7 @@ const ConfirmCancelButtons: Component<{ onConfirm: () => void; onCancel: () => v
         aria-label="Cancel"
         onClick={props.onCancel}
       >
-        <TbX />
+        <IconX />
       </Button>
     </InputAddon>
   )

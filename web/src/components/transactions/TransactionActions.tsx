@@ -1,4 +1,10 @@
-import { TbArrowsSplit2, TbDotsVertical, TbEye, TbEyeOff, TbTrash } from "solid-icons/tb"
+import {
+  IconArrowsSplit2,
+  IconDotsVertical,
+  IconEye,
+  IconEyeOff,
+  IconTrash
+} from "@tabler/icons-solidjs"
 import { Component, Show, createSignal } from "solid-js"
 import { ListingTransactionFragment } from "../../graphql-types"
 import { useDeleteTransaction } from "../../graphql/mutations/deleteTransactionMutation"
@@ -39,7 +45,7 @@ export const TransactionActions: Component<{ transaction: ListingTransactionFrag
                 onToggle(false)
               }}
             >
-              <TbArrowsSplit2 /> Split transaction
+              <IconArrowsSplit2 /> Split transaction
             </DropdownMenuItem>
 
             <DropdownMenuItem
@@ -52,11 +58,11 @@ export const TransactionActions: Component<{ transaction: ListingTransactionFrag
             >
               {props.transaction.includeInReports ? (
                 <>
-                  <TbEyeOff /> Hide from reports
+                  <IconEyeOff /> Hide from reports
                 </>
               ) : (
                 <>
-                  <TbEye /> Show in reports
+                  <IconEye /> Show in reports
                 </>
               )}
             </DropdownMenuItem>
@@ -67,13 +73,13 @@ export const TransactionActions: Component<{ transaction: ListingTransactionFrag
                 onToggle(false)
               }}
             >
-              <TbTrash /> Delete
+              <IconTrash /> Delete
             </DropdownMenuItem>
           </>
         }
       >
         <Button size="sm" variant="ghost" class="ml-2">
-          <TbDotsVertical />
+          <IconDotsVertical />
         </Button>
       </Dropdown>
 

@@ -2,8 +2,7 @@
 
 module Mutations
   class Login < BaseMutation
-    field :token, String, null: false
-    field :current_user, Types::CurrentUserType, null: false
+    field :user, Types::CurrentUserType, null: false
 
     argument :email, String, required: true
 
@@ -15,7 +14,7 @@ module Mutations
 
       authenticate!(user:, password:, webauthn_response:)
 
-      { token: user.generate_jwt }
+      { user: }
     end
 
     private

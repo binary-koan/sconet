@@ -1,6 +1,6 @@
 import { Title } from "@solidjs/meta"
 import { useNavigate, useRouteData } from "@solidjs/router"
-import { TbCalendarEvent, TbFilter, TbPlus, TbX } from "solid-icons/tb"
+import { IconCalendarEvent, IconFilter, IconPlus, IconX } from "@tabler/icons-solidjs"
 import { Component, Show, createSignal, onMount } from "solid-js"
 import { Cell } from "../../components/Cell"
 import { Button } from "../../components/base/Button"
@@ -72,7 +72,7 @@ const TransactionsListPage: Component = () => {
           class="z-navbar fixed bottom-[calc(66px+1rem+env(safe-area-inset-bottom))] right-4 flex items-center rounded-full border border-gray-200 bg-white px-5 py-2 text-lg text-indigo-600 shadow-lg md:static md:z-0 md:-my-1 md:mr-2 md:shadow-none"
           onClick={() => setCreatingTransaction(true)}
         >
-          <TbPlus size="1.25em" class="-ml-1 mr-2" />
+          <IconPlus size="1.25em" class="-ml-1 mr-2" />
           Add
         </button>
         <Button
@@ -83,7 +83,7 @@ const TransactionsListPage: Component = () => {
           onClick={clearFilters}
         >
           {filterCount()} {filterCount() === 1 ? "filter" : "filters"}
-          <TbX class="ml-2" />
+          <IconX class="ml-2" />
         </Button>
         <Button
           colorScheme={isFiltering() ? "primary" : "neutral"}
@@ -92,7 +92,7 @@ const TransactionsListPage: Component = () => {
           aria-label="Filter"
           onClick={() => setFiltering((isFiltering) => !isFiltering)}
         >
-          <TbFilter size="1.25em" />
+          <IconFilter size="1.25em" />
         </Button>
         <Button
           class="ml-2"
@@ -102,7 +102,7 @@ const TransactionsListPage: Component = () => {
           aria-label="Edit"
           onClick={() => navigate("/transactions/calendar")}
         >
-          <TbCalendarEvent size="1.25em" />
+          <IconCalendarEvent size="1.25em" />
         </Button>
       </PageHeader>
 

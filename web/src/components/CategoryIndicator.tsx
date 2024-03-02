@@ -1,4 +1,9 @@
-import { TbCurrencyPound, TbEyeOff, TbQuestionMark, TbSeparatorHorizontal } from "solid-icons/tb"
+import {
+  IconCurrencyPound,
+  IconEyeOff,
+  IconQuestionMark,
+  IconSeparatorHorizontal
+} from "@tabler/icons-solidjs"
 import { Component, mergeProps } from "solid-js"
 import { Dynamic } from "solid-js/web"
 import { ClassProps } from "../types"
@@ -32,10 +37,10 @@ const CategoryIndicator: Component<CategoryIndicatorProps> = (baseProps) => {
   }
 
   const getIcon = (): Component<{ size?: string }> => {
-    if (props.isIncome) return TbCurrencyPound
-    if (props.isSplit) return TbSeparatorHorizontal
-    if (!props.includeInReports) return TbEyeOff
-    if (!props.icon) return TbQuestionMark
+    if (props.isIncome) return IconCurrencyPound
+    if (props.isSplit) return IconSeparatorHorizontal
+    if (!props.includeInReports) return IconEyeOff
+    if (!props.icon) return IconQuestionMark
     return props.icon
   }
 

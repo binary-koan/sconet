@@ -5,7 +5,6 @@
 /e2e-results/
 /e2e-report/
 /e2e/
-/web/
 
 # Ignore git directory.
 /.git/
@@ -41,4 +40,4 @@
 /node_modules/
 /app/assets/builds/*
 !/app/assets/builds/.keep
-/public/assets
+/public

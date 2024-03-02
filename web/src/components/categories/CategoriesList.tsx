@@ -10,7 +10,7 @@ import {
   transformStyle
 } from "@thisbeyond/solid-dnd"
 import { isEqual, noop, orderBy } from "lodash"
-import { TbArrowsSort, TbEdit, TbTrash } from "solid-icons/tb"
+import { IconArrowsSort, IconEdit, IconTrash } from "@tabler/icons-solidjs"
 import { Component, createEffect, createSignal, For, Show } from "solid-js"
 import toast from "solid-toast"
 import { CategoriesQuery, FullCategoryFragment } from "../../graphql-types"
@@ -134,7 +134,7 @@ const Category: Component<{
   return (
     <div class="flex items-center bg-white px-4 py-2 shadow-sm">
       <div class="mr-2 cursor-move text-gray-600">
-        <TbArrowsSort {...props.sortable?.dragActivators} />
+        <IconArrowsSort {...props.sortable?.dragActivators} />
       </div>
       <CategoryIndicator
         class="h-10 w-10"
@@ -158,7 +158,7 @@ const Category: Component<{
         class="ml-auto mr-2"
         title={"Edit category " + props.category.id}
       >
-        <TbEdit />
+        <IconEdit />
       </LinkButton>
       <Button
         size="sm"
@@ -167,7 +167,7 @@ const Category: Component<{
         title={"Delete category " + props.category.id}
         onClick={() => props.onDeleteClick(props.category.id)}
       >
-        <TbTrash />
+        <IconTrash />
       </Button>
     </div>
   )

@@ -1,6 +1,6 @@
 import { Title } from "@solidjs/meta"
 import { useNavigate, useRouteData } from "@solidjs/router"
-import { TbArrowLeft, TbArrowRight } from "solid-icons/tb"
+import { IconArrowLeft, IconArrowRight } from "@tabler/icons-solidjs"
 import { Show } from "solid-js"
 import { Cell } from "../../components/Cell"
 import { GraphsNavigation } from "../../components/GraphsNavigation"
@@ -48,7 +48,7 @@ const BalancePage = () => {
           variant="ghost"
           onClick={() => navigate(`/graphs/balance/${parseInt(routeData.year) - 1}`)}
         >
-          <TbArrowLeft />
+          <IconArrowLeft />
         </Button>
         <Button
           size="sm"
@@ -57,7 +57,7 @@ const BalancePage = () => {
           onClick={() => navigate(`/graphs/balance/${parseInt(routeData.year) + 1}`)}
           disabled={routeData.year === new Date().getFullYear().toString()}
         >
-          <TbArrowRight />
+          <IconArrowRight />
         </Button>
       </PageHeader>
 

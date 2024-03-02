@@ -20,20 +20,20 @@ describe Mutations::Login do
     execute_graphql variables: { email: user.email, password: "password" }, query_string: <<~GRAPHQL
       mutation($email: String!, $password: String!) {
         login(input: { email: $email, password: $password }) {
-          token
+          user { id }
         }
       }
     GRAPHQL
 
     expect_graphql_success
-    expect(JWT.decode(graphql_data["login"]["token"], nil, false).first).to include("user_id" => user.id)
+    expect(graphql_data["login"]["user"]["id"]).to eq user.id
   end
 
   it "fails with an invalid password" do
     execute_graphql variables: { email: user.email, password: "wrong" }, query_string: <<~GRAPHQL
       mutation($email: String!, $password: String!) {
         login(input: { email: $email, password: $password }) {
-          token
+          user { id }
         }
       }
     GRAPHQL
@@ -47,12 +47,12 @@ describe Mutations::Login do
     execute_graphql variables: { webauthnResponse: response, email: user.email }, query_string: <<~GRAPHQL
       mutation($webauthnResponse: JSON!, $email: String!) {
         login(input: { webauthnResponse: $webauthnResponse, email: $email }) {
-          token
+          user { id }
         }
       }
     GRAPHQL
 
     expect_graphql_success
-    expect(JWT.decode(graphql_data["login"]["token"], nil, false).first).to include("user_id" => user.id)
+    expect(graphql_data["login"]["user"]["id"]).to eq user.id
   end
 end

@@ -1,3 +1,13 @@
+FROM oven/bun:1 as frontend
+
+WORKDIR /app
+
+COPY package.json bun.lockb web/package.json ./
+RUN bun install
+ENV NODE_ENV=production
+COPY web ./web
+RUN cd web && bun run build
+
 FROM ruby:3.2-slim as base
 
 LABEL fly_launch_runtime="rails"
@@ -47,6 +57,9 @@ RUN apt-get update -qq && \
 # Copy built artifacts: gems, application
 COPY --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"
 COPY --from=build /rails /rails
+RUN mkdir -p /rails/public
+COPY --from=frontend /app/web/build/* /rails/public
+COPY --from=frontend /app/web/public/* /rails/public
 
 # Run and own only the runtime files as a non-root user for security
 RUN groupadd --system --gid 1000 rails && \

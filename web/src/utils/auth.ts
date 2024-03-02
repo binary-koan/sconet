@@ -1,6 +1,5 @@
 import { decodeJwt } from "jose"
 import { createSignal } from "solid-js"
-import { FullCurrentUserFragment } from "../graphql-types"
 
 const LOGIN_TOKEN_KEY = "sconet.loginToken"
 const LAST_USER_EMAIL_KEY = "sconet.userEmail"

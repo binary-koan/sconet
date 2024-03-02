@@ -1,4 +1,4 @@
-import { TbListSearch } from "solid-icons/tb"
+import { IconListSearch } from "@tabler/icons-solidjs"
 import { Component, For, Show } from "solid-js"
 import { CATEGORY_BACKGROUND_COLORS, CategoryColor } from "../../utils/categoryColors"
 import { getCssValue } from "../../utils/getCssValue"
@@ -35,7 +35,7 @@ const BudgetGroup: Component<BudgetGroupProps> = (props) => {
             class="ml-4"
             aria-label="View transactions"
           >
-            <TbListSearch />
+            <IconListSearch />
           </LinkButton>
         </h2>
         <div class="bg-white pl-6 pr-4 pt-4 shadow-sm lg:mb-6 lg:ml-4">
@@ -101,7 +101,7 @@ const BudgetGroup: Component<BudgetGroupProps> = (props) => {
                   class="ml-4"
                   aria-label="View transactions"
                 >
-                  <TbListSearch />
+                  <IconListSearch />
                 </LinkButton>
               </div>
             )}

@@ -1,4 +1,4 @@
-import { TbStar } from "solid-icons/tb"
+import { IconStar, IconStarFilled } from "@tabler/icons-solidjs"
 import { Component, For, Show } from "solid-js"
 import toast from "solid-toast"
 import { CurrenciesQuery, CurrentUserQuery, FullCurrencyFragment } from "../../graphql-types"
@@ -97,7 +97,7 @@ const Currency: Component<{
         onClick={props.onFavorite}
         class="mr-2"
       >
-        <TbStar />
+        {props.isFavorite ? <IconStarFilled /> : <IconStar />}
       </Button>
 
       <Button variant="ghost" colorScheme="neutral" size="sm" onClick={props.onSetDefault}>

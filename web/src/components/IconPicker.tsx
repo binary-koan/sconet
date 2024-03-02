@@ -1,4 +1,4 @@
-import { TbArrowLeft, TbArrowRight } from "solid-icons/tb"
+import { IconArrowLeft, IconArrowRight } from "@tabler/icons-solidjs"
 import { Component, createMemo, createSignal, For, Show } from "solid-js"
 import { Dynamic } from "solid-js/web"
 import { namedIcons } from "../utils/namedIcons"
@@ -62,10 +62,10 @@ const IconPicker: Component<{ name: string; value?: string; setValue: (value: st
                 disabled={!pageInfo().hasPrevious}
                 onClick={[setPage, page() - 1]}
               >
-                <TbArrowLeft />
+                <IconArrowLeft />
               </Button>
               <Button class="ml-2" disabled={!pageInfo().hasNext} onClick={[setPage, page() + 1]}>
-                <TbArrowRight />
+                <IconArrowRight />
               </Button>
             </div>
             <div class="grid flex-1 grid-cols-4 gap-1">

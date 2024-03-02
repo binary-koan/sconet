@@ -1,6 +1,6 @@
 import { last } from "lodash"
 import { evaluate, sum } from "mathjs"
-import { TbMinus } from "solid-icons/tb"
+import { IconMinus } from "@tabler/icons-solidjs"
 import { Component, For, Show } from "solid-js"
 import { createStore } from "solid-js/store"
 import toast from "solid-toast"
@@ -190,7 +190,7 @@ export const SplitTransactionModal: Component<{
                       aria-label="Remove category"
                       onClick={() => removeCategory(categorySplit.category)}
                     >
-                      <TbMinus />
+                      <IconMinus />
                     </Button>
                   </div>
                 </Show>

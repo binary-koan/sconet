@@ -1,4 +1,4 @@
-import { TbAsterisk, TbEdit, TbTrash } from "solid-icons/tb"
+import { IconAsterisk, IconEdit, IconTrash } from "@tabler/icons-solidjs"
 import { Component, For } from "solid-js"
 import toast from "solid-toast"
 import { AccountsQuery, CurrentUserQuery } from "../../graphql-types"
@@ -42,7 +42,7 @@ const AccountsList: Component<{
             title={"Set default to " + account.name}
             onClick={() => setDefaultAccount({ id: account.id })}
           >
-            <TbAsterisk />
+            <IconAsterisk />
           </Button>
           <LinkButton
             href={`/accounts/${account.id}`}
@@ -51,7 +51,7 @@ const AccountsList: Component<{
             class="ml-auto mr-2"
             title={"Edit account " + account.name}
           >
-            <TbEdit />
+            <IconEdit />
           </LinkButton>
           <Button
             size="sm"
@@ -60,7 +60,7 @@ const AccountsList: Component<{
             title={"Delete account " + account.name}
             onClick={() => onDeleteClick(account.id)}
           >
-            <TbTrash />
+            <IconTrash />
           </Button>
         </div>
       )}

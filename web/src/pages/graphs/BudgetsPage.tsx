@@ -1,6 +1,6 @@
 import { Title } from "@solidjs/meta"
 import { useNavigate, useRouteData } from "@solidjs/router"
-import { TbArrowLeft, TbArrowRight, TbCalendarEvent } from "solid-icons/tb"
+import { IconArrowLeft, IconArrowRight, IconCalendarEvent } from "@tabler/icons-solidjs"
 import { Show, createEffect } from "solid-js"
 import { Cell } from "../../components/Cell"
 import { GraphsNavigation } from "../../components/GraphsNavigation"
@@ -68,7 +68,7 @@ const BudgetsPage = () => {
           onChange={(value) => navigate(`/graphs/budgets/${value}`)}
         >
           {date().toLocaleDateString("en", { year: "numeric", month: "long" })}
-          <TbCalendarEvent />
+          <IconCalendarEvent />
         </MonthPickerOverlay>
 
         <Show when={routeData.currentUser()?.currentUser}>
@@ -84,7 +84,7 @@ const BudgetsPage = () => {
           variant="ghost"
           onClick={() => setParams(decrementMonth)}
         >
-          <TbArrowLeft />
+          <IconArrowLeft />
         </Button>
         <Button
           size="sm"
@@ -93,7 +93,7 @@ const BudgetsPage = () => {
           onClick={() => setParams(incrementMonth)}
           disabled={isCurrentMonth()}
         >
-          <TbArrowRight />
+          <IconArrowRight />
         </Button>
       </PageHeader>
       <Cell

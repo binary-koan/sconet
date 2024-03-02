@@ -1,4 +1,4 @@
-import { TbEye, TbEyeOff } from "solid-icons/tb"
+import { IconEye, IconEyeOff } from "@tabler/icons-solidjs"
 import { Component, For, Show, createSignal } from "solid-js"
 import { GetTransactionQuery } from "../../graphql-types"
 import { useUpdateTransaction } from "../../graphql/mutations/updateTransactionMutation"
@@ -197,7 +197,7 @@ export const TransactionView: Component<{
                       })
                     }
                   >
-                    {child.includeInReports ? <TbEye /> : <TbEyeOff />}
+                    {child.includeInReports ? <IconEye /> : <IconEyeOff />}
                   </Button>
                 </div>
               )}

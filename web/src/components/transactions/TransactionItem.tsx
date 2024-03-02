@@ -58,7 +58,10 @@ const TransactionItem: Component<{
             classList={{ "text-gray-600 line-through": !includeInReports() }}
             data-testid="memo"
           >
-            {props.transaction.memo}
+            {props.transaction.shop}{" "}
+            {props.transaction.memo && (
+              <span class="text-gray-600">&ndash; {props.transaction.memo}</span>
+            )}
           </div>
           <div
             class="ml-2 whitespace-nowrap text-right"

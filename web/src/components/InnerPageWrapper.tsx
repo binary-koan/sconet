@@ -1,4 +1,4 @@
-import { TbArrowLeft } from "solid-icons/tb"
+import { IconArrowLeft } from "@tabler/icons-solidjs"
 import { Component, JSX, Show } from "solid-js"
 import { Dynamic } from "solid-js/web"
 import { LinkButton } from "./base/Button"
@@ -15,7 +15,7 @@ const InnerPageWrapper: Component<{
     <>
       <PageHeader size="lg">
         <LinkButton href={props.backLink} variant="ghost" colorScheme="primary" class="-ml-4 mr-2">
-          <Dynamic component={TbArrowLeft} />
+          <Dynamic component={IconArrowLeft} />
         </LinkButton>
         {props.heading}
         <Show when={props.actions}>

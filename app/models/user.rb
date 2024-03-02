@@ -10,10 +10,11 @@ class User < ApplicationRecord
   validates :email, presence: true, uniqueness: true
 
   def self.find_by_jwt(jwt)
+    return if jwt.blank?
     User.find_by(id: JWT.decode(jwt, Rails.application.credentials.secret_key_base, true, {algorithm: 'HS256'})[0]['user_id'])
   end
 
   def generate_jwt
-    JWT.encode({ 'user_id' => id }, Rails.application.credentials.secret_key_base, 'HS256')
+    JWT.encode({ "user_id" => id, "exp" => (Time.now + 2.weeks).to_i }, Rails.application.credentials.secret_key_base, 'HS256')
   end
 end
