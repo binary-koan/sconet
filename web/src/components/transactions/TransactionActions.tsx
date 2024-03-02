@@ -49,12 +49,13 @@ export const TransactionActions: Component<{ transaction: ListingTransactionFrag
             </DropdownMenuItem>
 
             <DropdownMenuItem
-              onClick={() =>
+              onClick={() => {
                 updateTransaction({
                   id: props.transaction.id,
                   input: { includeInReports: !props.transaction.includeInReports }
                 })
-              }
+                onToggle(false)
+              }}
             >
               {props.transaction.includeInReports ? (
                 <>

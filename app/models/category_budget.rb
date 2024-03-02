@@ -7,7 +7,10 @@ class CategoryBudget < ApplicationRecord
   validates :budget_cents, numericality: { greater_than_or_equal_to: 0 }
 
   scope :for_date_scope, ->(date) { order(date_from: :asc).where("date_from <= :date AND (date_to >= :date OR date_to IS NULL)", date: date) }
-  scope :for_date, ->(date) { for_date_scope(date).first }
+
+  def self.for_date(date)
+    for_date_scope(date).first
+  end
 
   def budget
     Money.new(amount_cents: budget_cents, currency:)

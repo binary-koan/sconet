@@ -68,11 +68,11 @@ export const NewTransactionModal: Component<{
     }
   })
 
-  let memoInput: HTMLInputElement | undefined
+  let shopInput: HTMLInputElement | undefined
 
   createEffect(() => {
     if (isDateSelected()) {
-      memoInput?.focus()
+      shopInput?.focus()
     }
   })
 
@@ -99,8 +99,7 @@ export const NewTransactionModal: Component<{
         : amountType === "expense"
         ? -integerAmount
         : integerAmount,
-      date: stripTime(new Date(date)),
-      includeInReports: Boolean(data.includeInReports)
+      date: stripTime(new Date(date))
     }
 
     if (shopCurrencyId && shopAmount) {
@@ -149,7 +148,7 @@ export const NewTransactionModal: Component<{
     <>
       <Show when={!splittingTransaction()}>
         <Modal isOpen={props.isOpen} onClickOutside={props.onClose}>
-          <ModalContent class="flex h-[28rem] flex-col">
+          <ModalContent class="flex h-[31rem] flex-col">
             <ModalTitle>
               New Transaction
               <ModalCloseButton onClick={props.onClose} />
@@ -170,7 +169,7 @@ export const NewTransactionModal: Component<{
                   <FormInput
                     placeholderLabel={true}
                     of={form}
-                    ref={memoInput}
+                    ref={shopInput}
                     label="Where?"
                     name="shop"
                     onBlur={(e) => {
@@ -189,13 +188,7 @@ export const NewTransactionModal: Component<{
                     }}
                   />
 
-                  <FormInput
-                    placeholderLabel={true}
-                    of={form}
-                    ref={memoInput}
-                    label="What?"
-                    name="memo"
-                  />
+                  <FormInput placeholderLabel={true} of={form} label="What?" name="memo" />
 
                   <Show
                     when={getValue(form, "shopCurrencyId")}

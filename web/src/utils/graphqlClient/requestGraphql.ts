@@ -37,7 +37,7 @@ export const requestGraphql = async <Result>(
   return data
 }
 
-const maxRetries = 10
+const maxRetries = 2
 
 const fetchWithRetry = async (fetch: () => Promise<Response>, retries = 0): Promise<Response> => {
   const response = await fetch()
@@ -51,8 +51,10 @@ const fetchWithRetry = async (fetch: () => Promise<Response>, retries = 0): Prom
   }
 
   if (retries < maxRetries) {
-    return fetchWithRetry(fetch, retries + 1)
+    return new Promise((resolve) => setTimeout(resolve, 2000)).then(() =>
+      fetchWithRetry(fetch, retries + 1)
+    )
   }
 
-  throw new Error("Still getting 50x errors after max retries exceeded. Plesae try again later.")
+  throw new Error("Still getting 50x errors after max retries exceeded. Please try again later.")
 }

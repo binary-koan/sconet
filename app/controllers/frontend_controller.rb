@@ -1,5 +1,6 @@
 class FrontendController < ApplicationController
   def index
-    render html: File.read(Rails.root.join("public/index.html")).html_safe
+    path = Rails.env.production? ? "public/index.html" : "web/build/index.html"
+    render html: File.read(Rails.root.join(path)).html_safe
   end
 end

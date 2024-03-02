@@ -15,6 +15,13 @@ usd = Currency.find_by(code: "USD") || Currency.create!(
   decimal_digits: 2
 )
 
+gbp = Currency.find_by(code: "GBP") || Currency.create!(
+  code: "GBP",
+  name: "Pounds Sterling",
+  symbol: "£",
+  decimal_digits: 2
+)
+
 Category.find_by(name: "First") || Category.create!(
   name: "First",
   color: "red",
@@ -31,11 +38,9 @@ Category.find_by(name: "Second") || Category.create!(
 
 account = Account.find_by(name: "Test") || Account.create!(name: "Test", currency: usd)
 
-(ENV["USER_EMAILS"]&.split(",") || []).each do |email|
-  User.find_or_initialize_by(email:) || User.create!(
-    email:,
-    password: "changeme",
-    default_currency: usd,
-    default_account: account
-  )
-end
+User.find_by(email: "test@example.com") || User.create!(
+  email: "test@example.com",
+  password: "changeme",
+  default_currency: usd,
+  default_account: account
+)

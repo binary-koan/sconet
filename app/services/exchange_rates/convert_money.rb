@@ -24,26 +24,27 @@ class ExchangeRates::ConvertMoney
   private
 
   def exchange_rates
-    @exchange_rates ||= existing_exchange_rates + sync_exchange_rates
+    @exchange_rates ||= existing_exchange_rates.merge(sync_exchange_rates)
   end
 
   def sync_exchange_rates
-    (needed_exchange_rates - existing_exchange_rates.keys).map do |date, from_currency|
-      ExchangeRates::Fetch.call(from_currency, date).find do |rate|
+    index_rates((needed_exchange_rates - existing_exchange_rates.keys).map do |date, from_currency|
+      ExchangeRates::Fetch.new(from_currency, date).call.find do |rate|
         rate.to_currency == to_currency
       end
-    end
+    end)
   end
 
   def existing_exchange_rates
-    @existing_exchange_rates ||= ExchangeRateValue.
+    @existing_exchange_rates ||= index_rates(ExchangeRateValue.
       includes(:from_currency, :to_currency).
-      where(to_currency:, date: money_on_dates.compact.map(&:date).uniq).
-      flat_map do |rate|
-        rate.exchange_rate_values.map do |value|
-          { [rate.date, value.from_currency] => value.rate }
-        end
-      end
+      where(to_currency:, date: money_on_dates.compact.map(&:date).uniq))
+  end
+
+  def index_rates(rates)
+    rates.to_h do |rate|
+      [[rate.date, rate.from_currency], rate.rate]
+    end
   end
 
   def needed_exchange_rates

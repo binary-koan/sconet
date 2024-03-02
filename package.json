@@ -11,7 +11,7 @@
     "prettier-plugin-tailwindcss": "^0.1.13"
   },
   "scripts": {
-    "dev": "concurrently -n api,web,api-codegen,web-codegen -c blue,magenta,green,yellow 'cd api && bun run --watch bin/dev.ts' 'cd web && bun run watch' 'cd api && bun graphql-codegen --watch' 'cd web && bun graphql-codegen --watch'",
+    "dev": "concurrently -n api,web,codegen -c blue,magenta,yellow 'rails s' 'cd web && bun run watch' 'cd web && bun graphql-codegen --watch'",
     "dev:test": "cd api && ENV_TYPE=test PORT=4445 bun run bin/dev-test.ts",
     "deploy": "bun run deploy.js",
     "typecheck": "web && bun typecheck",
