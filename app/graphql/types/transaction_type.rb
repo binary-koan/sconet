@@ -24,14 +24,14 @@ module Types
 
     def amount(currency_id: nil)
       return object.amount if currency_id.blank?
-      return object.amount_in_currency if object.amount_in_currency.currency.id == currency_id
+      return object.amount_in_currency if object.amount_in_currency&.currency&.id == currency_id
 
       ExchangeRates::ConvertMoney.new([object.amount], to_currency: Currency.find(currency_id)).call.sum
     end
 
     def shop_amount(currency_id: nil)
       return object.shop_amount if currency_id.blank?
-      return object.shop_amount_in_currency if object.amount_in_currency.currency.id == currency_id
+      return object.shop_amount_in_currency if object.shop_amount_in_currency&.currency&.id == currency_id
 
       ExchangeRates::ConvertMoney.new([object.shop_amount], to_currency: Currency.find(currency_id)).call.sum
     end

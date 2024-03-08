@@ -18,7 +18,7 @@ module Mutations
         category.update!({
           **category_input,
           regular: category_input[:is_regular]
-        }.except(:budget_cents, :budget_currency_id))
+        }.except(:is_regular, :budget_cents, :budget_currency_id))
 
         if category_input[:budget_cents].present? && category_input[:budget_currency_id].present? && (
           category_input[:budget_cents] != category.current_budget&.budget_cents ||

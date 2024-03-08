@@ -14,7 +14,7 @@ class ExchangeRates::ConvertMoney
       MoneyOnDate.new(
         currency: to_currency,
         date: money.date,
-        amount_cents: money.amount_cents * exchange_rates[[money.date, money.currency]]
+        amount_cents: money.amount_cents * exchange_rates[[money.date, money.currency]] * exponent_difference(money.currency)
       )
     end
 
@@ -22,6 +22,10 @@ class ExchangeRates::ConvertMoney
   end
 
   private
+
+  def exponent_difference(currency)
+    10 ** (to_currency.decimal_digits - currency.decimal_digits)
+  end
 
   def exchange_rates
     @exchange_rates ||= existing_exchange_rates.merge(sync_exchange_rates)
