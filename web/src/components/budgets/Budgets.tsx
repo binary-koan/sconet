@@ -50,7 +50,7 @@ export const Budgets: Component<{
           color: category?.color as CategoryColor,
           budget: category?.budget?.budget,
           total: amountSpent,
-          href: filteredTransactions({ categoryIds: [category?.id || null] })
+          categoryId: category?.id || null
         }))}
       />
 
@@ -72,7 +72,7 @@ export const Budgets: Component<{
             color: category?.color as CategoryColor,
             budget: category?.budget?.budget,
             total: amountSpent,
-            href: filteredTransactions({ categoryIds: [category?.id || null] })
+            categoryId: category?.id || null
           })
         )}
       />
@@ -86,7 +86,7 @@ export const Budgets: Component<{
           name: transaction.memo,
           budget: false,
           total: transaction.amount || { amountDecimal: 0, formatted: "?" },
-          href: `/transactions/${transaction.id}`
+          categoryId: null
         }))}
       />
     </>

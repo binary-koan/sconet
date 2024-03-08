@@ -14,7 +14,7 @@
     "dev": "concurrently -n api,web,codegen -c blue,magenta,yellow 'rails s' 'cd web && bun run watch' 'cd web && bun graphql-codegen --watch'",
     "dev:test": "cd api && ENV_TYPE=test PORT=4445 bun run bin/dev-test.ts",
     "deploy": "bun run deploy.js",
-    "typecheck": "web && bun typecheck",
+    "typecheck": "cd web && bun typecheck",
     "lint": "cd web && bun lint"
   },
   "workspaces": ["web"]

@@ -3,8 +3,10 @@ import { Component, For, Show } from "solid-js"
 import { CATEGORY_BACKGROUND_COLORS, CategoryColor } from "../../utils/categoryColors"
 import { getCssValue } from "../../utils/getCssValue"
 import CategoryIndicator, { CategoryIndicatorProps } from "../CategoryIndicator"
-import { LinkButton } from "../base/Button"
+import { Button, LinkButton } from "../base/Button"
 import { PieChart } from "./PieChart"
+import { createSignal } from "solid-js"
+import { TransactionsModal } from "./TransactionsModal"
 
 interface BudgetGroupProps {
   title: string
@@ -12,15 +14,19 @@ interface BudgetGroupProps {
   allTransactionsHref: string
   items: Array<{
     indicator: CategoryIndicatorProps
+    categoryId: string | null
     name: string
     color?: CategoryColor
     budget?: { amountDecimal: number; formatted: string } | null | false
     total: { amountDecimal: number; formatted: string }
-    href: string
   }>
 }
 
+const NO_CATEGORY = Symbol("NO_CATEGORY")
+
 const BudgetGroup: Component<BudgetGroupProps> = (props) => {
+  const [openCategory, setOpenCategory] = createSignal<string | symbol | false>(false)
+
   return (
     <div class="mt-6 flex flex-col lg:mt-0 lg:flex-row">
       <div class="min-w-0 flex-none lg:flex-1">
@@ -44,7 +50,7 @@ const BudgetGroup: Component<BudgetGroupProps> = (props) => {
           </Show>
 
           <For each={props.items}>
-            {({ indicator, name, color, total, budget, href }) => (
+            {({ categoryId, indicator, name, color, total, budget }) => (
               <div class="flex items-center pb-4">
                 <CategoryIndicator class="mr-3 h-6 w-6" {...indicator} />
                 <div class="min-w-0 flex-1">
@@ -93,16 +99,16 @@ const BudgetGroup: Component<BudgetGroupProps> = (props) => {
                     </div>
                   </Show>
                 </div>
-                <LinkButton
-                  href={href}
+                <Button
                   size="square"
                   variant="ghost"
                   colorScheme="primary"
                   class="ml-4"
                   aria-label="View transactions"
+                  onClick={() => setOpenCategory(categoryId || NO_CATEGORY)}
                 >
                   <IconListSearch />
-                </LinkButton>
+                </Button>
               </div>
             )}
           </For>
@@ -116,6 +122,17 @@ const BudgetGroup: Component<BudgetGroupProps> = (props) => {
           formattedValue: total.formatted
         }))}
       />
+      <Show when={openCategory()}>
+        {(openCategory) => {
+          const category = openCategory()
+          return (
+            <TransactionsModal
+              categoryId={typeof category === "string" ? category : null}
+              onClose={() => setOpenCategory(false)}
+            />
+          )
+        }}
+      </Show>
     </div>
   )
 }
