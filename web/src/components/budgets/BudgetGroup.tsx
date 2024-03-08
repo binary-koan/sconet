@@ -46,7 +46,7 @@ const BudgetGroup: Component<BudgetGroupProps> = (props) => {
           <For each={props.items}>
             {({ indicator, name, color, total, budget, href }) => (
               <div class="flex items-center pb-4">
-                <CategoryIndicator class="mr-3 h-8 w-8" {...indicator} />
+                <CategoryIndicator class="mr-3 h-6 w-6" {...indicator} />
                 <div class="min-w-0 flex-1">
                   <div class="flex" classList={{ "mt-1": budget !== false }}>
                     <div class="min-w-0 truncate">{name || "Uncategorized"}</div>

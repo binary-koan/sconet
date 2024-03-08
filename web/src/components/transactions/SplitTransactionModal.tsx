@@ -172,7 +172,7 @@ export const SplitTransactionModal: Component<{
                       {(selectedCategory) => (
                         <div class="mb-1 flex items-center gap-2 font-semibold">
                           <CategoryIndicator
-                            class="h-8 w-8"
+                            class="h-6 w-6"
                             icon={
                               selectedCategory?.icon
                                 ? namedIcons[selectedCategory?.icon]

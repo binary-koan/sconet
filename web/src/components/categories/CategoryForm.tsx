@@ -82,10 +82,10 @@ const CategoryForm: Component<{
       <FormOptionButtons
         of={form}
         label="Budget Currency"
-        name="budgetCurrencyCode"
+        name="budgetCurrencyId"
         options={
           currencies()?.currencies?.map((currency) => ({
-            value: currency.code,
+            value: currency.id,
             content: `${currency.code} (${currency.name})`
           })) || []
         }

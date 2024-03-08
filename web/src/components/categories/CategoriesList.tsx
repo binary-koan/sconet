@@ -137,7 +137,7 @@ const Category: Component<{
         <IconArrowsSort {...props.sortable?.dragActivators} />
       </div>
       <CategoryIndicator
-        class="h-10 w-10"
+        class="h-8 w-8"
         iconSize="1.5em"
         icon={namedIcons[props.category.icon]}
         color={props.category.color}

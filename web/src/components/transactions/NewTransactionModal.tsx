@@ -94,6 +94,7 @@ export const NewTransactionModal: Component<{
 
     const coercedData: TransactionInput = {
       ...data,
+      memo: data.memo || "",
       amountCents: shopCurrencyId
         ? null
         : amountType === "expense"

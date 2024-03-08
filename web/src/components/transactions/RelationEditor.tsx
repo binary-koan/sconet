@@ -66,7 +66,7 @@ const RelationEditor: Component<{
       {props.children || (
         <>
           <CategoryIndicator
-            class={props.parent ? "h-8 w-8" : "h-10 w-10"}
+            class={props.parent ? "h-6 w-6" : "h-8 w-8"}
             iconSize="1.25em"
             icon={
               props.transaction.category?.icon

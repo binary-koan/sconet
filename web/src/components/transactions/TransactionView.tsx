@@ -110,7 +110,7 @@ export const TransactionView: Component<{
               <FormLabel>Category</FormLabel>
               <div class="flex items-center">
                 <CategoryIndicator
-                  class="mr-3 h-8 w-8"
+                  class="mr-3 h-6 w-6"
                   isIncome={(transaction().amount?.amountDecimal || 0) > 0}
                   includeInReports={transaction().includeInReports}
                 />
@@ -136,7 +136,7 @@ export const TransactionView: Component<{
               >
                 <div class="flex items-center">
                   <CategoryIndicator
-                    class="mr-3 h-8 w-8"
+                    class="mr-3 h-6 w-6"
                     color={transaction().category?.color}
                     icon={
                       transaction().category?.icon
