@@ -12,6 +12,9 @@ class User < ApplicationRecord
   def self.find_by_jwt(jwt)
     return if jwt.blank?
     User.find_by(id: JWT.decode(jwt, Rails.application.credentials.secret_key_base, true, {algorithm: 'HS256'})[0]['user_id'])
+  rescue JWT::DecodeError => e
+    Sentry.capture_message("JWT decode error: #{e.message}")
+    nil
   end
 
   def generate_jwt
