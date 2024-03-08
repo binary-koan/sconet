@@ -7,7 +7,7 @@ node_modules
 web/build
 
 # All built from frontend
-public
+/public
 
 # Ignore bundler config.
 /.bundle
