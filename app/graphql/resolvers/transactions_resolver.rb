@@ -30,7 +30,7 @@ module Resolvers
       end
 
       if filter&.category_ids.present?
-        scope = scope.where(category_id: filter.category_ids)
+        scope = scope.where('category_id IN (:ids) OR EXISTS (SELECT 1 FROM transactions child WHERE child.split_from_id = transactions.id AND child.category_id IN (:ids))', ids: filter.category_ids)
       end
 
       scope.in_display_order
