@@ -7,11 +7,13 @@ import { Button, LinkButton } from "../base/Button"
 import { PieChart } from "./PieChart"
 import { createSignal } from "solid-js"
 import { TransactionsModal } from "./TransactionsModal"
+import { TransactionFilterInput } from "../../graphql-types"
 
 interface BudgetGroupProps {
   title: string
   total: string
   allTransactionsHref: string
+  transactionsFilter: Partial<TransactionFilterInput>
   items: Array<{
     indicator: CategoryIndicatorProps
     categoryId: string | null
@@ -128,6 +130,7 @@ const BudgetGroup: Component<BudgetGroupProps> = (props) => {
           return (
             <TransactionsModal
               categoryId={typeof category === "string" ? category : null}
+              filter={props.transactionsFilter}
               onClose={() => setOpenCategory(false)}
             />
           )

@@ -15,10 +15,14 @@ export const Budgets: Component<{
 
   const isPastMonth = () => new Date() > range()[1]
 
+  const transactionsFilter = () => ({
+    dateFrom: stripTime(range()[0]),
+    dateUntil: stripTime(range()[1])
+  })
+
   const filteredTransactions = (filters: any = {}) => {
     const filter = JSON.stringify({
-      dateFrom: stripTime(range()[0]),
-      dateUntil: stripTime(range()[1]),
+      ...transactionsFilter(),
       ...filters
     })
 
@@ -62,6 +66,7 @@ export const Budgets: Component<{
             ({ category }) => category?.id || null
           )
         })}
+        transactionsFilter={transactionsFilter()}
         items={props.data.budget.irregularCategories.categories.map(
           ({ category, amountSpent }) => ({
             indicator: {
@@ -81,6 +86,7 @@ export const Budgets: Component<{
         title="Income"
         total={props.data.budget.income.formatted}
         allTransactionsHref={filteredTransactions({ minAmount: 1 })}
+        transactionsFilter={transactionsFilter()}
         items={props.data.income.nodes.map((transaction) => ({
           indicator: { isIncome: true },
           name: transaction.memo,

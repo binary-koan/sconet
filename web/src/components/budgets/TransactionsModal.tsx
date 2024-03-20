@@ -3,11 +3,19 @@ import { useTransactionsQuery } from "../../graphql/queries/transactionsQuery"
 import { Modal, ModalContent, ModalTitle } from "../base/Modal"
 import LoadingBar from "../LoadingBar"
 import { For } from "solid-js"
+import { TransactionFilterInput } from "../../graphql-types"
 
-export const TransactionsModal = (props: { categoryId: string | null; onClose: () => void }) => {
+export const TransactionsModal = (props: {
+  categoryId: string | null
+  filter: Partial<TransactionFilterInput>
+  onClose: () => void
+}) => {
   const query = useTransactionsQuery(() => ({
     limit: 1000,
-    filter: { categoryIds: [props.categoryId] }
+    filter: {
+      ...props.filter,
+      categoryIds: [props.categoryId]
+    }
   }))
 
   const transactionsToShow = () =>
