@@ -21,10 +21,10 @@ export const TransactionsModal = (props: {
   const transactionsToShow = () =>
     query()
       ?.transactions.nodes.flatMap((transaction) => {
-        if (transaction.splitTo) {
+        if (transaction.splitTo.length > 0) {
           return transaction.splitTo
             .filter((split) => split.category?.id === props.categoryId)
-            .map((split) => ({ ...split, shop: transaction.shop }))
+            .map((split) => ({ ...split, date: transaction.date, shop: transaction.shop }))
         } else {
           return [transaction]
         }
@@ -40,8 +40,14 @@ export const TransactionsModal = (props: {
             <ul class="min-h-0 flex-1 overflow-auto">
               <For each={transactionsToShow()}>
                 {(transaction) => (
-                  <li class="flex justify-between py-1">
-                    <span>
+                  <li class="flex py-1">
+                    <span class="mr-4 text-gray-600">
+                      {new Date(transaction.date).toLocaleDateString("default", {
+                        day: "numeric",
+                        month: "short"
+                      })}
+                    </span>
+                    <span class="mr-auto min-w-0 truncate">
                       {transaction.shop}{" "}
                       <span class="text-gray-600">&ndash; {transaction.memo}</span>
                     </span>
