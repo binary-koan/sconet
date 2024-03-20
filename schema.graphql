@@ -148,6 +148,7 @@ type CategoryBudgetSpending {
   amountSpent: Money!
   category: Category
   id: ID!
+  remainingBudget: Money
 }
 
 """

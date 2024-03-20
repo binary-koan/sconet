@@ -1,6 +1,6 @@
 import { createForm, Form, getValue } from "@modular-forms/solid"
 import { repeat } from "lodash"
-import { Component } from "solid-js"
+import { Component, Show } from "solid-js"
 import { CreateCategoryMutationVariables, FullCategoryFragment } from "../../graphql-types"
 import { useCurrenciesQuery } from "../../graphql/queries/currenciesQuery"
 import { Button } from "../base/Button"
@@ -32,7 +32,7 @@ const CategoryForm: Component<{
       color: props.category?.color,
       icon: props.category?.icon,
       budget: props.category?.budget?.budget.amountDecimal.toString(),
-      budgetCurrencyId: props.category?.budget?.currency.id,
+      budgetCurrencyId: props.category?.budget?.currency.id || "",
       isRegular: props.category?.isRegular != null ? props.category.isRegular : true
     }
   })
@@ -40,14 +40,13 @@ const CategoryForm: Component<{
   const selectedCurrency = () =>
     currencies()?.currencies.find((currency) => currency.id === getValue(form, "budgetCurrencyId"))
 
-  const onSave = (data: CategoryFormValues) => {
+  const onSave = ({ budget, budgetCurrencyId, ...data }: CategoryFormValues) => {
     props.onSave(
       {
         ...data,
-        budgetCents: data.budget
-          ? Math.floor(
-              parseFloat(data.budget || "0") * 10 ** (selectedCurrency()?.decimalDigits || 0)
-            )
+        budgetCurrencyId: budgetCurrencyId || null,
+        budgetCents: budget
+          ? Math.floor(parseFloat(budget || "0") * 10 ** (selectedCurrency()?.decimalDigits || 0))
           : null,
         isRegular: Boolean(data.isRegular)
       },
@@ -83,26 +82,28 @@ const CategoryForm: Component<{
         of={form}
         label="Budget Currency"
         name="budgetCurrencyId"
-        options={
+        options={[{ value: "", content: "None" }].concat(
           currencies()?.currencies?.map((currency) => ({
             value: currency.id,
             content: `${currency.code} (${currency.name})`
           })) || []
-        }
+        )}
       />
 
-      <FormInputGroup
-        of={form}
-        label="Budget"
-        name="budget"
-        inputmode="decimal"
-        before={<InputAddon>{selectedCurrency()?.symbol}</InputAddon>}
-        step={
-          selectedCurrency()?.decimalDigits
-            ? `0.${repeat("0", selectedCurrency()!.decimalDigits - 1)}1`
-            : "1"
-        }
-      />
+      <Show when={selectedCurrency()}>
+        <FormInputGroup
+          of={form}
+          label="Budget"
+          name="budget"
+          inputmode="decimal"
+          before={<InputAddon>{selectedCurrency()?.symbol}</InputAddon>}
+          step={
+            selectedCurrency()?.decimalDigits
+              ? `0.${repeat("0", selectedCurrency()!.decimalDigits - 1)}1`
+              : "1"
+          }
+        />
+      </Show>
 
       <FormSwitch of={form} label="Regular" name="isRegular" />
 

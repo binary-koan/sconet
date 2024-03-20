@@ -21,6 +21,7 @@ interface BudgetGroupProps {
     color?: CategoryColor
     budget?: { amountDecimal: number; formatted: string } | null | false
     total: { amountDecimal: number; formatted: string }
+    remaining?: { amountDecimal: number; formatted: string } | null
   }>
 }
 
@@ -52,7 +53,7 @@ const BudgetGroup: Component<BudgetGroupProps> = (props) => {
           </Show>
 
           <For each={props.items}>
-            {({ categoryId, indicator, name, color, total, budget }) => (
+            {({ categoryId, indicator, name, color, total, remaining, budget }) => (
               <div class="flex items-center pb-4">
                 <CategoryIndicator class="mr-3 h-6 w-6" {...indicator} />
                 <div class="min-w-0 flex-1">
@@ -73,6 +74,8 @@ const BudgetGroup: Component<BudgetGroupProps> = (props) => {
                         style={{
                           width: budget
                             ? `${Math.min(total.amountDecimal / budget.amountDecimal, 1) * 100}%`
+                            : total.amountDecimal > 0
+                            ? "100%"
                             : 0
                         }}
                       />
@@ -92,7 +95,7 @@ const BudgetGroup: Component<BudgetGroupProps> = (props) => {
                             {((total.amountDecimal / budget.amountDecimal) * 100).toFixed(0)}% spent
                           </span>
                           <span class="ml-auto text-xs text-gray-600">
-                            {budget.formatted} budget
+                            {remaining?.formatted} left / {budget.formatted} budget
                           </span>
                         </>
                       ) : (

@@ -20,7 +20,7 @@ class Money < Data.define(:amount_cents, :currency)
   end
 
   def formatted
-    "#{sign}#{currency.symbol}#{format('%.2f', amount_decimal.abs)}"
+    "#{sign}#{currency.symbol}#{format("%.#{currency.decimal_digits}f", amount_decimal.abs)}"
   end
 
   def formatted_short

@@ -49,6 +49,10 @@ export const BUDGET_QUERY = gql`
             amountDecimal
             formatted
           }
+          remainingBudget {
+            amountDecimal
+            formatted
+          }
         }
       }
       irregularCategories {
@@ -72,6 +76,10 @@ export const BUDGET_QUERY = gql`
             }
           }
           amountSpent {
+            amountDecimal
+            formatted
+          }
+          remainingBudget {
             amountDecimal
             formatted
           }

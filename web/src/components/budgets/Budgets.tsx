@@ -45,17 +45,21 @@ export const Budgets: Component<{
             ({ category }) => category?.id || null
           )
         })}
-        items={props.data.budget.regularCategories.categories.map(({ category, amountSpent }) => ({
-          indicator: {
+        transactionsFilter={transactionsFilter()}
+        items={props.data.budget.regularCategories.categories.map(
+          ({ category, amountSpent, remainingBudget }) => ({
+            indicator: {
+              color: category?.color as CategoryColor,
+              icon: category?.icon ? namedIcons[category.icon] : undefined
+            },
+            name: category?.name || "Uncategorized",
             color: category?.color as CategoryColor,
-            icon: category?.icon ? namedIcons[category.icon] : undefined
-          },
-          name: category?.name || "Uncategorized",
-          color: category?.color as CategoryColor,
-          budget: category?.budget?.budget,
-          total: amountSpent,
-          categoryId: category?.id || null
-        }))}
+            budget: category?.budget?.budget,
+            total: amountSpent,
+            remaining: remainingBudget,
+            categoryId: category?.id || null
+          })
+        )}
       />
 
       <BudgetGroup
@@ -68,7 +72,7 @@ export const Budgets: Component<{
         })}
         transactionsFilter={transactionsFilter()}
         items={props.data.budget.irregularCategories.categories.map(
-          ({ category, amountSpent }) => ({
+          ({ category, amountSpent, remainingBudget }) => ({
             indicator: {
               color: category?.color as CategoryColor,
               icon: category?.icon ? namedIcons[category.icon] : undefined
@@ -77,6 +81,7 @@ export const Budgets: Component<{
             color: category?.color as CategoryColor,
             budget: category?.budget?.budget,
             total: amountSpent,
+            remaining: remainingBudget,
             categoryId: category?.id || null
           })
         )}

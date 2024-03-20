@@ -24,12 +24,19 @@ module Mutations
           category_input[:budget_cents] != category.current_budget&.budget_cents ||
           category_input[:budget_currency_id] != category.current_budget&.currency_id
         )
-          category.current_budget&.update!(date_to: Time.zone.now.beginning_of_month)
-          category.category_budgets.create!(
-            date_from: Time.zone.now.beginning_of_month,
-            budget_cents: category_input[:budget_cents],
-            currency_id: category_input[:budget_currency_id]
-          )
+          if category.current_budget&.date_from == Time.zone.now.beginning_of_month
+            category.current_budget.update!(
+              budget_cents: category_input[:budget_cents],
+              currency_id: category_input[:budget_currency_id]
+            )
+          else
+            category.current_budget&.update!(date_to: Time.zone.now.beginning_of_month)
+            category.category_budgets.create!(
+              date_from: Time.zone.now.beginning_of_month,
+              budget_cents: category_input[:budget_cents],
+              currency_id: category_input[:budget_currency_id]
+            )
+          end
         end
       end
 

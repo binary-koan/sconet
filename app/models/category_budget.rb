@@ -13,6 +13,6 @@ class CategoryBudget < ApplicationRecord
   end
 
   def budget
-    Money.new(amount_cents: budget_cents, currency:)
+    MoneyOnDate.new(amount_cents: budget_cents, currency:, date: date_from)
   end
 end
