@@ -94,7 +94,7 @@ export const Budgets: Component<{
         transactionsFilter={transactionsFilter()}
         items={props.data.income.nodes.map((transaction) => ({
           indicator: { isIncome: true },
-          name: transaction.memo,
+          name: [transaction.shop, transaction.memo].filter(Boolean).join(" – "),
           budget: false,
           total: transaction.amount || { amountDecimal: 0, formatted: "?" },
           categoryId: null

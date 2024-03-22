@@ -92,6 +92,7 @@ export const BUDGET_QUERY = gql`
     ) {
       nodes {
         id
+        shop
         memo
         amount(currencyId: $currencyId) {
           formatted

@@ -11,6 +11,7 @@ export const TRANSACTIONS_FOR_POPULATION_QUERY = gql`
       nodes {
         id
         shop
+        memo
         account {
           id
           currency {

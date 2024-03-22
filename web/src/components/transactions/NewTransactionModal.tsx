@@ -15,7 +15,7 @@ import {
   IconSelector,
   IconSwitch3
 } from "@tabler/icons-solidjs"
-import { Component, createEffect, createSignal, For, Show } from "solid-js"
+import { Component, createEffect, createSignal, createUniqueId, For, Show } from "solid-js"
 import toast from "solid-toast"
 import { TransactionInput, FullTransactionFragment } from "../../graphql-types"
 import { useCreateTransaction } from "../../graphql/mutations/createTransactionMutation"
@@ -54,6 +54,8 @@ export const NewTransactionModal: Component<{
 
   const [splittingTransaction, setSplittingTransaction] =
     createSignal<FullTransactionFragment | null>(null)
+
+  const recentShopsId = createUniqueId()
 
   const createTransaction = useCreateTransaction({
     onSuccess: () => {
@@ -173,6 +175,7 @@ export const NewTransactionModal: Component<{
                     ref={shopInput}
                     label="Where?"
                     name="shop"
+                    list={recentShopsId}
                     onBlur={(e) => {
                       const normalize = (string: string) =>
                         string.toLowerCase().replace(/[^\w]+/, "")
@@ -185,9 +188,18 @@ export const NewTransactionModal: Component<{
                         setValue(form, "categoryId", recent.category?.id)
                         setValue(form, "accountId", recent.account.id)
                         setValue(form, "currencyId", recent.account.currency.id)
+
+                        if (!getValue(form, "memo")) {
+                          setValue(form, "memo", recent.memo)
+                        }
                       }
                     }}
                   />
+                  <datalist id={recentShopsId}>
+                    <For each={transactions()?.transactions.nodes}>
+                      {(transaction) => <option value={transaction.shop} />}
+                    </For>
+                  </datalist>
 
                   <FormInput placeholderLabel={true} of={form} label="What?" name="memo" />
 
