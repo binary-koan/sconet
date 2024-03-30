@@ -49,29 +49,33 @@ export const CurrenciesList: Component<{
         <div class="text-center italic">No favourite currencies</div>
       </Show>
 
-      <For each={favouriteCurrencies()}>
-        {(currency) => (
-          <Currency
-            currency={currency}
-            isFavorite={true}
-            onFavorite={() => unfavouriteCurrency({ id: currency.id })}
-            onSetDefault={() => setDefaultCurrency({ id: currency.id })}
-          />
-        )}
-      </For>
+      <div class="flex flex-col gap-px bg-gray-100 shadow-sm">
+        <For each={favouriteCurrencies()}>
+          {(currency) => (
+            <Currency
+              currency={currency}
+              isFavorite={true}
+              onFavorite={() => unfavouriteCurrency({ id: currency.id })}
+              onSetDefault={() => setDefaultCurrency({ id: currency.id })}
+            />
+          )}
+        </For>
+      </div>
 
       <div class="mb-6" />
 
-      <For each={otherCurrencies()}>
-        {(currency) => (
-          <Currency
-            currency={currency}
-            isFavorite={false}
-            onFavorite={() => favouriteCurrency({ id: currency.id })}
-            onSetDefault={() => setDefaultCurrency({ id: currency.id })}
-          />
-        )}
-      </For>
+      <div class="flex flex-col gap-px bg-gray-100 shadow-sm">
+        <For each={otherCurrencies()}>
+          {(currency) => (
+            <Currency
+              currency={currency}
+              isFavorite={false}
+              onFavorite={() => favouriteCurrency({ id: currency.id })}
+              onSetDefault={() => setDefaultCurrency({ id: currency.id })}
+            />
+          )}
+        </For>
+      </div>
     </div>
   )
 }

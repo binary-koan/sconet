@@ -85,24 +85,26 @@ export const CategoriesList: Component<{ data: CategoriesQuery }> = (props) => {
   })
 
   return (
-    <DragDropProviderFixed
-      onDragStart={onDragStart}
-      onDragEnd={onDragEnd}
-      collisionDetector={closestCenter}
-    >
-      <DragDropSensors />
-      <SortableProviderFixed ids={ids()}>
-        <For each={orderedCategories()}>
-          {(category) => <SortableCategory category={category} onDeleteClick={onDeleteClick} />}
-        </For>
-      </SortableProviderFixed>
+    <div class="flex flex-col gap-px bg-gray-100 shadow-sm">
+      <DragDropProviderFixed
+        onDragStart={onDragStart}
+        onDragEnd={onDragEnd}
+        collisionDetector={closestCenter}
+      >
+        <DragDropSensors />
+        <SortableProviderFixed ids={ids()}>
+          <For each={orderedCategories()}>
+            {(category) => <SortableCategory category={category} onDeleteClick={onDeleteClick} />}
+          </For>
+        </SortableProviderFixed>
 
-      <DragOverlayFixed>
-        <Show when={draggingItem()}>
-          <Category category={draggingItem()!} onDeleteClick={noop} />
-        </Show>
-      </DragOverlayFixed>
-    </DragDropProviderFixed>
+        <DragOverlayFixed>
+          <Show when={draggingItem()}>
+            <Category category={draggingItem()!} onDeleteClick={noop} />
+          </Show>
+        </DragOverlayFixed>
+      </DragDropProviderFixed>
+    </div>
   )
 }
 

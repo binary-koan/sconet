@@ -39,7 +39,7 @@ const TransactionItem: Component<{
   return (
     <>
       <div
-        class="flex cursor-pointer items-center bg-white py-2 pr-4 shadow-sm"
+        class="flex cursor-pointer items-center bg-white py-2 pr-4"
         classList={{
           "pl-10": !!props.parent,
           "pl-4": !props.parent
@@ -87,7 +87,7 @@ const TransactionItem: Component<{
         {(child) => (
           <div
             onClick={navigateToTransaction}
-            class="flex cursor-pointer items-center bg-white py-2 pl-10 pr-4 shadow-sm"
+            class="-mt-px flex cursor-pointer items-center bg-white py-2 pl-10 pr-4"
           >
             <CategoryIndicator
               class="mr-4 h-6 w-6 flex-none"

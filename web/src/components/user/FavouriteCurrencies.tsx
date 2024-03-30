@@ -5,7 +5,7 @@ import { CurrentUserQuery } from "../../graphql-types"
 import { useSetDefaultCurrency } from "../../graphql/mutations/setDefaultCurrency"
 import { Button } from "../base/Button"
 
-export const favouriteCurrencies: Component<{
+export const FavouriteCurrencies: Component<{
   data: CurrentUserQuery
 }> = (props) => {
   const currentUser = () => props.data.currentUser!
@@ -15,13 +15,13 @@ export const favouriteCurrencies: Component<{
   })
 
   return (
-    <div class="bg-white px-4 shadow-sm">
+    <div class="flex flex-col gap-px bg-gray-100 shadow-sm">
       <Show when={currentUser().favouriteCurrencies.length === 0}>
         <div class="italic">No favourite currencies</div>
       </Show>
       <For each={currentUser().favouriteCurrencies}>
         {(currency) => (
-          <div class="flex items-center justify-between py-1">
+          <div class="flex items-center justify-between bg-white px-4 py-1">
             {currency.code} ({currency.name})
             <Button
               size="sm"

@@ -103,9 +103,11 @@ export const TransactionsList: Component<{
                 {formatDate(date, "fullDateWithoutYear")}
               </div>
 
-              <For each={transactions}>
-                {(transaction) => <TransactionItem transaction={transaction} />}
-              </For>
+              <div class="flex flex-col gap-px bg-gray-100 shadow-sm">
+                <For each={transactions}>
+                  {(transaction) => <TransactionItem transaction={transaction} />}
+                </For>
+              </div>
             </>
           )
         }}

@@ -11,7 +11,7 @@ import { Button, LinkButton } from "../components/base/Button"
 import { PageHeader } from "../components/base/PageHeader"
 import { CategoriesList } from "../components/categories/CategoriesList"
 import { CurrentUserProfile } from "../components/user/CurrentUserProfile"
-import { favouriteCurrencies } from "../components/user/FavouriteCurrencies"
+import { FavouriteCurrencies } from "../components/user/FavouriteCurrencies"
 import {
   AccountsQuery,
   AccountsQueryVariables,
@@ -97,12 +97,12 @@ const SettingsPage: Component = () => {
         </Button>
       </PageHeader>
 
-      <div class="flex items-center gap-2 bg-white py-2 px-4 shadow-sm">
+      <div class="flex items-center gap-2 bg-white px-4 py-2 shadow-sm">
         <IconKey /> Password
       </div>
       <For each={data.currentUser()?.currentUser?.registeredCredentials}>
         {(credential) => (
-          <div class="flex items-center gap-2 bg-white  py-2 px-4 shadow-sm">
+          <div class="flex items-center gap-2 bg-white  px-4 py-2 shadow-sm">
             <IconFingerprint /> {credential.device} (created on {credential.createdAt})
             <Button
               size="sm"
@@ -124,7 +124,7 @@ const SettingsPage: Component = () => {
         </LinkButton>
       </PageHeader>
 
-      <Cell data={data.currentUser} success={favouriteCurrencies} />
+      <Cell data={data.currentUser} success={FavouriteCurrencies} />
 
       <PageHeader size="lg" class="mt-4">
         Categories
