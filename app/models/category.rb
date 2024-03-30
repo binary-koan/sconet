@@ -11,5 +11,5 @@ class Category < ApplicationRecord
   validates :name, presence: true
   validates :color, presence: true, inclusion: { in: COLORS }
   validates :icon, presence: true, inclusion: { in: ICONS }
-  validates :sort_order, uniqueness: true
+  validates :sort_order, uniqueness: { scope: :deleted_at }
 end
