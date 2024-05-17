@@ -38,15 +38,15 @@ export const Budgets: Component<{
       />
 
       <BudgetGroup
-        title="Regular spending"
-        total={props.data.budget.regularCategories.totalSpending.formatted}
+        title="Contingent spending"
+        total={props.data.budget.irregularCategories.totalSpending.formatted}
         allTransactionsHref={filteredTransactions({
-          categoryIds: props.data.budget.regularCategories.categories.map(
+          categoryIds: props.data.budget.irregularCategories.categories.map(
             ({ category }) => category?.id || null
           )
         })}
         transactionsFilter={transactionsFilter()}
-        items={props.data.budget.regularCategories.categories.map(
+        items={props.data.budget.irregularCategories.categories.map(
           ({ category, amountSpent, remainingBudget }) => ({
             indicator: {
               color: category?.color as CategoryColor,
@@ -63,15 +63,15 @@ export const Budgets: Component<{
       />
 
       <BudgetGroup
-        title="Contingent spending"
-        total={props.data.budget.irregularCategories.totalSpending.formatted}
+        title="Regular spending"
+        total={props.data.budget.regularCategories.totalSpending.formatted}
         allTransactionsHref={filteredTransactions({
-          categoryIds: props.data.budget.irregularCategories.categories.map(
+          categoryIds: props.data.budget.regularCategories.categories.map(
             ({ category }) => category?.id || null
           )
         })}
         transactionsFilter={transactionsFilter()}
-        items={props.data.budget.irregularCategories.categories.map(
+        items={props.data.budget.regularCategories.categories.map(
           ({ category, amountSpent, remainingBudget }) => ({
             indicator: {
               color: category?.color as CategoryColor,
