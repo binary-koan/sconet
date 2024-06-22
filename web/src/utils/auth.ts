@@ -1,5 +1,6 @@
 import { decodeJwt } from "jose"
 import { createSignal } from "solid-js"
+import { requestGraphql } from "./graphqlClient/requestGraphql"
 
 const LOGIN_TOKEN_KEY = "sconet.loginToken"
 const LAST_USER_EMAIL_KEY = "sconet.userEmail"
@@ -38,3 +39,20 @@ export function isLoggedIn() {
 
   return payload.exp && payload.exp > Date.now() / 1000
 }
+
+async function refreshToken() {
+  if (!loginToken()) return
+
+  try {
+    const { currentUser } = await requestGraphql<{ currentUser: { token: string } }>(
+      `{ currentUser { token } }`,
+      "{}"
+    )
+    localStorage.setItem(LOGIN_TOKEN_KEY, currentUser.token)
+  } catch (e) {
+    console.warn("Error refreshing token", e)
+  }
+}
+
+// eslint-disable-next-line solid/reactivity
+refreshToken()
