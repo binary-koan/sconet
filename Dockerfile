@@ -8,7 +8,7 @@ ENV NODE_ENV=production
 COPY web ./web
 RUN cd web && bun run build
 
-FROM ruby:3.2-slim as base
+FROM ruby:3.2.3-slim as base
 
 LABEL fly_launch_runtime="rails"
 

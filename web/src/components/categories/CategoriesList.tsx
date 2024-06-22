@@ -135,7 +135,7 @@ const Category: Component<{
 }> = (props) => {
   return (
     <div class="flex items-center bg-white px-4 py-2 shadow-sm">
-      <div class="mr-2 cursor-move text-gray-600">
+      <div class="mr-2 cursor-move text-gray-600 hidden md:block">
         <IconArrowsSort {...props.sortable?.dragActivators} />
       </div>
       <CategoryIndicator
