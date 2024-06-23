@@ -10,6 +10,12 @@ import { InputAddon, InputGroup, InputGroupInput } from "../base/InputGroup"
 import { CurrencySelect } from "../currencies/CurrencySelect"
 import ConfirmCancelButtons from "./ConfirmCancelButtons"
 
+export function toCents(amount: string, currency?: { decimalDigits: number }) {
+  return Math.round(
+    parseFloat(amount.replaceAll(",", "") || "0") * 10 ** (currency?.decimalDigits || 0)
+  )
+}
+
 export const AmountEditor: Component<{
   transaction: FullTransactionFragment
   field?: "amount" | "shopAmount"
@@ -56,7 +62,7 @@ export const AmountEditor: Component<{
         currencies()?.currencies.find((currency) => currency.code === newCurrencyId()) || currency
     }
 
-    let amount = Math.round(parseFloat(newAmount()) * 10 ** currency.decimalDigits)
+    let amount = toCents(newAmount(), currency)
 
     if (
       (props.transaction.amount && props.transaction.amount.amountDecimal < 0) ||

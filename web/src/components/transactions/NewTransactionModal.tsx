@@ -35,6 +35,7 @@ import { FormDatePicker } from "../forms/FormDatePicker"
 import FormInput from "../forms/FormInput"
 import FormInputGroup from "../forms/FormInputGroup"
 import { SplitTransactionModal } from "./SplitTransactionModal"
+import { toCents } from "./AmountEditor"
 
 type NewTransactionModalValues = Omit<TransactionInput, "amount" | "shopAmount"> & {
   amountType: "expense" | "income"
@@ -90,9 +91,7 @@ export const NewTransactionModal: Component<{
     event: SubmitEvent
   ) => {
     const currency = currencies()?.currencies.find((currency) => currency.id === data.currencyId)
-    const integerAmount = Math.round(
-      parseFloat(amount || "0") * 10 ** (currency?.decimalDigits || 0)
-    )
+    const integerAmount = toCents(amount || "0", currency)
 
     const coercedData: TransactionInput = {
       ...data,
@@ -109,9 +108,7 @@ export const NewTransactionModal: Component<{
       const shopCurrency = currencies()?.currencies.find(
         (currency) => currency.code === shopCurrencyId
       )
-      const integerShopAmount = Math.round(
-        parseFloat(shopAmount || "0") * 10 ** (shopCurrency?.decimalDigits || 0)
-      )
+      const integerShopAmount = toCents(shopAmount || "0", shopCurrency)
       coercedData.shopAmountCents =
         amountType === "expense" ? -integerShopAmount : integerShopAmount
       coercedData.shopCurrencyId = shopCurrencyId
@@ -180,17 +177,22 @@ export const NewTransactionModal: Component<{
                       const normalize = (string: string) =>
                         string.toLowerCase().replace(/[^\w]+/, "")
 
-                      const recent = transactions()?.transactions.nodes.find(
-                        (transaction) => normalize(transaction.shop) === normalize(e.target.value)
-                      )
+                      const recent =
+                        transactions()?.transactions.nodes.filter(
+                          (transaction) => normalize(transaction.shop) === normalize(e.target.value)
+                        ) || []
+                      const copyFrom = recent[0]
 
-                      if (recent) {
-                        setValue(form, "categoryId", recent.category?.id)
-                        setValue(form, "accountId", recent.account.id)
-                        setValue(form, "currencyId", recent.account.currency.id)
+                      if (copyFrom) {
+                        setValue(form, "categoryId", copyFrom.category?.id)
+                        setValue(form, "accountId", copyFrom.account.id)
+                        setValue(form, "currencyId", copyFrom.account.currency.id)
 
-                        if (!getValue(form, "memo")) {
-                          setValue(form, "memo", recent.memo)
+                        if (
+                          !getValue(form, "memo") &&
+                          recent.every(({ memo }) => memo === copyFrom.memo)
+                        ) {
+                          setValue(form, "memo", copyFrom.memo)
                         }
                       }
                     }}
@@ -377,7 +379,7 @@ export const NewTransactionModal: Component<{
                   type="submit"
                   colorScheme="primary"
                   class="mt-auto w-full"
-                  disabled={createTransaction.loading}
+                  loading={createTransaction.loading}
                 >
                   Save
                 </Button>
@@ -386,7 +388,7 @@ export const NewTransactionModal: Component<{
                   colorScheme="neutral"
                   variant="ghost"
                   class="-mt-2"
-                  disabled={createTransaction.loading}
+                  loading={createTransaction.loading}
                   data-action="split"
                 >
                   <IconArrowsSplit2 class="mr-2" /> Save & split

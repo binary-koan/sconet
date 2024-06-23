@@ -5,7 +5,12 @@ import { setLoginToken } from "../utils/auth"
 import { QueryResource } from "../utils/graphqlClient/useQuery"
 import LoadingBar from "./LoadingBar"
 
-const DefaultLoader = () => <LoadingBar />
+const DefaultLoader = () => (
+  <div role="status" class="mx-auto mb-4">
+    <LoadingBar class="h-8 w-8 text-indigo-600" />
+    <span class="sr-only">Loading...</span>
+  </div>
+)
 const DefaultFailure: Component<{ error: any }> = (props) => (
   <div class="rounded bg-red-100 p-4 text-red-700">{props.error.message}</div>
 )

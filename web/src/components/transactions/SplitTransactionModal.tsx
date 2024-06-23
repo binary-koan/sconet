@@ -241,7 +241,7 @@ export const SplitTransactionModal: Component<{
           <div class="mb-6">Remainder: {remainder()}</div>
         </div>
 
-        <Button colorScheme="primary" onClick={doUpdate}>
+        <Button colorScheme="primary" onClick={doUpdate} loading={splitTransaction.loading}>
           Split
         </Button>
       </ModalContent>

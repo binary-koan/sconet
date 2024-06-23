@@ -10,6 +10,7 @@ import FormInput from "../forms/FormInput"
 import FormInputGroup from "../forms/FormInputGroup"
 import FormOptionButtons from "../forms/FormOptionButtons"
 import FormSwitch from "../forms/FormSwitch"
+import { toCents } from "../transactions/AmountEditor"
 
 type CategoryFormValues = {
   name: string
@@ -45,9 +46,7 @@ const CategoryForm: Component<{
       {
         ...data,
         budgetCurrencyId: budgetCurrencyId || null,
-        budgetCents: budget
-          ? Math.floor(parseFloat(budget || "0") * 10 ** (selectedCurrency()?.decimalDigits || 0))
-          : null,
+        budgetCents: budget ? toCents(budget, selectedCurrency()) : null,
         isRegular: Boolean(data.isRegular)
       },
       props?.category?.id

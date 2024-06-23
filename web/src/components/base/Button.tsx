@@ -1,5 +1,6 @@
 import { Link, LinkProps } from "@solidjs/router"
 import { JSX, splitProps } from "solid-js"
+import LoadingBar from "../LoadingBar"
 
 const SIZES = {
   xs: "p-1 text-sm",
@@ -31,6 +32,7 @@ export interface ButtonCustomProps {
   variant?: ButtonVariant
   colorScheme?: ButtonColor
   size?: ButtonSize
+  loading?: boolean
 }
 
 export const buttonClasses = (props: ButtonCustomProps) =>
@@ -48,7 +50,10 @@ export const Button = (allProps: ButtonProps) => {
     "variant",
     "colorScheme",
     "size",
-    "type"
+    "type",
+    "loading",
+    "disabled",
+    "children"
   ])
 
   return (
@@ -56,12 +61,15 @@ export const Button = (allProps: ButtonProps) => {
       class={`${buttonClasses(props)} ${props.class}`}
       classList={props.classList}
       type={props.type || "button"}
+      disabled={props.disabled || props.loading}
       {...elementProps}
-    />
+    >
+      {props.loading ? <LoadingBar /> : props.children}
+    </button>
   )
 }
 
-export type LinkButtonProps = LinkProps & ButtonCustomProps
+export type LinkButtonProps = LinkProps & Omit<ButtonCustomProps, "loading">
 export const LinkButton = (allProps: LinkButtonProps) => {
   const [props, elementProps] = splitProps(allProps, [
     "class",

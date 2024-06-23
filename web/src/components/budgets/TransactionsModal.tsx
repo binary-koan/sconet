@@ -35,7 +35,7 @@ export const TransactionsModal = (props: {
     <Modal isOpen={true} onClickOutside={props.onClose}>
       <ModalContent class="!my-0 flex max-h-[90vh] flex-col">
         <ModalTitle>Transactions</ModalTitle>
-        <Show when={transactionsToShow()} fallback={<LoadingBar />}>
+        <Show when={transactionsToShow()} fallback={<LoadingBar class="text-indigo-600" />}>
           {(transactionsToShow) => (
             <ul class="min-h-0 flex-1 overflow-auto">
               <For each={transactionsToShow()}>
