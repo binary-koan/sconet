@@ -1,4 +1,4 @@
-import { decodeJwt } from "jose"
+import { jwtDecode } from "jwt-decode"
 import { createSignal } from "solid-js"
 import { requestGraphql } from "./graphqlClient/requestGraphql"
 
@@ -35,7 +35,7 @@ export function isLoggedIn() {
 
   if (!token) return false
 
-  const payload = decodeJwt(token)
+  const payload = jwtDecode(token)
 
   return payload.exp && payload.exp > Date.now() / 1000
 }
