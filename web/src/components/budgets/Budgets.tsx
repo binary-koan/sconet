@@ -13,8 +13,6 @@ export const Budgets: Component<{
 }> = (props) => {
   const range = () => monthRange(new Date(parseInt(props.year), parseInt(props.month) - 1))
 
-  const isPastMonth = () => new Date() > range()[1]
-
   const transactionsFilter = () => ({
     dateFrom: stripTime(range()[0]),
     dateUntil: stripTime(range()[1])
@@ -31,11 +29,7 @@ export const Budgets: Component<{
 
   return (
     <>
-      <BudgetSummary
-        showDifference={isPastMonth()}
-        filteredTransactions={filteredTransactions}
-        budget={props.data.budget}
-      />
+      <BudgetSummary filteredTransactions={filteredTransactions} budget={props.data.budget} />
 
       <BudgetGroup
         title="Contingent spending"

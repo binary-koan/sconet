@@ -77,7 +77,7 @@ const LoginPage: Component = () => {
               login(values)
             }}
           >
-            <FormInput of={form} type="text" name="email" label="Email" />
+            <FormInput of={form} type="email" name="email" label="Email" />
             <FormInput of={form} type="password" name="password" label="Password" />
 
             <Button

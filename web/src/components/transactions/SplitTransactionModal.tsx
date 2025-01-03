@@ -214,6 +214,7 @@ export const SplitTransactionModal: Component<{
                         class="col-span-2"
                         value={split.amount}
                         placeholder="Amount"
+                        inputmode="decimal"
                         onInput={(e) =>
                           setField(
                             categorySplit.category?.id || null,
