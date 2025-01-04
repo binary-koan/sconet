@@ -65,8 +65,8 @@ export const AmountEditor: Component<{
     let amount = toCents(newAmount(), currency)
 
     if (
-      (props.transaction.amount && props.transaction.amount.amountDecimal < 0) ||
-      (props.transaction.shopAmount && props.transaction.shopAmount.amountDecimal < 0)
+      (props.transaction.amount && props.transaction.amount.amountDecimal <= 0) ||
+      (props.transaction.shopAmount && props.transaction.shopAmount.amountDecimal <= 0)
     ) {
       amount = -amount
     }

@@ -45,6 +45,6 @@ class Money < Data.define(:amount_cents, :currency)
   private
 
   def sign
-    amount_cents < 0 ? "-" : ""
+    amount_cents <= 0 ? "-" : ""
   end
 end

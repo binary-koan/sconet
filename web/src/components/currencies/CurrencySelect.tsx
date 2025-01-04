@@ -36,7 +36,7 @@ export const CurrencySelect: Component<{
         <For each={orderedCurrencies().filter(props.filter || (() => true))}>
           {(currency) => (
             <DropdownMenuItem class="text-sm" onClick={() => props.onChange(currency.id)}>
-              {currency.id}
+              {currency.code}
             </DropdownMenuItem>
           )}
         </For>

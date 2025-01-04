@@ -24,11 +24,11 @@ class Transaction < ApplicationRecord
   attr_accessor :amount_in_currency, :shop_amount_in_currency
 
   def expense?
-    amount_cents&.negative?
+    amount_cents && amount_cents <= 0
   end
 
   def income?
-    amount_cents&.positive?
+    amount_cents && amount_cents > 0
   end
 
   def amount

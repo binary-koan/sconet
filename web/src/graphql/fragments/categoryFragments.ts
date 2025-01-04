@@ -1,4 +1,4 @@
-import { gql } from "../../utils/gql"
+import { gql } from "../../utils/gql.ts"
 
 export const FullCategoryFragment = gql`
   fragment FullCategory on Category {
@@ -6,6 +6,7 @@ export const FullCategoryFragment = gql`
     name
     color
     icon
+    hasTransactions
     budget(date: $today) {
       budget {
         amountDecimal

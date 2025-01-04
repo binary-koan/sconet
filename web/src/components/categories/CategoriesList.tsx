@@ -10,15 +10,16 @@ import {
   transformStyle
 } from "@thisbeyond/solid-dnd"
 import { isEqual, noop, orderBy } from "lodash"
-import { IconArrowsSort, IconEdit, IconTrash } from "@tabler/icons-solidjs"
+import { IconArchive, IconArrowsSort, IconEdit, IconTrash } from "@tabler/icons-solidjs"
 import { Component, createEffect, createSignal, For, Show } from "solid-js"
 import toast from "solid-toast"
-import { CategoriesQuery, FullCategoryFragment } from "../../graphql-types"
-import { useDeleteCategory } from "../../graphql/mutations/deleteCategoryMutation"
-import { useReorderCategories } from "../../graphql/mutations/reorderCategoriesMutation"
-import { namedIcons } from "../../utils/namedIcons"
-import { Button, LinkButton } from "../base/Button"
-import CategoryIndicator from "../CategoryIndicator"
+import { CategoriesQuery, FullCategoryFragment } from "../../graphql-types.ts"
+import { useDeleteCategory } from "../../graphql/mutations/deleteCategoryMutation.ts"
+import { useArchiveCategory } from "~/graphql/mutations/archiveCategoryMutation.ts"
+import { useReorderCategories } from "../../graphql/mutations/reorderCategoriesMutation.ts"
+import { namedIcons } from "../../utils/namedIcons.ts"
+import { Button, LinkButton } from "../base/Button.tsx"
+import CategoryIndicator from "../CategoryIndicator.tsx"
 
 const DragDropProviderFixed = DragDropProvider as any
 const SortableProviderFixed = SortableProvider as any
@@ -29,6 +30,10 @@ export const CategoriesList: Component<{ data: CategoriesQuery }> = (props) => {
     onSuccess: () => toast.success("Category deleted")
   })
 
+  const archiveCategory = useArchiveCategory({
+    onSuccess: () => toast.success("Category archived")
+  })
+
   const reorderCategories = useReorderCategories({
     onSuccess: () => toast.success("Categories reordered")
   })
@@ -36,6 +41,12 @@ export const CategoriesList: Component<{ data: CategoriesQuery }> = (props) => {
   const onDeleteClick = (id: string) => {
     if (confirm("Are you sure you want to delete category " + id + "?")) {
       deleteCategory({ id })
+    }
+  }
+
+  const onArchiveClick = (id: string) => {
+    if (confirm("Are you sure you want to archive category " + id + "?")) {
+      archiveCategory({ id })
     }
   }
 
@@ -94,7 +105,13 @@ export const CategoriesList: Component<{ data: CategoriesQuery }> = (props) => {
         <DragDropSensors />
         <SortableProviderFixed ids={ids()}>
           <For each={orderedCategories()}>
-            {(category) => <SortableCategory category={category} onDeleteClick={onDeleteClick} />}
+            {(category) => (
+              <SortableCategory
+                category={category}
+                onDeleteClick={onDeleteClick}
+                onArchiveClick={onArchiveClick}
+              />
+            )}
           </For>
         </SortableProviderFixed>
 
@@ -111,6 +128,7 @@ export const CategoriesList: Component<{ data: CategoriesQuery }> = (props) => {
 const SortableCategory: Component<{
   category: CategoriesQuery["categories"][number]
   onDeleteClick: (id: string) => void
+  onArchiveClick: (id: string) => void
 }> = (props) => {
   // eslint-disable-next-line solid/reactivity
   const sortable = createSortable(props.category.id)
@@ -131,11 +149,12 @@ const SortableCategory: Component<{
 const Category: Component<{
   category: CategoriesQuery["categories"][number]
   onDeleteClick: (id: string) => void
+  onArchiveClick: (id: string) => void
   sortable?: ReturnType<typeof createSortable>
 }> = (props) => {
   return (
     <div class="flex items-center bg-white px-4 py-2 shadow-sm">
-      <div class="mr-2 cursor-move text-gray-600 hidden md:block">
+      <div class="mr-2 hidden cursor-move text-gray-600 md:block">
         <IconArrowsSort {...props.sortable?.dragActivators} />
       </div>
       <CategoryIndicator
@@ -162,15 +181,26 @@ const Category: Component<{
       >
         <IconEdit />
       </LinkButton>
-      <Button
-        size="sm"
-        variant="ghost"
-        colorScheme="danger"
-        title={"Delete category " + props.category.id}
-        onClick={() => props.onDeleteClick(props.category.id)}
-      >
-        <IconTrash />
-      </Button>
+      {props.category.hasTransactions ? (
+        <Button
+          size="sm"
+          variant="ghost"
+          title={"Archive category " + props.category.id}
+          onClick={() => props.onArchiveClick(props.category.id)}
+        >
+          <IconArchive />
+        </Button>
+      ) : (
+        <Button
+          size="sm"
+          variant="ghost"
+          colorScheme="danger"
+          title={"Delete category " + props.category.id}
+          onClick={() => props.onDeleteClick(props.category.id)}
+        >
+          <IconTrash />
+        </Button>
+      )}
     </div>
   )
 }

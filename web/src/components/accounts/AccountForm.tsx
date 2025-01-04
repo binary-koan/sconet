@@ -1,11 +1,11 @@
 import { createForm, Field, Form, required, setValue } from "@modular-forms/solid"
 import { IconSelector } from "@tabler/icons-solidjs"
 import { Component } from "solid-js"
-import { AccountInput, FullAccountFragment } from "../../graphql-types"
-import { Button } from "../base/Button"
-import { FormControl, FormLabel } from "../base/FormControl"
-import { CurrencySelect } from "../currencies/CurrencySelect"
-import FormInput from "../forms/FormInput"
+import { AccountInput, FullAccountFragment } from "../../graphql-types.ts"
+import { Button } from "../base/Button.tsx"
+import { FormControl, FormLabel } from "../base/FormControl.tsx"
+import { CurrencySelect } from "../currencies/CurrencySelect.tsx"
+import FormInput from "../forms/FormInput.tsx"
 
 type AccountFormValues = AccountInput
 

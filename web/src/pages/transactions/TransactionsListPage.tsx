@@ -118,6 +118,7 @@ const TransactionsListPage: Component = () => {
         data={routeData.data}
         success={TransactionsList}
         successProps={{
+          isFiltering: filterCount() > 0,
           setFilterValue,
           fetchMore: () =>
             routeData.data.fetchMore(

@@ -28,7 +28,7 @@ export const Modal = <T extends AsProp = "div">(
         classList={props.classList}
         {...elementProps}
       >
-        <div class="fixed inset-0 bg-gray-500 bg-opacity-75" />
+        <div class="fixed inset-0 bg-gray-500/75" />
 
         <div class="z-modal fixed inset-0 overflow-y-auto" role="dialog">
           <div

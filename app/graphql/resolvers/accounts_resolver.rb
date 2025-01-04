@@ -5,7 +5,7 @@ module Resolvers
     type [Types::AccountType], null: false
 
     def resolve
-      ::Account.order(:name)
+      ::Account.where(archived_at: nil).order(:name)
     end
   end
 end

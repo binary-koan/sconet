@@ -147,7 +147,7 @@ export const NewTransactionModal: Component<{
   return (
     <>
       <Show when={!splittingTransaction()}>
-        <Modal isOpen={props.isOpen} onClickOutside={props.onClose}>
+        <Modal isOpen={props.isOpen}>
           <ModalContent class="flex h-[31rem] flex-col">
             <ModalTitle>
               New Transaction

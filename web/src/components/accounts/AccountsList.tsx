@@ -1,10 +1,11 @@
-import { IconAsterisk, IconEdit, IconTrash } from "@tabler/icons-solidjs"
+import { IconArchive, IconAsterisk, IconEdit, IconTrash } from "@tabler/icons-solidjs"
 import { Component, For } from "solid-js"
 import toast from "solid-toast"
-import { AccountsQuery, CurrentUserQuery } from "../../graphql-types"
-import { useDeleteAccount } from "../../graphql/mutations/deleteAccountMutation"
-import { useSetDefaultAccount } from "../../graphql/mutations/setDefaultAccount"
-import { Button, LinkButton } from "../base/Button"
+import { AccountsQuery, CurrentUserQuery } from "../../graphql-types.ts"
+import { useArchiveAccount } from "../../graphql/mutations/archiveAccountMutation.ts"
+import { useDeleteAccount } from "../../graphql/mutations/deleteAccountMutation.ts"
+import { useSetDefaultAccount } from "../../graphql/mutations/setDefaultAccount.ts"
+import { Button, LinkButton } from "../base/Button.tsx"
 
 const AccountsList: Component<{
   data: AccountsQuery
@@ -14,9 +15,19 @@ const AccountsList: Component<{
     onSuccess: () => toast.success("Account deleted")
   })
 
+  const archiveAccount = useArchiveAccount({
+    onSuccess: () => toast.success("Account archived")
+  })
+
   const onDeleteClick = (id: string) => {
     if (confirm("Are you sure you want to delete account " + id + "?")) {
       deleteAccount({ id })
+    }
+  }
+
+  const onArchiveClick = (id: string) => {
+    if (confirm("Are you sure you want to archive account " + id + "?")) {
+      archiveAccount({ id })
     }
   }
 
@@ -54,15 +65,26 @@ const AccountsList: Component<{
             >
               <IconEdit />
             </LinkButton>
-            <Button
-              size="sm"
-              variant="ghost"
-              colorScheme="danger"
-              title={"Delete account " + account.name}
-              onClick={() => onDeleteClick(account.id)}
-            >
-              <IconTrash />
-            </Button>
+            {account.hasTransactions ? (
+              <Button
+                size="sm"
+                variant="ghost"
+                title={"Archive account " + account.name}
+                onClick={() => onArchiveClick(account.id)}
+              >
+                <IconArchive />
+              </Button>
+            ) : (
+              <Button
+                size="sm"
+                variant="ghost"
+                colorScheme="danger"
+                title={"Delete account " + account.name}
+                onClick={() => onDeleteClick(account.id)}
+              >
+                <IconTrash />
+              </Button>
+            )}
           </div>
         )}
       </For>

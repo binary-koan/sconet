@@ -5,13 +5,13 @@ import DeviceDetector from "device-detector-js"
 import { IconFingerprint, IconKey, IconTrash } from "@tabler/icons-solidjs"
 import { Component, For } from "solid-js"
 import toast from "solid-toast"
-import { Cell } from "../components/Cell"
-import Accounts from "../components/accounts/AccountsList"
-import { Button, LinkButton } from "../components/base/Button"
-import { PageHeader } from "../components/base/PageHeader"
-import { CategoriesList } from "../components/categories/CategoriesList"
-import { CurrentUserProfile } from "../components/user/CurrentUserProfile"
-import { FavouriteCurrencies } from "../components/user/FavouriteCurrencies"
+import { Cell } from "../components/Cell.tsx"
+import Accounts from "../components/accounts/AccountsList.tsx"
+import { Button, LinkButton } from "../components/base/Button.tsx"
+import { PageHeader } from "../components/base/PageHeader.tsx"
+import { CategoriesList } from "../components/categories/CategoriesList.tsx"
+import { CurrentUserProfile } from "../components/user/CurrentUserProfile.tsx"
+import { FavouriteCurrencies } from "../components/user/FavouriteCurrencies.tsx"
 import {
   AccountsQuery,
   AccountsQueryVariables,
@@ -19,12 +19,12 @@ import {
   CategoriesQueryVariables,
   CurrentUserQuery,
   CurrentUserQueryVariables
-} from "../graphql-types"
-import { useDeleteCredential } from "../graphql/mutations/deleteCredential"
-import { useRegisterCredential } from "../graphql/mutations/registerCredentialMutation"
-import { useVerifyCredentialRegistration } from "../graphql/mutations/verifyCredentialRegistrationMutation"
-import { setLoginToken } from "../utils/auth"
-import { QueryResource } from "../utils/graphqlClient/useQuery"
+} from "../graphql-types.ts"
+import { useDeleteCredential } from "../graphql/mutations/deleteCredential.ts"
+import { useRegisterCredential } from "../graphql/mutations/registerCredentialMutation.ts"
+import { useVerifyCredentialRegistration } from "../graphql/mutations/verifyCredentialRegistrationMutation.ts"
+import { setLoginToken } from "../utils/auth.ts"
+import { QueryResource } from "../utils/graphqlClient/useQuery.ts"
 
 export interface SettingsPageData {
   categories: QueryResource<CategoriesQuery, CategoriesQueryVariables>

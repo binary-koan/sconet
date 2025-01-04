@@ -149,7 +149,7 @@ export const SplitTransactionModal: Component<{
   const canSplitCategories = () => shopAmount() < 0 && props.transaction.includeInReports
 
   return (
-    <Modal onClickOutside={props.onClose} isOpen={props.isOpen}>
+    <Modal isOpen={props.isOpen}>
       <ModalContent>
         <ModalTitle>
           Split Transaction <ModalCloseButton onClick={props.onClose} />

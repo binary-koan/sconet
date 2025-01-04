@@ -8,6 +8,7 @@ module Types
     field :icon, String, null: false
     field :is_regular, Boolean, null: false
     field :sort_order, Integer, null: false
+    field :has_transactions, Boolean, null: false
     field :created_at, GraphQL::Types::ISO8601DateTime, null: false
     field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
 
@@ -26,6 +27,10 @@ module Types
 
     def budget(date:)
       object.category_budgets.for_date(date)
+    end
+
+    def has_transactions
+      object.transactions.any?
     end
   end
 end

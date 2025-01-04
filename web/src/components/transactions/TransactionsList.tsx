@@ -1,15 +1,16 @@
 import { IconPlus } from "@tabler/icons-solidjs"
 import { Component, createMemo, createSignal, For, Show } from "solid-js"
-import { ListingTransactionFragment, TransactionsQuery } from "../../graphql-types"
-import { monthRange, stripTime } from "../../utils/date"
-import { formatDate } from "../../utils/formatters"
-import { Button } from "../base/Button"
-import { NewTransactionModal } from "./NewTransactionModal"
-import { TransactionFilterValues } from "./TransactionFilters"
-import TransactionItem from "./TransactionItem"
+import { ListingTransactionFragment, TransactionsQuery } from "../../graphql-types.ts"
+import { monthRange, stripTime } from "../../utils/date.ts"
+import { formatDate } from "../../utils/formatters.ts"
+import { Button } from "../base/Button.tsx"
+import { NewTransactionModal } from "./NewTransactionModal.tsx"
+import { TransactionFilterValues } from "./TransactionFilters.tsx"
+import TransactionItem from "./TransactionItem.tsx"
 
 export const TransactionsList: Component<{
   data: TransactionsQuery
+  isFiltering: boolean
   fetchMore?: (variables: any) => void
   setFilterValue: (name: keyof TransactionFilterValues, value: any) => void
 }> = (props) => {
@@ -34,7 +35,9 @@ export const TransactionsList: Component<{
         (transaction) => transaction.date === stripTime(date)
       )
 
-      items.push({ date: new Date(date), transactions: transactionsOnDate })
+      if (transactionsOnDate.length || !props.isFiltering) {
+        items.push({ date: new Date(date), transactions: transactionsOnDate })
+      }
     }
 
     return items

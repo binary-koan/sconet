@@ -5,7 +5,7 @@ module Resolvers
     type [Types::CategoryType], null: false
 
     def resolve
-      ::Category.order(:sort_order)
+      ::Category.where(archived_at: nil).order(:sort_order)
     end
   end
 end

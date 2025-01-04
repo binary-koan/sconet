@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_02_04_121921) do
+ActiveRecord::Schema[7.1].define(version: 2025_01_04_163902) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -20,6 +20,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_04_121921) do
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "archived_at"
     t.index ["currency_id"], name: "index_accounts_on_currency_id"
   end
 
@@ -32,6 +33,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_04_121921) do
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "archived_at"
   end
 
   create_table "category_budgets", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
