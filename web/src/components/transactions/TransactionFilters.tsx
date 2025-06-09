@@ -22,7 +22,7 @@ export type TransactionFilterValues = {
 export const TransactionFilters: Component<{
   form: FormStore<TransactionFilterValues, undefined>
 }> = (props) => {
-  const data = useCategoriesQuery(() => ({ today: stripTime(new Date()) }))
+  const data = useCategoriesQuery(() => ({ archived: false, today: stripTime(new Date()) }))
 
   return (
     <div class="mb-4 bg-white p-4 shadow-sm lg:rounded" data-testid="filters-container">

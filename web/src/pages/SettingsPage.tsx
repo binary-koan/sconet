@@ -12,23 +12,17 @@ import { PageHeader } from "../components/base/PageHeader.tsx"
 import { CategoriesList } from "../components/categories/CategoriesList.tsx"
 import { CurrentUserProfile } from "../components/user/CurrentUserProfile.tsx"
 import { FavouriteCurrencies } from "../components/user/FavouriteCurrencies.tsx"
-import {
-  AccountsQuery,
-  AccountsQueryVariables,
-  CategoriesQuery,
-  CategoriesQueryVariables,
-  CurrentUserQuery,
-  CurrentUserQueryVariables
-} from "../graphql-types.ts"
+import { CurrentUserQuery, CurrentUserQueryVariables } from "../graphql-types.ts"
 import { useDeleteCredential } from "../graphql/mutations/deleteCredential.ts"
 import { useRegisterCredential } from "../graphql/mutations/registerCredentialMutation.ts"
 import { useVerifyCredentialRegistration } from "../graphql/mutations/verifyCredentialRegistrationMutation.ts"
 import { setLoginToken } from "../utils/auth.ts"
 import { QueryResource } from "../utils/graphqlClient/useQuery.ts"
+import { useCategoriesQuery } from "~/graphql/queries/categoriesQuery.ts"
+import { useAccountsQuery } from "~/graphql/queries/accountsQuery.ts"
+import { stripTime } from "~/utils/date.ts"
 
 export interface SettingsPageData {
-  categories: QueryResource<CategoriesQuery, CategoriesQueryVariables>
-  accounts: QueryResource<AccountsQuery, AccountsQueryVariables>
   currentUser: QueryResource<CurrentUserQuery, CurrentUserQueryVariables>
 }
 
@@ -36,6 +30,8 @@ const deviceDetector = new DeviceDetector()
 
 const SettingsPage: Component = () => {
   const data = useRouteData<SettingsPageData>()
+  const categories = useCategoriesQuery(() => ({ archived: false, today: stripTime(new Date()) }))
+  const accounts = useAccountsQuery(() => ({ archived: false }))
   const registerCredential = useRegisterCredential({
     onSuccess: async (data) => {
       const response = await startRegistration(data.credentialRegistrationStart.options)

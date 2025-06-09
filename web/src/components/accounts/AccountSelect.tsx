@@ -8,7 +8,7 @@ export const AccountSelect: Component<{
   onChange: (account: FullAccountFragment) => void
   children: (selectedAccount: FullAccountFragment | undefined) => JSX.Element
 }> = (props) => {
-  const accounts = useAccountsQuery()
+  const accounts = useAccountsQuery(() => ({ archived: false }))
 
   const toggle = children(() =>
     props.children(accounts()?.accounts.find((account) => account.id === props.value))

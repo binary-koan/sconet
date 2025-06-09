@@ -48,7 +48,7 @@ export const NewTransactionModal: Component<{
   isOpen: boolean
   onClose: () => void
 }> = (props) => {
-  const categories = useCategoriesQuery(() => ({ today: stripTime(new Date()) }))
+  const categories = useCategoriesQuery(() => ({ archived: false, today: stripTime(new Date()) }))
   const currencies = useCurrenciesQuery()
   const currentUser = useCurrentUserQuery()
   const transactions = useTransactionsForPopulationQuery()

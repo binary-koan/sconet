@@ -27,7 +27,7 @@ export type ValueProps =
     }
 
 const CategoryPicker: Component<ValueProps> = (props) => {
-  const data = useCategoriesQuery(() => ({ today: stripTime(new Date()) }))
+  const data = useCategoriesQuery(() => ({ archived: false, today: stripTime(new Date()) }))
 
   return (
     <div class="flex flex-wrap gap-2">

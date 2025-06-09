@@ -2,7 +2,9 @@ FROM denoland/deno:2.1.3 AS frontend
 
 WORKDIR /app
 
-COPY web/deno.jsonc web/vite.config.ts ./web/
+COPY deno.jsonc deno.lock web/deno.jsonc ./web/
+RUN deno install
+COPY web/vite.config.ts ./web/
 COPY web/src ./web/src
 COPY web/public ./web/public
 COPY web/index.html ./web/index.html

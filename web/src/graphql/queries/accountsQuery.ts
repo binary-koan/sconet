@@ -1,13 +1,13 @@
-import { AccountsQuery, AccountsQueryVariables } from "../../graphql-types"
-import { gql } from "../../utils/gql"
-import { useQuery } from "../../utils/graphqlClient/useQuery"
-import { FullAccountFragment } from "../fragments/accountFragments"
+import { AccountsQuery, AccountsQueryVariables } from "../../graphql-types.ts"
+import { gql } from "../../utils/gql.ts"
+import { useQuery } from "../../utils/graphqlClient/useQuery.ts"
+import { FullAccountFragment } from "../fragments/accountFragments.ts"
 
 export const ACCOUNTS_QUERY = gql`
   ${FullAccountFragment}
 
-  query Accounts {
-    accounts {
+  query Accounts($archived: Boolean!) {
+    accounts(archived: $archived) {
       ...FullAccount
     }
   }

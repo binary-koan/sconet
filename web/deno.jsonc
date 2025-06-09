@@ -42,5 +42,16 @@
     "semiColons": true,
     "singleQuote": false,
     "lineWidth": 100
-  }
+  },
+  "compilerOptions": {
+    "lib": [
+      "ESNext",
+      "DOM"
+    ],
+    "jsx": "preserve",
+    "jsxImportSource": "solid-js"
+  },
+  "unstable": [
+    "sloppy-imports"
+  ]
 } 

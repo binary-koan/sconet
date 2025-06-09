@@ -15,7 +15,7 @@ export type ValueProps = {
 }
 
 const AccountPicker: Component<ValueProps> = (props) => {
-  const data = useAccountsQuery()
+  const data = useAccountsQuery(() => ({ archived: false }))
 
   return (
     <div class="flex flex-wrap gap-2">

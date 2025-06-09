@@ -12,7 +12,7 @@ export const CategorySelect: Component<{
   children: (selectedCategory: FullCategoryFragment | undefined) => JSX.Element
   filter?: (category: FullCategoryFragment) => boolean
 }> = (props) => {
-  const categories = useCategoriesQuery(() => ({ today: stripTime(new Date()) }))
+  const categories = useCategoriesQuery(() => ({ archived: false, today: stripTime(new Date()) }))
 
   const toggle = children(() =>
     props.children(categories()?.categories.find((account) => account.id === props.value))

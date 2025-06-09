@@ -6,8 +6,8 @@ import { FullCategoryFragment } from "../fragments/categoryFragments.ts"
 export const CATEGORIES_QUERY = gql`
   ${FullCategoryFragment}
 
-  query Categories($today: ISO8601Date!) {
-    categories {
+  query Categories($archived: Boolean!, $today: ISO8601Date!) {
+    categories(archived: $archived) {
       ...FullCategory
     }
   }
