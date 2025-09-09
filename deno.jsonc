@@ -2,7 +2,6 @@
   "tasks": {
     "dev": "concurrently -n api,web,codegen -c blue,magenta,yellow 'rails s' 'cd web && deno task build --watch' 'cd web && deno task graphql-codegen --watch'",
     "dev:test": "deno run --allow-run --allow-env --allow-net api/bin/dev-test.ts",
-    "deploy": "deno run --allow-run --allow-read --allow-write --allow-env deploy.js",
     "typecheck": "cd web && deno check **/*.ts{,x}",
     "lint": "cd web && deno lint"
   },
