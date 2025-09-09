@@ -1,6 +1,6 @@
 import { Component, splitProps } from "solid-js"
-import { InputProps } from "../base/Input"
-import { InputAddon, InputGroup, InputGroupInput, InputGroupProps } from "../base/InputGroup"
+import { InputProps } from "../base/Input.tsx"
+import { InputAddon, InputGroup, InputGroupInput, InputGroupProps } from "../base/InputGroup.tsx"
 
 const AmountInput: Component<
   InputProps & {

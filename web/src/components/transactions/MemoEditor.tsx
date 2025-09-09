@@ -1,9 +1,9 @@
 import { uniqueId } from "lodash"
 import { Component, createSignal, onMount } from "solid-js"
 import toast from "solid-toast"
-import { useUpdateTransaction } from "../../graphql/mutations/updateTransactionMutation"
-import { Input } from "../base/Input"
-import ConfirmCancelButtons from "./ConfirmCancelButtons"
+import { useUpdateTransaction } from "../../graphql/mutations/updateTransactionMutation.ts"
+import { Input } from "../base/Input.tsx"
+import ConfirmCancelButtons from "./ConfirmCancelButtons.tsx"
 
 export const MemoEditor: Component<{
   class?: string

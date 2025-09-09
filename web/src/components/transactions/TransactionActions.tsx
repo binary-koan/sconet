@@ -6,13 +6,13 @@ import {
   IconTrash
 } from "@tabler/icons-solidjs"
 import { Component, Show, createSignal } from "solid-js"
-import { ListingTransactionFragment } from "../../graphql-types"
-import { useDeleteTransaction } from "../../graphql/mutations/deleteTransactionMutation"
-import { useUpdateTransaction } from "../../graphql/mutations/updateTransactionMutation"
-import { AlertModal } from "../AlertModal"
-import { Dropdown, DropdownMenuItem } from "../Dropdown"
-import { Button } from "../base/Button"
-import { SplitTransactionModal } from "./SplitTransactionModal"
+import { ListingTransactionFragment } from "../../graphql-types.ts"
+import { useDeleteTransaction } from "../../graphql/mutations/deleteTransactionMutation.ts"
+import { useUpdateTransaction } from "../../graphql/mutations/updateTransactionMutation.ts"
+import { AlertModal } from "../AlertModal.tsx"
+import { Dropdown, DropdownMenuItem } from "../Dropdown.tsx"
+import { Button } from "../base/Button.tsx"
+import { SplitTransactionModal } from "./SplitTransactionModal.tsx"
 
 export const TransactionActions: Component<{ transaction: ListingTransactionFragment }> = (
   props

@@ -1,7 +1,7 @@
 import * as echarts from "echarts"
 import { orderBy } from "lodash"
 import { Component, createEffect, onCleanup } from "solid-js"
-import { getCssValue } from "../../utils/getCssValue"
+import { getCssValue } from "../../utils/getCssValue.ts"
 
 export const PieChart: Component<{
   data: Array<{ name: string; color: string; value: number; formattedValue: string }>

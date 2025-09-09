@@ -1,11 +1,11 @@
 import { IconStar, IconStarFilled } from "@tabler/icons-solidjs"
 import { Component, For, Show } from "solid-js"
 import toast from "solid-toast"
-import { CurrenciesQuery, CurrentUserQuery, FullCurrencyFragment } from "../../graphql-types"
-import { useFavouriteCurrency } from "../../graphql/mutations/favouriteCurrency"
-import { useSetDefaultCurrency } from "../../graphql/mutations/setDefaultCurrency"
-import { useUnfavouriteCurrency } from "../../graphql/mutations/unfavouriteCurrency"
-import { Button } from "../base/Button"
+import { CurrenciesQuery, CurrentUserQuery, FullCurrencyFragment } from "../../graphql-types.ts"
+import { useFavouriteCurrency } from "../../graphql/mutations/favouriteCurrency.ts"
+import { useSetDefaultCurrency } from "../../graphql/mutations/setDefaultCurrency.ts"
+import { useUnfavouriteCurrency } from "../../graphql/mutations/unfavouriteCurrency.ts"
+import { Button } from "../base/Button.tsx"
 
 export const CurrenciesList: Component<{
   data: CurrenciesQuery

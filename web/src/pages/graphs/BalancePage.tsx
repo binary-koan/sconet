@@ -2,19 +2,19 @@ import { Title } from "@solidjs/meta"
 import { useNavigate, useRouteData } from "@solidjs/router"
 import { IconArrowLeft, IconArrowRight } from "@tabler/icons-solidjs"
 import { Show } from "solid-js"
-import { Cell } from "../../components/Cell"
-import { GraphsNavigation } from "../../components/GraphsNavigation"
-import { AnnualBalance } from "../../components/balance/AnnualBalance"
-import { Button } from "../../components/base/Button"
-import { PageHeader } from "../../components/base/PageHeader"
-import { DefaultCurrencySelect } from "../../components/currencies/DefaultCurrencySelect"
+import { Cell } from "../../components/Cell.tsx"
+import { GraphsNavigation } from "../../components/GraphsNavigation.tsx"
+import { AnnualBalance } from "../../components/balance/AnnualBalance.tsx"
+import { Button } from "../../components/base/Button.tsx"
+import { PageHeader } from "../../components/base/PageHeader.tsx"
+import { DefaultCurrencySelect } from "../../components/currencies/DefaultCurrencySelect.tsx"
 import {
   BalanceQuery,
   BalanceQueryVariables,
   CurrentUserQuery,
   CurrentUserQueryVariables
-} from "../../graphql-types"
-import { QueryResource } from "../../utils/graphqlClient/useQuery"
+} from "../../graphql-types.ts"
+import { QueryResource } from "../../utils/graphqlClient/useQuery.ts"
 
 export interface BalancePageData {
   data: QueryResource<BalanceQuery, BalanceQueryVariables>

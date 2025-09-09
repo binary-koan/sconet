@@ -1,6 +1,6 @@
 import { Field, FormStore, ValidateField, setValue } from "@modular-forms/solid"
 import { Component, JSX, Show } from "solid-js"
-import { FieldError } from "./FieldError"
+import { FieldError } from "./FieldError.tsx"
 
 const FormSwitch: Component<{
   of: FormStore<any, any>

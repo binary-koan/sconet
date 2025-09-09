@@ -1,13 +1,13 @@
 import { IconListSearch } from "@tabler/icons-solidjs"
 import { Component, For, Show } from "solid-js"
-import { CATEGORY_BACKGROUND_COLORS, CategoryColor } from "../../utils/categoryColors"
-import { getCssValue } from "../../utils/getCssValue"
-import CategoryIndicator, { CategoryIndicatorProps } from "../CategoryIndicator"
-import { Button, LinkButton } from "../base/Button"
-import { PieChart } from "./PieChart"
+import { CATEGORY_BACKGROUND_COLORS, CategoryColor } from "../../utils/categoryColors.ts"
+import { getCssValue } from "../../utils/getCssValue.ts"
+import CategoryIndicator, { CategoryIndicatorProps } from "../CategoryIndicator.tsx"
+import { Button, LinkButton } from "../base/Button.tsx"
+import { PieChart } from "./PieChart.tsx"
 import { createSignal } from "solid-js"
-import { TransactionsModal } from "./TransactionsModal"
-import { TransactionFilterInput } from "../../graphql-types"
+import { TransactionsModal } from "./TransactionsModal.tsx"
+import { TransactionFilterInput } from "../../graphql-types.ts"
 
 interface BudgetGroupProps {
   title: string

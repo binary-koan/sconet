@@ -1,10 +1,10 @@
 import { IconArrowLeft, IconArrowRight } from "@tabler/icons-solidjs"
 import { Component, createMemo, createSignal, For, Show } from "solid-js"
 import { Dynamic } from "solid-js/web"
-import { namedIcons } from "../utils/namedIcons"
-import { Button } from "./base/Button"
-import { Input } from "./base/Input"
-import { Modal, ModalCloseButton, ModalContent, ModalTitle } from "./base/Modal"
+import { namedIcons } from "../utils/namedIcons.ts"
+import { Button } from "./base/Button.tsx"
+import { Input } from "./base/Input.tsx"
+import { Modal, ModalCloseButton, ModalContent, ModalTitle } from "./base/Modal.tsx"
 
 const PAGE_SIZE = 40
 

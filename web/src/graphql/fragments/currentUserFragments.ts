@@ -1,5 +1,5 @@
-import { gql } from "../../utils/gql"
-import { FullCurrencyFragment } from "./currencyFragments"
+import { gql } from "../../utils/gql.ts"
+import { FullCurrencyFragment } from "./currencyFragments.ts"
 
 export const FullCurrentUserFragment = gql`
   ${FullCurrencyFragment}

@@ -1,9 +1,9 @@
 import { Navigate, Route, RouteDataFunc } from "@solidjs/router"
 import { Component, lazy } from "solid-js"
-import { useBalanceQuery } from "../../graphql/queries/balanceQuery"
-import { useCurrentUserQuery } from "../../graphql/queries/currentUserQuery"
-import type { BalancePageData } from "../../pages/graphs/BalancePage"
-import { lastViewedBalance } from "../../utils/transactions/viewPreference"
+import { useBalanceQuery } from "../../graphql/queries/balanceQuery.ts"
+import { useCurrentUserQuery } from "../../graphql/queries/currentUserQuery.ts"
+import type { BalancePageData } from "../../pages/graphs/BalancePage.tsx"
+import { lastViewedBalance } from "../../utils/transactions/viewPreference.ts"
 
 const balanceRouteData: RouteDataFunc<unknown, BalancePageData> = ({ params }) => {
   const currentUser = useCurrentUserQuery()
@@ -24,7 +24,7 @@ const balanceRouteData: RouteDataFunc<unknown, BalancePageData> = ({ params }) =
   }
 }
 
-const BalancePage = lazy(() => import("../../pages/graphs/BalancePage"))
+const BalancePage = lazy(() => import("../../pages/graphs/BalancePage.tsx"))
 
 export const BalanceRoute: Component = () => {
   const currentYear = () => new Date().getFullYear().toString()

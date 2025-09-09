@@ -8,7 +8,7 @@ import {
 import { Component, JSX } from "solid-js"
 import { Dynamic } from "solid-js/web"
 import logoImage from "../assets/logo.svg"
-import { fixAssetPath } from "../utils/fixAssetPath"
+import { fixAssetPath } from "../utils/fixAssetPath.ts"
 
 const MainNavigation: Component = () => {
   return (

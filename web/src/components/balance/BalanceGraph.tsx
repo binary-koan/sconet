@@ -1,7 +1,7 @@
 import { useNavigate } from "@solidjs/router"
 import * as echarts from "echarts"
 import { Component, createEffect, onCleanup } from "solid-js"
-import { getCssValue } from "../../utils/getCssValue"
+import { getCssValue } from "../../utils/getCssValue.ts"
 
 export const BalanceGraph: Component<{
   year: string

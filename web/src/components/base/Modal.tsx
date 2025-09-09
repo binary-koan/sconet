@@ -1,8 +1,8 @@
 import { IconX } from "@tabler/icons-solidjs"
 import { splitProps } from "solid-js"
 import { Dynamic, Portal } from "solid-js/web"
-import { AsProp, BasicElementProps } from "../../types"
-import { Button, ButtonProps } from "./Button"
+import { AsProp, BasicElementProps } from "../../types.ts"
+import { Button, ButtonProps } from "./Button.tsx"
 
 export const Modal = <T extends AsProp = "div">(
   allProps: BasicElementProps<T, { isOpen: boolean; onClickOutside?: () => void }>

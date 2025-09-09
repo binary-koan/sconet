@@ -1,7 +1,7 @@
 import { Route, RouteDataFunc } from "@solidjs/router"
 import { Component, lazy } from "solid-js"
-import { useGetTransactionQuery } from "../../graphql/queries/getTransactionQuery"
-import { ShowTransactionPageData } from "../../pages/transactions/ShowTransactionPage"
+import { useGetTransactionQuery } from "../../graphql/queries/getTransactionQuery.ts"
+import { ShowTransactionPageData } from "../../pages/transactions/ShowTransactionPage.tsx"
 
 const showTransactionData: RouteDataFunc<unknown, ShowTransactionPageData> = ({ params }) => {
   const data = useGetTransactionQuery(() => ({ id: params.id }))
@@ -9,7 +9,7 @@ const showTransactionData: RouteDataFunc<unknown, ShowTransactionPageData> = ({ 
   return { data }
 }
 
-const ShowTransactionPage = lazy(() => import("../../pages/transactions/ShowTransactionPage"))
+const ShowTransactionPage = lazy(() => import("../../pages/transactions/ShowTransactionPage.tsx"))
 
 export const ShowTransactionRoute: Component = () => {
   return (

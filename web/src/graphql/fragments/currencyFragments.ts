@@ -1,4 +1,4 @@
-import { gql } from "../../utils/gql"
+import { gql } from "../../utils/gql.ts"
 
 export const FullCurrencyFragment = gql`
   fragment FullCurrency on Currency {

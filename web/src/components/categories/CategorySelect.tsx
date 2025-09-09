@@ -1,10 +1,10 @@
 import { constant } from "lodash"
 import { Component, For, JSX, children } from "solid-js"
-import { FullCategoryFragment } from "../../graphql-types"
-import { useCategoriesQuery } from "../../graphql/queries/categoriesQuery"
-import { CATEGORY_BACKGROUND_COLORS, CategoryColor } from "../../utils/categoryColors"
-import { Dropdown, DropdownMenuItem } from "../Dropdown"
-import { stripTime } from "../../utils/date"
+import { FullCategoryFragment } from "../../graphql-types.ts"
+import { useCategoriesQuery } from "../../graphql/queries/categoriesQuery.ts"
+import { CATEGORY_BACKGROUND_COLORS, CategoryColor } from "../../utils/categoryColors.ts"
+import { Dropdown, DropdownMenuItem } from "../Dropdown.tsx"
+import { stripTime } from "../../utils/date.ts"
 
 export const CategorySelect: Component<{
   value?: string

@@ -1,6 +1,6 @@
-import { LoginMutation, LoginMutationVariables } from "../../graphql-types"
-import { gql } from "../../utils/gql"
-import { MutationOptions, useMutation } from "../../utils/graphqlClient/useMutation"
+import { LoginMutation, LoginMutationVariables } from "../../graphql-types.ts"
+import { gql } from "../../utils/gql.ts"
+import { MutationOptions, useMutation } from "../../utils/graphqlClient/useMutation.ts"
 
 const LOGIN_MUTATION = gql`
   mutation Login($email: String!, $password: String!) {

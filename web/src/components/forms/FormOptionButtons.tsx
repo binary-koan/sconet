@@ -1,9 +1,9 @@
 import { Field, FormStore, setValue, ValidateField } from "@modular-forms/solid"
 import { Component, For, JSX, Show, splitProps } from "solid-js"
-import { RefProp } from "../../types"
-import { Button } from "../base/Button"
-import { FormControl, FormLabel } from "../base/FormControl"
-import { FieldError } from "./FieldError"
+import { RefProp } from "../../types.ts"
+import { Button } from "../base/Button.tsx"
+import { FormControl, FormLabel } from "../base/FormControl.tsx"
+import { FieldError } from "./FieldError.tsx"
 
 const FormOptionButtons: Component<{
   of: FormStore<any, any>

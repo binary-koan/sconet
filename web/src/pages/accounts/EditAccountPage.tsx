@@ -1,16 +1,16 @@
 import { useNavigate, useRouteData } from "@solidjs/router"
 import { Show } from "solid-js"
 import toast from "solid-toast"
-import { showAlert } from "../../components/AlertManager"
-import InnerPageWrapper from "../../components/InnerPageWrapper"
-import AccountForm from "../../components/accounts/AccountForm"
+import { showAlert } from "../../components/AlertManager.tsx"
+import InnerPageWrapper from "../../components/InnerPageWrapper.tsx"
+import AccountForm from "../../components/accounts/AccountForm.tsx"
 import {
   GetAccountQuery,
   GetAccountQueryVariables,
   UpdateAccountMutationVariables
-} from "../../graphql-types"
-import { useUpdateAccount } from "../../graphql/mutations/updateAccountMutation"
-import { QueryResource } from "../../utils/graphqlClient/useQuery"
+} from "../../graphql-types.ts"
+import { useUpdateAccount } from "../../graphql/mutations/updateAccountMutation.ts"
+import { QueryResource } from "../../utils/graphqlClient/useQuery.ts"
 
 export interface EditAccountPageData {
   data: QueryResource<GetAccountQuery, GetAccountQueryVariables>

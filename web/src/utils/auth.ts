@@ -1,6 +1,6 @@
 import { jwtDecode } from "jwt-decode"
 import { createSignal } from "solid-js"
-import { requestGraphql } from "./graphqlClient/requestGraphql"
+import { requestGraphql } from "./graphqlClient/requestGraphql.ts"
 
 const LOGIN_TOKEN_KEY = "sconet.loginToken"
 const LAST_USER_EMAIL_KEY = "sconet.userEmail"

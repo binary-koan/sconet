@@ -1,6 +1,6 @@
 import { Component } from "solid-js"
-import { BudgetQuery } from "../../graphql-types"
-import { LinkButton } from "../base/Button"
+import { BudgetQuery } from "../../graphql-types.ts"
+import { LinkButton } from "../base/Button.tsx"
 
 export const BudgetSummary: Component<{
   budget: Pick<BudgetQuery["budget"], "income" | "totalSpending" | "difference">

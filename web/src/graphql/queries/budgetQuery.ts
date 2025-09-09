@@ -1,6 +1,6 @@
-import { BudgetQuery, BudgetQueryVariables } from "../../graphql-types"
-import { gql } from "../../utils/gql"
-import { useQuery } from "../../utils/graphqlClient/useQuery"
+import { BudgetQuery, BudgetQueryVariables } from "../../graphql-types.ts"
+import { gql } from "../../utils/gql.ts"
+import { useQuery } from "../../utils/graphqlClient/useQuery.ts"
 
 export const BUDGET_QUERY = gql`
   query Budget(

@@ -1,7 +1,7 @@
-import { CreateCategoryMutation, CreateCategoryMutationVariables } from "../../graphql-types"
-import { gql } from "../../utils/gql"
-import { MutationOptions, useMutation } from "../../utils/graphqlClient/useMutation"
-import { CATEGORIES_QUERY } from "../queries/categoriesQuery"
+import { CreateCategoryMutation, CreateCategoryMutationVariables } from "../../graphql-types.ts"
+import { gql } from "../../utils/gql.ts"
+import { MutationOptions, useMutation } from "../../utils/graphqlClient/useMutation.ts"
+import { CATEGORIES_QUERY } from "../queries/categoriesQuery.ts"
 
 const CREATE_CATEGORY_MUTATION = gql`
   mutation CreateCategory($input: CategoryInput!) {

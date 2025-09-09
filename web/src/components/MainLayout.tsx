@@ -1,6 +1,6 @@
 import { Outlet } from "@solidjs/router"
 import { Component } from "solid-js"
-import MainNavigation from "./MainNavigation"
+import MainNavigation from "./MainNavigation.tsx"
 
 export const MainLayout: Component = () => {
   return (

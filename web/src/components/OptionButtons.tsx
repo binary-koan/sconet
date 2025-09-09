@@ -1,6 +1,6 @@
 import { union } from "lodash"
 import { Component, For, JSX, splitProps } from "solid-js"
-import { Button } from "./base/Button"
+import { Button } from "./base/Button.tsx"
 
 type ValueProps =
   | {

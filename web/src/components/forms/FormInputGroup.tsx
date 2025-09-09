@@ -1,10 +1,10 @@
 import { Field, FormStore, ValidateField } from "@modular-forms/solid"
 import { uniqueId } from "lodash"
 import { Component, JSX, Show, splitProps } from "solid-js"
-import { FormControl, FormLabel } from "../base/FormControl"
-import { InputProps } from "../base/Input"
-import { InputGroup, InputGroupInput } from "../base/InputGroup"
-import { FieldError } from "./FieldError"
+import { FormControl, FormLabel } from "../base/FormControl.tsx"
+import { InputProps } from "../base/Input.tsx"
+import { InputGroup, InputGroupInput } from "../base/InputGroup.tsx"
+import { FieldError } from "./FieldError.tsx"
 
 const FormInputGroup: Component<
   InputProps & {

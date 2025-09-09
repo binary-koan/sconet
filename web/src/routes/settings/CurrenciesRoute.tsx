@@ -1,8 +1,8 @@
 import { Route, RouteDataFunc } from "@solidjs/router"
 import { Component, lazy } from "solid-js"
-import { useCurrenciesQuery } from "../../graphql/queries/currenciesQuery"
-import { useCurrentUserQuery } from "../../graphql/queries/currentUserQuery"
-import { CurrenciesPageData } from "../../pages/settings/CurrenciesPage"
+import { useCurrenciesQuery } from "../../graphql/queries/currenciesQuery.ts"
+import { useCurrentUserQuery } from "../../graphql/queries/currentUserQuery.ts"
+import { CurrenciesPageData } from "../../pages/settings/CurrenciesPage.tsx"
 
 const currenciesData: RouteDataFunc<unknown, CurrenciesPageData> = () => {
   const currentUser = useCurrentUserQuery()
@@ -11,7 +11,7 @@ const currenciesData: RouteDataFunc<unknown, CurrenciesPageData> = () => {
   return { currentUser, currencies }
 }
 
-const CurrenciesPage = lazy(() => import("../../pages/settings/CurrenciesPage"))
+const CurrenciesPage = lazy(() => import("../../pages/settings/CurrenciesPage.tsx"))
 
 export const CurrenciesRoute: Component = () => {
   return <Route path="/settings/currencies" component={CurrenciesPage} data={currenciesData} />

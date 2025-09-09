@@ -1,7 +1,7 @@
-import { DeleteCredentialMutation, DeleteCredentialMutationVariables } from "../../graphql-types"
-import { gql } from "../../utils/gql"
-import { MutationOptions, useMutation } from "../../utils/graphqlClient/useMutation"
-import { CURRENT_USER_QUERY } from "../queries/currentUserQuery"
+import { DeleteCredentialMutation, DeleteCredentialMutationVariables } from "../../graphql-types.ts"
+import { gql } from "../../utils/gql.ts"
+import { MutationOptions, useMutation } from "../../utils/graphqlClient/useMutation.ts"
+import { CURRENT_USER_QUERY } from "../queries/currentUserQuery.ts"
 
 const MUTATION = gql`
   mutation DeleteCredential($id: ID!) {

@@ -6,8 +6,8 @@ import {
 } from "@tabler/icons-solidjs"
 import { Component, mergeProps } from "solid-js"
 import { Dynamic } from "solid-js/web"
-import { ClassProps } from "../types"
-import { CATEGORY_BACKGROUND_COLORS, CategoryColor } from "../utils/categoryColors"
+import { ClassProps } from "../types.ts"
+import { CATEGORY_BACKGROUND_COLORS, CategoryColor } from "../utils/categoryColors.ts"
 
 export type CategoryIndicatorProps = ClassProps & {
   iconSize?: string

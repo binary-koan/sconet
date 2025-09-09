@@ -1,5 +1,5 @@
 import toast from "solid-toast"
-import { loginToken } from "../auth"
+import { loginToken } from "../auth.ts"
 
 export class GraphQLError extends Error {
   constructor(private errorsResponse: any) {

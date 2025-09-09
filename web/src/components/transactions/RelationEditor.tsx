@@ -1,10 +1,10 @@
 import { Component, JSX } from "solid-js"
-import { ListingTransactionFragment, TransactionsQuery } from "../../graphql-types"
-import { useUpdateTransaction } from "../../graphql/mutations/updateTransactionMutation"
-import { namedIcons } from "../../utils/namedIcons"
-import { showAlert } from "../AlertManager"
-import CategoryIndicator from "../CategoryIndicator"
-import RelationEditInput from "./RelationEditInput"
+import { ListingTransactionFragment, TransactionsQuery } from "../../graphql-types.ts"
+import { useUpdateTransaction } from "../../graphql/mutations/updateTransactionMutation.ts"
+import { namedIcons } from "../../utils/namedIcons.ts"
+import { showAlert } from "../AlertManager.tsx"
+import CategoryIndicator from "../CategoryIndicator.tsx"
+import RelationEditInput from "./RelationEditInput.tsx"
 
 type SplitTransaction = TransactionsQuery["transactions"]["nodes"][number]["splitTo"][number]
 

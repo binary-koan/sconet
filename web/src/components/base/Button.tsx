@@ -1,6 +1,6 @@
 import { Link, LinkProps } from "@solidjs/router"
 import { JSX, splitProps } from "solid-js"
-import LoadingBar from "../LoadingBar"
+import LoadingBar from "../LoadingBar.tsx"
 
 const SIZES = {
   xs: "p-1 text-sm",

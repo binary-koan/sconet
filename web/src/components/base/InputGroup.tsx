@@ -1,5 +1,5 @@
 import { JSX, splitProps } from "solid-js"
-import { inputClasses, InputProps } from "./Input"
+import { inputClasses, InputProps } from "./Input.tsx"
 
 export type InputGroupProps = JSX.IntrinsicElements["div"]
 

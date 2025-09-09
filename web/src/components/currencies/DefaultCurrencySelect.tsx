@@ -1,10 +1,10 @@
 import { useNavigate } from "@solidjs/router"
 import { IconChevronDown, IconExternalLink } from "@tabler/icons-solidjs"
 import { Component, For } from "solid-js"
-import { FullCurrencyFragment } from "../../graphql-types"
-import { useSetDefaultCurrency } from "../../graphql/mutations/setDefaultCurrency"
-import { Dropdown, DropdownMenuItem } from "../Dropdown"
-import { Button } from "../base/Button"
+import { FullCurrencyFragment } from "../../graphql-types.ts"
+import { useSetDefaultCurrency } from "../../graphql/mutations/setDefaultCurrency.ts"
+import { Dropdown, DropdownMenuItem } from "../Dropdown.tsx"
+import { Button } from "../base/Button.tsx"
 
 export const DefaultCurrencySelect: Component<{
   defaultCurrency: FullCurrencyFragment | null | undefined

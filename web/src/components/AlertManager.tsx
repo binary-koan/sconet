@@ -1,6 +1,6 @@
 import { Component, JSX, Show, createSignal } from "solid-js"
-import { AlertButtonProps, AlertModal } from "./AlertModal"
-import { ButtonColor } from "./base/Button"
+import { AlertButtonProps, AlertModal } from "./AlertModal.tsx"
+import { ButtonColor } from "./base/Button.tsx"
 
 export interface AlertOptions {
   title: JSX.Element

@@ -1,4 +1,4 @@
-import { Directive } from "../types"
+import { Directive } from "../types.ts"
 
 // Because of how directive types work, TypeScript doesn't think the variable is used.
 // This is just a placeholder function to prevent those unused variable warnings,

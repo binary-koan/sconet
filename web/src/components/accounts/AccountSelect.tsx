@@ -1,7 +1,7 @@
 import { Component, For, JSX, children } from "solid-js"
-import { FullAccountFragment } from "../../graphql-types"
-import { useAccountsQuery } from "../../graphql/queries/accountsQuery"
-import { Dropdown, DropdownMenuItem } from "../Dropdown"
+import { FullAccountFragment } from "../../graphql-types.ts"
+import { useAccountsQuery } from "../../graphql/queries/accountsQuery.ts"
+import { Dropdown, DropdownMenuItem } from "../Dropdown.tsx"
 
 export const AccountSelect: Component<{
   value: string | null

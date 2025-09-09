@@ -1,23 +1,23 @@
 import { Link, useNavigate } from "@solidjs/router"
 import { IconArrowLeft, IconArrowRight, IconDots, IconPlus } from "@tabler/icons-solidjs"
 import { Component, For, Show, createSignal } from "solid-js"
-import { TransactionsByDayQuery } from "../../graphql-types"
-import { buildMonthDates } from "../../utils/buildMonthDates"
+import { TransactionsByDayQuery } from "../../graphql-types.ts"
+import { buildMonthDates } from "../../utils/buildMonthDates.ts"
 import {
   CATEGORY_BACKGROUND_COLORS,
   CATEGORY_PALE_BACKGROUND_COLORS,
   CategoryColor
-} from "../../utils/categoryColors"
+} from "../../utils/categoryColors.ts"
 import {
   decrementMonth,
   incrementMonth,
   isAfterDate,
   isSameDate,
   stripTime
-} from "../../utils/date"
-import { MonthPickerOverlay } from "../MonthPickerOverlay"
-import { Button } from "../base/Button"
-import { NewTransactionModal } from "./NewTransactionModal"
+} from "../../utils/date.ts"
+import { MonthPickerOverlay } from "../MonthPickerOverlay.tsx"
+import { Button } from "../base/Button.tsx"
+import { NewTransactionModal } from "./NewTransactionModal.tsx"
 
 export const TransactionsCalendar: Component<{
   data: TransactionsByDayQuery

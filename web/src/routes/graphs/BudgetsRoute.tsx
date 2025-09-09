@@ -1,10 +1,10 @@
 import { Navigate, Route, RouteDataFunc } from "@solidjs/router"
 import { Component, lazy } from "solid-js"
-import { useBudgetQuery } from "../../graphql/queries/budgetQuery"
-import { useCurrentUserQuery } from "../../graphql/queries/currentUserQuery"
-import type { BudgetsPageData } from "../../pages/graphs/BudgetsPage"
-import { stripTime } from "../../utils/date"
-import { lastViewedBudget } from "../../utils/transactions/viewPreference"
+import { useBudgetQuery } from "../../graphql/queries/budgetQuery.ts"
+import { useCurrentUserQuery } from "../../graphql/queries/currentUserQuery.ts"
+import type { BudgetsPageData } from "../../pages/graphs/BudgetsPage.tsx"
+import { stripTime } from "../../utils/date.ts"
+import { lastViewedBudget } from "../../utils/transactions/viewPreference.ts"
 
 const budgetsRouteData: RouteDataFunc<unknown, BudgetsPageData> = ({ params }) => {
   const year = () => params.yearmonth.split("-")[0]
@@ -41,7 +41,7 @@ const budgetsRouteData: RouteDataFunc<unknown, BudgetsPageData> = ({ params }) =
   }
 }
 
-const BudgetsPage = lazy(() => import("../../pages/graphs/BudgetsPage"))
+const BudgetsPage = lazy(() => import("../../pages/graphs/BudgetsPage.tsx"))
 
 export const BudgetsRoute: Component = () => {
   const currentYearMonth = () =>

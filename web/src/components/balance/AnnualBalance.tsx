@@ -1,7 +1,7 @@
 import { Component } from "solid-js"
-import { BalanceQuery } from "../../graphql-types"
-import { BudgetSummary } from "../budgets/BudgetSummary"
-import { BalanceGraph } from "./BalanceGraph"
+import { BalanceQuery } from "../../graphql-types.ts"
+import { BudgetSummary } from "../budgets/BudgetSummary.tsx"
+import { BalanceGraph } from "./BalanceGraph.tsx"
 
 export const AnnualBalance: Component<{
   data: BalanceQuery

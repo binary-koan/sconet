@@ -1,9 +1,9 @@
 import { Show } from "solid-js"
-import { useTransactionsQuery } from "../../graphql/queries/transactionsQuery"
-import { Modal, ModalContent, ModalTitle } from "../base/Modal"
-import LoadingBar from "../LoadingBar"
+import { useTransactionsQuery } from "../../graphql/queries/transactionsQuery.ts"
+import { Modal, ModalContent, ModalTitle } from "../base/Modal.tsx"
+import LoadingBar from "../LoadingBar.tsx"
 import { For } from "solid-js"
-import { TransactionFilterInput } from "../../graphql-types"
+import { TransactionFilterInput } from "../../graphql-types.ts"
 
 export const TransactionsModal = (props: {
   categoryId: string | null

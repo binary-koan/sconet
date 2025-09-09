@@ -1,15 +1,15 @@
 import { useNavigate, useRouteData } from "@solidjs/router"
 import { Component, Show } from "solid-js"
 import toast from "solid-toast"
-import InnerPageWrapper from "../../components/InnerPageWrapper"
-import CategoryForm from "../../components/categories/CategoryForm"
+import InnerPageWrapper from "../../components/InnerPageWrapper.tsx"
+import CategoryForm from "../../components/categories/CategoryForm.tsx"
 import {
   GetCategoryQuery,
   GetCategoryQueryVariables,
   UpdateCategoryMutationVariables
-} from "../../graphql-types"
-import { useUpdateCategory } from "../../graphql/mutations/updateCategoryMutation"
-import { QueryResource } from "../../utils/graphqlClient/useQuery"
+} from "../../graphql-types.ts"
+import { useUpdateCategory } from "../../graphql/mutations/updateCategoryMutation.ts"
+import { QueryResource } from "../../utils/graphqlClient/useQuery.ts"
 
 export interface EditCategoryPageData {
   data: QueryResource<GetCategoryQuery, GetCategoryQueryVariables>

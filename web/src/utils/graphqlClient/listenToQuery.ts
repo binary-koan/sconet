@@ -1,6 +1,6 @@
 import { untrack } from "solid-js"
 import { createStore, reconcile } from "solid-js/store"
-import { requestGraphql } from "./requestGraphql"
+import { requestGraphql } from "./requestGraphql.ts"
 
 export type FetchMore<Data, Variables> = (
   variables: Variables,

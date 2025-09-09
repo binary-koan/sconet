@@ -1,9 +1,9 @@
 import {
   GenerateCredentialLoginOptionsMutation,
   GenerateCredentialLoginOptionsMutationVariables
-} from "../../graphql-types"
-import { gql } from "../../utils/gql"
-import { MutationOptions, useMutation } from "../../utils/graphqlClient/useMutation"
+} from "../../graphql-types.ts"
+import { gql } from "../../utils/gql.ts"
+import { MutationOptions, useMutation } from "../../utils/graphqlClient/useMutation.ts"
 
 const MUTATION = gql`
   mutation GenerateCredentialLoginOptions($email: String!) {

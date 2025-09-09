@@ -1,9 +1,9 @@
 import {
   TransactionsForPopulationQuery,
   TransactionsForPopulationQueryVariables
-} from "../../graphql-types"
-import { gql } from "../../utils/gql"
-import { useQuery } from "../../utils/graphqlClient/useQuery"
+} from "../../graphql-types.ts"
+import { gql } from "../../utils/gql.ts"
+import { useQuery } from "../../utils/graphqlClient/useQuery.ts"
 
 export const TRANSACTIONS_FOR_POPULATION_QUERY = gql`
   query TransactionsForPopulation {

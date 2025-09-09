@@ -1,7 +1,7 @@
 import { Component, createSignal, JSX, Show } from "solid-js"
-import { AccountBasicDetails } from "./AccountPicker"
-import { CategoryBasicDetails } from "./CategoryPicker"
-import RelationPickerModal from "./RelationPickerModal"
+import { AccountBasicDetails } from "./AccountPicker.tsx"
+import { CategoryBasicDetails } from "./CategoryPicker.tsx"
+import RelationPickerModal from "./RelationPickerModal.tsx"
 
 const RelationEditInput: Component<{
   isIncome: boolean
