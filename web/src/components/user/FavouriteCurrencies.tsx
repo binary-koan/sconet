@@ -15,7 +15,7 @@ export const FavouriteCurrencies: Component<{
   })
 
   return (
-    <div class="flex flex-col gap-px bg-gray-100 shadow-sm">
+    <div class="shadow-xs flex flex-col gap-px bg-gray-100">
       <Show when={currentUser().favouriteCurrencies.length === 0}>
         <div class="italic">No favourite currencies</div>
       </Show>
@@ -30,7 +30,9 @@ export const FavouriteCurrencies: Component<{
                 currency.id === currentUser().defaultCurrency?.id ? "primary" : "neutral"
               }
               onClick={() => setDefaultCurrency({ id: currency.id })}
+              class="gap-2 text-xs"
             >
+              {currency.id === currentUser().defaultCurrency?.id && "Default "}
               <IconAsterisk />
             </Button>
           </div>

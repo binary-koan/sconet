@@ -27,7 +27,7 @@ export const InputGroupInput = (allProps: InputProps) => {
 
   return (
     <input
-      class={`my-[-1px] h-10 flex-1 bg-transparent px-4 outline-0 ${props.class}`}
+      class={`-my-px h-10 flex-1 bg-transparent px-4 outline-0 ${props.class}`}
       {...elementProps}
     />
   )

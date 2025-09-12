@@ -47,7 +47,7 @@ const BudgetGroup: Component<BudgetGroupProps> = (props) => {
             <IconListSearch />
           </LinkButton>
         </h2>
-        <div class="bg-white pl-6 pr-4 pt-4 shadow-sm lg:mb-6 lg:ml-4">
+        <div class="bg-white pl-6 pr-4 pt-4 shadow-xs lg:mb-6 lg:ml-4">
           <Show when={!props.items.length}>
             <div class="pb-4">No transactions</div>
           </Show>

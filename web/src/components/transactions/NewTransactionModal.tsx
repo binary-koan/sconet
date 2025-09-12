@@ -148,7 +148,7 @@ export const NewTransactionModal: Component<{
     <>
       <Show when={!splittingTransaction()}>
         <Modal isOpen={props.isOpen}>
-          <ModalContent class="flex h-[31rem] flex-col">
+          <ModalContent class="flex h-124 flex-col">
             <ModalTitle>
               New Transaction
               <ModalCloseButton onClick={props.onClose} />
@@ -251,7 +251,7 @@ export const NewTransactionModal: Component<{
                       <Button
                         size="custom"
                         variant="ghost"
-                        class="rounded border border-gray-100 px-4 py-2 text-xs text-gray-700"
+                        class="rounded-sm border border-gray-100 px-4 py-2 text-xs text-gray-700"
                         onClick={() =>
                           setValue(
                             form,
@@ -294,7 +294,7 @@ export const NewTransactionModal: Component<{
                           <Button
                             size="custom"
                             variant="ghost"
-                            class="w-full rounded border border-gray-100 px-4 py-2 text-xs text-gray-700"
+                            class="w-full rounded-sm border border-gray-100 px-4 py-2 text-xs text-gray-700"
                             data-testid="category-select"
                           >
                             <Show when={selectedCategory()}>
@@ -319,7 +319,7 @@ export const NewTransactionModal: Component<{
                   <Button
                     size="custom"
                     variant="ghost"
-                    class="whitespace-nowrap rounded border border-gray-100 px-4 py-2 text-xs text-gray-700"
+                    class="whitespace-nowrap rounded-sm border border-gray-100 px-4 py-2 text-xs text-gray-700"
                     onClick={() => setValue(form, "date", "")}
                   >
                     <IconCalendarEvent class="mr-1" />
@@ -341,7 +341,7 @@ export const NewTransactionModal: Component<{
                           <Button
                             size="custom"
                             variant="ghost"
-                            class="rounded border border-gray-100 px-4 py-2 text-xs text-gray-700"
+                            class="rounded-sm border border-gray-100 px-4 py-2 text-xs text-gray-700"
                             data-testid="account-select"
                           >
                             {account?.name} ({account?.currency.code})
@@ -363,7 +363,7 @@ export const NewTransactionModal: Component<{
                           <Button
                             size="custom"
                             variant="ghost"
-                            class="gap-1 rounded border border-gray-100 px-4 py-2 text-xs text-gray-700"
+                            class="gap-1 rounded-sm border border-gray-100 px-4 py-2 text-xs text-gray-700"
                             data-testid="account-select"
                           >
                             {currency ? `Originally ${currency.code}` : "Original currency"}

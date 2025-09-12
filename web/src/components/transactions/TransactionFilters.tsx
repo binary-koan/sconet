@@ -25,7 +25,7 @@ export const TransactionFilters: Component<{
   const data = useCategoriesQuery(() => ({ archived: false, today: stripTime(new Date()) }))
 
   return (
-    <div class="mb-4 bg-white p-4 shadow-sm lg:rounded" data-testid="filters-container">
+    <div class="mb-4 bg-white p-4 shadow-xs lg:rounded-sm" data-testid="filters-container">
       <Form of={props.form} onSubmit={noop}>
         <FormInput
           of={props.form}

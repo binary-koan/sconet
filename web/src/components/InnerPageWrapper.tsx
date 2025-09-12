@@ -24,7 +24,7 @@ const InnerPageWrapper: Component<{
       </PageHeader>
       <div
         classList={{
-          "p-4 shadow-sm lg:rounded lg:p-6 bg-white": props.contentBackground !== false
+          "p-4 shadow-xs lg:rounded-sm lg:p-6 bg-white": props.contentBackground !== false
         }}
       >
         {props.children}

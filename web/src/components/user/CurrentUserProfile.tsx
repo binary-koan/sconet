@@ -6,5 +6,5 @@ export const CurrentUserProfile: Component<{
 }> = (props) => {
   const currentUser = () => props.data.currentUser!
 
-  return <div class="bg-white py-2 px-4 shadow-sm">{currentUser().email}</div>
+  return <div class="bg-white py-2 px-4 shadow-xs">{currentUser().email}</div>
 }

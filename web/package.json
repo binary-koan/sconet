@@ -28,7 +28,9 @@
     "zod": "^3.21.4"
   },
   "eslintConfig": {
-    "extends": ["react-app"]
+    "extends": [
+      "react-app"
+    ]
   },
   "devDependencies": {
     "@babel/core": "^7.21.8",
@@ -36,6 +38,7 @@
     "@graphql-codegen/cli": "^4.0.0",
     "@graphql-codegen/typescript": "^4.0.0",
     "@graphql-codegen/typescript-operations": "^4.0.0",
+    "@tailwindcss/postcss": "^4.1.13",
     "@types/lodash": "^4.14.194",
     "@types/node": "^20.2.3",
     "@types/web": "^0.0.99",
@@ -45,7 +48,7 @@
     "eslint-plugin-solid": "^0.12.1",
     "nodemon": "^2.0.22",
     "postcss": "^8.4.23",
-    "tailwindcss": "^3.3.2",
+    "tailwindcss": "^4.1.13",
     "typescript": "latest"
   },
   "module": "index.ts",

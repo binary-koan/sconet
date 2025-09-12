@@ -49,7 +49,7 @@ export const FormDatePicker: Component<{
             <input {...fieldProps} value={field.value || ""} style={{ display: "none" }} />
 
             <div class="flex flex-col items-center">
-              <div class="mx-auto mb-4 flex justify-center rounded">
+              <div class="mx-auto mb-4 flex justify-center rounded-sm">
                 <Button
                   size="square"
                   variant="ghost"
@@ -60,7 +60,7 @@ export const FormDatePicker: Component<{
                 </Button>
 
                 <MonthPickerOverlay
-                  class="flex flex-1 items-center rounded px-4 text-center text-sm font-semibold transition hover:bg-gray-200"
+                  class="flex flex-1 items-center rounded-sm px-4 text-center text-sm font-semibold transition hover:bg-gray-200"
                   value={field.value && field.value.replace(/-\d+$/, "")}
                   disableFutureDates
                   onChange={(value) =>

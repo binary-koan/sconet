@@ -36,7 +36,7 @@ export const CurrenciesList: Component<{
 
   return (
     <div class="flex flex-col">
-      <div class="mb-6 flex items-center bg-white px-4 py-2 shadow-sm">
+      <div class="mb-6 flex items-center bg-white px-4 py-2 shadow-xs">
         <div class="min-w-0 flex-1">
           <div class="text-xs text-gray-600">Default currency</div>
           <div class="mb-1 truncate leading-none">
@@ -49,7 +49,7 @@ export const CurrenciesList: Component<{
         <div class="text-center italic">No favourite currencies</div>
       </Show>
 
-      <div class="flex flex-col gap-px bg-gray-100 shadow-sm">
+      <div class="flex flex-col gap-px bg-gray-100 shadow-xs">
         <For each={favouriteCurrencies()}>
           {(currency) => (
             <Currency
@@ -64,7 +64,7 @@ export const CurrenciesList: Component<{
 
       <div class="mb-6" />
 
-      <div class="flex flex-col gap-px bg-gray-100 shadow-sm">
+      <div class="flex flex-col gap-px bg-gray-100 shadow-xs">
         <For each={otherCurrencies()}>
           {(currency) => (
             <Currency
@@ -87,7 +87,7 @@ const Currency: Component<{
   onSetDefault: () => void
 }> = (props) => {
   return (
-    <div class="flex items-center bg-white px-4 py-2 shadow-sm">
+    <div class="flex items-center bg-white px-4 py-2 shadow-xs">
       <div class="mr-4 min-w-0 flex-1">
         <h3 class="mb-1 truncate leading-none">
           {props.currency.code} ({props.currency.name})

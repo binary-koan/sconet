@@ -38,10 +38,10 @@ const AccountsList: Component<{
   const defaultAccountId = () => props.currentUser?.currentUser?.defaultAccount?.id
 
   return (
-    <div class="flex flex-col gap-px bg-gray-100 shadow-sm">
+    <div class="shadow-xs flex flex-col gap-px bg-gray-100">
       <For each={props.data.accounts}>
         {(account) => (
-          <div class="flex items-center bg-white px-4 py-2 shadow-sm">
+          <div class="shadow-xs flex items-center bg-white px-4 py-2">
             <div class="mr-4 min-w-0 flex-1">
               <h3 class="mb-1 truncate leading-none">{account.name}</h3>
               <p class="text-xs leading-tight text-gray-600">{account.currency.code}</p>
@@ -50,10 +50,11 @@ const AccountsList: Component<{
               size="sm"
               variant="ghost"
               colorScheme={account.id === defaultAccountId() ? "primary" : "neutral"}
-              class="ml-auto mr-2"
+              class="ml-auto mr-2 gap-2 text-xs"
               title={"Set default to " + account.name}
               onClick={() => setDefaultAccount({ id: account.id })}
             >
+              {account.id === defaultAccountId() && "Default "}
               <IconAsterisk />
             </Button>
             <LinkButton

@@ -33,7 +33,7 @@ export const TransactionsModal = (props: {
 
   return (
     <Modal isOpen={true} onClickOutside={props.onClose}>
-      <ModalContent class="!my-0 flex max-h-[90vh] flex-col">
+      <ModalContent class="my-0! flex max-h-[90vh] flex-col">
         <ModalTitle>Transactions</ModalTitle>
         <Show when={transactionsToShow()} fallback={<LoadingBar class="text-indigo-600" />}>
           {(transactionsToShow) => (

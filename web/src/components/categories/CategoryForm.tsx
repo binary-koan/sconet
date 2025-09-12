@@ -1,6 +1,6 @@
 import { createForm, Form, getValue } from "@modular-forms/solid"
-import { repeat } from "lodash"
-import { Component, Show } from "solid-js"
+import { repeat, upperFirst } from "lodash"
+import { Component, JSX, Show } from "solid-js"
 import { CreateCategoryMutationVariables, FullCategoryFragment } from "../../graphql-types"
 import { useCurrenciesQuery } from "../../graphql/queries/currenciesQuery"
 import { Button } from "../base/Button"
@@ -11,6 +11,7 @@ import FormInputGroup from "../forms/FormInputGroup"
 import FormOptionButtons from "../forms/FormOptionButtons"
 import FormSwitch from "../forms/FormSwitch"
 import { toCents } from "../transactions/AmountEditor"
+import { CATEGORY_BACKGROUND_COLORS, CategoryColor } from "../../utils/categoryColors"
 
 type CategoryFormValues = {
   name: string
@@ -61,18 +62,22 @@ const CategoryForm: Component<{
         of={form}
         label="Color"
         name="color"
-        options={[
-          { value: "gray", content: "Gray" },
-          { value: "red", content: "Red" },
-          { value: "orange", content: "Orange" },
-          { value: "yellow", content: "Yellow" },
-          { value: "green", content: "Green" },
-          { value: "teal", content: "Teal" },
-          { value: "blue", content: "Blue" },
-          { value: "cyan", content: "Cyan" },
-          { value: "purple", content: "Purple" },
-          { value: "pink", content: "Pink" }
-        ]}
+        options={
+          [
+            { value: "gray", content: <ColorOptionContent value="gray" /> },
+            { value: "red", content: <ColorOptionContent value="red" /> },
+            { value: "orange", content: <ColorOptionContent value="orange" /> },
+            { value: "yellow", content: <ColorOptionContent value="yellow" /> },
+            { value: "green", content: <ColorOptionContent value="green" /> },
+            { value: "teal", content: <ColorOptionContent value="teal" /> },
+            { value: "blue", content: <ColorOptionContent value="blue" /> },
+            { value: "cyan", content: <ColorOptionContent value="cyan" /> },
+            { value: "purple", content: <ColorOptionContent value="purple" /> },
+            { value: "pink", content: <ColorOptionContent value="pink" /> },
+            { value: "indigo", content: <ColorOptionContent value="indigo" /> },
+            { value: "fuchsia", content: <ColorOptionContent value="fuchsia" /> }
+          ] satisfies Array<{ value: CategoryColor; content: JSX.Element }>
+        }
       />
 
       <FormIconPicker of={form} name="icon" label="Icon" />
@@ -110,6 +115,19 @@ const CategoryForm: Component<{
         Save
       </Button>
     </Form>
+  )
+}
+
+const ColorOptionContent: Component<{ value: CategoryColor }> = (props) => {
+  return (
+    <>
+      <div
+        class={`mr-1 h-3 w-3 rounded-full border border-gray-200 ${
+          CATEGORY_BACKGROUND_COLORS[props.value]
+        }`}
+      />
+      {upperFirst(props.value)}
+    </>
   )
 }
 

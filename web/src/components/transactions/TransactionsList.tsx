@@ -83,7 +83,7 @@ export const TransactionsList: Component<{
                         props.setFilterValue("dateFrom", stripTime(dateFrom))
                         props.setFilterValue("dateUntil", stripTime(dateUntil))
                       }}
-                      class="relative mx-2 inline-block rounded bg-gray-50 py-1 pl-2 pr-4 text-base font-semibold text-gray-700"
+                      class="relative mx-2 inline-block rounded-sm bg-gray-50 py-1 pl-2 pr-4 text-base font-semibold text-gray-700"
                     >
                       {formatDate(date, "monthYear")}
                     </button>
@@ -106,7 +106,7 @@ export const TransactionsList: Component<{
                 {formatDate(date, "fullDateWithoutYear")}
               </div>
 
-              <div class="flex flex-col gap-px bg-gray-100 shadow-sm">
+              <div class="flex flex-col gap-px bg-gray-100 shadow-xs">
                 <For each={transactions}>
                   {(transaction) => <TransactionItem transaction={transaction} />}
                 </For>

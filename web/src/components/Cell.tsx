@@ -12,7 +12,7 @@ const DefaultLoader = () => (
   </div>
 )
 const DefaultFailure: Component<{ error: any }> = (props) => (
-  <div class="rounded bg-red-100 p-4 text-red-700">{props.error.message}</div>
+  <div class="rounded-sm bg-red-100 p-4 text-red-700">{props.error.message}</div>
 )
 
 export const Cell: <Data, Variables, OtherProps = never>(props: {

@@ -12,7 +12,7 @@ interface InputCustomProps {
 }
 
 export const inputClasses = (props: InputCustomProps) =>
-  `border rounded border-gray-200 ring-0 ring-indigo-200 transition focus:border-indigo-400 focus:outline-0 focus:ring focus-within:border-indigo-400 focus-within:outline-0 focus-within:ring disabled:pointer-events-none disabled:opacity-50 ${
+  `border rounded border-gray-200 ring-0 ring-indigo-200 transition focus:border-indigo-400 focus:outline-0 focus:ring-3 focus-within:border-indigo-400 focus-within:outline-0 focus-within:ring-3 disabled:pointer-events-none disabled:opacity-50 ${
     // eslint-disable-next-line solid/reactivity
     INPUT_SIZES[props.size || "md"]
   }`

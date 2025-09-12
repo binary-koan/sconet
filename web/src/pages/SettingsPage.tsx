@@ -97,12 +97,12 @@ const SettingsPage: Component = () => {
         </Button>
       </PageHeader>
 
-      <div class="flex items-center gap-2 bg-white px-4 py-2 shadow-sm">
+      <div class="flex items-center gap-2 bg-white px-4 py-2 shadow-xs">
         <IconKey /> Password
       </div>
       <For each={data.currentUser()?.currentUser?.registeredCredentials}>
         {(credential) => (
-          <div class="flex items-center gap-2 bg-white  px-4 py-2 shadow-sm">
+          <div class="flex items-center gap-2 bg-white  px-4 py-2 shadow-xs">
             <IconFingerprint /> {credential.device} (created on {credential.createdAt})
             <Button
               size="sm"

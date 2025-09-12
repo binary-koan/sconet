@@ -12,7 +12,7 @@ import { fixAssetPath } from "../utils/fixAssetPath"
 
 const MainNavigation: Component = () => {
   return (
-    <div class="z-navbar fixed bottom-0 left-0 right-0 top-auto bg-white pb-[env(safe-area-inset-bottom)] shadow md:bottom-auto md:top-0 md:pb-0 md:pl-4">
+    <div class="z-navbar fixed bottom-0 left-0 right-0 top-auto bg-white pb-[env(safe-area-inset-bottom)] shadow-sm md:bottom-auto md:top-0 md:pb-0 md:pl-4">
       <div class="flex items-center md:mx-auto md:max-w-5xl md:px-2">
         <Link href="/" class="mr-4 hidden md:block">
           <img class="w-24" src={fixAssetPath(logoImage)} />

@@ -1,8 +1,8 @@
-import autoprefixer from 'autoprefixer';
-import { BunPlugin } from "bun";
-import postcss from 'postcss';
-import tailwindcss from 'tailwindcss';
-import tailwindConfig from './tailwind.config';
+import autoprefixer from "autoprefixer"
+import { BunPlugin } from "bun"
+import postcss from "postcss"
+import tailwindcss from "@tailwindcss/postcss"
+import tailwindConfig from "./tailwind.config"
 
 /**
  * @type {BunPlugin}
@@ -18,11 +18,11 @@ export const postcssPlugin = {
 
         return {
           contents: result.css,
-          loader: "file",
-        };
+          loader: "file"
+        }
       } catch (e) {
         console.error(e)
       }
-    });
-  },
-};
+    })
+  }
+}

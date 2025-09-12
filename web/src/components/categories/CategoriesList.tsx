@@ -96,7 +96,7 @@ export const CategoriesList: Component<{ data: CategoriesQuery }> = (props) => {
   })
 
   return (
-    <div class="flex flex-col gap-px bg-gray-100 shadow-sm">
+    <div class="flex flex-col gap-px bg-gray-100 shadow-xs">
       <DragDropProviderFixed
         onDragStart={onDragStart}
         onDragEnd={onDragEnd}
@@ -153,7 +153,7 @@ const Category: Component<{
   sortable?: ReturnType<typeof createSortable>
 }> = (props) => {
   return (
-    <div class="flex items-center bg-white px-4 py-2 shadow-sm">
+    <div class="flex items-center bg-white px-4 py-2 shadow-xs">
       <div class="mr-2 hidden cursor-move text-gray-600 md:block">
         <IconArrowsSort {...props.sortable?.dragActivators} />
       </div>

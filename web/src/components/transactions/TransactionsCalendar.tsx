@@ -61,7 +61,7 @@ export const TransactionsCalendar: Component<{
         />
       </Show>
 
-      <div class="mx-auto mb-4 flex rounded bg-gray-200">
+      <div class="mx-auto mb-4 flex rounded-sm bg-gray-200">
         <Button
           size="square"
           aria-label="List"
@@ -71,7 +71,7 @@ export const TransactionsCalendar: Component<{
         </Button>
 
         <MonthPickerOverlay
-          class="flex items-center rounded px-4 font-semibold transition hover:bg-gray-300"
+          class="flex items-center rounded-sm px-4 font-semibold transition hover:bg-gray-300"
           value={`${props.year}-${props.month}`}
           onChange={(value) =>
             changeMonthAndNavigate(() => ({
@@ -93,11 +93,11 @@ export const TransactionsCalendar: Component<{
           <IconArrowRight size="1.25em" />
         </Button>
       </div>
-      <div class="rounded bg-white shadow-sm">
+      <div class="rounded-sm bg-white shadow-xs">
         <div class="grid grid-cols-7">
           <For each={dates().slice(0, 7)}>
             {({ date }) => (
-              <div class="[&:nth-child(7n)]:border-r-0 border-r border-gray-200 p-1 text-center text-xs font-semibold md:px-2 md:text-left">
+              <div class="nth-[7n]:border-r-0 border-r border-gray-200 p-1 text-center text-xs font-semibold md:px-2 md:text-left">
                 {date.toLocaleDateString("default", { weekday: "short" })}
               </div>
             )}
@@ -105,7 +105,7 @@ export const TransactionsCalendar: Component<{
           <For each={dates()}>
             {({ date, isCurrentMonth, totalSpent, expenses, incomes }) => (
               <div
-                class="[&:nth-child(7n)]:border-r-0 flex h-16 flex-col border-r border-t border-gray-200 p-1 text-center text-sm md:h-32 md:text-left"
+                class="nth-[7n]:border-r-0 flex h-16 flex-col border-r border-t border-gray-200 p-1 text-center text-sm md:h-32 md:text-left"
                 classList={{ "text-gray-300": !isCurrentMonth }}
                 data-testid={isSameDate(date, new Date()) ? "calendar-today" : "calendar-day"}
               >
@@ -162,7 +162,7 @@ export const TransactionsCalendar: Component<{
                     {(transaction) => (
                       <Link
                         href={`/transactions/${transaction.id}`}
-                        class="flex rounded px-1 py-0.5 text-xs text-gray-900 transition hover:shadow"
+                        class="flex rounded-sm px-1 py-0.5 text-xs text-gray-900 transition hover:shadow-sm"
                         classList={{
                           [transaction.category
                             ? CATEGORY_PALE_BACKGROUND_COLORS[
@@ -195,7 +195,7 @@ export const TransactionsCalendar: Component<{
                           dateUntil: stripTime(date)
                         })
                       )}`}
-                      class="rounded py-0.5 text-center text-xs text-gray-700 hover:text-gray-900"
+                      class="rounded-sm py-0.5 text-center text-xs text-gray-700 hover:text-gray-900"
                     >
                       {expenses.concat(incomes).length - 3} more
                     </Link>
