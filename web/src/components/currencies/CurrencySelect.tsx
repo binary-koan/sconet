@@ -1,9 +1,9 @@
 import { orderBy } from "lodash"
 import { Component, For, JSX, children } from "solid-js"
-import { FullCurrencyFragment } from "../../graphql-types.ts"
-import { useCurrenciesQuery } from "../../graphql/queries/currenciesQuery.ts"
-import { useCurrentUserQuery } from "../../graphql/queries/currentUserQuery.ts"
-import { Dropdown, DropdownMenuItem } from "../Dropdown.tsx"
+import { FullCurrencyFragment } from "../../graphql-types"
+import { useCurrenciesQuery } from "../../graphql/queries/currenciesQuery"
+import { useCurrentUserQuery } from "../../graphql/queries/currentUserQuery"
+import { Dropdown, DropdownMenuItem } from "../Dropdown"
 
 export const CurrencySelect: Component<{
   value: string | null

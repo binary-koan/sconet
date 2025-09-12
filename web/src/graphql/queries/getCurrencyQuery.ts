@@ -1,7 +1,7 @@
-import { GetCurrencyQuery, GetCurrencyQueryVariables } from "../../graphql-types.ts"
-import { gql } from "../../utils/gql.ts"
-import { useQuery } from "../../utils/graphqlClient/useQuery.ts"
-import { FullCurrencyFragment } from "../fragments/currencyFragments.ts"
+import { GetCurrencyQuery, GetCurrencyQueryVariables } from "../../graphql-types"
+import { gql } from "../../utils/gql"
+import { useQuery } from "../../utils/graphqlClient/useQuery"
+import { FullCurrencyFragment } from "../fragments/currencyFragments"
 
 export const CURRENCY_QUERY = gql`
   ${FullCurrencyFragment}

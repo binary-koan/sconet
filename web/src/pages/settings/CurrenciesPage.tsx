@@ -1,15 +1,15 @@
 import { useRouteData } from "@solidjs/router"
 import { Component } from "solid-js"
-import { Cell } from "../../components/Cell.tsx"
-import InnerPageWrapper from "../../components/InnerPageWrapper.tsx"
-import { CurrenciesList } from "../../components/currencies/Currencies.tsx"
+import { Cell } from "../../components/Cell"
+import InnerPageWrapper from "../../components/InnerPageWrapper"
+import { CurrenciesList } from "../../components/currencies/Currencies"
 import {
   CurrenciesQuery,
   CurrenciesQueryVariables,
   CurrentUserQuery,
   CurrentUserQueryVariables
-} from "../../graphql-types.ts"
-import { QueryResource } from "../../utils/graphqlClient/useQuery.ts"
+} from "../../graphql-types"
+import { QueryResource } from "../../utils/graphqlClient/useQuery"
 
 export interface CurrenciesPageData {
   currentUser: QueryResource<CurrentUserQuery, CurrentUserQueryVariables>

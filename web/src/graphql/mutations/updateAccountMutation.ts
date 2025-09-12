@@ -1,9 +1,9 @@
-import { UpdateAccountMutation, UpdateAccountMutationVariables } from "../../graphql-types.ts"
-import { gql } from "../../utils/gql.ts"
-import { MutationOptions, useMutation } from "../../utils/graphqlClient/useMutation.ts"
-import { FullAccountFragment } from "../fragments/accountFragments.ts"
-import { ACCOUNTS_QUERY } from "../queries/accountsQuery.ts"
-import { GET_ACCOUNT_QUERY } from "../queries/getAccountQuery.ts"
+import { UpdateAccountMutation, UpdateAccountMutationVariables } from "../../graphql-types"
+import { gql } from "../../utils/gql"
+import { MutationOptions, useMutation } from "../../utils/graphqlClient/useMutation"
+import { FullAccountFragment } from "../fragments/accountFragments"
+import { ACCOUNTS_QUERY } from "../queries/accountsQuery"
+import { GET_ACCOUNT_QUERY } from "../queries/getAccountQuery"
 
 const UPDATE_ACCOUNT_MUTATION = gql`
   ${FullAccountFragment}

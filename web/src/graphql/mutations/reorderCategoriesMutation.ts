@@ -1,10 +1,7 @@
-import {
-  ReorderCategoriesMutation,
-  ReorderCategoriesMutationVariables
-} from "../../graphql-types.ts"
-import { gql } from "../../utils/gql.ts"
-import { MutationOptions, useMutation } from "../../utils/graphqlClient/useMutation.ts"
-import { CATEGORIES_QUERY } from "../queries/categoriesQuery.ts"
+import { ReorderCategoriesMutation, ReorderCategoriesMutationVariables } from "../../graphql-types"
+import { gql } from "../../utils/gql"
+import { MutationOptions, useMutation } from "../../utils/graphqlClient/useMutation"
+import { CATEGORIES_QUERY } from "../queries/categoriesQuery"
 
 const REORDER_CATEGORIES_MUTATION = gql`
   mutation ReorderCategories($orderedIds: [ID!]!) {

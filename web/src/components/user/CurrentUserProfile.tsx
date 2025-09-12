@@ -1,5 +1,5 @@
 import { Component } from "solid-js"
-import { CurrentUserQuery } from "../../graphql-types.ts"
+import { CurrentUserQuery } from "../../graphql-types"
 
 export const CurrentUserProfile: Component<{
   data: CurrentUserQuery

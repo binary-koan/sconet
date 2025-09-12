@@ -1,9 +1,9 @@
 import {
   RegisterCredentialMutation,
   RegisterCredentialMutationVariables
-} from "../../graphql-types.ts"
-import { gql } from "../../utils/gql.ts"
-import { MutationOptions, useMutation } from "../../utils/graphqlClient/useMutation.ts"
+} from "../../graphql-types"
+import { gql } from "../../utils/gql"
+import { MutationOptions, useMutation } from "../../utils/graphqlClient/useMutation"
 
 const MUTATION = gql`
   mutation RegisterCredential {

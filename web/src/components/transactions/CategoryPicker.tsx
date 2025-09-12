@@ -1,11 +1,11 @@
 import { union } from "lodash"
 import { Component, For } from "solid-js"
-import { FullCategoryFragment } from "../../graphql-types.ts"
-import { useCategoriesQuery } from "../../graphql/queries/categoriesQuery.ts"
-import { namedIcons } from "../../utils/namedIcons.ts"
-import CategoryIndicator from "../CategoryIndicator.tsx"
-import { Button } from "../base/Button.tsx"
-import { stripTime } from "../../utils/date.ts"
+import { FullCategoryFragment } from "../../graphql-types"
+import { useCategoriesQuery } from "../../graphql/queries/categoriesQuery"
+import { namedIcons } from "../../utils/namedIcons"
+import CategoryIndicator from "../CategoryIndicator"
+import { Button } from "../base/Button"
+import { stripTime } from "../../utils/date"
 
 export interface CategoryBasicDetails {
   id: string

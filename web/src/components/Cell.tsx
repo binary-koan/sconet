@@ -1,9 +1,9 @@
 import { useLocation, useNavigate } from "@solidjs/router"
 import { Component, ErrorBoundary, JSX, Match, Switch, createEffect } from "solid-js"
 import { Dynamic } from "solid-js/web"
-import { setLoginToken } from "../utils/auth.ts"
-import { QueryResource } from "../utils/graphqlClient/useQuery.ts"
-import LoadingBar from "./LoadingBar.tsx"
+import { setLoginToken } from "../utils/auth"
+import { QueryResource } from "../utils/graphqlClient/useQuery"
+import LoadingBar from "./LoadingBar"
 
 const DefaultLoader = () => (
   <div role="status" class="mx-auto mb-4">

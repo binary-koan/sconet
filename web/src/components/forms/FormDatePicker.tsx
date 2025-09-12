@@ -2,11 +2,11 @@ import { Field, FormStore, getValue, setValue } from "@modular-forms/solid"
 import { last } from "lodash"
 import { IconArrowLeft, IconArrowRight } from "@tabler/icons-solidjs"
 import { Component, For, JSX, Show, createSignal } from "solid-js"
-import { buildMonthDates } from "../../utils/buildMonthDates.ts"
-import { decrementMonth, incrementMonth, isSameDate, stripTime } from "../../utils/date.ts"
-import { MonthPickerOverlay } from "../MonthPickerOverlay.tsx"
-import { Button } from "../base/Button.tsx"
-import { FormControl, FormLabel } from "../base/FormControl.tsx"
+import { buildMonthDates } from "../../utils/buildMonthDates"
+import { decrementMonth, incrementMonth, isSameDate, stripTime } from "../../utils/date"
+import { MonthPickerOverlay } from "../MonthPickerOverlay"
+import { Button } from "../base/Button"
+import { FormControl, FormLabel } from "../base/FormControl"
 
 export const FormDatePicker: Component<{
   of: FormStore<any, any>

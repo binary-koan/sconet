@@ -1,6 +1,6 @@
 import { createEffect, createMemo, createSignal, onCleanup, useContext } from "solid-js"
-import { gqlContext } from "./context.ts"
-import { FetchMore, StoredQuery, listenToQuery } from "./listenToQuery.ts"
+import { gqlContext } from "./context"
+import { FetchMore, StoredQuery, listenToQuery } from "./listenToQuery"
 
 export interface QueryResource<Data, Variables> {
   (): Data | undefined

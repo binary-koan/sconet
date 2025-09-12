@@ -1,9 +1,9 @@
 import { IconAsterisk } from "@tabler/icons-solidjs"
 import { Component, For, Show } from "solid-js"
 import toast from "solid-toast"
-import { CurrentUserQuery } from "../../graphql-types.ts"
-import { useSetDefaultCurrency } from "../../graphql/mutations/setDefaultCurrency.ts"
-import { Button } from "../base/Button.tsx"
+import { CurrentUserQuery } from "../../graphql-types"
+import { useSetDefaultCurrency } from "../../graphql/mutations/setDefaultCurrency"
+import { Button } from "../base/Button"
 
 export const FavouriteCurrencies: Component<{
   data: CurrentUserQuery

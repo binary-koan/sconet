@@ -1,10 +1,10 @@
 import { useNavigate } from "@solidjs/router"
 import { Component } from "solid-js"
 import toast from "solid-toast"
-import InnerPageWrapper from "../../components/InnerPageWrapper.tsx"
-import CategoryForm from "../../components/categories/CategoryForm.tsx"
-import { CreateCategoryMutationVariables } from "../../graphql-types.ts"
-import { useCreateCategory } from "../../graphql/mutations/createCategoryMutation.ts"
+import InnerPageWrapper from "../../components/InnerPageWrapper"
+import CategoryForm from "../../components/categories/CategoryForm"
+import { CreateCategoryMutationVariables } from "../../graphql-types"
+import { useCreateCategory } from "../../graphql/mutations/createCategoryMutation"
 
 const NewCategoryPage: Component = () => {
   const navigate = useNavigate()

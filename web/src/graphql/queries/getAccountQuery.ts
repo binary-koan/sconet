@@ -1,7 +1,7 @@
-import { GetAccountQuery, GetAccountQueryVariables } from "../../graphql-types.ts"
-import { gql } from "../../utils/gql.ts"
-import { useQuery } from "../../utils/graphqlClient/useQuery.ts"
-import { FullAccountFragment } from "../fragments/accountFragments.ts"
+import { GetAccountQuery, GetAccountQueryVariables } from "../../graphql-types"
+import { gql } from "../../utils/gql"
+import { useQuery } from "../../utils/graphqlClient/useQuery"
+import { FullAccountFragment } from "../fragments/accountFragments"
 
 export const GET_ACCOUNT_QUERY = gql`
   ${FullAccountFragment}

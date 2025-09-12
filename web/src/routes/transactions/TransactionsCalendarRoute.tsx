@@ -1,8 +1,8 @@
 import { Route, RouteDataFunc } from "@solidjs/router"
 import { Component, lazy } from "solid-js"
-import { useCurrentUserQuery } from "../../graphql/queries/currentUserQuery.ts"
-import { useTransactionsByDayQuery } from "../../graphql/queries/transactionsByDayQuery.ts"
-import { TransactionsCalendarPageData } from "../../pages/transactions/TransactionsCalendarPage.tsx"
+import { useCurrentUserQuery } from "../../graphql/queries/currentUserQuery"
+import { useTransactionsByDayQuery } from "../../graphql/queries/transactionsByDayQuery"
+import { TransactionsCalendarPageData } from "../../pages/transactions/TransactionsCalendarPage"
 
 const transactionsData: RouteDataFunc<unknown, TransactionsCalendarPageData> = ({ params }) => {
   const year = () => params.yearmonth.split("-")[0]
@@ -34,7 +34,7 @@ const transactionsData: RouteDataFunc<unknown, TransactionsCalendarPageData> = (
 }
 
 const TransactionsCalendarPage = lazy(
-  () => import("../../pages/transactions/TransactionsCalendarPage.tsx")
+  () => import("../../pages/transactions/TransactionsCalendarPage")
 )
 
 export const TransactionsCalendarRoute: Component = () => {

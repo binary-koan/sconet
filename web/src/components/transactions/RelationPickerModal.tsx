@@ -1,8 +1,8 @@
 import { Component, Show } from "solid-js"
-import { Button } from "../base/Button.tsx"
-import { Modal, ModalCloseButton, ModalContent, ModalTitle } from "../base/Modal.tsx"
-import AccountPicker, { ValueProps as AccountValueProps } from "./AccountPicker.tsx"
-import CategoryPicker, { ValueProps as CategoryValueProps } from "./CategoryPicker.tsx"
+import { Button } from "../base/Button"
+import { Modal, ModalCloseButton, ModalContent, ModalTitle } from "../base/Modal"
+import AccountPicker, { ValueProps as AccountValueProps } from "./AccountPicker"
+import CategoryPicker, { ValueProps as CategoryValueProps } from "./CategoryPicker"
 
 const RelationPickerModal: Component<{
   isIncome: boolean

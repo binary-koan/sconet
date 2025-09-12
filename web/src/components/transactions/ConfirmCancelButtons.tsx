@@ -1,7 +1,7 @@
 import { IconCheck, IconX } from "@tabler/icons-solidjs"
 import { Component } from "solid-js"
-import { Button } from "../base/Button.tsx"
-import { InputAddon } from "../base/InputGroup.tsx"
+import { Button } from "../base/Button"
+import { InputAddon } from "../base/InputGroup"
 
 const ConfirmCancelButtons: Component<{ onConfirm: () => void; onCancel: () => void }> = (
   props

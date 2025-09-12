@@ -1,7 +1,7 @@
 import { Component, For } from "solid-js"
-import { FullAccountFragment } from "../../graphql-types.ts"
-import { useAccountsQuery } from "../../graphql/queries/accountsQuery.ts"
-import { Button } from "../base/Button.tsx"
+import { FullAccountFragment } from "../../graphql-types"
+import { useAccountsQuery } from "../../graphql/queries/accountsQuery"
+import { Button } from "../base/Button"
 
 export interface AccountBasicDetails {
   id: string

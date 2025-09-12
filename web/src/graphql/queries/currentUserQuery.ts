@@ -1,7 +1,7 @@
-import { CurrentUserQuery, CurrentUserQueryVariables } from "../../graphql-types.ts"
-import { gql } from "../../utils/gql.ts"
-import { useQuery } from "../../utils/graphqlClient/useQuery.ts"
-import { FullCurrentUserFragment } from "../fragments/currentUserFragments.ts"
+import { CurrentUserQuery, CurrentUserQueryVariables } from "../../graphql-types"
+import { gql } from "../../utils/gql"
+import { useQuery } from "../../utils/graphqlClient/useQuery"
+import { FullCurrentUserFragment } from "../fragments/currentUserFragments"
 
 export const CURRENT_USER_QUERY = gql`
   ${FullCurrentUserFragment}

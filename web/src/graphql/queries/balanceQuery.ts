@@ -1,6 +1,6 @@
-import { BalanceQuery, BalanceQueryVariables } from "../../graphql-types.ts"
-import { gql } from "../../utils/gql.ts"
-import { useQuery } from "../../utils/graphqlClient/useQuery.ts"
+import { BalanceQuery, BalanceQueryVariables } from "../../graphql-types"
+import { gql } from "../../utils/gql"
+import { useQuery } from "../../utils/graphqlClient/useQuery"
 
 export const BALANCE_QUERY = gql`
   query Balance($currencyId: ID, $year: Int!) {

@@ -1,4 +1,4 @@
-import { ArchiveAccountMutation, ArchiveAccountMutationVariables } from "../../graphql-types.ts"
+import { ArchiveAccountMutation, ArchiveAccountMutationVariables } from "../../graphql-types.ts "
 import { gql } from "../../utils/gql.ts"
 import { MutationOptions, useMutation } from "../../utils/graphqlClient/useMutation.ts"
 import { ACCOUNTS_QUERY } from "../queries/accountsQuery.ts"

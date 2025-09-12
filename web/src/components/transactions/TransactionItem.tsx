@@ -1,11 +1,11 @@
 import { useNavigate } from "@solidjs/router"
 import { groupBy } from "lodash"
 import { Component, Index, Show } from "solid-js"
-import { ListingTransactionFragment } from "../../graphql-types.ts"
-import { namedIcons } from "../../utils/namedIcons.ts"
-import CategoryIndicator from "../CategoryIndicator.tsx"
-import RelationEditor from "./RelationEditor.tsx"
-import { TransactionActions } from "./TransactionActions.tsx"
+import { ListingTransactionFragment } from "../../graphql-types"
+import { namedIcons } from "../../utils/namedIcons"
+import CategoryIndicator from "../CategoryIndicator"
+import RelationEditor from "./RelationEditor"
+import { TransactionActions } from "./TransactionActions"
 
 const TransactionItem: Component<{
   transaction: ListingTransactionFragment

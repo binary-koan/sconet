@@ -1,9 +1,9 @@
 import { Field, FormStore, ValidateField } from "@modular-forms/solid"
 import { uniqueId } from "lodash"
 import { Component, JSX, Show, splitProps } from "solid-js"
-import { FormControl, FormLabel } from "../base/FormControl.tsx"
-import { Input, InputProps } from "../base/Input.tsx"
-import { FieldError } from "./FieldError.tsx"
+import { FormControl, FormLabel } from "../base/FormControl"
+import { Input, InputProps } from "../base/Input"
+import { FieldError } from "./FieldError"
 
 const FormInput: Component<
   InputProps & {

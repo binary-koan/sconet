@@ -1,14 +1,14 @@
 import { useRouteData } from "@solidjs/router"
 import { IconArrowsSplit, IconEye, IconEyeOff } from "@tabler/icons-solidjs"
 import { Component, Show, createSignal } from "solid-js"
-import { Cell } from "../../components/Cell.tsx"
-import InnerPageWrapper from "../../components/InnerPageWrapper.tsx"
-import { Button } from "../../components/base/Button.tsx"
-import { SplitTransactionModal } from "../../components/transactions/SplitTransactionModal.tsx"
-import { TransactionView } from "../../components/transactions/TransactionView.tsx"
-import { GetTransactionQuery, GetTransactionQueryVariables } from "../../graphql-types.ts"
-import { useUpdateTransaction } from "../../graphql/mutations/updateTransactionMutation.ts"
-import { QueryResource } from "../../utils/graphqlClient/useQuery.ts"
+import { Cell } from "../../components/Cell"
+import InnerPageWrapper from "../../components/InnerPageWrapper"
+import { Button } from "../../components/base/Button"
+import { SplitTransactionModal } from "../../components/transactions/SplitTransactionModal"
+import { TransactionView } from "../../components/transactions/TransactionView"
+import { GetTransactionQuery, GetTransactionQueryVariables } from "../../graphql-types"
+import { useUpdateTransaction } from "../../graphql/mutations/updateTransactionMutation"
+import { QueryResource } from "../../utils/graphqlClient/useQuery"
 
 export interface ShowTransactionPageData {
   data: QueryResource<GetTransactionQuery, GetTransactionQueryVariables>

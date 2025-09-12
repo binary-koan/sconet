@@ -1,8 +1,8 @@
 import { Field, FormStore, setValue } from "@modular-forms/solid"
 import { Component, JSX, Show } from "solid-js"
-import IconPicker from "../IconPicker.tsx"
-import { FormControl, FormLabel } from "../base/FormControl.tsx"
-import { FieldError } from "./FieldError.tsx"
+import IconPicker from "../IconPicker"
+import { FormControl, FormLabel } from "../base/FormControl"
+import { FieldError } from "./FieldError"
 
 const FormIconPicker: Component<{
   of: FormStore<any, any>

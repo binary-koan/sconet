@@ -1,5 +1,5 @@
 import { createContext } from "solid-js"
-import { GraphQLContext } from "./listenToQuery.ts"
+import { GraphQLContext } from "./listenToQuery"
 
 export const gqlContext = createContext<GraphQLContext>({
   queries: {}

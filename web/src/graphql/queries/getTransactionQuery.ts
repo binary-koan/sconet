@@ -1,7 +1,7 @@
-import { GetTransactionQuery, GetTransactionQueryVariables } from "../../graphql-types.ts"
-import { gql } from "../../utils/gql.ts"
-import { useQuery } from "../../utils/graphqlClient/useQuery.ts"
-import { FullTransactionFragment } from "../fragments/transactionFragments.ts"
+import { GetTransactionQuery, GetTransactionQueryVariables } from "../../graphql-types"
+import { gql } from "../../utils/gql"
+import { useQuery } from "../../utils/graphqlClient/useQuery"
+import { FullTransactionFragment } from "../fragments/transactionFragments"
 
 export const GET_TRANSACTION_QUERY = gql`
   ${FullTransactionFragment}

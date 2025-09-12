@@ -1,10 +1,7 @@
-import {
-  SetDefaultAccountMutation,
-  SetDefaultAccountMutationVariables
-} from "../../graphql-types.ts"
-import { gql } from "../../utils/gql.ts"
-import { MutationOptions, useMutation } from "../../utils/graphqlClient/useMutation.ts"
-import { CURRENT_USER_QUERY } from "../queries/currentUserQuery.ts"
+import { SetDefaultAccountMutation, SetDefaultAccountMutationVariables } from "../../graphql-types"
+import { gql } from "../../utils/gql"
+import { MutationOptions, useMutation } from "../../utils/graphqlClient/useMutation"
+import { CURRENT_USER_QUERY } from "../queries/currentUserQuery"
 
 const MUTATION = gql`
   mutation SetDefaultAccount($id: ID!) {

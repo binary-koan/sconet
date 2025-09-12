@@ -1,8 +1,8 @@
 import { isObject } from "lodash"
 import { createSignal, useContext } from "solid-js"
 import toast from "solid-toast"
-import { gqlContext } from "./context.ts"
-import { requestGraphql } from "./requestGraphql.ts"
+import { gqlContext } from "./context"
+import { requestGraphql } from "./requestGraphql"
 
 export interface MutationOptions<Data> {
   refetchQueries?: string[] | "ALL"

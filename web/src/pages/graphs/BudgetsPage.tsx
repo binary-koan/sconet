@@ -2,22 +2,22 @@ import { Title } from "@solidjs/meta"
 import { useNavigate, useRouteData } from "@solidjs/router"
 import { IconArrowLeft, IconArrowRight, IconCalendarEvent } from "@tabler/icons-solidjs"
 import { Show, createEffect } from "solid-js"
-import { Cell } from "../../components/Cell.tsx"
-import { GraphsNavigation } from "../../components/GraphsNavigation.tsx"
-import { MonthPickerOverlay } from "../../components/MonthPickerOverlay.tsx"
-import { Button } from "../../components/base/Button.tsx"
-import { PageHeader } from "../../components/base/PageHeader.tsx"
-import { Budgets } from "../../components/budgets/Budgets.tsx"
-import { DefaultCurrencySelect } from "../../components/currencies/DefaultCurrencySelect.tsx"
+import { Cell } from "../../components/Cell"
+import { GraphsNavigation } from "../../components/GraphsNavigation"
+import { MonthPickerOverlay } from "../../components/MonthPickerOverlay"
+import { Button } from "../../components/base/Button"
+import { PageHeader } from "../../components/base/PageHeader"
+import { Budgets } from "../../components/budgets/Budgets"
+import { DefaultCurrencySelect } from "../../components/currencies/DefaultCurrencySelect"
 import {
   BudgetQuery,
   BudgetQueryVariables,
   CurrentUserQuery,
   CurrentUserQueryVariables
-} from "../../graphql-types.ts"
-import { decrementMonth, incrementMonth } from "../../utils/date.ts"
-import { QueryResource } from "../../utils/graphqlClient/useQuery.ts"
-import { setLastViewedBudget } from "../../utils/transactions/viewPreference.ts"
+} from "../../graphql-types"
+import { decrementMonth, incrementMonth } from "../../utils/date"
+import { QueryResource } from "../../utils/graphqlClient/useQuery"
+import { setLastViewedBudget } from "../../utils/transactions/viewPreference"
 
 export interface BudgetsPageData {
   data: QueryResource<BudgetQuery, BudgetQueryVariables>

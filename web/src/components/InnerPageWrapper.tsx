@@ -1,8 +1,8 @@
 import { IconArrowLeft } from "@tabler/icons-solidjs"
 import { Component, JSX, Show } from "solid-js"
 import { Dynamic } from "solid-js/web"
-import { LinkButton } from "./base/Button.tsx"
-import { PageHeader } from "./base/PageHeader.tsx"
+import { LinkButton } from "./base/Button"
+import { PageHeader } from "./base/PageHeader"
 
 const InnerPageWrapper: Component<{
   heading: JSX.Element

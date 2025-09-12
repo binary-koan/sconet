@@ -2,19 +2,19 @@ import { Title } from "@solidjs/meta"
 import { useNavigate, useRouteData } from "@solidjs/router"
 import { IconList } from "@tabler/icons-solidjs"
 import { Component, Show, onMount } from "solid-js"
-import { Cell } from "../../components/Cell.tsx"
-import { Button } from "../../components/base/Button.tsx"
-import { PageHeader } from "../../components/base/PageHeader.tsx"
-import { DefaultCurrencySelect } from "../../components/currencies/DefaultCurrencySelect.tsx"
-import { TransactionsCalendar } from "../../components/transactions/TransactionsCalendar.tsx"
+import { Cell } from "../../components/Cell"
+import { Button } from "../../components/base/Button"
+import { PageHeader } from "../../components/base/PageHeader"
+import { DefaultCurrencySelect } from "../../components/currencies/DefaultCurrencySelect"
+import { TransactionsCalendar } from "../../components/transactions/TransactionsCalendar"
 import {
   CurrentUserQuery,
   CurrentUserQueryVariables,
   TransactionsByDayQuery,
   TransactionsByDayQueryVariables
-} from "../../graphql-types.ts"
-import { QueryResource } from "../../utils/graphqlClient/useQuery.ts"
-import { setTransactionsViewPreference } from "../../utils/transactions/viewPreference.ts"
+} from "../../graphql-types"
+import { QueryResource } from "../../utils/graphqlClient/useQuery"
+import { setTransactionsViewPreference } from "../../utils/transactions/viewPreference"
 
 export interface TransactionsCalendarPageData {
   data: QueryResource<TransactionsByDayQuery, TransactionsByDayQueryVariables>

@@ -1,10 +1,10 @@
 import { Component } from "solid-js"
-import { BudgetQuery } from "../../graphql-types.ts"
-import { CategoryColor } from "../../utils/categoryColors.ts"
-import { monthRange, stripTime } from "../../utils/date.ts"
-import { namedIcons } from "../../utils/namedIcons.ts"
-import BudgetGroup from "./BudgetGroup.tsx"
-import { BudgetSummary } from "./BudgetSummary.tsx"
+import { BudgetQuery } from "../../graphql-types"
+import { CategoryColor } from "../../utils/categoryColors"
+import { monthRange, stripTime } from "../../utils/date"
+import { namedIcons } from "../../utils/namedIcons"
+import BudgetGroup from "./BudgetGroup"
+import { BudgetSummary } from "./BudgetSummary"
 
 export const Budgets: Component<{
   data: BudgetQuery

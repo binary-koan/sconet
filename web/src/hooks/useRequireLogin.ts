@@ -1,6 +1,6 @@
 import { useNavigate, useLocation } from "@solidjs/router"
 import { createEffect } from "solid-js"
-import { isLoggedIn } from "../utils/auth.ts"
+import { isLoggedIn } from "../utils/auth"
 
 export function useRequireLogin() {
   const navigate = useNavigate()

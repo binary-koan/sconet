@@ -1,7 +1,7 @@
-import { CreateAccountMutation, CreateAccountMutationVariables } from "../../graphql-types.ts"
-import { gql } from "../../utils/gql.ts"
-import { MutationOptions, useMutation } from "../../utils/graphqlClient/useMutation.ts"
-import { ACCOUNTS_QUERY } from "../queries/accountsQuery.ts"
+import { CreateAccountMutation, CreateAccountMutationVariables } from "../../graphql-types"
+import { gql } from "../../utils/gql"
+import { MutationOptions, useMutation } from "../../utils/graphqlClient/useMutation"
+import { ACCOUNTS_QUERY } from "../queries/accountsQuery"
 
 const CREATE_ACCOUNT_MUTATION = gql`
   mutation CreateAccount($input: AccountInput!) {

@@ -2,12 +2,12 @@ import { Form, FormStore, getValue } from "@modular-forms/solid"
 import { noop } from "lodash"
 import { IconFilter } from "@tabler/icons-solidjs"
 import { Component, JSX, Show } from "solid-js"
-import { useCategoriesQuery } from "../../graphql/queries/categoriesQuery.ts"
-import { namedIcons } from "../../utils/namedIcons.ts"
-import CategoryIndicator from "../CategoryIndicator.tsx"
-import FormInput from "../forms/FormInput.tsx"
-import FormOptionButtons from "../forms/FormOptionButtons.tsx"
-import { stripTime } from "../../utils/date.ts"
+import { useCategoriesQuery } from "../../graphql/queries/categoriesQuery"
+import { namedIcons } from "../../utils/namedIcons"
+import CategoryIndicator from "../CategoryIndicator"
+import FormInput from "../forms/FormInput"
+import FormOptionButtons from "../forms/FormOptionButtons"
+import { stripTime } from "../../utils/date"
 
 export type TransactionFilterValues = {
   dateFrom?: string
