@@ -1,9 +1,9 @@
 import { useNavigate } from "@solidjs/router"
 import toast from "solid-toast"
-import InnerPageWrapper from "../../components/InnerPageWrapper.tsx"
-import AccountForm from "../../components/accounts/AccountForm.tsx"
-import { CreateAccountMutationVariables } from "../../graphql-types.ts"
-import { useCreateAccount } from "../../graphql/mutations/createAccountMutation.ts"
+import InnerPageWrapper from "../../components/InnerPageWrapper"
+import AccountForm from "../../components/accounts/AccountForm"
+import { CreateAccountMutationVariables } from "../../graphql-types"
+import { useCreateAccount } from "../../graphql/mutations/createAccountMutation"
 
 const NewAccountPage = () => {
   const navigate = useNavigate()

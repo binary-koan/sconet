@@ -23,7 +23,7 @@ const usePageFilter = <FilterValues extends { [key: string]: any }>({
   const navigate = useNavigate()
 
   const paramFilterValues = () => ({
-    ...initialValues,
+    ...(initialValues as any),
     ...parse(
       (params[paramName] && decodeURIComponent(params[paramName])) ||
         (localStorageKey && localStorage.getItem(localStorageKey)) ||

@@ -1,11 +1,11 @@
 import { IconArchive, IconAsterisk, IconEdit, IconTrash } from "@tabler/icons-solidjs"
 import { Component, For } from "solid-js"
 import toast from "solid-toast"
-import { AccountsQuery, CurrentUserQuery } from "../../graphql-types.ts"
-import { useArchiveAccount } from "../../graphql/mutations/archiveAccountMutation.ts"
-import { useDeleteAccount } from "../../graphql/mutations/deleteAccountMutation.ts"
-import { useSetDefaultAccount } from "../../graphql/mutations/setDefaultAccount.ts"
-import { Button, LinkButton } from "../base/Button.tsx"
+import { AccountsQuery, CurrentUserQuery } from "../../graphql-types"
+import { useArchiveAccount } from "../../graphql/mutations/archiveAccountMutation"
+import { useDeleteAccount } from "../../graphql/mutations/deleteAccountMutation"
+import { useSetDefaultAccount } from "../../graphql/mutations/setDefaultAccount"
+import { Button, LinkButton } from "../base/Button"
 
 const AccountsList: Component<{
   data: AccountsQuery

@@ -13,13 +13,13 @@ import { isEqual, noop, orderBy } from "lodash"
 import { IconArchive, IconArrowsSort, IconEdit, IconTrash } from "@tabler/icons-solidjs"
 import { Component, createEffect, createSignal, For, Show } from "solid-js"
 import toast from "solid-toast"
-import { CategoriesQuery, FullCategoryFragment } from "../../graphql-types.ts"
-import { useDeleteCategory } from "../../graphql/mutations/deleteCategoryMutation.ts"
-import { useArchiveCategory } from "~/graphql/mutations/archiveCategoryMutation.ts"
-import { useReorderCategories } from "../../graphql/mutations/reorderCategoriesMutation.ts"
-import { namedIcons } from "../../utils/namedIcons.ts"
-import { Button, LinkButton } from "../base/Button.tsx"
-import CategoryIndicator from "../CategoryIndicator.tsx"
+import { CategoriesQuery, FullCategoryFragment } from "../../graphql-types"
+import { useDeleteCategory } from "../../graphql/mutations/deleteCategoryMutation"
+import { useArchiveCategory } from "../../graphql/mutations/archiveCategoryMutation"
+import { useReorderCategories } from "../../graphql/mutations/reorderCategoriesMutation"
+import { namedIcons } from "../../utils/namedIcons"
+import { Button, LinkButton } from "../base/Button"
+import CategoryIndicator from "../CategoryIndicator"
 
 const DragDropProviderFixed = DragDropProvider as any
 const SortableProviderFixed = SortableProvider as any
@@ -117,7 +117,7 @@ export const CategoriesList: Component<{ data: CategoriesQuery }> = (props) => {
 
         <DragOverlayFixed>
           <Show when={draggingItem()}>
-            <Category category={draggingItem()!} onDeleteClick={noop} />
+            <Category category={draggingItem()!} onDeleteClick={noop} onArchiveClick={noop} />
           </Show>
         </DragOverlayFixed>
       </DragDropProviderFixed>

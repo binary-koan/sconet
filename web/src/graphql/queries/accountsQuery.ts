@@ -1,7 +1,7 @@
-import { AccountsQuery, AccountsQueryVariables } from "../../graphql-types.ts"
-import { gql } from "../../utils/gql.ts"
-import { useQuery } from "../../utils/graphqlClient/useQuery.ts"
-import { FullAccountFragment } from "../fragments/accountFragments.ts"
+import { AccountsQuery, AccountsQueryVariables } from "../../graphql-types"
+import { gql } from "../../utils/gql"
+import { useQuery } from "../../utils/graphqlClient/useQuery"
+import { FullAccountFragment } from "../fragments/accountFragments"
 
 export const ACCOUNTS_QUERY = gql`
   ${FullAccountFragment}
@@ -13,5 +13,5 @@ export const ACCOUNTS_QUERY = gql`
   }
 `
 
-export const useAccountsQuery = () =>
-  useQuery<AccountsQuery, AccountsQueryVariables>(ACCOUNTS_QUERY)
+export const useAccountsQuery = (variables?: () => AccountsQueryVariables) =>
+  useQuery<AccountsQuery, AccountsQueryVariables>(ACCOUNTS_QUERY, variables)

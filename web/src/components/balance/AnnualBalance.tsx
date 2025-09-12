@@ -19,11 +19,7 @@ export const AnnualBalance: Component<{
 
   return (
     <>
-      <BudgetSummary
-        showDifference
-        filteredTransactions={filteredTransactions}
-        budget={props.data.balance}
-      />
+      <BudgetSummary filteredTransactions={filteredTransactions} budget={props.data.balance} />
       <BalanceGraph
         year={props.year}
         currencySymbol={props.data.balance.currency.symbol}

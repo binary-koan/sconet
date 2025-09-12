@@ -5,24 +5,30 @@ import DeviceDetector from "device-detector-js"
 import { IconFingerprint, IconKey, IconTrash } from "@tabler/icons-solidjs"
 import { Component, For } from "solid-js"
 import toast from "solid-toast"
-import { Cell } from "../components/Cell.tsx"
-import Accounts from "../components/accounts/AccountsList.tsx"
-import { Button, LinkButton } from "../components/base/Button.tsx"
-import { PageHeader } from "../components/base/PageHeader.tsx"
-import { CategoriesList } from "../components/categories/CategoriesList.tsx"
-import { CurrentUserProfile } from "../components/user/CurrentUserProfile.tsx"
-import { FavouriteCurrencies } from "../components/user/FavouriteCurrencies.tsx"
-import { CurrentUserQuery, CurrentUserQueryVariables } from "../graphql-types.ts"
-import { useDeleteCredential } from "../graphql/mutations/deleteCredential.ts"
-import { useRegisterCredential } from "../graphql/mutations/registerCredentialMutation.ts"
-import { useVerifyCredentialRegistration } from "../graphql/mutations/verifyCredentialRegistrationMutation.ts"
-import { setLoginToken } from "../utils/auth.ts"
-import { QueryResource } from "../utils/graphqlClient/useQuery.ts"
-import { useCategoriesQuery } from "~/graphql/queries/categoriesQuery.ts"
-import { useAccountsQuery } from "~/graphql/queries/accountsQuery.ts"
-import { stripTime } from "~/utils/date.ts"
+import { Cell } from "../components/Cell"
+import Accounts from "../components/accounts/AccountsList"
+import { Button, LinkButton } from "../components/base/Button"
+import { PageHeader } from "../components/base/PageHeader"
+import { CategoriesList } from "../components/categories/CategoriesList"
+import { CurrentUserProfile } from "../components/user/CurrentUserProfile"
+import { FavouriteCurrencies } from "../components/user/FavouriteCurrencies"
+import {
+  AccountsQuery,
+  AccountsQueryVariables,
+  CategoriesQuery,
+  CategoriesQueryVariables,
+  CurrentUserQuery,
+  CurrentUserQueryVariables
+} from "../graphql-types"
+import { useDeleteCredential } from "../graphql/mutations/deleteCredential"
+import { useRegisterCredential } from "../graphql/mutations/registerCredentialMutation"
+import { useVerifyCredentialRegistration } from "../graphql/mutations/verifyCredentialRegistrationMutation"
+import { setLoginToken } from "../utils/auth"
+import { QueryResource } from "../utils/graphqlClient/useQuery"
 
 export interface SettingsPageData {
+  categories: QueryResource<CategoriesQuery, CategoriesQueryVariables>
+  accounts: QueryResource<AccountsQuery, AccountsQueryVariables>
   currentUser: QueryResource<CurrentUserQuery, CurrentUserQueryVariables>
 }
 
@@ -30,8 +36,6 @@ const deviceDetector = new DeviceDetector()
 
 const SettingsPage: Component = () => {
   const data = useRouteData<SettingsPageData>()
-  const categories = useCategoriesQuery(() => ({ archived: false, today: stripTime(new Date()) }))
-  const accounts = useAccountsQuery(() => ({ archived: false }))
   const registerCredential = useRegisterCredential({
     onSuccess: async (data) => {
       const response = await startRegistration(data.credentialRegistrationStart.options)

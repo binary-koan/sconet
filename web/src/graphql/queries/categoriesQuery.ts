@@ -1,7 +1,7 @@
-import { CategoriesQuery, CategoriesQueryVariables } from "../../graphql-types.ts"
-import { gql } from "../../utils/gql.ts"
-import { useQuery } from "../../utils/graphqlClient/useQuery.ts"
-import { FullCategoryFragment } from "../fragments/categoryFragments.ts"
+import { CategoriesQuery, CategoriesQueryVariables } from "../../graphql-types"
+import { gql } from "../../utils/gql"
+import { useQuery } from "../../utils/graphqlClient/useQuery"
+import { FullCategoryFragment } from "../fragments/categoryFragments"
 
 export const CATEGORIES_QUERY = gql`
   ${FullCategoryFragment}
