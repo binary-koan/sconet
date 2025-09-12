@@ -1,17 +1,14 @@
-FROM denoland/deno:2.1.3 AS frontend
+FROM oven/bun:1 as frontend
 
 WORKDIR /app
 
-COPY deno.jsonc deno.lock web/deno.jsonc ./web/
-RUN deno install
-COPY web/vite.config.ts ./web/
-COPY web/src ./web/src
-COPY web/public ./web/public
-COPY web/index.html ./web/index.html
-WORKDIR /app/web
-RUN deno task build
+COPY package.json bun.lockb web/package.json ./
+RUN bun install
+ENV NODE_ENV=production
+COPY web ./web
+RUN cd web && bun run build
 
-FROM ruby:3.3.4-slim AS base
+FROM ruby:3.2.3-slim as base
 
 LABEL fly_launch_runtime="rails"
 
@@ -30,7 +27,7 @@ RUN gem update --system --no-document && \
 
 
 # Throw-away build stage to reduce size of final image
-FROM base AS build
+FROM base as build
 
 # Install packages needed to build gems
 RUN apt-get update -qq && \
@@ -61,8 +58,8 @@ RUN apt-get update -qq && \
 COPY --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"
 COPY --from=build /rails /rails
 RUN mkdir -p /rails/public
-COPY --from=frontend /app/web/build/ /rails/public
-COPY --from=frontend /app/web/public/ /rails/public
+COPY --from=frontend /app/web/build/* /rails/public
+COPY --from=frontend /app/web/public/* /rails/public
 
 # Run and own only the runtime files as a non-root user for security
 RUN groupadd --system --gid 1000 rails && \

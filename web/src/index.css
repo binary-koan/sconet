@@ -1,16 +1,9 @@
-@import "tailwindcss";
-
-@theme {
-  --font-size-2xs: 0.625rem;
-
-  --z-index-dropdown: 1000;
-  --z-index-docked: 1010;
-  --z-index-navbar: 1020;
-  --z-index-modal: 1030;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 body {
-  background-color: var(--color-gray-50);
+  @apply bg-gray-50;
 }
 
 .tabler-icon {

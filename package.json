@@ -1,0 +1,21 @@
+{
+  "devDependencies": {
+    "@playwright/test": "^1.34.2",
+    "@types/node": "^20.2.3",
+    "@typescript-eslint/eslint-plugin": "^5.59.7",
+    "@typescript-eslint/parser": "^5.59.7",
+    "concurrently": "^7.6.0",
+    "dotenv-cli": "^6.0.0",
+    "eslint": "^8.41.0",
+    "prettier": "^2.7.1",
+    "prettier-plugin-tailwindcss": "^0.1.13"
+  },
+  "scripts": {
+    "dev": "concurrently -n api,web,codegen -c blue,magenta,yellow 'rails s' 'cd web && bun run watch' 'cd web && bun graphql-codegen --watch'",
+    "dev:test": "cd api && ENV_TYPE=test PORT=4445 bun run bin/dev-test.ts",
+    "deploy": "bun run deploy.js",
+    "typecheck": "cd web && bun typecheck",
+    "lint": "cd web && bun lint"
+  },
+  "workspaces": ["web"]
+}
