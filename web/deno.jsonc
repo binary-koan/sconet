@@ -1,15 +1,11 @@
 {
   "tasks": {
     "build": "deno run -A --node-modules-dir npm:vite build",
-    "typecheck": "deno check src/**/*.ts src/**/*.tsx",
-    "lint": "deno lint src/",
-    "graphql-codegen": "deno run -A --node-modules-dir npm:graphql-codegen"
+    "typecheck": "deno check src/**/*.ts{,x}",
+    "lint": "deno lint src/"
   },
   "imports": {
     "@deno/vite-plugin": "npm:@deno/vite-plugin@^1.0.2",
-    "@graphql-codegen/cli": "npm:@graphql-codegen/cli@^6.0.0",
-    "@graphql-codegen/typescript": "npm:@graphql-codegen/typescript@^5.0.0",
-    "@graphql-codegen/typescript-operations": "npm:@graphql-codegen/typescript-operations@^5.0.0",
     "@tailwindcss/vite": "npm:@tailwindcss/vite@^4.0.0-beta.8",
     "jwt-decode": "npm:jwt-decode@^4.0.0",
     "solid-devtools": "npm:solid-devtools@^0.33.0",
