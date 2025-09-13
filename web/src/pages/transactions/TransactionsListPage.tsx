@@ -66,15 +66,15 @@ const TransactionsListPage: Component = () => {
     <>
       <Title>Transactions</Title>
 
+      <button
+        class="md:top-1.25 fixed bottom-[calc(66px+1rem+env(safe-area-inset-bottom))] right-4 z-[1025] flex items-center rounded-full border border-gray-200 bg-white px-5 py-2 text-lg text-indigo-600 shadow-lg md:bottom-auto md:right-[50%] md:translate-x-8 md:shadow-none"
+        onClick={() => setCreatingTransaction(true)}
+      >
+        <IconPlus size="1.25em" class="-ml-1 mr-2" />
+        Add
+      </button>
       <PageHeader size="lg" class="z-docked sticky top-0 bg-gray-50 md:top-9">
         <span class="mr-auto">Transactions</span>
-        <button
-          class="z-navbar fixed bottom-[calc(66px+1rem+env(safe-area-inset-bottom))] right-4 flex items-center rounded-full border border-gray-200 bg-white px-5 py-2 text-lg text-indigo-600 shadow-lg md:static md:z-0 md:-my-1 md:mr-2 md:shadow-none"
-          onClick={() => setCreatingTransaction(true)}
-        >
-          <IconPlus size="1.25em" class="-ml-1 mr-2" />
-          Add
-        </button>
         <Button
           colorScheme={isFiltering() ? "primary" : "neutral"}
           variant={isFiltering() ? "solid" : "ghost"}
