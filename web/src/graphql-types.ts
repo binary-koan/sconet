@@ -780,8 +780,10 @@ export type TransactionInput = {
 export type TransactionSplitInput = {
   /** A unique identifier for the client performing the mutation. */
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  date?: InputMaybe<Scalars['ISO8601Date']['input']>;
   id: Scalars['ID']['input'];
   splits: Array<TransactionSplitItemInput>;
+  totalAmountCents?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type TransactionSplitItemInput = {
@@ -978,6 +980,8 @@ export type SetDefaultCurrencyMutation = { __typename?: 'Mutation', currentUserU
 export type SplitTransactionMutationVariables = Exact<{
   id: Scalars['ID']['input'];
   splits: Array<TransactionSplitItemInput> | TransactionSplitItemInput;
+  totalAmountCents?: InputMaybe<Scalars['Int']['input']>;
+  date?: InputMaybe<Scalars['ISO8601Date']['input']>;
 }>;
 
 

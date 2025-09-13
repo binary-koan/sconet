@@ -1,7 +1,7 @@
 import { last } from "lodash"
 import { evaluate, sum } from "mathjs"
 import { IconMinus } from "@tabler/icons-solidjs"
-import { Component, For, Show } from "solid-js"
+import { Component, For, Show, createSignal } from "solid-js"
 import { createStore } from "solid-js/store"
 import toast from "solid-toast"
 import { ListingTransactionFragment } from "../../graphql-types"
@@ -37,6 +37,9 @@ export const SplitTransactionModal: Component<{
     id: (props.transaction.shopCurrency?.id || props.transaction.currency?.id)!
   }))
 
+  const [editedTotal, setEditedTotal] = createSignal<string>("")
+  const [editedDate, setEditedDate] = createSignal<string>(props.transaction.date || "")
+
   const [splits, setSplits] = createStore<SplitValues>(
     // eslint-disable-next-line solid/reactivity
     getCurrentSplits(props.transaction)
@@ -51,13 +54,21 @@ export const SplitTransactionModal: Component<{
     }
   }
 
-  const shopAmount = () =>
+  const originalTotal = () =>
     props.transaction.shopAmount?.amountDecimal || props.transaction.amount?.amountDecimal || 0
+
+  const currentTotal = () => {
+    const override = editedTotal().trim()
+    if (override) {
+      return parseNumericAmount(override) * (originalTotal() < 0 ? -1 : 1)
+    }
+    return originalTotal()
+  }
 
   const remainder = () =>
     parseFloat(
       (
-        Math.abs(shopAmount()) -
+        Math.abs(currentTotal()) -
         sum(splits.flatMap(({ splits }) => splits.map((split) => split.numericAmount)))
       ).toFixed(currencyData()?.currency?.decimalDigits || 0)
     )
@@ -78,7 +89,7 @@ export const SplitTransactionModal: Component<{
       })
     }
 
-    if (shopAmount() < 0) {
+    if (currentTotal() < 0) {
       splitsToSend = splitsToSend.map((split) => ({
         ...split,
         numericAmount: -split.numericAmount
@@ -93,7 +104,15 @@ export const SplitTransactionModal: Component<{
         amountCents: Math.round(
           numericAmount * 10 ** (currencyData()?.currency?.decimalDigits || 0)
         )
-      }))
+      })),
+      totalAmountCents: editedTotal().trim()
+        ? Math.round(
+            parseNumericAmount(editedTotal()) *
+              10 ** (currencyData()?.currency?.decimalDigits || 0) *
+              (originalTotal() < 0 ? -1 : 1)
+          )
+        : undefined,
+      date: editedDate().trim() || undefined
     })
   }
 
@@ -146,15 +165,36 @@ export const SplitTransactionModal: Component<{
     setSplits((splits) => splits.filter((split) => split.category?.id !== category?.id))
   }
 
-  const canSplitCategories = () => shopAmount() < 0 && props.transaction.includeInReports
+  const canSplitCategories = () => originalTotal() < 0 && props.transaction.includeInReports
 
   return (
     <Modal isOpen={props.isOpen}>
       <ModalContent>
         <ModalTitle>
-          Split Transaction <ModalCloseButton onClick={props.onClose} />
+          Split "{props.transaction.shop}" <ModalCloseButton onClick={props.onClose} />
         </ModalTitle>
         <div class="flex flex-col gap-2">
+          <div class="grid grid-cols-2 gap-2">
+            <div class="flex flex-col">
+              <div class="mb-1 text-sm font-medium">Date</div>
+              <Input
+                type="date"
+                value={editedDate()}
+                onInput={(e) => setEditedDate(e.currentTarget.value)}
+              />
+            </div>
+            <div class="flex flex-col">
+              <div class="mb-1 text-sm font-medium">Total</div>
+              <Input
+                class="flex-1"
+                value={editedTotal()}
+                placeholder={Math.abs(originalTotal()).toString()}
+                inputmode="decimal"
+                onInput={(e) => setEditedTotal(e.currentTarget.value)}
+              />
+            </div>
+          </div>
+          <div class="my-4 border-b border-gray-200" />
           <For each={splits}>
             {(categorySplit) => (
               <div class="mb-6 flex flex-col gap-2">
