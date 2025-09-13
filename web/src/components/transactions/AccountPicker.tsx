@@ -1,4 +1,4 @@
-import { Component, For } from "solid-js"
+import { Component, For, Show } from "solid-js"
 import { FullAccountFragment } from "../../graphql-types"
 import { useAccountsQuery } from "../../graphql/queries/accountsQuery"
 import { Button } from "../base/Button"
@@ -17,9 +17,18 @@ export type ValueProps = {
 const AccountPicker: Component<ValueProps> = (props) => {
   const data = useAccountsQuery(() => ({ archived: false }))
 
+  const favourites = () => (data()?.accounts || []).filter((a) => a.favourite)
+  const others = () => (data()?.accounts || []).filter((a) => !a.favourite)
+
   return (
     <div class="flex flex-wrap gap-2">
-      <For each={data()?.accounts}>
+      <For each={favourites()}>
+        {(account) => <AccountOption account={account} valueProps={props} />}
+      </For>
+      <Show when={favourites().length > 0 && others().length > 0}>
+        <div class="basis-full border-b border-gray-200" />
+      </Show>
+      <For each={others()}>
         {(account) => <AccountOption account={account} valueProps={props} />}
       </For>
     </div>

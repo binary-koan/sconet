@@ -1,10 +1,19 @@
-import { IconArchive, IconAsterisk, IconEdit, IconTrash } from "@tabler/icons-solidjs"
+import {
+  IconArchive,
+  IconAsterisk,
+  IconEdit,
+  IconStar,
+  IconStarFilled,
+  IconTrash
+} from "@tabler/icons-solidjs"
 import { Component, For } from "solid-js"
 import toast from "solid-toast"
 import { AccountsQuery, CurrentUserQuery } from "../../graphql-types"
 import { useArchiveAccount } from "../../graphql/mutations/archiveAccountMutation"
 import { useDeleteAccount } from "../../graphql/mutations/deleteAccountMutation"
 import { useSetDefaultAccount } from "../../graphql/mutations/setDefaultAccount"
+import { useFavouriteAccount } from "../../graphql/mutations/favouriteAccount"
+import { useUnfavouriteAccount } from "../../graphql/mutations/unfavouriteAccount"
 import { Button, LinkButton } from "../base/Button"
 
 const AccountsList: Component<{
@@ -35,6 +44,13 @@ const AccountsList: Component<{
     onSuccess: () => toast.success("Default account updated")
   })
 
+  const favouriteAccount = useFavouriteAccount({
+    onSuccess: () => toast.success("Added to favourites")
+  })
+  const unfavouriteAccount = useUnfavouriteAccount({
+    onSuccess: () => toast.success("Removed from favourites")
+  })
+
   const defaultAccountId = () => props.currentUser?.currentUser?.defaultAccount?.id
 
   return (
@@ -46,6 +62,20 @@ const AccountsList: Component<{
               <h3 class="mb-1 truncate leading-none">{account.name}</h3>
               <p class="text-xs leading-tight text-gray-600">{account.currency.code}</p>
             </div>
+            <Button
+              size="sm"
+              variant="ghost"
+              colorScheme={account.favourite ? "primary" : "neutral"}
+              class="ml-auto mr-2"
+              title={(account.favourite ? "Unfavourite " : "Favourite ") + account.name}
+              onClick={() =>
+                account.favourite
+                  ? unfavouriteAccount({ id: account.id })
+                  : favouriteAccount({ id: account.id })
+              }
+            >
+              {account.favourite ? <IconStarFilled /> : <IconStar />}
+            </Button>
             <Button
               size="sm"
               variant="ghost"

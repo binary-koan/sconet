@@ -1,0 +1,1 @@
+When editing the GraphQL schema, run `bundle exec rails graphql:schema:idl` to generate the `schema.graphql` file, then `cd web && bun run codegen` to generate the `src/graphql-types.ts` file.

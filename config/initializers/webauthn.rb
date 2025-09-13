@@ -1,7 +1,7 @@
 WebAuthn.configure do |config|
   # This value needs to match `window.location.origin` evaluated by
   # the User Agent during registration and authentication ceremonies.
-  config.origin = ENV['WEBAUTHN_ORIGIN'] || 'http://localhost:3000'
+  config.origin = ENV['WEBAUTHN_ORIGIN'] || 'http://localhost:3030'
 
   # Relying Party name for display purposes
   config.rp_name = 'Sconet'

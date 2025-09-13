@@ -24,6 +24,7 @@ export type Account = {
   __typename?: 'Account';
   createdAt: Scalars['ISO8601DateTime']['output'];
   currency: Currency;
+  favourite: Scalars['Boolean']['output'];
   hasTransactions: Scalars['Boolean']['output'];
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
@@ -77,6 +78,7 @@ export type AccountDeletePayload = {
 
 export type AccountInput = {
   currencyId?: InputMaybe<Scalars['ID']['input']>;
+  favourite?: InputMaybe<Scalars['Boolean']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -805,7 +807,7 @@ export type UserInput = {
   oldPassword?: InputMaybe<Scalars['String']['input']>;
 };
 
-export type FullAccountFragment = { __typename?: 'Account', id: string, name: string, hasTransactions: boolean, currency: { __typename?: 'Currency', id: string, code: string } };
+export type FullAccountFragment = { __typename?: 'Account', id: string, name: string, hasTransactions: boolean, favourite: boolean, currency: { __typename?: 'Currency', id: string, code: string } };
 
 export type FullCategoryFragment = { __typename?: 'Category', id: string, name: string, color: string, icon: string, hasTransactions: boolean, isRegular: boolean, sortOrder: number, createdAt: any, updatedAt: any, budget?: { __typename?: 'CategoryBudget', budget: { __typename?: 'Money', amountDecimal: number, formatted: string }, currency: { __typename?: 'Currency', id: string } } | null };
 
@@ -880,6 +882,13 @@ export type DeleteTransactionMutationVariables = Exact<{
 
 export type DeleteTransactionMutation = { __typename?: 'Mutation', transactionDelete: { __typename?: 'TransactionDeletePayload', transaction: { __typename?: 'Transaction', id: string } } };
 
+export type FavouriteAccountMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type FavouriteAccountMutation = { __typename?: 'Mutation', accountUpdate: { __typename?: 'AccountUpdatePayload', account: { __typename?: 'Account', id: string } } };
+
 export type FavouriteCurrencyMutationVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
@@ -944,6 +953,13 @@ export type SplitTransactionMutationVariables = Exact<{
 
 export type SplitTransactionMutation = { __typename?: 'Mutation', transactionSplit: { __typename?: 'TransactionSplitPayload', transaction: { __typename?: 'Transaction', id: string } } };
 
+export type UnfavouriteAccountMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type UnfavouriteAccountMutation = { __typename?: 'Mutation', accountUpdate: { __typename?: 'AccountUpdatePayload', account: { __typename?: 'Account', id: string } } };
+
 export type UnfavouriteCurrencyMutationVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
@@ -988,7 +1004,7 @@ export type AccountsQueryVariables = Exact<{
 }>;
 
 
-export type AccountsQuery = { __typename?: 'Query', accounts: Array<{ __typename?: 'Account', id: string, name: string, hasTransactions: boolean, currency: { __typename?: 'Currency', id: string, code: string } }> };
+export type AccountsQuery = { __typename?: 'Query', accounts: Array<{ __typename?: 'Account', id: string, name: string, hasTransactions: boolean, favourite: boolean, currency: { __typename?: 'Currency', id: string, code: string } }> };
 
 export type BalanceQueryVariables = Exact<{
   currencyId?: InputMaybe<Scalars['ID']['input']>;
@@ -1032,7 +1048,7 @@ export type GetAccountQueryVariables = Exact<{
 }>;
 
 
-export type GetAccountQuery = { __typename?: 'Query', account?: { __typename?: 'Account', id: string, name: string, hasTransactions: boolean, currency: { __typename?: 'Currency', id: string, code: string } } | null };
+export type GetAccountQuery = { __typename?: 'Query', account?: { __typename?: 'Account', id: string, name: string, hasTransactions: boolean, favourite: boolean, currency: { __typename?: 'Currency', id: string, code: string } } | null };
 
 export type GetCategoryQueryVariables = Exact<{
   id: Scalars['ID']['input'];

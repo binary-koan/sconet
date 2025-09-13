@@ -1,6 +1,7 @@
 type Account {
   createdAt: ISO8601DateTime!
   currency: Currency!
+  favourite: Boolean!
   hasTransactions: Boolean!
   id: ID!
   name: String!
@@ -79,6 +80,7 @@ type AccountDeletePayload {
 
 input AccountInput {
   currencyId: ID
+  favourite: Boolean
   name: String
 }
 

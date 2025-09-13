@@ -19,7 +19,7 @@ module Resolvers
       spending_categories = transactions.select(&:expense?).map(&:category).uniq.sort_by { |category| category&.sort_order || -1 }
 
       all_categories = spending_categories.map do |category|
-        budget = ExchangeRates::ConvertMoney.new([category.current_budget.budget], to_currency: output_currency).call.first if category.current_budget
+        budget = ExchangeRates::ConvertMoney.new([category.current_budget.budget], to_currency: output_currency).call.first if category&.current_budget
         amount_spent = Monies.new(
           transactions.select(&:expense?).select { |transaction| transaction.category == category }.map(&:amount_in_currency),
           output_currency
