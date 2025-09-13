@@ -11,7 +11,7 @@ module Mutations
     argument :ordered_ids, [ID], required: true
 
     def resolve(ordered_ids:)
-      categories = ::Category.all.index_by(&:id)
+      categories = ::Category.where(archived_at: nil).index_by(&:id)
 
       if ordered_ids.sort != categories.keys.sort
         raise GraphqlErrors::ValidationError.new "Must include all category IDs"
