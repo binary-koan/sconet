@@ -6,6 +6,7 @@ class User < ApplicationRecord
   has_many :user_currency_favourites
   has_many :favourite_currencies, through: :user_currency_favourites, source: :currency
   has_many :user_credentials
+  has_many :favourite_transactions
 
   validates :email, presence: true, uniqueness: true
 

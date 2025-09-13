@@ -33,5 +33,6 @@ module Types
     field :transactions, resolver: Resolvers::TransactionsResolver
     field :transactions_by_day, resolver: Resolvers::TransactionsByDayResolver
     field :transaction, resolver: Resolvers::TransactionResolver
+    field :favourite_transactions, resolver: Resolvers::FavouriteTransactionsResolver
   end
 end

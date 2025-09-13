@@ -18,6 +18,7 @@ module Types
     field :credential_registration_start, mutation: Mutations::CredentialRegistrationStart
     field :current_user_update, mutation: Mutations::CurrentUserUpdate
     field :favourite_currency_toggle, mutation: Mutations::FavouriteCurrencyToggle
+    field :favourite_transaction_upsert, mutation: Mutations::FavouriteTransactionUpsert
     field :login, mutation: Mutations::Login
     field :transaction_create, mutation: Mutations::TransactionCreate
     field :transaction_delete, mutation: Mutations::TransactionDelete

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_09_13_093000) do
+ActiveRecord::Schema[7.1].define(version: 2025_09_13_100000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -69,6 +69,19 @@ ActiveRecord::Schema[7.1].define(version: 2025_09_13_093000) do
     t.datetime "updated_at", null: false
     t.index ["from_currency_id"], name: "index_exchange_rate_values_on_from_currency_id"
     t.index ["to_currency_id"], name: "index_exchange_rate_values_on_to_currency_id"
+  end
+
+  create_table "favourite_transactions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.string "name", null: false
+    t.string "shop", default: "", null: false
+    t.string "memo", default: "", null: false
+    t.integer "price_cents"
+    t.uuid "account_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_favourite_transactions_on_account_id"
+    t.index ["user_id"], name: "index_favourite_transactions_on_user_id"
   end
 
   create_table "transactions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

@@ -33,7 +33,9 @@ export const TransactionView: Component<{
             <Show
               when={editingMemo() === transaction().id}
               fallback={
-                <div onClick={() => setEditingMemo(transaction().id)}>{transaction().memo}</div>
+                <div onClick={() => setEditingMemo(transaction().id)}>
+                  {transaction().memo || <em class="italic">None</em>}
+                </div>
               }
             >
               <MemoEditor

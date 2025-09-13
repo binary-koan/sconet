@@ -1,10 +1,11 @@
 import { useRouteData } from "@solidjs/router"
-import { IconArrowsSplit, IconEye, IconEyeOff } from "@tabler/icons-solidjs"
+import { IconArrowsSplit, IconEye, IconEyeOff, IconStar } from "@tabler/icons-solidjs"
 import { Component, Show, createSignal } from "solid-js"
 import { Cell } from "../../components/Cell"
 import InnerPageWrapper from "../../components/InnerPageWrapper"
 import { Button } from "../../components/base/Button"
 import { SplitTransactionModal } from "../../components/transactions/SplitTransactionModal"
+import { FavouriteTransactionModal } from "../../components/transactions/FavouriteTransactionModal"
 import { TransactionView } from "../../components/transactions/TransactionView"
 import { GetTransactionQuery, GetTransactionQueryVariables } from "../../graphql-types"
 import { useUpdateTransaction } from "../../graphql/mutations/updateTransactionMutation"
@@ -17,6 +18,7 @@ export interface ShowTransactionPageData {
 const ShowTransactionPage: Component = () => {
   const routeData = useRouteData<ShowTransactionPageData>()
   const [splitModalVisible, setSplitModalVisible] = createSignal(false)
+  const [favouriteModalVisible, setFavouriteModalVisible] = createSignal(false)
 
   const updateTransaction = useUpdateTransaction()
 
@@ -26,6 +28,9 @@ const ShowTransactionPage: Component = () => {
       backLink="/transactions"
       actions={
         <div class="flex gap-2">
+          <Button onClick={() => setFavouriteModalVisible(true)} aria-label="Save as favourite">
+            <IconStar />
+          </Button>
           <Button
             onClick={() =>
               updateTransaction({
@@ -49,6 +54,14 @@ const ShowTransactionPage: Component = () => {
         </div>
       }
     >
+      <Show when={favouriteModalVisible() && routeData.data()?.transaction}>
+        <FavouriteTransactionModal
+          isOpen={true}
+          onClose={() => setFavouriteModalVisible(false)}
+          transaction={routeData.data()!.transaction!}
+        />
+      </Show>
+
       <Show when={splitModalVisible() && routeData.data()?.transaction}>
         <SplitTransactionModal
           isOpen={true}

@@ -7,7 +7,7 @@ import {
   setValue,
   SubmitEvent
 } from "@modular-forms/solid"
-import { countBy, repeat, uniq } from "lodash"
+import { repeat, uniq } from "lodash"
 import {
   IconArrowsSplit2,
   IconCalendarEvent,
@@ -15,15 +15,7 @@ import {
   IconSelector,
   IconSwitch3
 } from "@tabler/icons-solidjs"
-import {
-  Component,
-  createEffect,
-  createMemo,
-  createSignal,
-  createUniqueId,
-  For,
-  Show
-} from "solid-js"
+import { Component, createEffect, createSignal, createUniqueId, For, Show } from "solid-js"
 import toast from "solid-toast"
 import { TransactionInput, FullTransactionFragment } from "../../graphql-types"
 import { useCreateTransaction } from "../../graphql/mutations/createTransactionMutation"
@@ -31,6 +23,7 @@ import { useCategoriesQuery } from "../../graphql/queries/categoriesQuery"
 import { useCurrenciesQuery } from "../../graphql/queries/currenciesQuery"
 import { useCurrentUserQuery } from "../../graphql/queries/currentUserQuery"
 import { useTransactionsForPopulationQuery } from "../../graphql/queries/transactionsForPopulation"
+import { useFavouriteTransactionsQuery } from "../../graphql/queries/favouriteTransactionsQuery"
 import { CATEGORY_BACKGROUND_COLORS, CategoryColor } from "../../utils/categoryColors"
 import { stripTime } from "../../utils/date"
 import { AccountSelect } from "../accounts/AccountSelect"
@@ -61,6 +54,7 @@ export const NewTransactionModal: Component<{
   const currencies = useCurrenciesQuery()
   const currentUser = useCurrentUserQuery()
   const transactions = useTransactionsForPopulationQuery()
+  const favourites = useFavouriteTransactionsQuery()
 
   const [splittingTransaction, setSplittingTransaction] =
     createSignal<FullTransactionFragment | null>(null)
@@ -104,14 +98,31 @@ export const NewTransactionModal: Component<{
     }
   }
 
-  const topShops = createMemo(() => {
-    const nodes = transactions()?.transactions.nodes || []
-    const counts = countBy(nodes, "shop")
-    return Array.from(Object.entries(counts))
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 20)
-      .map(([name]) => name)
-  })
+  const applyFavourite = (fav: any) => {
+    setValue(form, "shop", fav.shop)
+    if (fav.memo) setValue(form, "memo", fav.memo)
+
+    if (fav.account) {
+      setValue(form, "accountId", fav.account.id)
+      setValue(form, "currencyId", fav.account.currency.id)
+    }
+
+    if (fav.priceCents != null) {
+      const currency = currencies()?.currencies.find(
+        (c) => c.id === (fav.account?.currency.id || getValue(form, "currencyId"))
+      )
+      const decimalDigits = currency?.decimalDigits || 2
+      const isNegative = fav.priceCents < 0
+      const absCents = Math.abs(fav.priceCents)
+      const amountDecimal = absCents / Math.pow(10, decimalDigits)
+      setValue(form, "amountType", isNegative ? "expense" : "income")
+      setValue(form, "amount", amountDecimal.toFixed(decimalDigits))
+    }
+
+    populateFromShop(fav.shop)
+    setShopFocused(false)
+    shopInput?.blur()
+  }
 
   createEffect(() => {
     if (isDateSelected()) {
@@ -214,10 +225,7 @@ export const NewTransactionModal: Component<{
                     name="shop"
                     list={recentShopsId}
                     onFocus={() => setShopFocused(true)}
-                    onBlur={(e) => {
-                      populateFromShop(e.target.value)
-                      setTimeout(() => setShopFocused(false), 120)
-                    }}
+                    onBlur={() => setTimeout(() => setShopFocused(false), 120)}
                   />
                   <datalist id={recentShopsId}>
                     <For
@@ -425,29 +433,22 @@ export const NewTransactionModal: Component<{
             </Form>
           </ModalContent>
         </Modal>
-        <Show when={shopFocused()}>
+        <Show when={shopFocused() && favourites()?.favouriteTransactions.length}>
           <Portal>
             <div class="z-modal fixed inset-x-0 bottom-0 hidden bg-white/60 shadow-sm sm:block lg:bottom-2 lg:left-1/2 lg:max-w-lg lg:-translate-x-1/2 lg:rounded-sm">
-              <div class="mx-auto max-w-lg p-2">
-                <div class="flex flex-wrap gap-2">
-                  <For each={topShops()}>
-                    {(shop) => (
-                      <Button
-                        size="custom"
-                        variant="ghost"
-                        class="bg-white px-3 py-2 text-xs"
-                        onClick={() => {
-                          setValue(form, "shop", shop)
-                          populateFromShop(shop)
-                          setShopFocused(false)
-                          shopInput?.blur()
-                        }}
-                      >
-                        {shop}
-                      </Button>
-                    )}
-                  </For>
-                </div>
+              <div class="flex flex-wrap gap-2 p-2">
+                <For each={favourites()?.favouriteTransactions || []}>
+                  {(fav) => (
+                    <Button
+                      size="custom"
+                      variant="ghost"
+                      class="bg-white px-3 py-2 text-xs"
+                      onClick={() => applyFavourite(fav)}
+                    >
+                      {fav.name}
+                    </Button>
+                  )}
+                </For>
               </div>
             </div>
           </Portal>
