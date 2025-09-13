@@ -1,6 +1,6 @@
 import { Form, FormStore, getValue } from "@modular-forms/solid"
 import { noop } from "lodash"
-import { IconFilter } from "@tabler/icons-solidjs"
+import { IconFilter, IconX } from "@tabler/icons-solidjs"
 import { Component, JSX, Show } from "solid-js"
 import { useCategoriesQuery } from "../../graphql/queries/categoriesQuery"
 import { namedIcons } from "../../utils/namedIcons"
@@ -8,6 +8,7 @@ import CategoryIndicator from "../CategoryIndicator"
 import FormInput from "../forms/FormInput"
 import FormOptionButtons from "../forms/FormOptionButtons"
 import { stripTime } from "../../utils/date"
+import { Button } from "../base/Button"
 
 export type TransactionFilterValues = {
   dateFrom?: string
@@ -21,11 +22,13 @@ export type TransactionFilterValues = {
 
 export const TransactionFilters: Component<{
   form: FormStore<TransactionFilterValues, undefined>
+  clearFilters: () => void
+  hasFilterValues: boolean
 }> = (props) => {
   const data = useCategoriesQuery(() => ({ archived: false, today: stripTime(new Date()) }))
 
   return (
-    <div class="mb-4 bg-white p-4 shadow-xs lg:rounded-sm" data-testid="filters-container">
+    <div class="shadow-xs mb-4 bg-white p-4 lg:rounded-sm" data-testid="filters-container">
       <Form of={props.form} onSubmit={noop}>
         <FormInput
           of={props.form}
@@ -100,6 +103,16 @@ export const TransactionFilters: Component<{
           ]}
         />
       </Form>
+
+      <Button
+        variant="ghost"
+        size="sm"
+        class="gap-2"
+        onClick={props.clearFilters}
+        disabled={!props.hasFilterValues}
+      >
+        <IconX /> Clear filters
+      </Button>
     </div>
   )
 }

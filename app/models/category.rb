@@ -1,7 +1,26 @@
 class Category < ApplicationRecord
   include Deletable
 
-  COLORS = %w(gray red orange yellow green teal blue cyan purple pink)
+  COLORS = %w(
+    gray
+    red
+    orange
+    yellow
+    green
+    teal
+    blue
+    cyan
+    purple
+    pink
+    indigo
+    fuchsia
+    amber
+    lime
+    emerald
+    sky
+    violet
+    rose
+  )
   ICONS = YAML.load_file(Rails.root.join('config', 'data', 'icons.yml'))['icons']
 
   has_many :category_budgets

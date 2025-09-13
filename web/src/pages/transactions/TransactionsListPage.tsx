@@ -1,6 +1,6 @@
 import { Title } from "@solidjs/meta"
 import { useNavigate, useRouteData } from "@solidjs/router"
-import { IconCalendarEvent, IconFilter, IconPlus, IconX } from "@tabler/icons-solidjs"
+import { IconCalendarEvent, IconFilter, IconPlus } from "@tabler/icons-solidjs"
 import { Component, Show, createSignal, onMount } from "solid-js"
 import { Cell } from "../../components/Cell"
 import { Button } from "../../components/base/Button"
@@ -37,7 +37,7 @@ const TransactionsListPage: Component = () => {
   const [isFiltering, setFiltering] = createSignal(false)
   const [creatingTransaction, setCreatingTransaction] = createSignal(false)
 
-  const { form, hasFilterValues, filterCount, clearFilters, setFilterValue } =
+  const { form, filterCount, hasFilterValues, clearFilters, setFilterValue } =
     usePageFilter<TransactionFilterValues>({
       basePath: "/transactions/list",
       paramName: "filter",
@@ -76,23 +76,14 @@ const TransactionsListPage: Component = () => {
           Add
         </button>
         <Button
-          class="mr-2"
-          classList={{ hidden: !hasFilterValues() }}
-          size="sm"
-          colorScheme="primary"
-          onClick={clearFilters}
-        >
-          {filterCount()} {filterCount() === 1 ? "filter" : "filters"}
-          <IconX class="ml-2" />
-        </Button>
-        <Button
           colorScheme={isFiltering() ? "primary" : "neutral"}
           variant={isFiltering() ? "solid" : "ghost"}
-          size="square"
+          size={hasFilterValues() ? "md" : "square"}
           aria-label="Filter"
           onClick={() => setFiltering((isFiltering) => !isFiltering)}
         >
           <IconFilter size="1.25em" />
+          {hasFilterValues() && `(${filterCount()})`}
         </Button>
         <Button
           class="ml-2"
@@ -111,7 +102,11 @@ const TransactionsListPage: Component = () => {
       </Show>
 
       <div classList={{ block: isFiltering(), hidden: !isFiltering() }}>
-        <TransactionFilters form={form} />
+        <TransactionFilters
+          form={form}
+          clearFilters={clearFilters}
+          hasFilterValues={hasFilterValues()}
+        />
       </div>
 
       <Cell

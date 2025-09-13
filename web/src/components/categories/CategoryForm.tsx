@@ -67,15 +67,21 @@ const CategoryForm: Component<{
             { value: "gray", content: <ColorOptionContent value="gray" /> },
             { value: "red", content: <ColorOptionContent value="red" /> },
             { value: "orange", content: <ColorOptionContent value="orange" /> },
+            { value: "amber", content: <ColorOptionContent value="amber" /> },
             { value: "yellow", content: <ColorOptionContent value="yellow" /> },
+            { value: "lime", content: <ColorOptionContent value="lime" /> },
             { value: "green", content: <ColorOptionContent value="green" /> },
+            { value: "emerald", content: <ColorOptionContent value="emerald" /> },
             { value: "teal", content: <ColorOptionContent value="teal" /> },
-            { value: "blue", content: <ColorOptionContent value="blue" /> },
             { value: "cyan", content: <ColorOptionContent value="cyan" /> },
-            { value: "purple", content: <ColorOptionContent value="purple" /> },
-            { value: "pink", content: <ColorOptionContent value="pink" /> },
+            { value: "sky", content: <ColorOptionContent value="sky" /> },
+            { value: "blue", content: <ColorOptionContent value="blue" /> },
             { value: "indigo", content: <ColorOptionContent value="indigo" /> },
-            { value: "fuchsia", content: <ColorOptionContent value="fuchsia" /> }
+            { value: "violet", content: <ColorOptionContent value="violet" /> },
+            { value: "purple", content: <ColorOptionContent value="purple" /> },
+            { value: "fuchsia", content: <ColorOptionContent value="fuchsia" /> },
+            { value: "pink", content: <ColorOptionContent value="pink" /> },
+            { value: "rose", content: <ColorOptionContent value="rose" /> }
           ] satisfies Array<{ value: CategoryColor; content: JSX.Element }>
         }
       />
