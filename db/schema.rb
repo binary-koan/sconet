@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_09_13_091622) do
+ActiveRecord::Schema[7.1].define(version: 2025_09_13_093000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -22,6 +22,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_09_13_091622) do
     t.datetime "updated_at", null: false
     t.datetime "archived_at"
     t.boolean "favourite", default: false, null: false
+    t.integer "sort_order", null: false
     t.index ["currency_id"], name: "index_accounts_on_currency_id"
   end
 

@@ -6,6 +6,7 @@ module Types
     field :account_create, mutation: Mutations::AccountCreate
     field :account_delete, mutation: Mutations::AccountDelete
     field :account_update, mutation: Mutations::AccountUpdate
+    field :accounts_reorder, mutation: Mutations::AccountsReorder
     field :categories_reorder, mutation: Mutations::CategoriesReorder
     field :category_archive, mutation: Mutations::CategoryArchive
     field :category_create, mutation: Mutations::CategoryCreate

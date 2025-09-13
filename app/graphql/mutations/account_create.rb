@@ -11,7 +11,7 @@ module Mutations
     argument :account_input, Types::AccountInputType, required: true
 
     def resolve(account_input:)
-      account = ::Account.new(**account_input)
+      account = ::Account.new(**account_input, sort_order: ::Account.maximum(:sort_order).to_i + 1)
       raise GraphQL::ExecutionError.new "Error creating account", extensions: account.errors.to_hash unless account.save
 
       { account: account }

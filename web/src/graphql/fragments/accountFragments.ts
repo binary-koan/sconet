@@ -6,6 +6,7 @@ export const FullAccountFragment = gql`
     name
     hasTransactions
     favourite
+    sortOrder
     currency {
       id
       code
