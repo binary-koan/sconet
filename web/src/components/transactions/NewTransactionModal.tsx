@@ -7,7 +7,7 @@ import {
   setValue,
   SubmitEvent
 } from "@modular-forms/solid"
-import { repeat } from "lodash"
+import { countBy, repeat, uniq } from "lodash"
 import {
   IconArrowsSplit2,
   IconCalendarEvent,
@@ -15,7 +15,15 @@ import {
   IconSelector,
   IconSwitch3
 } from "@tabler/icons-solidjs"
-import { Component, createEffect, createSignal, createUniqueId, For, Show } from "solid-js"
+import {
+  Component,
+  createEffect,
+  createMemo,
+  createSignal,
+  createUniqueId,
+  For,
+  Show
+} from "solid-js"
 import toast from "solid-toast"
 import { TransactionInput, FullTransactionFragment } from "../../graphql-types"
 import { useCreateTransaction } from "../../graphql/mutations/createTransactionMutation"
@@ -36,6 +44,7 @@ import FormInput from "../forms/FormInput"
 import FormInputGroup from "../forms/FormInputGroup"
 import { SplitTransactionModal } from "./SplitTransactionModal"
 import { toCents } from "./AmountEditor"
+import { Portal } from "solid-js/web"
 
 type NewTransactionModalValues = Omit<TransactionInput, "amount" | "shopAmount"> & {
   amountType: "expense" | "income"
@@ -72,6 +81,37 @@ export const NewTransactionModal: Component<{
   })
 
   let shopInput: HTMLInputElement | undefined
+
+  const [shopFocused, setShopFocused] = createSignal(false)
+
+  const normalizeShop = (string: string) => string.toLowerCase().replace(/[^\w]+/, "")
+
+  const populateFromShop = (shopString: string) => {
+    const recent =
+      transactions()?.transactions.nodes.filter(
+        (transaction) => normalizeShop(transaction.shop) === normalizeShop(shopString)
+      ) || []
+    const copyFrom = recent.at(-1)
+
+    if (copyFrom) {
+      setValue(form, "categoryId", copyFrom.category?.id)
+      setValue(form, "accountId", copyFrom.account.id)
+      setValue(form, "currencyId", copyFrom.account.currency.id)
+
+      if (!getValue(form, "memo") && recent.every(({ memo }) => memo === copyFrom.memo)) {
+        setValue(form, "memo", copyFrom.memo)
+      }
+    }
+  }
+
+  const topShops = createMemo(() => {
+    const nodes = transactions()?.transactions.nodes || []
+    const counts = countBy(nodes, "shop")
+    return Array.from(Object.entries(counts))
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 20)
+      .map(([name]) => name)
+  })
 
   createEffect(() => {
     if (isDateSelected()) {
@@ -148,7 +188,7 @@ export const NewTransactionModal: Component<{
     <>
       <Show when={!splittingTransaction()}>
         <Modal isOpen={props.isOpen}>
-          <ModalContent class="flex h-124 flex-col">
+          <ModalContent class="h-124 relative flex flex-col">
             <ModalTitle>
               New Transaction
               <ModalCloseButton onClick={props.onClose} />
@@ -173,33 +213,21 @@ export const NewTransactionModal: Component<{
                     label="Where?"
                     name="shop"
                     list={recentShopsId}
+                    onFocus={() => setShopFocused(true)}
                     onBlur={(e) => {
-                      const normalize = (string: string) =>
-                        string.toLowerCase().replace(/[^\w]+/, "")
-
-                      const recent =
-                        transactions()?.transactions.nodes.filter(
-                          (transaction) => normalize(transaction.shop) === normalize(e.target.value)
-                        ) || []
-                      const copyFrom = recent[0]
-
-                      if (copyFrom) {
-                        setValue(form, "categoryId", copyFrom.category?.id)
-                        setValue(form, "accountId", copyFrom.account.id)
-                        setValue(form, "currencyId", copyFrom.account.currency.id)
-
-                        if (
-                          !getValue(form, "memo") &&
-                          recent.every(({ memo }) => memo === copyFrom.memo)
-                        ) {
-                          setValue(form, "memo", copyFrom.memo)
-                        }
-                      }
+                      populateFromShop(e.target.value)
+                      setTimeout(() => setShopFocused(false), 120)
                     }}
                   />
                   <datalist id={recentShopsId}>
-                    <For each={transactions()?.transactions.nodes}>
-                      {(transaction) => <option value={transaction.shop} />}
+                    <For
+                      each={uniq(
+                        transactions()?.transactions.nodes?.map(
+                          (transaction) => transaction.shop
+                        ) ?? []
+                      )}
+                    >
+                      {(shop) => <option value={shop} />}
                     </For>
                   </datalist>
 
@@ -397,6 +425,33 @@ export const NewTransactionModal: Component<{
             </Form>
           </ModalContent>
         </Modal>
+        <Show when={shopFocused()}>
+          <Portal>
+            <div class="z-modal fixed inset-x-0 bottom-0 hidden bg-white/60 shadow-sm sm:block lg:bottom-2 lg:left-1/2 lg:max-w-lg lg:-translate-x-1/2 lg:rounded-sm">
+              <div class="mx-auto max-w-lg p-2">
+                <div class="flex flex-wrap gap-2">
+                  <For each={topShops()}>
+                    {(shop) => (
+                      <Button
+                        size="custom"
+                        variant="ghost"
+                        class="bg-white px-3 py-2 text-xs"
+                        onClick={() => {
+                          setValue(form, "shop", shop)
+                          populateFromShop(shop)
+                          setShopFocused(false)
+                          shopInput?.blur()
+                        }}
+                      >
+                        {shop}
+                      </Button>
+                    )}
+                  </For>
+                </div>
+              </div>
+            </div>
+          </Portal>
+        </Show>
       </Show>
       <Show when={splittingTransaction()}>
         {(splittingTransaction) => (

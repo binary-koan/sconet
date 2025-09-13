@@ -22,13 +22,13 @@ export const Modal = <T extends AsProp = "div">(
       <Dynamic
         component={props.as || "div"}
         ref={props.ref}
-        class={`z-modal relative transition-opacity ${
+        class={`relative transition-opacity ${
           props.isOpen ? "visible opacity-100" : "invisible opacity-0"
         } ${props.class}`}
         classList={props.classList}
         {...elementProps}
       >
-        <div class="fixed inset-0 bg-gray-500/75" />
+        <div class="z-modal fixed inset-0 bg-gray-500/75" />
 
         <div class="z-modal fixed inset-0 overflow-y-auto" role="dialog">
           <div
