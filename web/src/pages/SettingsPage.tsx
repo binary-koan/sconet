@@ -3,7 +3,7 @@ import { Title } from "@solidjs/meta"
 import { useRouteData } from "@solidjs/router"
 import DeviceDetector from "device-detector-js"
 import { IconFingerprint, IconKey, IconTrash } from "@tabler/icons-solidjs"
-import { Component, For } from "solid-js"
+import { Component, For, Show, createSignal } from "solid-js"
 import toast from "solid-toast"
 import { Cell } from "../components/Cell"
 import Accounts from "../components/accounts/AccountsList"
@@ -12,6 +12,8 @@ import { PageHeader } from "../components/base/PageHeader"
 import { CategoriesList } from "../components/categories/CategoriesList"
 import { CurrentUserProfile } from "../components/user/CurrentUserProfile"
 import { FavouriteCurrencies } from "../components/user/FavouriteCurrencies"
+import { FavouriteTransactionsList } from "../components/transactions/FavouriteTransactionsList"
+import { FavouriteTransactionNewModal } from "../components/transactions/FavouriteTransactionNewModal"
 import {
   AccountsQuery,
   AccountsQueryVariables,
@@ -30,12 +32,14 @@ export interface SettingsPageData {
   categories: QueryResource<CategoriesQuery, CategoriesQueryVariables>
   accounts: QueryResource<AccountsQuery, AccountsQueryVariables>
   currentUser: QueryResource<CurrentUserQuery, CurrentUserQueryVariables>
+  favouriteTransactions: QueryResource<any, any>
 }
 
 const deviceDetector = new DeviceDetector()
 
 const SettingsPage: Component = () => {
   const data = useRouteData<SettingsPageData>()
+  const [favModalOpen, setFavModalOpen] = createSignal(false)
   const registerCredential = useRegisterCredential({
     onSuccess: async (data) => {
       const response = await startRegistration(data.credentialRegistrationStart.options)
@@ -97,12 +101,12 @@ const SettingsPage: Component = () => {
         </Button>
       </PageHeader>
 
-      <div class="flex items-center gap-2 bg-white px-4 py-2 shadow-xs">
+      <div class="shadow-xs flex items-center gap-2 bg-white px-4 py-2">
         <IconKey /> Password
       </div>
       <For each={data.currentUser()?.currentUser?.registeredCredentials}>
         {(credential) => (
-          <div class="flex items-center gap-2 bg-white  px-4 py-2 shadow-xs">
+          <div class="shadow-xs flex items-center gap-2  bg-white px-4 py-2">
             <IconFingerprint /> {credential.device} (created on {credential.createdAt})
             <Button
               size="sm"
@@ -125,6 +129,28 @@ const SettingsPage: Component = () => {
       </PageHeader>
 
       <Cell data={data.currentUser} success={FavouriteCurrencies} />
+
+      <PageHeader size="lg" class="mt-4">
+        Favourite transactions
+        <Button
+          class="ml-auto"
+          size="sm"
+          colorScheme="primary"
+          onClick={() => setFavModalOpen(true)}
+        >
+          New Favourite
+        </Button>
+      </PageHeader>
+
+      <Show when={data.favouriteTransactions()?.favouriteTransactions}>
+        <FavouriteTransactionsList data={data.favouriteTransactions()!} />
+      </Show>
+
+      <FavouriteTransactionNewModal
+        isOpen={favModalOpen()}
+        onClose={() => setFavModalOpen(false)}
+        onCreated={() => data.favouriteTransactions.refetch()}
+      />
 
       <PageHeader size="lg" class="mt-4">
         Categories

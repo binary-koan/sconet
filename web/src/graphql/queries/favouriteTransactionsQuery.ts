@@ -15,6 +15,7 @@ export const FAVOURITE_TRANSACTIONS_QUERY = gql`
       priceCents
       account {
         id
+        name
         currency {
           id
         }
