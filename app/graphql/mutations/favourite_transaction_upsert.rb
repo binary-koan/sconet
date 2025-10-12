@@ -13,10 +13,11 @@ module Mutations
     argument :memo, String, required: false
     argument :price_cents, Integer, required: false
     argument :account_id, ID, required: false
+    argument :category_id, ID, required: false
 
-    def resolve(name:, shop:, memo: nil, price_cents: nil, account_id: nil)
+    def resolve(name:, shop:, memo: nil, price_cents: nil, account_id: nil, category_id: nil)
       record = current_user.favourite_transactions.new
-      record.update!(name:, shop:, memo: memo || "", price_cents:, account_id:)
+      record.update!(name:, shop:, memo: memo || "", price_cents:, account_id:, category_id:)
 
       { favourite_transaction: record }
     end

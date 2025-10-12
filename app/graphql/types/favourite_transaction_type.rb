@@ -8,6 +8,7 @@ module Types
     field :memo, String, null: false
     field :price_cents, Integer, null: true
     field :account, Types::AccountType, null: true
+    field :category, Types::CategoryType, null: true
   end
 end
 
