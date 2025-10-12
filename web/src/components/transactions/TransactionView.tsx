@@ -10,11 +10,13 @@ import { FormControl, FormLabel } from "../base/FormControl"
 import { AmountEditor } from "./AmountEditor"
 import { DateEditor } from "./DateEditor"
 import { MemoEditor } from "./MemoEditor"
+import { ShopEditor } from "./ShopEditor"
 import RelationEditor from "./RelationEditor"
 
 export const TransactionView: Component<{
   data: GetTransactionQuery
 }> = (props) => {
+  const [editingShop, setEditingShop] = createSignal<string>()
   const [editingMemo, setEditingMemo] = createSignal<string>()
   const [editingAmount, setEditingAmount] = createSignal(false)
   const [editingshopAmount, setEditingshopAmount] = createSignal(false)
@@ -28,6 +30,23 @@ export const TransactionView: Component<{
     <Show when={transaction()}>
       {(transaction) => (
         <>
+          <FormControl>
+            <FormLabel>Shop</FormLabel>
+            <Show
+              when={editingShop() === transaction().id}
+              fallback={
+                <div onClick={() => setEditingShop(transaction().id)}>
+                  {transaction().shop || <em class="italic">None</em>}
+                </div>
+              }
+            >
+              <ShopEditor
+                transaction={transaction()}
+                stopEditing={() => setEditingShop(undefined)}
+              />
+            </Show>
+          </FormControl>
+
           <FormControl>
             <FormLabel>Memo</FormLabel>
             <Show
