@@ -14,7 +14,7 @@ module Mutations
     def resolve(id:, splits:, total_amount_cents: nil, date: nil)
       transaction = Transaction.find(id)
 
-      expected_total_cents = total_amount_cents || (transaction.shop_amount_cents || transaction.amount_cents)
+      expected_total_cents = total_amount_cents || transaction.shop_amount_cents || transaction.amount_cents
 
       if splits.sum { |split| split.amount_cents } != expected_total_cents
         raise GraphqlErrors::ValidationError, "Transaction amounts do not match"

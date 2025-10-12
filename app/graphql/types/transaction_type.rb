@@ -35,5 +35,9 @@ module Types
 
       ExchangeRates::ConvertMoney.new([object.shop_amount], to_currency: Currency.find(currency_id)).call.sum
     end
+
+    def split_to
+      object.split_to.left_outer_joins(:category).order("categories.sort_order ASC", amount_cents: :asc, shop: :asc)
+    end
   end
 end
