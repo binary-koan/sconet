@@ -10,7 +10,8 @@ module Mutations
     argument :webauthn_response, GraphQL::Types::JSON, required: false
 
     def resolve(email:, password: nil, webauthn_response: nil)
-      user = User.find_by!(email: email)
+      user = User.find_by(email: email)
+      raise GraphqlErrors::AuthenticationFailedError, "Invalid email or password" unless user
 
       authenticate!(user:, password:, webauthn_response:)
 
