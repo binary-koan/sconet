@@ -9,7 +9,6 @@ class GraphqlController < ApplicationController
   def execute
     # Handle multipart/form-data uploads (GraphQL multipart request spec)
     if params[:operations].present?
-      binding.pry
       operations = JSON.parse(params[:operations])
       query = operations['query']
       variables = operations['variables'] || {}
