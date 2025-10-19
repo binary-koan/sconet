@@ -14,8 +14,7 @@ import {
   IconPhoto,
   IconPlus,
   IconSelector,
-  IconSwitch3,
-  IconX
+  IconSwitch3
 } from "@tabler/icons-solidjs"
 import { Component, createEffect, createSignal, createUniqueId, For, Show } from "solid-js"
 import toast from "solid-toast"
@@ -29,7 +28,7 @@ import { useFavouriteTransactionsQuery } from "../../graphql/queries/favouriteTr
 import { CATEGORY_BACKGROUND_COLORS, CategoryColor } from "../../utils/categoryColors"
 import { stripTime } from "../../utils/date"
 import { AccountSelect } from "../accounts/AccountSelect"
-import { Button } from "../base/Button"
+import { Button, buttonClasses } from "../base/Button"
 import { InputAddon } from "../base/InputGroup"
 import { Modal, ModalCloseButton, ModalContent, ModalTitle } from "../base/Modal"
 import { CurrencySelect } from "../currencies/CurrencySelect"
@@ -248,53 +247,6 @@ export const NewTransactionModal: Component<{
 
                   <FormInput placeholderLabel={true} of={form} label="What?" name="memo" />
 
-                  <div class="flex flex-col gap-2">
-                    <label class="flex cursor-pointer items-center gap-2 rounded border border-gray-200 bg-white px-3 py-2 text-sm hover:border-gray-300">
-                      <IconPhoto size="1.25em" class="text-gray-500" />
-                      <span class="text-gray-700">
-                        {receiptImages().length > 0
-                          ? `${receiptImages().length} receipt${
-                              receiptImages().length > 1 ? "s" : ""
-                            } selected`
-                          : "Add receipt images"}
-                      </span>
-                      <input
-                        type="file"
-                        multiple
-                        accept="image/*"
-                        class="hidden"
-                        onChange={(e) => {
-                          const files = Array.from(e.target.files || [])
-                          setReceiptImages(files)
-                        }}
-                      />
-                    </label>
-                    <Show when={receiptImages().length > 0}>
-                      <div class="flex flex-wrap gap-2">
-                        <For each={receiptImages()}>
-                          {(file, index) => (
-                            <div class="relative">
-                              <div class="flex items-center gap-1 rounded bg-gray-100 px-2 py-1 text-xs">
-                                <span class="max-w-32 truncate">{file.name}</span>
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    setReceiptImages(
-                                      receiptImages().filter((_, i) => i !== index())
-                                    )
-                                  }}
-                                  class="text-gray-500 hover:text-gray-700"
-                                >
-                                  <IconX size="0.875em" />
-                                </button>
-                              </div>
-                            </div>
-                          )}
-                        </For>
-                      </div>
-                    </Show>
-                  </div>
-
                   <Show
                     when={getValue(form, "shopCurrencyId")}
                     fallback={
@@ -463,6 +415,30 @@ export const NewTransactionModal: Component<{
                       </CurrencySelect>
                     )}
                   </Field>
+
+                  <label class="cursor-pointer">
+                    <span
+                      class={`${buttonClasses({
+                        size: "custom",
+                        variant: "ghost"
+                      })} whitespace-nowrap rounded-sm border border-gray-100 px-4 py-2 text-xs text-gray-700`}
+                    >
+                      <IconPhoto class="mr-1" />
+                      {receiptImages().length > 0
+                        ? `${receiptImages().length} file${receiptImages().length > 1 ? "s" : ""}`
+                        : "Receipt"}
+                    </span>
+                    <input
+                      type="file"
+                      multiple
+                      accept="image/*"
+                      class="hidden"
+                      onChange={(e) => {
+                        const files = Array.from(e.target.files || [])
+                        setReceiptImages(files)
+                      }}
+                    />
+                  </label>
                 </div>
 
                 <Button
