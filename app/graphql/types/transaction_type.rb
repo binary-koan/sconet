@@ -17,10 +17,11 @@ module Types
     field :shop_currency, Types::CurrencyType
     field :category, Types::CategoryType
     field :account, Types::AccountType, null: false
-    field :split_from, Types::TransactionType
-    field :split_to, [Types::TransactionType], null: false
-    field :created_at, GraphQL::Types::ISO8601DateTime, null: false
-    field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
+  field :split_from, Types::TransactionType
+  field :split_to, [Types::TransactionType], null: false
+  field :receipt_images, [Types::ReceiptImageType], null: false
+  field :created_at, GraphQL::Types::ISO8601DateTime, null: false
+  field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
 
     def amount(currency_id: nil)
       return object.amount if currency_id.blank?

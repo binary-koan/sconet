@@ -7,9 +7,31 @@ class GraphqlController < ApplicationController
   # protect_from_forgery with: :null_session
 
   def execute
-    variables = prepare_variables(params[:variables])
-    query = params[:query]
-    operation_name = params[:operationName]
+    # Handle multipart/form-data uploads (GraphQL multipart request spec)
+    if params[:operations].present?
+      binding.pry
+      operations = JSON.parse(params[:operations])
+      query = operations['query']
+      variables = operations['variables'] || {}
+      operation_name = operations['operationName']
+      
+      # Map uploaded files back to their positions in variables
+      if params[:map].present?
+        file_map = JSON.parse(params[:map])
+        file_map.each do |file_index, paths|
+          file = params[file_index]
+          paths.each do |path|
+            # path format: "variables.input.receiptImages.0"
+            set_nested_value(variables, path.sub('variables.', ''), file)
+          end
+        end
+      end
+    else
+      variables = prepare_variables(params[:variables])
+      query = params[:query]
+      operation_name = params[:operationName]
+    end
+    
     context = { current_user: }
     result = SconetSchema.execute(query, variables:, context:, operation_name:)
     render json: result
@@ -19,6 +41,30 @@ class GraphqlController < ApplicationController
   end
 
   private
+  
+  # Set a nested value in a hash using a dot-separated path
+  def set_nested_value(hash, path, value)
+    keys = path.split('.')
+    last_key = keys.pop
+    
+    # Navigate to the nested hash/array
+    target = keys.reduce(hash) do |current, key|
+      if key =~ /^\d+$/
+        # Array index
+        current[key.to_i]
+      else
+        # Hash key (convert to symbol for GraphQL)
+        current[key.to_sym] || current[key]
+      end
+    end
+    
+    # Set the value
+    if last_key =~ /^\d+$/
+      target[last_key.to_i] = value
+    else
+      target[last_key.to_sym] = value
+    end
+  end
 
   # Handle variables in form data, JSON body, or a blank value
   def prepare_variables(variables_param)

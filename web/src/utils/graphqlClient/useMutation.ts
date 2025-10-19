@@ -2,7 +2,7 @@ import { isObject } from "lodash"
 import { createSignal, useContext } from "solid-js"
 import toast from "solid-toast"
 import { gqlContext } from "./context"
-import { requestGraphql } from "./requestGraphql"
+import { requestGraphql, FileInfo } from "./requestGraphql"
 
 export interface MutationOptions<Data> {
   refetchQueries?: string[] | "ALL"
@@ -15,6 +15,41 @@ export interface MutationFunction<Data, Variables> {
   loading: boolean
 }
 
+function extractFiles(variables: any): {
+  files: FileInfo[]
+  cleanedVariables: any
+} {
+  const files: FileInfo[] = []
+
+  function processValue(value: any, path: string): any {
+    if (value instanceof File) {
+      files.push({ file: value, path })
+      return null
+    }
+
+    if (Array.isArray(value)) {
+      return value.map((item, index) => processValue(item, `${path}.${index}`))
+    }
+
+    if (value !== null && typeof value === "object") {
+      const result: any = {}
+      for (const [key, val] of Object.entries(value)) {
+        result[key] = processValue(val, path ? `${path}.${key}` : key)
+      }
+      return result
+    }
+
+    return value
+  }
+
+  const cleanedVariables = processValue(variables, "variables")
+
+  return {
+    files,
+    cleanedVariables
+  }
+}
+
 export function useMutation<Data, Variables>(
   mutation: string,
   { refetchQueries, onSuccess, onError }: MutationOptions<Data> = {}
@@ -25,7 +60,11 @@ export function useMutation<Data, Variables>(
   const mutate = async (variables: Variables) => {
     try {
       setLoading(true)
-      const data = await requestGraphql<Data>(mutation, JSON.stringify(variables))
+
+      const { files, cleanedVariables } = extractFiles(variables)
+      const serializedVariables = JSON.stringify(cleanedVariables)
+
+      const data = await requestGraphql<Data>(mutation, serializedVariables, files)
       onSuccess?.(data)
 
       const refetchList = refetchQueries === "ALL" ? Object.keys(context.queries) : refetchQueries

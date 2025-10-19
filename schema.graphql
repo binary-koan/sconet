@@ -860,6 +860,14 @@ type Query {
   transactionsByDay(dateFrom: ISO8601Date!, dateUntil: ISO8601Date!): [DailyTransactions!]!
 }
 
+type ReceiptImage {
+  byteSize: Int!
+  contentType: String!
+  filename: String!
+  id: ID!
+  url: String!
+}
+
 type Transaction {
   account: Account!
   amount(currencyId: ID): Money
@@ -870,6 +878,7 @@ type Transaction {
   id: ID!
   includeInReports: Boolean!
   memo: String!
+  receiptImages: [ReceiptImage!]!
   shop: String!
   shopAmount(currencyId: ID): Money
   shopCurrency: Currency
@@ -975,6 +984,7 @@ input TransactionInput {
   id: ID
   includeInReports: Boolean
   memo: String
+  receiptImages: [Upload!]
   shop: String
   shopAmountCents: Int
   shopCurrencyId: ID
@@ -1034,6 +1044,11 @@ type TransactionUpdatePayload {
   clientMutationId: String
   transaction: Transaction!
 }
+
+"""
+Represents an uploaded file
+"""
+scalar Upload
 
 type UserCredential {
   createdAt: ISO8601DateTime!

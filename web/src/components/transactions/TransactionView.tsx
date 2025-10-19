@@ -64,6 +64,30 @@ export const TransactionView: Component<{
             </Show>
           </FormControl>
 
+          <Show when={transaction().receiptImages.length > 0}>
+            <FormControl>
+              <FormLabel>Receipt Images</FormLabel>
+              <div class="flex flex-wrap gap-2">
+                <For each={transaction().receiptImages}>
+                  {(image) => (
+                    <a
+                      href={image.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="group relative block h-24 w-24 overflow-hidden rounded border border-gray-200 hover:border-gray-400"
+                    >
+                      <img
+                        src={image.url}
+                        alt={image.filename}
+                        class="h-full w-full object-cover transition group-hover:opacity-90"
+                      />
+                    </a>
+                  )}
+                </For>
+              </div>
+            </FormControl>
+          </Show>
+
           <FormControl>
             <FormLabel>Amount</FormLabel>
             <Show

@@ -14,5 +14,6 @@ module Types
     argument :category_id, ID, required: false
     argument :account_id, ID, required: false
     argument :split_from_id, ID, required: false
+    argument :receipt_images, [Types::UploadType], required: false
   end
 end

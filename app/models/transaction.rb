@@ -8,6 +8,7 @@ class Transaction < ApplicationRecord
   belongs_to :shop_currency, class_name: 'Currency', optional: true
 
   has_many :split_to, class_name: 'Transaction', foreign_key: :split_from_id
+  has_many_attached :receipt_images
 
   scope :for_analytics, -> { where(include_in_reports: true).where('split_from_id IS NOT NULL OR NOT EXISTS (SELECT 1 FROM transactions split WHERE split.split_from_id = transactions.id)') }
   scope :top_level, -> { where(split_from_id: nil) }

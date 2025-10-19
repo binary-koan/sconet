@@ -11,9 +11,11 @@ import { repeat, uniq } from "lodash"
 import {
   IconArrowsSplit2,
   IconCalendarEvent,
+  IconPhoto,
   IconPlus,
   IconSelector,
-  IconSwitch3
+  IconSwitch3,
+  IconX
 } from "@tabler/icons-solidjs"
 import { Component, createEffect, createSignal, createUniqueId, For, Show } from "solid-js"
 import toast from "solid-toast"
@@ -58,6 +60,10 @@ export const NewTransactionModal: Component<{
 
   const [splittingTransaction, setSplittingTransaction] =
     createSignal<FullTransactionFragment | null>(null)
+
+  const [receiptImages, setReceiptImages] = createSignal<File[]>([])
+
+  createEffect(() => console.log(receiptImages()))
 
   const recentShopsId = createUniqueId()
 
@@ -152,7 +158,8 @@ export const NewTransactionModal: Component<{
         : amountType === "expense"
         ? -integerAmount
         : integerAmount,
-      date: stripTime(new Date(date))
+      date: stripTime(new Date(date)),
+      receiptImages: receiptImages().length > 0 ? receiptImages() : undefined
     }
 
     if (shopCurrencyId && shopAmount) {
@@ -240,6 +247,53 @@ export const NewTransactionModal: Component<{
                   </datalist>
 
                   <FormInput placeholderLabel={true} of={form} label="What?" name="memo" />
+
+                  <div class="flex flex-col gap-2">
+                    <label class="flex cursor-pointer items-center gap-2 rounded border border-gray-200 bg-white px-3 py-2 text-sm hover:border-gray-300">
+                      <IconPhoto size="1.25em" class="text-gray-500" />
+                      <span class="text-gray-700">
+                        {receiptImages().length > 0
+                          ? `${receiptImages().length} receipt${
+                              receiptImages().length > 1 ? "s" : ""
+                            } selected`
+                          : "Add receipt images"}
+                      </span>
+                      <input
+                        type="file"
+                        multiple
+                        accept="image/*"
+                        class="hidden"
+                        onChange={(e) => {
+                          const files = Array.from(e.target.files || [])
+                          setReceiptImages(files)
+                        }}
+                      />
+                    </label>
+                    <Show when={receiptImages().length > 0}>
+                      <div class="flex flex-wrap gap-2">
+                        <For each={receiptImages()}>
+                          {(file, index) => (
+                            <div class="relative">
+                              <div class="flex items-center gap-1 rounded bg-gray-100 px-2 py-1 text-xs">
+                                <span class="max-w-32 truncate">{file.name}</span>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setReceiptImages(
+                                      receiptImages().filter((_, i) => i !== index())
+                                    )
+                                  }}
+                                  class="text-gray-500 hover:text-gray-700"
+                                >
+                                  <IconX size="0.875em" />
+                                </button>
+                              </div>
+                            </div>
+                          )}
+                        </For>
+                      </div>
+                    </Show>
+                  </div>
 
                   <Show
                     when={getValue(form, "shopCurrencyId")}

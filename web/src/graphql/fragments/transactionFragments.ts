@@ -41,6 +41,13 @@ export const FullTransactionFragment = gql`
         code
       }
     }
+    receiptImages {
+      id
+      url
+      filename
+      contentType
+      byteSize
+    }
     splitTo {
       id
       memo
