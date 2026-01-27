@@ -67,13 +67,13 @@ const TransactionsListPage: Component = () => {
       <Title>Transactions</Title>
 
       <button
-        class="md:top-1.25 fixed bottom-[calc(66px+1rem+env(safe-area-inset-bottom))] right-4 z-[1025] flex items-center rounded-full border border-gray-200 bg-white px-5 py-2 text-lg text-indigo-600 shadow-lg md:bottom-auto md:right-[50%] md:translate-x-8 md:shadow-none"
+        class="2xl:top-1.25 fixed bottom-[calc(66px+1rem+env(safe-area-inset-bottom))] right-4 z-[1025] flex items-center rounded-full border border-gray-200 bg-white px-5 py-2 text-lg text-indigo-600 shadow-lg 2xl:bottom-auto 2xl:right-[50%] 2xl:translate-x-8 2xl:shadow-none"
         onClick={() => setCreatingTransaction(true)}
       >
         <IconPlus size="1.25em" class="-ml-1 mr-2" />
         Add
       </button>
-      <PageHeader size="lg" class="z-docked sticky top-0 bg-gray-50 md:top-9">
+      <PageHeader size="lg" class="z-docked sticky top-0 bg-gray-50 lg:top-9">
         <span class="mr-auto">Transactions</span>
         <Button
           colorScheme={isFiltering() ? "primary" : "neutral"}

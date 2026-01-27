@@ -1,9 +1,10 @@
 import { IconPlus } from "@tabler/icons-solidjs"
 import { Component, createMemo, createSignal, For, Show } from "solid-js"
 import { ListingTransactionFragment, TransactionsQuery } from "../../graphql-types"
-import { monthRange, stripTime } from "../../utils/date"
+import { stripTime } from "../../utils/date"
 import { formatDate } from "../../utils/formatters"
 import { Button } from "../base/Button"
+import { MonthPickerModal } from "./MonthPickerModal"
 import { NewTransactionModal } from "./NewTransactionModal"
 import { TransactionFilterValues } from "./TransactionFilters"
 import TransactionItem from "./TransactionItem"
@@ -15,6 +16,7 @@ export const TransactionsList: Component<{
   setFilterValue: (name: keyof TransactionFilterValues, value: any) => void
 }> = (props) => {
   const [showingModalForDate, setShowingModalForDate] = createSignal<Date>()
+  const [monthPickerDate, setMonthPickerDate] = createSignal<Date>()
 
   const items = createMemo(() => {
     const transactions = props.data.transactions.nodes
@@ -52,6 +54,17 @@ export const TransactionsList: Component<{
           onClose={() => setShowingModalForDate(undefined)}
         />
       </Show>
+      <Show when={monthPickerDate()}>
+        <MonthPickerModal
+          isOpen={true}
+          initialDate={monthPickerDate()!}
+          onClose={() => setMonthPickerDate(undefined)}
+          onSelect={(dateFrom, dateUntil) => {
+            props.setFilterValue("dateFrom", stripTime(dateFrom))
+            props.setFilterValue("dateUntil", stripTime(dateUntil))
+          }}
+        />
+      </Show>
       <Show when={items().length === 0}>
         <div class="px-4 italic">No transactions found.</div>
       </Show>
@@ -60,7 +73,6 @@ export const TransactionsList: Component<{
           const newMonth = () =>
             index() === 0 ||
             formatDate(items()[index() - 1].date, "monthYear") !== formatDate(date, "monthYear")
-          const [dateFrom, dateUntil] = monthRange(new Date(date))
 
           const newTransactionDate = new Date(date)
           newTransactionDate.setHours(12, 0, 0, 0)
@@ -79,10 +91,7 @@ export const TransactionsList: Component<{
                     <div class="absolute left-4 right-4 top-1/2 border-b border-gray-200" />
                     <button
                       type="button"
-                      onClick={() => {
-                        props.setFilterValue("dateFrom", stripTime(dateFrom))
-                        props.setFilterValue("dateUntil", stripTime(dateUntil))
-                      }}
+                      onClick={() => setMonthPickerDate(new Date(date))}
                       class="relative mx-2 inline-block rounded-sm bg-gray-50 py-1 pl-2 pr-4 text-base font-semibold text-gray-700"
                     >
                       {formatDate(date, "monthYear")}
