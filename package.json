@@ -12,7 +12,7 @@
   },
   "scripts": {
     "dev": "concurrently -n api,web,codegen -c blue,magenta,yellow 'bun run dev:api' 'bun run dev:web' 'bun run dev:codegen'",
-    "dev:api": "rails s -p 3030",
+    "dev:api": "rails s -p 3030 -b 0.0.0.0",
     "dev:web": "cd web && bun run watch",
     "dev:codegen": "cd web && bun graphql-codegen --watch",
     "dev:test": "cd api && ENV_TYPE=test PORT=4445 bun run bin/dev-test.ts",
