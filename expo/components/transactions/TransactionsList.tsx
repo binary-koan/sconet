@@ -1,5 +1,5 @@
 import { useMemo } from "react"
-import { FlatList, Pressable, View } from "react-native"
+import { FlatList, Pressable, RefreshControl, View } from "react-native"
 import { Text } from "@/components/ui/text"
 import { Separator } from "@/components/ui/separator"
 import { TransactionItem } from "./TransactionItem"
@@ -11,6 +11,8 @@ interface TransactionsListProps {
   isFiltering?: boolean
   onFetchMore?: () => void
   isLoadingMore?: boolean
+  onRefresh?: () => void
+  isRefreshing?: boolean
 }
 
 interface DateGroup {
@@ -25,6 +27,8 @@ export function TransactionsList({
   isFiltering = false,
   onFetchMore,
   isLoadingMore,
+  onRefresh,
+  isRefreshing = false
 }: TransactionsListProps) {
   const groupedItems = useMemo(() => {
     const transactions = data.transactions.nodes
@@ -56,7 +60,7 @@ export function TransactionsList({
           date: new Date(date),
           dateString,
           transactions: transactionsOnDate,
-          isNewMonth,
+          isNewMonth
         })
       }
     }
@@ -69,13 +73,11 @@ export function TransactionsList({
       <View>
         {/* Month header */}
         {item.isNewMonth && (
-          <View
-            className={`bg-body-bg px-4 pb-2 pt-4 ${index === 0 ? "" : "mt-4"}`}
-          >
+          <View className={`bg-body-bg px-4 pb-2 pt-4 ${index === 0 ? "" : "mt-4"}`}>
             <View className="relative flex-row items-center">
               <Separator className="absolute left-0 right-0" />
               <View className="bg-body-bg pr-3">
-                <Text className="text-base font-semibold text-foreground">
+                <Text className="text-foreground text-base font-semibold">
                   {formatDate(item.date, "monthYear")}
                 </Text>
               </View>
@@ -85,9 +87,7 @@ export function TransactionsList({
 
         {/* Date label */}
         <View className="bg-body-bg px-4 pb-2 pt-4">
-          <Text className="text-sm text-muted">
-            {formatDate(item.date, "fullDateWithoutYear")}
-          </Text>
+          <Text className="text-muted text-sm">{formatDate(item.date, "fullDateWithoutYear")}</Text>
         </View>
 
         {/* Transactions for this date */}
@@ -102,7 +102,7 @@ export function TransactionsList({
           </View>
         ) : (
           <View className="bg-background px-4 py-3">
-            <Text className="text-sm italic text-muted">No transactions</Text>
+            <Text className="text-muted text-sm italic">No transactions</Text>
           </View>
         )}
       </View>
@@ -117,11 +117,9 @@ export function TransactionsList({
         <Pressable
           onPress={onFetchMore}
           disabled={isLoadingMore}
-          className="mx-4 items-center rounded-lg bg-background py-3"
+          className="bg-background mx-4 items-center rounded-lg py-3"
         >
-          <Text className="text-sm text-accent">
-            {isLoadingMore ? "Loading..." : "Fetch more"}
-          </Text>
+          <Text className="text-accent text-sm">{isLoadingMore ? "Loading..." : "Fetch more"}</Text>
         </Pressable>
       </View>
     )
@@ -129,7 +127,7 @@ export function TransactionsList({
 
   const renderEmpty = () => (
     <View className="px-4 py-8">
-      <Text className="text-center italic text-muted">No transactions found.</Text>
+      <Text className="text-muted text-center italic">No transactions found.</Text>
     </View>
   )
 
@@ -142,6 +140,9 @@ export function TransactionsList({
       ListEmptyComponent={renderEmpty}
       contentContainerStyle={{ paddingBottom: 100 }}
       showsVerticalScrollIndicator={false}
+      refreshControl={
+        onRefresh ? <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} /> : undefined
+      }
     />
   )
 }

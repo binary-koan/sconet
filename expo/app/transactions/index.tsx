@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { ActivityIndicator, View } from "react-native"
 import { Stack } from "expo-router"
 import { Text } from "@/components/ui/text"
@@ -6,7 +7,8 @@ import { useTransactionsQuery } from "@/lib/graphql/queries"
 import { TransactionsQuery } from "@/lib/graphql/types"
 
 export default function TransactionsScreen() {
-  const { data, loading, error, fetchMore } = useTransactionsQuery({
+  const [isRefreshing, setIsRefreshing] = useState(false)
+  const { data, loading, error, fetchMore, refetch } = useTransactionsQuery({
     limit: 50
   })
 
@@ -32,6 +34,12 @@ export default function TransactionsScreen() {
     })
   }
 
+  const handleRefresh = async () => {
+    setIsRefreshing(true)
+    await refetch()
+    setIsRefreshing(false)
+  }
+
   return (
     <>
       <Stack.Screen
@@ -51,7 +59,12 @@ export default function TransactionsScreen() {
             </Text>
           </View>
         ) : data ? (
-          <TransactionsList data={data} onFetchMore={handleFetchMore} />
+          <TransactionsList
+            data={data}
+            onFetchMore={handleFetchMore}
+            onRefresh={handleRefresh}
+            isRefreshing={isRefreshing}
+          />
         ) : null}
       </View>
     </>
