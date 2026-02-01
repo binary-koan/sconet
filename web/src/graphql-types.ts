@@ -148,6 +148,7 @@ export type Category = {
   budgets: Array<CategoryBudget>;
   color: Scalars['String']['output'];
   createdAt: Scalars['ISO8601DateTime']['output'];
+  emoji?: Maybe<Scalars['String']['output']>;
   hasTransactions: Scalars['Boolean']['output'];
   icon: Scalars['String']['output'];
   id: Scalars['ID']['output'];
@@ -242,6 +243,7 @@ export type CategoryInput = {
   budgetCents?: InputMaybe<Scalars['Int']['input']>;
   budgetCurrencyId?: InputMaybe<Scalars['ID']['input']>;
   color?: InputMaybe<Scalars['String']['input']>;
+  emoji?: InputMaybe<Scalars['String']['input']>;
   icon?: InputMaybe<Scalars['String']['input']>;
   isRegular?: InputMaybe<Scalars['Boolean']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
@@ -908,7 +910,7 @@ export type UserInput = {
 
 export type FullAccountFragment = { __typename?: 'Account', id: string, name: string, hasTransactions: boolean, favourite: boolean, sortOrder: number, currency: { __typename?: 'Currency', id: string, code: string } };
 
-export type FullCategoryFragment = { __typename?: 'Category', id: string, name: string, color: string, icon: string, hasTransactions: boolean, isRegular: boolean, sortOrder: number, createdAt: any, updatedAt: any, budget?: { __typename?: 'CategoryBudget', budget: { __typename?: 'Money', amountDecimal: number, formatted: string }, currency: { __typename?: 'Currency', id: string } } | null };
+export type FullCategoryFragment = { __typename?: 'Category', id: string, name: string, color: string, icon: string, emoji?: string | null, hasTransactions: boolean, isRegular: boolean, sortOrder: number, createdAt: any, updatedAt: any, budget?: { __typename?: 'CategoryBudget', budget: { __typename?: 'Money', amountDecimal: number, formatted: string }, currency: { __typename?: 'Currency', id: string } } | null };
 
 export type FullCurrencyFragment = { __typename?: 'Currency', id: string, code: string, name: string, symbol: string, decimalDigits: number };
 
@@ -1157,7 +1159,7 @@ export type CategoriesQueryVariables = Exact<{
 }>;
 
 
-export type CategoriesQuery = { __typename?: 'Query', categories: Array<{ __typename?: 'Category', id: string, name: string, color: string, icon: string, hasTransactions: boolean, isRegular: boolean, sortOrder: number, createdAt: any, updatedAt: any, budget?: { __typename?: 'CategoryBudget', budget: { __typename?: 'Money', amountDecimal: number, formatted: string }, currency: { __typename?: 'Currency', id: string } } | null }> };
+export type CategoriesQuery = { __typename?: 'Query', categories: Array<{ __typename?: 'Category', id: string, name: string, color: string, icon: string, emoji?: string | null, hasTransactions: boolean, isRegular: boolean, sortOrder: number, createdAt: any, updatedAt: any, budget?: { __typename?: 'CategoryBudget', budget: { __typename?: 'Money', amountDecimal: number, formatted: string }, currency: { __typename?: 'Currency', id: string } } | null }> };
 
 export type CurrenciesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1187,7 +1189,7 @@ export type GetCategoryQueryVariables = Exact<{
 }>;
 
 
-export type GetCategoryQuery = { __typename?: 'Query', category?: { __typename?: 'Category', id: string, name: string, color: string, icon: string, hasTransactions: boolean, isRegular: boolean, sortOrder: number, createdAt: any, updatedAt: any, budget?: { __typename?: 'CategoryBudget', budget: { __typename?: 'Money', amountDecimal: number, formatted: string }, currency: { __typename?: 'Currency', id: string } } | null } | null };
+export type GetCategoryQuery = { __typename?: 'Query', category?: { __typename?: 'Category', id: string, name: string, color: string, icon: string, emoji?: string | null, hasTransactions: boolean, isRegular: boolean, sortOrder: number, createdAt: any, updatedAt: any, budget?: { __typename?: 'CategoryBudget', budget: { __typename?: 'Money', amountDecimal: number, formatted: string }, currency: { __typename?: 'Currency', id: string } } | null } | null };
 
 export type GetCurrencyQueryVariables = Exact<{
   id: Scalars['ID']['input'];

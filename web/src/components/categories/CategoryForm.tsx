@@ -3,6 +3,7 @@ import { repeat, upperFirst } from "lodash"
 import { Component, JSX, Show } from "solid-js"
 import { CreateCategoryMutationVariables, FullCategoryFragment } from "../../graphql-types"
 import { useCurrenciesQuery } from "../../graphql/queries/currenciesQuery"
+import { CATEGORY_BACKGROUND_COLORS, CategoryColor } from "../../utils/categoryColors"
 import { Button } from "../base/Button"
 import { InputAddon } from "../base/InputGroup"
 import FormIconPicker from "../forms/FormIconPicker"
@@ -11,12 +12,12 @@ import FormInputGroup from "../forms/FormInputGroup"
 import FormOptionButtons from "../forms/FormOptionButtons"
 import FormSwitch from "../forms/FormSwitch"
 import { toCents } from "../transactions/AmountEditor"
-import { CATEGORY_BACKGROUND_COLORS, CategoryColor } from "../../utils/categoryColors"
 
 type CategoryFormValues = {
   name: string
   color: string
   icon: string
+  emoji?: string
   budget?: string
   budgetCurrencyId?: string
   isRegular?: boolean
@@ -33,6 +34,7 @@ const CategoryForm: Component<{
       name: props.category?.name,
       color: props.category?.color,
       icon: props.category?.icon,
+      emoji: props.category?.emoji || "",
       budget: props.category?.budget?.budget.amountDecimal.toString(),
       budgetCurrencyId: props.category?.budget?.currency.id || "",
       isRegular: props.category?.isRegular != null ? props.category.isRegular : true
@@ -42,10 +44,11 @@ const CategoryForm: Component<{
   const selectedCurrency = () =>
     currencies()?.currencies.find((currency) => currency.id === getValue(form, "budgetCurrencyId"))
 
-  const onSave = ({ budget, budgetCurrencyId, ...data }: CategoryFormValues) => {
+  const onSave = ({ budget, budgetCurrencyId, emoji, ...data }: CategoryFormValues) => {
     props.onSave(
       {
         ...data,
+        emoji: emoji || null,
         budgetCurrencyId: budgetCurrencyId || null,
         budgetCents: budget ? toCents(budget, selectedCurrency()) : null,
         isRegular: Boolean(data.isRegular)
@@ -87,6 +90,8 @@ const CategoryForm: Component<{
       />
 
       <FormIconPicker of={form} name="icon" label="Icon" />
+
+      <FormInput of={form} label="Emoji" name="emoji" placeholder="e.g. 🛒" />
 
       <FormOptionButtons
         of={form}

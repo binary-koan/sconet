@@ -30,7 +30,7 @@ const LISTING_TRANSACTION_FRAGMENT = gql`
       id
       name
       color
-      icon
+      emoji
     }
     account {
       id
@@ -53,8 +53,8 @@ const LISTING_TRANSACTION_FRAGMENT = gql`
       category {
         id
         name
-        icon
         color
+        emoji
       }
       includeInReports
     }

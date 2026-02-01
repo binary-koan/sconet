@@ -5,6 +5,7 @@ module Types
     argument :name, String, required: false
     argument :color, String, required: false
     argument :icon, String, required: false
+    argument :emoji, String, required: false
     argument :is_regular, Boolean, required: false
     argument :budget_cents, Integer, required: false
     argument :budget_currency_id, ID, required: false

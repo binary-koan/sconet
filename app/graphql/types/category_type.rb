@@ -6,6 +6,7 @@ module Types
     field :name, String, null: false
     field :color, String, null: false
     field :icon, String, null: false
+    field :emoji, String, null: true
     field :is_regular, Boolean, null: false
     field :sort_order, Integer, null: false
     field :has_transactions, Boolean, null: false

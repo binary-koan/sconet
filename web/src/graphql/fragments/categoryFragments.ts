@@ -6,6 +6,7 @@ export const FullCategoryFragment = gql`
     name
     color
     icon
+    emoji
     hasTransactions
     budget(date: $today) {
       budget {

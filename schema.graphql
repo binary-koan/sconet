@@ -171,6 +171,7 @@ type Category {
   budgets: [CategoryBudget!]!
   color: String!
   createdAt: ISO8601DateTime!
+  emoji: String
   hasTransactions: Boolean!
   icon: String!
   id: ID!
@@ -276,6 +277,7 @@ input CategoryInput {
   budgetCents: Int
   budgetCurrencyId: ID
   color: String
+  emoji: String
   icon: String
   isRegular: Boolean
   name: String
