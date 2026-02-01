@@ -29,3 +29,67 @@ export const LOGIN_MUTATION = gql`
 export function useLoginMutation() {
   return useMutation<LoginResult, LoginInput>(LOGIN_MUTATION)
 }
+
+// Transaction Create Mutation
+export interface TransactionInput {
+  shop: string
+  memo?: string
+  amountCents: number
+  currencyId?: string
+  categoryId?: string
+  accountId?: string
+  date?: string
+  includeInReports?: boolean
+}
+
+export interface TransactionCreateInput {
+  transactionInput: TransactionInput
+}
+
+export interface TransactionCreateResult {
+  transactionCreate: {
+    transaction: {
+      id: string
+      shop: string
+      memo: string
+      date: string
+      amount: {
+        amountDecimal: number
+        formatted: string
+      }
+      category: {
+        id: string
+        name: string
+        color: string
+        emoji: string | null
+      } | null
+    }
+  }
+}
+
+export const TRANSACTION_CREATE_MUTATION = gql`
+  mutation TransactionCreate($transactionInput: TransactionInput!) {
+    transactionCreate(input: { transactionInput: $transactionInput }) {
+      transaction {
+        id
+        shop
+        memo
+        date
+        amount {
+          amountDecimal
+          formatted
+        }
+        category {
+          id
+          name
+          color
+          emoji
+        }
+      }
+    }
+  }
+`
+
+export function useTransactionCreateMutation() {
+  return useMutation<TransactionCreateResult, TransactionCreateInput>(TRANSACTION_CREATE_MUTATION)
+}

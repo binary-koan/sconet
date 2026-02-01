@@ -22,10 +22,10 @@ export function CategoryIndicator({
   isIncome = false
 }: CategoryIndicatorProps) {
   const getBackgroundColor = () => {
-    if (!includeInReports || isSplit) return "bg-gray-500/40"
-    if (isIncome) return "bg-gray-500/40"
-    if (!color) return "bg-gray-500/40"
-    return CATEGORY_BACKGROUND_COLORS[color as CategoryColor] || "bg-gray-500/40"
+    if (!includeInReports || isSplit) return "bg-muted"
+    if (isIncome) return "bg-muted"
+    if (!color) return "bg-muted"
+    return CATEGORY_BACKGROUND_COLORS[color as CategoryColor] || "bg-muted"
   }
 
   const getSpecialIcon = () => {

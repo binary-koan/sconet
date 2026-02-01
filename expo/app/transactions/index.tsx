@@ -1,13 +1,15 @@
-import { useState } from "react"
-import { ActivityIndicator, View } from "react-native"
-import { Stack } from "expo-router"
-import { Text } from "@/components/ui/text"
+import { NewTransactionForm } from "@/components/transactions/NewTransactionForm"
 import { TransactionsList } from "@/components/transactions/TransactionsList"
+import { Text } from "@/components/ui/text"
 import { useTransactionsQuery } from "@/lib/graphql/queries"
 import { TransactionsQuery } from "@/lib/graphql/types"
+import { Stack } from "expo-router"
+import { useState } from "react"
+import { ActivityIndicator, Pressable, View } from "react-native"
 
 export default function TransactionsScreen() {
   const [isRefreshing, setIsRefreshing] = useState(false)
+  const [showNewTransactionForm, setShowNewTransactionForm] = useState(false)
   const { data, loading, error, fetchMore, refetch } = useTransactionsQuery({
     limit: 50
   })
@@ -66,6 +68,20 @@ export default function TransactionsScreen() {
             isRefreshing={isRefreshing}
           />
         ) : null}
+
+        {/* Floating Action Button */}
+        <Pressable
+          onPress={() => setShowNewTransactionForm(true)}
+          className="bg-accent absolute bottom-6 right-6 h-14 w-14 items-center justify-center rounded-full shadow-lg"
+        >
+          <Text className="text-accent-foreground text-2xl font-medium">+</Text>
+        </Pressable>
+
+        {/* New Transaction Form Sheet */}
+        <NewTransactionForm
+          open={showNewTransactionForm}
+          onOpenChange={setShowNewTransactionForm}
+        />
       </View>
     </>
   )

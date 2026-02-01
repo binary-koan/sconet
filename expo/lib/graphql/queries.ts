@@ -81,3 +81,59 @@ export function useTransactionsQuery(variables?: TransactionsQueryVariables) {
     variables
   })
 }
+
+// Categories Query
+export interface CategoriesQuery {
+  categories: {
+    id: string
+    name: string
+    color: string
+    emoji: string | null
+  }[]
+}
+
+export const CATEGORIES_QUERY = gql`
+  query Categories {
+    categories {
+      id
+      name
+      color
+      emoji
+    }
+  }
+`
+
+export function useCategoriesQuery() {
+  return useQuery<CategoriesQuery>(CATEGORIES_QUERY)
+}
+
+// Accounts Query
+export interface AccountsQuery {
+  accounts: {
+    id: string
+    name: string
+    currency: {
+      id: string
+      code: string
+      symbol: string
+    }
+  }[]
+}
+
+export const ACCOUNTS_QUERY = gql`
+  query Accounts {
+    accounts {
+      id
+      name
+      currency {
+        id
+        code
+        symbol
+      }
+    }
+  }
+`
+
+export function useAccountsQuery() {
+  return useQuery<AccountsQuery>(ACCOUNTS_QUERY)
+}

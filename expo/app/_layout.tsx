@@ -1,10 +1,10 @@
 import { ApolloProvider } from "@apollo/client/react"
 import { PortalHost } from "@rn-primitives/portal"
 import { Stack } from "expo-router"
+import { useCSSVariable } from "uniwind"
 import { apolloClient } from "../lib/apollo"
 import { AuthProvider } from "../lib/AuthProvider"
 import "./global.css"
-import { useCSSVariable } from "uniwind"
 
 export default function RootLayout() {
   const [backgroundColor, foregroundColor] = useCSSVariable([
@@ -17,8 +17,8 @@ export default function RootLayout() {
       <AuthProvider>
         <Stack
           screenOptions={{
-            headerStyle: { backgroundColor },
-            headerTintColor: foregroundColor
+            headerStyle: { backgroundColor: backgroundColor as string },
+            headerTintColor: foregroundColor as string
           }}
         />
         <PortalHost />

@@ -61,7 +61,7 @@
       --color-foreground: var(--color-white);
       --color-primary: var(--color-white);
       --color-primary-foreground: var(--color-zinc-900);
-      --color-muted: var(--color-zinc-400);
+      --color-muted: var(--color-zinc-700);
       --color-muted-foreground: var(--color-zinc-500);
       --color-accent: var(--color-violet-600);
       --color-accent-foreground: var(--color-white);
