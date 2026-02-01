@@ -1,19 +1,15 @@
-import { useState, useEffect } from "react"
-import {
-  View,
-  KeyboardAvoidingView,
-  Platform,
-  ActivityIndicator,
-} from "react-native"
-import { Stack, useRouter } from "expo-router"
-import { Text } from "@/components/ui/text"
-import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Text } from "@/components/ui/text"
+import { getLastUserEmail, setLoginToken } from "@/lib/auth"
+import { useAuth } from "@/lib/AuthProvider"
 import { useLoginMutation } from "@/lib/graphql/mutations"
-import { setLoginToken, getLastUserEmail } from "@/lib/auth"
+import { Stack } from "expo-router"
+import { useEffect, useState } from "react"
+import { ActivityIndicator, KeyboardAvoidingView, Platform, View } from "react-native"
 
 export default function LoginScreen() {
-  const router = useRouter()
+  const { refreshAuth } = useAuth()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
@@ -36,17 +32,16 @@ export default function LoginScreen() {
 
     try {
       const result = await login({
-        variables: { email: email.trim(), password },
+        variables: { email: email.trim(), password }
       })
 
       if (result.data?.login.user) {
         const { token, email: userEmail } = result.data.login.user
         await setLoginToken(token, userEmail)
-        router.replace("/transactions")
+        await refreshAuth()
       }
     } catch (error) {
-      const message =
-        error instanceof Error ? error.message : "Login failed. Please try again."
+      const message = error instanceof Error ? error.message : "Login failed. Please try again."
       setErrorMessage(message)
     }
   }
@@ -56,28 +51,22 @@ export default function LoginScreen() {
       <Stack.Screen
         options={{
           title: "Sign In",
-          headerShown: false,
+          headerShown: false
         }}
       />
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        className="flex-1 bg-body-bg"
+        className="bg-body-bg flex-1"
       >
         <View className="flex-1 justify-center px-6">
           <View className="mb-8">
-            <Text className="text-center text-3xl font-bold text-foreground">
-              Sconet
-            </Text>
-            <Text className="mt-2 text-center text-muted">
-              Sign in to your account
-            </Text>
+            <Text className="text-foreground text-center text-3xl font-bold">Sconet</Text>
+            <Text className="text-muted-foreground mt-2 text-center">Sign in to your account</Text>
           </View>
 
           <View className="gap-4">
             <View>
-              <Text className="mb-1.5 text-sm font-medium text-foreground">
-                Email
-              </Text>
+              <Text className="text-foreground mb-1.5 text-sm font-medium">Email</Text>
               <Input
                 value={email}
                 onChangeText={setEmail}
@@ -91,9 +80,7 @@ export default function LoginScreen() {
             </View>
 
             <View>
-              <Text className="mb-1.5 text-sm font-medium text-foreground">
-                Password
-              </Text>
+              <Text className="text-foreground mb-1.5 text-sm font-medium">Password</Text>
               <Input
                 value={password}
                 onChangeText={setPassword}
@@ -107,21 +94,11 @@ export default function LoginScreen() {
             </View>
 
             {errorMessage && (
-              <Text className="text-center text-sm text-destructive">
-                {errorMessage}
-              </Text>
+              <Text className="text-destructive text-center text-sm">{errorMessage}</Text>
             )}
 
-            <Button
-              onPress={handleLogin}
-              disabled={loading}
-              className="mt-2"
-            >
-              {loading ? (
-                <ActivityIndicator size="small" color="#fff" />
-              ) : (
-                <Text>Sign In</Text>
-              )}
+            <Button onPress={handleLogin} disabled={loading} className="mt-2">
+              {loading ? <ActivityIndicator size="small" color="#fff" /> : <Text>Sign In</Text>}
             </Button>
           </View>
         </View>

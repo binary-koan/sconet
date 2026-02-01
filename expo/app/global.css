@@ -2,28 +2,28 @@
 @import "uniwind";
 
 @source "../components";
+@source "../lib";
 
 @theme {
   /* Keep in sync with the `@variant light` block below. prettier-plugin-tailwindcss only reads the variables here, but Uniwind expects them to be declared per theme. */
-  --color-body-bg: var(--color-gray-50);
+  --color-body-bg: var(--color-zinc-50);
   --color-background: var(--color-white);
-  --color-foreground: var(--color-gray-900);
-  --color-primary: var(--color-gray-900);
+  --color-foreground: var(--color-zinc-900);
+  --color-primary: var(--color-zinc-900);
   --color-primary-foreground: var(--color-white);
-  --color-muted: var(--color-gray-400);
+  --color-muted: var(--color-zinc-200);
+  --color-muted-foreground: var(--color-zinc-600);
   --color-accent: var(--color-violet-700);
   --color-accent-foreground: var(--color-white);
   --color-destructive: var(--color-red-700);
   --color-destructive-foreground: var(--color-white);
-  --color-border: var(--color-gray-200);
-
+  --color-border: var(--color-zinc-200);
   --color-card: var(--color-background);
   --color-card-foreground: var(--color-foreground);
   --color-popover: var(--color-background);
   --color-popover-foreground: var(--color-foreground);
   --color-secondary: var(--color-primary);
   --color-secondary-foreground: var(--color-primary-foreground);
-  --color-muted-foreground: var(--color-muted);
   --color-input: var(--color-border);
   --color-ring: var(--color-accent);
 
@@ -33,31 +33,49 @@
 @layer theme {
   :root {
     @variant light {
-      --color-body-bg: var(--color-gray-50);
+      --color-body-bg: var(--color-zinc-50);
       --color-background: var(--color-white);
-      --color-foreground: var(--color-gray-900);
-      --color-primary: var(--color-gray-900);
+      --color-foreground: var(--color-zinc-900);
+      --color-primary: var(--color-zinc-900);
       --color-primary-foreground: var(--color-white);
-      --color-muted: var(--color-gray-400);
+      --color-muted: var(--color-zinc-200);
+      --color-muted-foreground: var(--color-zinc-500);
       --color-accent: var(--color-violet-700);
       --color-accent-foreground: var(--color-white);
       --color-destructive: var(--color-red-700);
       --color-destructive-foreground: var(--color-white);
-      --color-border: var(--color-gray-200);
+      --color-border: var(--color-zinc-200);
+      --color-card: var(--color-background);
+      --color-card-foreground: var(--color-foreground);
+      --color-popover: var(--color-background);
+      --color-popover-foreground: var(--color-foreground);
+      --color-secondary: var(--color-primary);
+      --color-secondary-foreground: var(--color-primary-foreground);
+      --color-input: var(--color-border);
+      --color-ring: var(--color-accent);
     }
 
     @variant dark {
-      --color-body-bg: var(--color-gray-950);
-      --color-background: var(--color-gray-900);
+      --color-body-bg: var(--color-zinc-950);
+      --color-background: var(--color-zinc-900);
       --color-foreground: var(--color-white);
       --color-primary: var(--color-white);
-      --color-primary-foreground: var(--color-gray-900);
-      --color-muted: var(--color-gray-400);
+      --color-primary-foreground: var(--color-zinc-900);
+      --color-muted: var(--color-zinc-400);
+      --color-muted-foreground: var(--color-zinc-500);
       --color-accent: var(--color-violet-600);
       --color-accent-foreground: var(--color-white);
       --color-destructive: var(--color-red-600);
       --color-destructive-foreground: var(--color-white);
-      --color-border: var(--color-gray-700);
+      --color-border: var(--color-zinc-700);
+      --color-card: var(--color-background);
+      --color-card-foreground: var(--color-foreground);
+      --color-popover: var(--color-background);
+      --color-popover-foreground: var(--color-foreground);
+      --color-secondary: var(--color-primary);
+      --color-secondary-foreground: var(--color-primary-foreground);
+      --color-input: var(--color-border);
+      --color-ring: var(--color-accent);
     }
   }
 }

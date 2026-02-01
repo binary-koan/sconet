@@ -1,18 +1,20 @@
-import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from "react"
-import { useRouter, useSegments, useRootNavigationState } from "expo-router"
-import { isLoggedIn, clearAuth } from "./auth"
+import { useRootNavigationState, useRouter, useSegments } from "expo-router"
+import { createContext, ReactNode, useCallback, useContext, useEffect, useState } from "react"
 import { setAuthErrorCallback } from "./apollo"
+import { clearAuth, isLoggedIn } from "./auth"
 
 interface AuthContextType {
   isAuthenticated: boolean
   isLoading: boolean
   signOut: () => Promise<void>
+  refreshAuth: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType>({
   isAuthenticated: false,
   isLoading: true,
-  signOut: async () => {}
+  signOut: async () => {},
+  refreshAuth: async () => {}
 })
 
 export function useAuth() {
@@ -42,7 +44,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     })
   }, [])
 
-  const checkAuth = async () => {
+  const checkAuth = useCallback(async () => {
     try {
       const loggedIn = await isLoggedIn()
       setIsAuthenticated(loggedIn)
@@ -51,19 +53,21 @@ export function AuthProvider({ children }: AuthProviderProps) {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [])
 
   // Handle navigation based on auth state
   useEffect(() => {
     if (!navigationState?.key || isLoading) return
 
-    const inAuthGroup = segments[0] === "login"
+    const currentSegment = segments[0]
+    const onLoginPage = currentSegment === "login"
+    const onIndexPage = !currentSegment // index page has no segment
 
-    if (!isAuthenticated && !inAuthGroup) {
+    if (!isAuthenticated && !onLoginPage) {
       // Redirect to login if not authenticated and not on login page
       router.replace("/login")
-    } else if (isAuthenticated && inAuthGroup) {
-      // Redirect to transactions if authenticated and on login page
+    } else if (isAuthenticated && (onLoginPage || onIndexPage)) {
+      // Redirect to transactions if authenticated and on login or index page
       router.replace("/transactions")
     }
   }, [isAuthenticated, segments, isLoading, navigationState?.key])
@@ -79,7 +83,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
       value={{
         isAuthenticated,
         isLoading,
-        signOut
+        signOut,
+        refreshAuth: checkAuth
       }}
     >
       {children}

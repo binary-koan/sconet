@@ -71,30 +71,35 @@ export function TransactionItem({ transaction, parent }: TransactionItemProps) {
           emoji={transaction.category?.emoji}
           includeInReports={includeInReports}
           isIncome={isIncome}
-          isSplit={!!parent}
+          isSplit={!!transaction.splitTo?.length}
         />
 
         <View className="ml-3 min-w-0 flex-1">
           <Text
-            className={cn("text-sm", !includeInReports && "text-muted line-through")}
+            className={cn("text-sm", !includeInReports && "text-muted-foreground line-through")}
             numberOfLines={1}
           >
             {transaction.shop}
-            {transaction.memo && <Text className="text-muted"> – {transaction.memo}</Text>}
+            {transaction.memo && (
+              <Text className="text-muted-foreground"> – {transaction.memo}</Text>
+            )}
           </Text>
         </View>
 
         <View className="ml-2 items-end">
-          <Text className={cn("text-sm", !includeInReports && "text-muted line-through")}>
+          <Text
+            className={cn("text-sm", !includeInReports && "text-muted-foreground line-through")}
+          >
             {transaction.amount?.formatted ?? "Pending"}
           </Text>
           {transaction.shopAmount && (
-            <Text className="text-muted text-xs">{transaction.shopAmount.formatted}</Text>
+            <Text className="text-muted-foreground text-xs">
+              {transaction.shopAmount.formatted}
+            </Text>
           )}
         </View>
       </Pressable>
 
-      {/* Render grouped split transactions */}
       {splitTo.map((child, index) => (
         <Pressable
           key={`${child.category?.id || "uncategorized"}-${index}`}
@@ -110,11 +115,11 @@ export function TransactionItem({ transaction, parent }: TransactionItemProps) {
             isIncome={isIncome}
           />
 
-          <Text className="text-muted min-w-0 flex-1 text-sm" numberOfLines={1}>
+          <Text className="text-muted-foreground min-w-0 flex-1 text-sm" numberOfLines={1}>
             {child.memos || child.category?.name || "Uncategorized"}
           </Text>
 
-          <View className="ml-2 h-6 w-6 items-center justify-center rounded-full bg-gray-200">
+          <View className="bg-muted ml-2 h-6 w-6 items-center justify-center rounded-full">
             <Text className="text-xs">{child.count}</Text>
           </View>
         </Pressable>

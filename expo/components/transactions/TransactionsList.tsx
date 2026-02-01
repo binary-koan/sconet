@@ -1,10 +1,10 @@
+import { Separator } from "@/components/ui/separator"
+import { Text } from "@/components/ui/text"
+import { formatDate, stripTime } from "@/lib/formatters"
+import { Transaction, TransactionsQuery } from "@/lib/graphql/types"
 import { useMemo } from "react"
 import { FlatList, Pressable, RefreshControl, View } from "react-native"
-import { Text } from "@/components/ui/text"
-import { Separator } from "@/components/ui/separator"
 import { TransactionItem } from "./TransactionItem"
-import { Transaction, TransactionsQuery } from "@/lib/graphql/types"
-import { formatDate, stripTime } from "@/lib/formatters"
 
 interface TransactionsListProps {
   data: TransactionsQuery
@@ -87,7 +87,9 @@ export function TransactionsList({
 
         {/* Date label */}
         <View className="bg-body-bg px-4 pb-2 pt-4">
-          <Text className="text-muted text-sm">{formatDate(item.date, "fullDateWithoutYear")}</Text>
+          <Text className="text-muted-foreground text-sm">
+            {formatDate(item.date, "fullDateWithoutYear")}
+          </Text>
         </View>
 
         {/* Transactions for this date */}
@@ -101,8 +103,8 @@ export function TransactionsList({
             ))}
           </View>
         ) : (
-          <View className="bg-background px-4 py-3">
-            <Text className="text-muted text-sm italic">No transactions</Text>
+          <View className="px-4 py-3">
+            <Text className="text-muted-foreground text-sm italic">No transactions</Text>
           </View>
         )}
       </View>
@@ -127,7 +129,7 @@ export function TransactionsList({
 
   const renderEmpty = () => (
     <View className="px-4 py-8">
-      <Text className="text-muted text-center italic">No transactions found.</Text>
+      <Text className="text-muted-foreground text-center italic">No transactions found.</Text>
     </View>
   )
 

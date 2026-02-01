@@ -1,6 +1,6 @@
-import { View } from "react-native"
-import { Stack, useLocalSearchParams } from "expo-router"
 import { Text } from "@/components/ui/text"
+import { Stack, useLocalSearchParams } from "expo-router"
+import { View } from "react-native"
 
 export default function TransactionDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>()
@@ -9,16 +9,14 @@ export default function TransactionDetailScreen() {
     <>
       <Stack.Screen
         options={{
-          title: "Transaction",
+          title: "Transaction"
         }}
       />
-      <View className="flex-1 items-center justify-center bg-body-bg px-4">
-        <Text className="text-center text-muted">
+      <View className="bg-body-bg flex-1 items-center justify-center px-4">
+        <Text className="text-muted-foreground text-center">
           Transaction detail view for ID: {id}
         </Text>
-        <Text className="mt-2 text-center text-sm text-muted">
-          (Coming soon)
-        </Text>
+        <Text className="text-muted-foreground mt-2 text-center text-sm">(Coming soon)</Text>
       </View>
     </>
   )
