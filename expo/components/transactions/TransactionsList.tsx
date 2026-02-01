@@ -68,7 +68,7 @@ export function TransactionsList({
           <View className="overflow-hidden">
             {item.transactions.map((transaction, idx) => (
               <View key={transaction.id}>
-                {idx > 0 && <Separator className="ml-4" />}
+                {idx > 0 && <Separator />}
                 <TransactionItem transaction={transaction} />
               </View>
             ))}

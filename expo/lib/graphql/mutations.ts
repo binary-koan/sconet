@@ -121,3 +121,37 @@ export const TRANSACTION_UPDATE_MUTATION = gql`
 export function useTransactionUpdateMutation() {
   return useMutation<TransactionUpdateResult, TransactionUpdateInput>(TRANSACTION_UPDATE_MUTATION)
 }
+
+// Transaction Split Mutation
+export interface TransactionSplitItemInput {
+  memo: string
+  categoryId: string | null
+  amountCents: number
+}
+
+export interface TransactionSplitInput {
+  id: string
+  splits: TransactionSplitItemInput[]
+}
+
+export interface TransactionSplitResult {
+  transactionSplit: {
+    transaction: {
+      id: string
+    }
+  }
+}
+
+export const TRANSACTION_SPLIT_MUTATION = gql`
+  mutation TransactionSplit($id: ID!, $splits: [TransactionSplitItemInput!]!) {
+    transactionSplit(input: { id: $id, splits: $splits }) {
+      transaction {
+        id
+      }
+    }
+  }
+`
+
+export function useTransactionSplitMutation() {
+  return useMutation<TransactionSplitResult, TransactionSplitInput>(TRANSACTION_SPLIT_MUTATION)
+}

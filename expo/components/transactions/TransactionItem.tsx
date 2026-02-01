@@ -74,16 +74,16 @@ export function TransactionItem({ transaction, parent }: TransactionItemProps) {
           isSplit={!!transaction.splitTo?.length}
         />
 
-        <View className="ml-3 min-w-0 flex-1">
+        <View className="ml-3 min-w-0 flex-1 flex-row">
           <Text
             className={cn("text-sm", !includeInReports && "text-muted-foreground line-through")}
             numberOfLines={1}
           >
             {transaction.shop}
-            {transaction.memo && (
-              <Text className="text-muted-foreground"> – {transaction.memo}</Text>
-            )}
           </Text>
+          {transaction.memo && (
+            <Text className="text-muted-foreground text-sm"> – {transaction.memo}</Text>
+          )}
         </View>
 
         <View className="ml-2 items-end">
