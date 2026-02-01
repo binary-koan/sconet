@@ -2,11 +2,12 @@ import { AccountPicker } from "@/components/AccountPicker"
 import { CategoryIndicator } from "@/components/CategoryIndicator"
 import { CategoryPicker } from "@/components/CategoryPicker"
 import { DatePicker } from "@/components/DatePicker"
+import { getSplitsForSubmission, SplitForm, SplitGroup } from "@/components/transactions/SplitForm"
 import { Button } from "@/components/ui/button"
 import { Icon } from "@/components/ui/icon"
 import { Input } from "@/components/ui/input"
 import { Text } from "@/components/ui/text"
-import { useTransactionUpdateMutation } from "@/lib/graphql/mutations"
+import { useTransactionSplitMutation, useTransactionUpdateMutation } from "@/lib/graphql/mutations"
 import {
   TRANSACTION_QUERY,
   TRANSACTIONS_QUERY,
@@ -17,9 +18,17 @@ import {
 import { Category } from "@/lib/graphql/types"
 import { cn } from "@/lib/utils"
 import { Stack, useLocalSearchParams } from "expo-router"
-import { EyeIcon, EyeOffIcon } from "lucide-react-native"
+import { EyeIcon, EyeOffIcon, SplitIcon, XIcon } from "lucide-react-native"
 import { useEffect, useMemo, useState } from "react"
-import { ActivityIndicator, Pressable, ScrollView, View } from "react-native"
+import {
+  ActivityIndicator,
+  Modal,
+  Pressable,
+  ScrollView,
+  TouchableOpacity,
+  View
+} from "react-native"
+import { useSafeAreaInsets } from "react-native-safe-area-context"
 
 type Account = {
   id: string
@@ -42,11 +51,13 @@ function parseDate(dateString: string): Date {
 
 export default function TransactionDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>()
+  const insets = useSafeAreaInsets()
 
   const { data, loading, error } = useTransactionQuery({ id })
   const { data: categoriesData } = useCategoriesQuery()
   const { data: accountsData } = useAccountsQuery()
   const [updateTransaction, { loading: updating }] = useTransactionUpdateMutation()
+  const [splitTransaction, { loading: splitting }] = useTransactionSplitMutation()
 
   const categories = useMemo(() => categoriesData?.categories ?? [], [categoriesData?.categories])
   const accounts = useMemo(() => accountsData?.accounts ?? [], [accountsData?.accounts])
@@ -61,6 +72,8 @@ export default function TransactionDetailScreen() {
   const [includeInReports, setIncludeInReports] = useState(true)
 
   const [hasChanges, setHasChanges] = useState(false)
+  const [splitModalOpen, setSplitModalOpen] = useState(false)
+  const [splitGroups, setSplitGroups] = useState<SplitGroup[]>([])
 
   useEffect(() => {
     if (transaction) {
@@ -140,6 +153,105 @@ export default function TransactionDetailScreen() {
   const isIncome = transaction?.amount && transaction.amount.amountDecimal > 0
   const hasSplits = transaction?.splitTo && transaction.splitTo.length > 0
 
+  const splitRemainder = useMemo(() => {
+    if (!transaction?.amount) return 0
+    const total = Math.abs(transaction.amount.amountDecimal)
+    const splitSum = splitGroups.reduce(
+      (acc, group) => acc + group.items.reduce((sum, item) => sum + item.numericAmount, 0),
+      0
+    )
+    return parseFloat((total - splitSum).toFixed(2))
+  }, [transaction?.amount, splitGroups])
+
+  const openSplitModal = () => {
+    if (!transaction) return
+
+    // Convert existing splits to SplitGroup format, grouped by category
+    if (transaction.splitTo && transaction.splitTo.length > 0) {
+      const groupsByCategory = new Map<string | null, SplitGroup>()
+
+      for (const split of transaction.splitTo) {
+        const categoryId = split.category?.id ?? null
+        const existingGroup = groupsByCategory.get(categoryId)
+        const amount = Math.abs(split.amount?.amountDecimal ?? 0)
+
+        const item = {
+          amount: amount.toString(),
+          memo: split.memo ?? "",
+          numericAmount: amount
+        }
+
+        if (existingGroup) {
+          existingGroup.items.push(item)
+        } else {
+          const category = split.category
+            ? categories.find((c) => c.id === split.category!.id) ?? null
+            : null
+          groupsByCategory.set(categoryId, {
+            category,
+            items: [item]
+          })
+        }
+      }
+
+      const groups = Array.from(groupsByCategory.values())
+      // Add empty row to each group and an empty group at the end
+      for (const group of groups) {
+        group.items.push({ amount: "", memo: "", numericAmount: 0 })
+      }
+      groups.push({
+        category: null,
+        items: [{ amount: "", memo: "", numericAmount: 0 }]
+      })
+
+      setSplitGroups(groups)
+    } else {
+      // No existing splits, start fresh
+      setSplitGroups([
+        {
+          category: selectedCategory,
+          items: [{ amount: "", memo: "", numericAmount: 0 }]
+        }
+      ])
+    }
+
+    setSplitModalOpen(true)
+  }
+
+  const handleSplitSubmit = async () => {
+    if (!transaction) return
+
+    const isExpense = transaction.amount && transaction.amount.amountDecimal < 0
+    const decimalDigits = 2
+
+    const splitsToSend = getSplitsForSubmission(
+      splitGroups,
+      splitRemainder,
+      selectedCategory?.id || null,
+      isExpense ?? true,
+      decimalDigits
+    )
+
+    if (splitsToSend.length === 0) return
+
+    try {
+      await splitTransaction({
+        variables: {
+          id: transaction.id,
+          splits: splitsToSend
+        },
+        refetchQueries: [
+          { query: TRANSACTION_QUERY, variables: { id } },
+          { query: TRANSACTIONS_QUERY, variables: { limit: 50 } }
+        ]
+      })
+
+      setSplitModalOpen(false)
+    } catch (error) {
+      console.error("Failed to split transaction:", error)
+    }
+  }
+
   if (loading) {
     return (
       <>
@@ -170,12 +282,19 @@ export default function TransactionDetailScreen() {
         options={{
           title: "Transaction",
           headerRight: () => (
-            <Pressable onPress={toggleIncludeInReports} className="p-2">
-              <Icon
-                as={includeInReports ? EyeIcon : EyeOffIcon}
-                className="size-6 text-foreground"
-              />
-            </Pressable>
+            <View className="flex-row items-center">
+              {!isIncome && (
+                <Pressable onPress={openSplitModal} className="p-2">
+                  <Icon as={SplitIcon} className="size-6 text-foreground" />
+                </Pressable>
+              )}
+              <Pressable onPress={toggleIncludeInReports} className="p-2">
+                <Icon
+                  as={includeInReports ? EyeIcon : EyeOffIcon}
+                  className="size-6 text-foreground"
+                />
+              </Pressable>
+            </View>
           )
         }}
       />
@@ -309,6 +428,50 @@ export default function TransactionDetailScreen() {
           )}
         </View>
       </ScrollView>
+
+      <Modal
+        visible={splitModalOpen}
+        presentationStyle="formSheet"
+        animationType="slide"
+        onRequestClose={() => setSplitModalOpen(false)}
+      >
+        <View className="bg-background flex-1" style={{ paddingBottom: insets.bottom }}>
+          <View className="border-border mb-4 flex-row items-center justify-between border-b px-4 py-4">
+            <Text variant="large">Split Transaction</Text>
+            <TouchableOpacity onPress={() => setSplitModalOpen(false)}>
+              <Icon as={XIcon} className="size-6 text-foreground" />
+            </TouchableOpacity>
+          </View>
+
+          <ScrollView className="flex-1" keyboardShouldPersistTaps="handled">
+            <View className="gap-4 px-4">
+              <View className="flex-row items-center justify-between">
+                <Text variant="large">{shop || "Split Transaction"}</Text>
+                <Text className="text-muted-foreground">
+                  Total: {transaction?.amount?.formatted ?? "Pending"}
+                </Text>
+              </View>
+
+              <SplitForm
+                groups={splitGroups}
+                onGroupsChange={setSplitGroups}
+                remainder={splitRemainder}
+                categories={categories}
+              />
+            </View>
+          </ScrollView>
+
+          <View className="mt-auto gap-2 px-4 py-4">
+            <Button onPress={handleSplitSubmit} disabled={splitting}>
+              {splitting ? (
+                <ActivityIndicator size="small" color="white" />
+              ) : (
+                <Text>Save Split</Text>
+              )}
+            </Button>
+          </View>
+        </View>
+      </Modal>
     </>
   )
 }

@@ -30,7 +30,7 @@ export function CategoryIndicator({
 
   const getSpecialIcon = () => {
     if (isIncome) return "£"
-    if (isSplit) return "↧"
+    if (isSplit) return "⌄"
     if (!includeInReports) return "−"
     return null
   }
@@ -39,7 +39,7 @@ export function CategoryIndicator({
     <View
       className={cn("items-center justify-center rounded-full", getBackgroundColor(), className)}
     >
-      <Text className="text-foreground" style={{ fontSize: iconSize }}>
+      <Text className="text-foreground" style={{ fontSize: iconSize, marginTop: isSplit ? -8 : 0 }}>
         {getSpecialIcon() || emoji || "?"}
       </Text>
     </View>

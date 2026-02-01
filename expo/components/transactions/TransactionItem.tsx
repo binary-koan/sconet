@@ -115,7 +115,7 @@ export function TransactionItem({ transaction, parent }: TransactionItemProps) {
             isIncome={isIncome}
           />
 
-          <Text className="text-muted-foreground min-w-0 flex-1 text-sm" numberOfLines={1}>
+          <Text className="min-w-0 flex-1 text-sm" numberOfLines={1}>
             {child.memos || child.category?.name || "Uncategorized"}
           </Text>
 
