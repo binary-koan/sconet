@@ -27,6 +27,7 @@ export default function TransactionsScreen() {
   const [showNewTransactionForm, setShowNewTransactionForm] = useState(false)
   const [showMonthPicker, setShowMonthPicker] = useState(false)
   const [currentMonth, setCurrentMonth] = useState(() => new Date())
+  const [newTransactionDate, setNewTransactionDate] = useState<Date | undefined>(undefined)
 
   const { dateFrom, dateUntil } = useMemo(() => getMonthRange(currentMonth), [currentMonth])
 
@@ -87,6 +88,10 @@ export default function TransactionsScreen() {
             month={currentMonth}
             onRefresh={handleRefresh}
             isRefreshing={isRefreshing}
+            onDatePress={(date) => {
+              setNewTransactionDate(date)
+              setShowNewTransactionForm(true)
+            }}
           />
         ) : null}
 
@@ -120,7 +125,11 @@ export default function TransactionsScreen() {
 
         <NewTransactionForm
           open={showNewTransactionForm}
-          onOpenChange={setShowNewTransactionForm}
+          onOpenChange={(open) => {
+            setShowNewTransactionForm(open)
+            if (!open) setNewTransactionDate(undefined)
+          }}
+          initialDate={newTransactionDate}
         />
 
         <MonthPickerModal

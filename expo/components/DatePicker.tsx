@@ -128,12 +128,7 @@ export function DatePicker({ value, onChange, maxDate = new Date() }: DatePicker
         </View>
       </TouchableOpacity>
 
-      <PickerModal
-        open={open}
-        onClose={() => setOpen(false)}
-        title="Select Date"
-        scrollable={false}
-      >
+      <PickerModal open={open} onClose={() => setOpen(false)} title="Select Date" scrollable>
         <View className="mb-4 flex-row items-center justify-between">
           <TouchableOpacity onPress={goToPreviousMonth}>
             <View className="p-2">

@@ -10,7 +10,8 @@ import {
   AccountsQuery,
   TRANSACTIONS_QUERY,
   useAccountsQuery,
-  useCategoriesQuery
+  useCategoriesQuery,
+  useCurrentUserQuery
 } from "@/lib/graphql/queries"
 import { Category } from "@/lib/graphql/types"
 import { CombinedGraphQLErrors } from "@apollo/client"
@@ -33,18 +34,24 @@ interface NewTransactionFormProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   onSuccess?: () => void
+  initialDate?: Date
 }
 
 function formatDate(date: Date): string {
   return date.toISOString().split("T")[0]
 }
 
-export function NewTransactionForm({ open, onOpenChange, onSuccess }: NewTransactionFormProps) {
+export function NewTransactionForm({
+  open,
+  onOpenChange,
+  onSuccess,
+  initialDate
+}: NewTransactionFormProps) {
   const [shop, setShop] = useState("")
   const [memo, setMemo] = useState("")
   const [amount, setAmount] = useState("")
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null)
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date())
+  const [selectedDate, setSelectedDate] = useState<Date>(initialDate ?? new Date())
   const [amountType, setAmountType] = useState<AmountType>("expense")
   const [selectedAccount, setSelectedAccount] = useState<Account | null>(null)
   const [splittingTransactionId, setSplittingTransactionId] = useState<string | null>(null)
@@ -53,6 +60,7 @@ export function NewTransactionForm({ open, onOpenChange, onSuccess }: NewTransac
 
   const { data: categoriesData } = useCategoriesQuery()
   const { data: accountsData } = useAccountsQuery()
+  const { data: currentUserData } = useCurrentUserQuery()
   const [createTransaction, { loading: createLoading }] = useTransactionCreateMutation()
   const [splitTransaction, { loading: splitLoading }] = useTransactionSplitMutation()
   const loading = createLoading || splitLoading
@@ -61,10 +69,24 @@ export function NewTransactionForm({ open, onOpenChange, onSuccess }: NewTransac
   const accounts = useMemo(() => accountsData?.accounts ?? [], [accountsData?.accounts])
 
   useEffect(() => {
-    if (accounts.length > 0 && !selectedAccount) {
+    if (currentUserData && accounts.length > 0 && !selectedAccount) {
+      const defaultAccount = currentUserData?.currentUser?.defaultAccount
+      if (defaultAccount) {
+        const account = accounts.find((a) => a.id === defaultAccount.id)
+        if (account) {
+          setSelectedAccount(account)
+          return
+        }
+      }
       setSelectedAccount(accounts[0])
     }
-  }, [accounts, selectedAccount])
+  }, [accounts, selectedAccount, currentUserData])
+
+  useEffect(() => {
+    if (open && initialDate) {
+      setSelectedDate(initialDate)
+    }
+  }, [open, initialDate])
 
   const resetForm = () => {
     setShop("")
@@ -202,7 +224,6 @@ export function NewTransactionForm({ open, onOpenChange, onSuccess }: NewTransac
                 groups={splitGroups}
                 onGroupsChange={setSplitGroups}
                 remainder={splitRemainder}
-                showCategories={amountType === "expense"}
                 categories={categories}
               />
             </View>
@@ -286,16 +307,11 @@ export function NewTransactionForm({ open, onOpenChange, onSuccess }: NewTransac
           </View>
         ) : (
           <View className="mt-auto gap-2 px-4 py-4">
-            <Button
-              className="flex-1"
-              onPress={() => handleSubmit(false)}
-              disabled={!isValid || loading}
-            >
+            <Button onPress={() => handleSubmit(false)} disabled={!isValid || loading}>
               {loading ? <ActivityIndicator size="small" color="white" /> : <Text>Save</Text>}
             </Button>
             <Button
               variant="ghost"
-              className="flex-1"
               onPress={() => handleSubmit(true)}
               disabled={!isValid || loading}
             >

@@ -3,7 +3,7 @@ import { Text } from "@/components/ui/text"
 import { formatDate, stripTime } from "@/lib/formatters"
 import { Transaction, TransactionsQuery } from "@/lib/graphql/types"
 import { useMemo } from "react"
-import { FlatList, RefreshControl, View } from "react-native"
+import { FlatList, RefreshControl, TouchableOpacity, View } from "react-native"
 import { TransactionItem } from "./TransactionItem"
 
 interface TransactionsListProps {
@@ -11,6 +11,7 @@ interface TransactionsListProps {
   month: Date
   onRefresh?: () => void
   isRefreshing?: boolean
+  onDatePress?: (date: Date) => void
 }
 
 interface DateGroup {
@@ -23,7 +24,8 @@ export function TransactionsList({
   data,
   month,
   onRefresh,
-  isRefreshing = false
+  isRefreshing = false,
+  onDatePress
 }: TransactionsListProps) {
   const groupedItems = useMemo(() => {
     const transactions = data.transactions.nodes
@@ -46,7 +48,7 @@ export function TransactionsList({
       )
 
       items.push({
-        date: new Date(date),
+        date: new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())),
         dateString,
         transactions: transactionsOnDate
       })
@@ -58,11 +60,15 @@ export function TransactionsList({
   const renderDateGroup = ({ item }: { item: DateGroup }) => {
     return (
       <View>
-        <View className="bg-body-bg px-4 pb-2 pt-4">
+        <TouchableOpacity
+          className="px-4 pb-2 pt-4"
+          onPress={() => onDatePress?.(item.date)}
+          activeOpacity={onDatePress ? 0.7 : 1}
+        >
           <Text className="text-muted-foreground text-sm">
             {formatDate(item.date, "fullDateWithoutYear")}
           </Text>
-        </View>
+        </TouchableOpacity>
 
         {item.transactions.length > 0 ? (
           <View className="overflow-hidden">
@@ -74,8 +80,8 @@ export function TransactionsList({
             ))}
           </View>
         ) : (
-          <View className="px-4 py-3">
-            <Text className="text-muted-foreground text-sm italic">No transactions</Text>
+          <View className="px-4">
+            <Text className="text-muted-foreground text-sm italic">-</Text>
           </View>
         )}
       </View>

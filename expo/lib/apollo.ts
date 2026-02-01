@@ -1,10 +1,9 @@
-import { ApolloClient, InMemoryCache, HttpLink, from } from "@apollo/client/core"
+import { ApolloClient, HttpLink, InMemoryCache, from } from "@apollo/client/core"
+import { CombinedGraphQLErrors } from "@apollo/client/errors"
 import { setContext } from "@apollo/client/link/context"
 import { ErrorLink } from "@apollo/client/link/error"
-import { CombinedGraphQLErrors } from "@apollo/client/errors"
-import { getLoginToken, clearAuth } from "./auth"
+import { clearAuth, getLoginToken } from "./auth"
 
-// TODO: Configure the actual GraphQL endpoint URL
 const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:3030/graphql"
 
 const httpLink = new HttpLink({ uri: API_URL })

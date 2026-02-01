@@ -138,6 +138,36 @@ export function useAccountsQuery() {
   return useQuery<AccountsQuery>(ACCOUNTS_QUERY)
 }
 
+export interface CurrentUserQuery {
+  currentUser: {
+    id: string
+    defaultAccount?: {
+      id: string
+      currency: {
+        id: string
+      }
+    } | null
+  }
+}
+
+export const CURRENT_USER_QUERY = gql`
+  query CurrentUser {
+    currentUser {
+      id
+      defaultAccount {
+        id
+        currency {
+          id
+        }
+      }
+    }
+  }
+`
+
+export function useCurrentUserQuery() {
+  return useQuery<CurrentUserQuery>(CURRENT_USER_QUERY)
+}
+
 // Single Transaction Query
 export interface TransactionQuery {
   transaction: {
