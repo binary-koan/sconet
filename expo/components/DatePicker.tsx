@@ -3,7 +3,7 @@ import { Text } from "@/components/ui/text"
 import { cn } from "@/lib/utils"
 import { CalendarIcon, ChevronLeftIcon, ChevronRightIcon } from "lucide-react-native"
 import { useState } from "react"
-import { Pressable, View } from "react-native"
+import { TouchableOpacity, View } from "react-native"
 import { Icon } from "./ui/icon"
 
 interface DatePickerProps {
@@ -85,7 +85,7 @@ export function DatePicker({ value, onChange, maxDate = new Date() }: DatePicker
           const isFuture = dateStr > maxDateStr
 
           return (
-            <Pressable
+            <TouchableOpacity
               key={dayIndex}
               onPress={() => !isFuture && handleDateSelect(day)}
               disabled={isFuture}
@@ -107,7 +107,7 @@ export function DatePicker({ value, onChange, maxDate = new Date() }: DatePicker
                   {day}
                 </Text>
               </View>
-            </Pressable>
+            </TouchableOpacity>
           )
         })}
       </View>
@@ -116,7 +116,7 @@ export function DatePicker({ value, onChange, maxDate = new Date() }: DatePicker
 
   return (
     <>
-      <Pressable
+      <TouchableOpacity
         onPress={() => {
           setCalendarMonth(value)
           setOpen(true)
@@ -126,7 +126,7 @@ export function DatePicker({ value, onChange, maxDate = new Date() }: DatePicker
           <Icon as={CalendarIcon} className="size-5 text-muted-foreground" />
           <Text className="flex-1">{formatDisplayDate(value)}</Text>
         </View>
-      </Pressable>
+      </TouchableOpacity>
 
       <PickerModal
         open={open}
@@ -134,24 +134,22 @@ export function DatePicker({ value, onChange, maxDate = new Date() }: DatePicker
         title="Select Date"
         scrollable={false}
       >
-        {/* Month navigation */}
         <View className="mb-4 flex-row items-center justify-between">
-          <Pressable onPress={goToPreviousMonth}>
+          <TouchableOpacity onPress={goToPreviousMonth}>
             <View className="p-2">
               <Icon as={ChevronLeftIcon} className="size-5 text-foreground" />
             </View>
-          </Pressable>
+          </TouchableOpacity>
           <Text variant="large">
             {calendarMonth.toLocaleDateString("en-US", { month: "long", year: "numeric" })}
           </Text>
-          <Pressable onPress={goToNextMonth}>
+          <TouchableOpacity onPress={goToNextMonth}>
             <View className="p-2">
               <Icon as={ChevronRightIcon} className="size-5 text-foreground" />
             </View>
-          </Pressable>
+          </TouchableOpacity>
         </View>
 
-        {/* Day headers */}
         <View className="mb-2 flex-row">
           {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((day) => (
             <View key={day} className="flex-1 items-center">
@@ -162,7 +160,6 @@ export function DatePicker({ value, onChange, maxDate = new Date() }: DatePicker
           ))}
         </View>
 
-        {/* Calendar grid */}
         <View className="gap-1">{renderCalendar()}</View>
       </PickerModal>
     </>

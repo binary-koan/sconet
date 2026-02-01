@@ -5,7 +5,7 @@ import { Category } from "@/lib/graphql/types"
 import { cn } from "@/lib/utils"
 import { EllipsisIcon } from "lucide-react-native"
 import { useState } from "react"
-import { Pressable, View } from "react-native"
+import { TouchableOpacity, View } from "react-native"
 import { Icon } from "./ui/icon"
 
 interface CategoryPickerProps {
@@ -30,7 +30,7 @@ export function CategoryPicker({
 
   return (
     <>
-      <Pressable
+      <TouchableOpacity
         onPress={() => setOpen(true)}
         className={cn("flex-row items-center gap-2", className)}
       >
@@ -50,12 +50,12 @@ export function CategoryPicker({
           )}
           <Icon as={EllipsisIcon} className="size-5 text-muted-foreground" />
         </View>
-      </Pressable>
+      </TouchableOpacity>
 
       <PickerModal open={open} onClose={() => setOpen(false)} title="Select Category">
         <View className="flex-row flex-wrap gap-3">
           {/* Uncategorized option */}
-          <Pressable
+          <TouchableOpacity
             onPress={() => handleSelect(null)}
             className={cn(
               "items-center justify-center rounded-xl p-3",
@@ -69,11 +69,11 @@ export function CategoryPicker({
             <Text className="text-center text-xs" numberOfLines={1}>
               None
             </Text>
-          </Pressable>
+          </TouchableOpacity>
 
           {/* Category options */}
           {categories.map((category) => (
-            <Pressable
+            <TouchableOpacity
               key={category.id}
               onPress={() => handleSelect(category)}
               className={cn(
@@ -91,7 +91,7 @@ export function CategoryPicker({
               <Text className="text-center text-xs" numberOfLines={1}>
                 {category.name}
               </Text>
-            </Pressable>
+            </TouchableOpacity>
           ))}
         </View>
       </PickerModal>

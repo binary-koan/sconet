@@ -3,7 +3,7 @@ import { Text } from "@/components/ui/text"
 import { Transaction } from "@/lib/graphql/types"
 import { cn } from "@/lib/utils"
 import { useRouter } from "expo-router"
-import { Pressable, View } from "react-native"
+import { TouchableOpacity, View } from "react-native"
 
 interface GroupedSplit {
   category?: {
@@ -60,7 +60,7 @@ export function TransactionItem({ transaction, parent }: TransactionItemProps) {
 
   return (
     <>
-      <Pressable
+      <TouchableOpacity
         onPress={navigateToTransaction}
         className={cn("bg-background flex-row items-center py-3 pr-4", parent ? "pl-10" : "pl-4")}
       >
@@ -98,10 +98,10 @@ export function TransactionItem({ transaction, parent }: TransactionItemProps) {
             </Text>
           )}
         </View>
-      </Pressable>
+      </TouchableOpacity>
 
       {splitTo.map((child, index) => (
-        <Pressable
+        <TouchableOpacity
           key={`${child.category?.id || "uncategorized"}-${index}`}
           onPress={navigateToTransaction}
           className="bg-background flex-row items-center py-2 pl-10 pr-4"
@@ -122,7 +122,7 @@ export function TransactionItem({ transaction, parent }: TransactionItemProps) {
           <View className="bg-muted ml-2 h-6 w-6 items-center justify-center rounded-full">
             <Text className="text-xs">{child.count}</Text>
           </View>
-        </Pressable>
+        </TouchableOpacity>
       ))}
     </>
   )

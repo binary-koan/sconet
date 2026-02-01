@@ -4,7 +4,7 @@ import { AccountsQuery } from "@/lib/graphql/queries"
 import { cn } from "@/lib/utils"
 import { EllipsisIcon } from "lucide-react-native"
 import { useState } from "react"
-import { Pressable, View } from "react-native"
+import { TouchableOpacity, View } from "react-native"
 import { Icon } from "./ui/icon"
 
 type Account = AccountsQuery["accounts"][number]
@@ -25,7 +25,7 @@ export function AccountPicker({ accounts, selectedAccount, onSelect }: AccountPi
 
   return (
     <>
-      <Pressable onPress={() => setOpen(true)}>
+      <TouchableOpacity onPress={() => setOpen(true)}>
         <View className="border-input bg-background flex h-10 flex-row items-center justify-between rounded-md border px-3 shadow-sm shadow-black/5">
           <Text className="flex-1" numberOfLines={1}>
             {selectedAccount
@@ -34,12 +34,12 @@ export function AccountPicker({ accounts, selectedAccount, onSelect }: AccountPi
           </Text>
           <Icon as={EllipsisIcon} className="size-5 text-muted-foreground" />
         </View>
-      </Pressable>
+      </TouchableOpacity>
 
       <PickerModal open={open} onClose={() => setOpen(false)} title="Select Account" scrollable>
         <View className="gap-2">
           {accounts.map((account) => (
-            <Pressable key={account.id} onPress={() => handleSelect(account)}>
+            <TouchableOpacity key={account.id} onPress={() => handleSelect(account)}>
               <View
                 className={cn(
                   "rounded-lg p-4",
@@ -51,7 +51,7 @@ export function AccountPicker({ accounts, selectedAccount, onSelect }: AccountPi
                   {account.currency?.code}
                 </Text>
               </View>
-            </Pressable>
+            </TouchableOpacity>
           ))}
         </View>
       </PickerModal>

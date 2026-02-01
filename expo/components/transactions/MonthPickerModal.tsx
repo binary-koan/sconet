@@ -3,7 +3,7 @@ import { PickerModal } from "@/components/ui/picker-modal"
 import { Text } from "@/components/ui/text"
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react-native"
 import { useState } from "react"
-import { Pressable, TouchableOpacity, View } from "react-native"
+import { TouchableOpacity, View } from "react-native"
 
 const MONTHS = [
   "January",
@@ -62,7 +62,7 @@ function YearSection({
 
           return (
             <View key={month} className="w-1/3 p-1">
-              <Pressable
+              <TouchableOpacity
                 onPress={() => onSelect(index, year)}
                 className={`items-center rounded-md px-2 py-3 ${isSelected ? "bg-accent" : ""}`}
               >
@@ -73,7 +73,7 @@ function YearSection({
                 >
                   {month.slice(0, 3)}
                 </Text>
-              </Pressable>
+              </TouchableOpacity>
             </View>
           )
         })}

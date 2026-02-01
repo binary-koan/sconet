@@ -137,3 +137,122 @@ export const ACCOUNTS_QUERY = gql`
 export function useAccountsQuery() {
   return useQuery<AccountsQuery>(ACCOUNTS_QUERY)
 }
+
+// Single Transaction Query
+export interface TransactionQuery {
+  transaction: {
+    id: string
+    shop: string
+    memo?: string
+    date: string
+    amount?: {
+      amountDecimal: number
+      formatted: string
+    }
+    currency?: {
+      id: string
+      code: string
+      symbol: string
+    }
+    shopAmount?: {
+      amountDecimal: number
+      formatted: string
+    }
+    includeInReports: boolean
+    category?: {
+      id: string
+      name: string
+      color: string
+      emoji: string | null
+    }
+    account: {
+      id: string
+      name: string
+      currency: {
+        id: string
+        code: string
+        symbol: string
+      }
+    }
+    splitTo?: {
+      id: string
+      memo?: string
+      amount?: {
+        amountDecimal: number
+        formatted: string
+      }
+      category?: {
+        id: string
+        name: string
+        color: string
+        emoji: string | null
+      }
+      includeInReports: boolean
+    }[]
+  }
+}
+
+export interface TransactionQueryVariables {
+  id: string
+}
+
+export const TRANSACTION_QUERY = gql`
+  query Transaction($id: ID!) {
+    transaction(id: $id) {
+      id
+      shop
+      memo
+      date
+      amount {
+        amountDecimal
+        formatted
+      }
+      currency {
+        id
+        code
+        symbol
+      }
+      shopAmount {
+        amountDecimal
+        formatted
+      }
+      includeInReports
+      category {
+        id
+        name
+        color
+        emoji
+      }
+      account {
+        id
+        name
+        currency {
+          id
+          code
+          symbol
+        }
+      }
+      splitTo {
+        id
+        memo
+        amount {
+          amountDecimal
+          formatted
+        }
+        category {
+          id
+          name
+          color
+          emoji
+        }
+        includeInReports
+      }
+    }
+  }
+`
+
+export function useTransactionQuery(variables: TransactionQueryVariables) {
+  return useQuery<TransactionQuery, TransactionQueryVariables>(TRANSACTION_QUERY, {
+    variables
+  })
+}

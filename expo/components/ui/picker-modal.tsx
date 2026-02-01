@@ -1,7 +1,7 @@
 import { Text } from "@/components/ui/text"
 import { XIcon } from "lucide-react-native"
 import { ReactNode } from "react"
-import { Modal, Pressable, ScrollView, View } from "react-native"
+import { Modal, ScrollView, TouchableOpacity, View } from "react-native"
 import { Icon } from "./icon"
 
 interface PickerModalProps {
@@ -25,9 +25,9 @@ export function PickerModal({
         <View className="bg-background max-h-[80%] rounded-xl">
           <View className="border-border flex-row items-center justify-between px-4 pt-4">
             <Text variant="large">{title}</Text>
-            <Pressable onPress={onClose}>
+            <TouchableOpacity onPress={onClose}>
               <Icon as={XIcon} className="size-6" />
-            </Pressable>
+            </TouchableOpacity>
           </View>
 
           {scrollable ? (

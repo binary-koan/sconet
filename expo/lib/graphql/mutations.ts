@@ -93,3 +93,31 @@ export const TRANSACTION_CREATE_MUTATION = gql`
 export function useTransactionCreateMutation() {
   return useMutation<TransactionCreateResult, TransactionCreateInput>(TRANSACTION_CREATE_MUTATION)
 }
+
+// Transaction Update Mutation
+export interface TransactionUpdateInput {
+  id: string
+  transactionInput: Partial<TransactionInput>
+}
+
+export interface TransactionUpdateResult {
+  transactionUpdate: {
+    transaction: {
+      id: string
+    }
+  }
+}
+
+export const TRANSACTION_UPDATE_MUTATION = gql`
+  mutation TransactionUpdate($id: ID!, $transactionInput: TransactionInput!) {
+    transactionUpdate(input: { id: $id, transactionInput: $transactionInput }) {
+      transaction {
+        id
+      }
+    }
+  }
+`
+
+export function useTransactionUpdateMutation() {
+  return useMutation<TransactionUpdateResult, TransactionUpdateInput>(TRANSACTION_UPDATE_MUTATION)
+}
