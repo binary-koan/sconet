@@ -20,7 +20,9 @@ export default function RootLayout() {
             headerStyle: { backgroundColor: backgroundColor as string },
             headerTintColor: foregroundColor as string
           }}
-        />
+        >
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        </Stack>
         <PortalHost />
       </AuthProvider>
     </ApolloProvider>

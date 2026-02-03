@@ -68,7 +68,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       router.replace("/login")
     } else if (isAuthenticated && (onLoginPage || onIndexPage)) {
       // Redirect to transactions if authenticated and on login or index page
-      router.replace("/transactions")
+      router.replace("/(tabs)/transactions")
     }
   }, [isAuthenticated, segments, isLoading, navigationState?.key])
 
