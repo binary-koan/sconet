@@ -400,7 +400,7 @@ export default function TransactionDetailScreen() {
                       className="h-8 w-8"
                       iconSize={16}
                       color={split.category?.color}
-                      emoji={split.category?.emoji}
+                      icon={split.category?.icon}
                       includeInReports={split.includeInReports}
                     />
                     <View className="min-w-0 flex-1">

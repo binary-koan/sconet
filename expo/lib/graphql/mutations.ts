@@ -61,7 +61,7 @@ export interface TransactionCreateResult {
         id: string
         name: string
         color: string
-        emoji: string | null
+        icon: string | null
       } | null
     }
   }
@@ -83,7 +83,7 @@ export const TRANSACTION_CREATE_MUTATION = gql`
           id
           name
           color
-          emoji
+          icon
         }
       }
     }

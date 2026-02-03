@@ -10,7 +10,7 @@ interface GroupedSplit {
     id: string
     name: string
     color?: string
-    emoji?: string | null
+    icon?: string | null
   }
   count: number
   memos: string
@@ -68,7 +68,7 @@ export function TransactionItem({ transaction, parent }: TransactionItemProps) {
           className="h-8 w-8"
           iconSize={18}
           color={transaction.category?.color}
-          emoji={transaction.category?.emoji}
+          icon={transaction.category?.icon}
           includeInReports={includeInReports}
           isIncome={isIncome}
           isSplit={!!transaction.splitTo?.length}
@@ -110,7 +110,7 @@ export function TransactionItem({ transaction, parent }: TransactionItemProps) {
             className="mr-3 h-6 w-6"
             iconSize={14}
             color={child.category?.color}
-            emoji={child.category?.emoji}
+            icon={child.category?.icon}
             includeInReports={transaction.includeInReports}
             isIncome={isIncome}
           />

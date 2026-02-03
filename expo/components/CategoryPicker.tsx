@@ -41,7 +41,7 @@ export function CategoryPicker({
                 className="h-7 w-7"
                 iconSize={14}
                 color={selectedCategory.color}
-                emoji={selectedCategory.emoji}
+                icon={selectedCategory.icon}
               />
               <Text className="flex-1">{selectedCategory.name}</Text>
             </>
@@ -86,7 +86,7 @@ export function CategoryPicker({
                 className="mb-2 h-12 w-12"
                 iconSize={20}
                 color={category.color}
-                emoji={category.emoji}
+                icon={category.icon}
               />
               <Text className="text-center text-xs" numberOfLines={1}>
                 {category.name}

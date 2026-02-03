@@ -1,12 +1,19 @@
 import { CATEGORY_BACKGROUND_COLORS, CategoryColor } from "@/lib/categoryColors"
 import { cn } from "@/lib/utils"
-import { Text, View } from "react-native"
+import {
+  IconCoinPound,
+  IconEyeOff,
+  IconQuestionMark,
+  IconSeparatorHorizontal
+} from "@tabler/icons-react-native"
+import { View } from "react-native"
+import { namedIcons } from "./namedIcons"
 
 interface CategoryIndicatorProps {
   className?: string
   iconSize?: number
   color?: string
-  emoji?: string | null
+  icon?: string | null
   includeInReports?: boolean
   isSplit?: boolean
   isIncome?: boolean
@@ -16,7 +23,7 @@ export function CategoryIndicator({
   className,
   iconSize = 16,
   color,
-  emoji,
+  icon,
   includeInReports = true,
   isSplit = false,
   isIncome = false
@@ -29,19 +36,19 @@ export function CategoryIndicator({
   }
 
   const getSpecialIcon = () => {
-    if (isIncome) return "£"
-    if (isSplit) return "⌄"
-    if (!includeInReports) return "−"
+    if (isIncome) return IconCoinPound
+    if (isSplit) return IconSeparatorHorizontal
+    if (!includeInReports) return IconEyeOff
     return null
   }
+
+  const Icon = getSpecialIcon() ?? namedIcons[icon ?? ""] ?? IconQuestionMark
 
   return (
     <View
       className={cn("items-center justify-center rounded-full", getBackgroundColor(), className)}
     >
-      <Text className="text-foreground" style={{ fontSize: iconSize, marginTop: isSplit ? -8 : 0 }}>
-        {getSpecialIcon() || emoji || "?"}
-      </Text>
+      <Icon size={iconSize} color="white" />
     </View>
   )
 }

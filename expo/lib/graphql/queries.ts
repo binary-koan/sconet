@@ -30,7 +30,7 @@ const LISTING_TRANSACTION_FRAGMENT = gql`
       id
       name
       color
-      emoji
+      icon
     }
     account {
       id
@@ -54,7 +54,7 @@ const LISTING_TRANSACTION_FRAGMENT = gql`
         id
         name
         color
-        emoji
+        icon
       }
       includeInReports
     }
@@ -88,7 +88,7 @@ export interface CategoriesQuery {
     id: string
     name: string
     color: string
-    emoji: string | null
+    icon: string | null
   }[]
 }
 
@@ -98,7 +98,7 @@ export const CATEGORIES_QUERY = gql`
       id
       name
       color
-      emoji
+      icon
     }
   }
 `
@@ -193,7 +193,7 @@ export interface TransactionQuery {
       id: string
       name: string
       color: string
-      emoji: string | null
+      icon: string | null
     }
     account: {
       id: string
@@ -215,7 +215,7 @@ export interface TransactionQuery {
         id: string
         name: string
         color: string
-        emoji: string | null
+        icon: string | null
       }
       includeInReports: boolean
     }[]
@@ -251,7 +251,7 @@ export const TRANSACTION_QUERY = gql`
         id
         name
         color
-        emoji
+        icon
       }
       account {
         id
@@ -273,7 +273,7 @@ export const TRANSACTION_QUERY = gql`
           id
           name
           color
-          emoji
+          icon
         }
         includeInReports
       }
