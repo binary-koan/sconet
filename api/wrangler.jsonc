@@ -1,18 +1,26 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "api",
+  "name": "sconet-api",
   "main": "src/index.ts",
   "compatibility_date": "2026-02-01",
-  "compatibility_flags": [
-    "nodejs_compat"
+  "compatibility_flags": ["nodejs_compat"],
+  // Rate limiting for login endpoint: 5 requests per minute per IP
+  "ratelimits": [
+    {
+      "name": "LOGIN_RATE_LIMITER",
+      "namespace_id": "30301",
+      "simple": {
+        "limit": 5,
+        "period": 60
+      }
+    }
   ],
-  // Hyperdrive configuration - create with: wrangler hyperdrive create sconet-db --connection-string="postgres://..."
-  // "hyperdrive": [
-  //   {
-  //     "binding": "HYPERDRIVE",
-  //     "id": "<your-hyperdrive-id>"
-  //   }
-  // ],
+  "hyperdrive": [
+    {
+      "binding": "HYPERDRIVE",
+      "id": "f476063ca38b4c53ae3bc2886e22afe6"
+    }
+  ]
   // "vars": {
   //   "MY_VAR": "my-variable"
   // },

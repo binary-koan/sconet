@@ -1,25 +1,18 @@
-import { Kysely, PostgresDialect } from 'kysely'
-import pg from 'pg'
-import type { Database } from './types'
+import { drizzle } from "drizzle-orm/node-postgres"
+import pg from "pg"
+import * as schema from "./schema"
+import { users } from "./schema"
 
-export type { Database } from './types'
-export * from './types'
+export * from "./schema"
 
-export function createDb(connectionString: string): Kysely<Database> {
-  return new Kysely<Database>({
-    dialect: new PostgresDialect({
-      pool: new pg.Pool({
-        connectionString,
-      }),
-    }),
-  })
+export type Database = ReturnType<typeof createDb>
+export type User = typeof users.$inferSelect
+
+export function createDb(connectionString: string) {
+  const pool = new pg.Pool({ connectionString })
+  return drizzle(pool, { schema })
 }
 
-// For Cloudflare Workers with Hyperdrive
-export function createDbWithPool(pool: pg.Pool): Kysely<Database> {
-  return new Kysely<Database>({
-    dialect: new PostgresDialect({
-      pool,
-    }),
-  })
+export function createDbWithPool(pool: pg.Pool) {
+  return drizzle(pool, { schema })
 }

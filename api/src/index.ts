@@ -1,42 +1,64 @@
+import { eq } from "drizzle-orm"
 import { Hono } from "hono"
-import { Kysely, PostgresDialect } from "kysely"
+import { jwt } from "hono/jwt"
 import pg from "pg"
-import type { Database } from "./db/types"
+import type { Database, User } from "./db"
+import { dbMiddleware } from "./db/middleware"
+import { users } from "./db/schema"
+import accounts from "./routes/accounts"
 import categories from "./routes/categories"
+import { addLoginRoute } from "./routes/sessions"
 import transactions from "./routes/transactions"
 
-type Bindings = {
+export type Bindings = {
   HYPERDRIVE?: Hyperdrive
   DATABASE_URL?: string
+  JWT_SECRET: string
+  LOGIN_RATE_LIMITER: RateLimit
 }
 
-type Variables = {
-  db: Kysely<Database>
+export type Variables = {
+  db: Database
+  pool: pg.Pool
+  user: User
 }
 
 const app = new Hono<{ Bindings: Bindings; Variables: Variables }>()
 
+app.use("*", dbMiddleware)
+
+addLoginRoute(app)
+
 app.use("*", async (c, next) => {
-  const connectionString =
-    c.env.HYPERDRIVE?.connectionString ?? c.env.DATABASE_URL
-
-  if (!connectionString) {
-    return c.json({ error: "Database not configured" }, 500)
-  }
-
-  const pool = new pg.Pool({ connectionString })
-
-  const db = new Kysely<Database>({
-    dialect: new PostgresDialect({ pool })
+  const jwtMiddleware = jwt({
+    secret: c.env.JWT_SECRET,
+    alg: "HS256"
   })
-
-  c.set("db", db)
-
-  await next()
-
-  await pool.end()
+  return jwtMiddleware(c, next)
 })
 
+app.use("*", async (c, next) => {
+  const payload = c.get("jwtPayload")
+  const userId = payload?.user_id
+
+  if (!userId) {
+    return c.json({ error: "Invalid token: missing user_id" }, 401)
+  }
+
+  const db = c.get("db")
+  const user = await db.query.users.findFirst({
+    where: eq(users.id, userId)
+  })
+
+  if (!user) {
+    return c.json({ error: "User not found" }, 401)
+  }
+
+  c.set("user", user)
+  await next()
+})
+
+app.route("/accounts", accounts)
 app.route("/categories", categories)
 app.route("/transactions", transactions)
 

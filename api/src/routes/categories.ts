@@ -1,7 +1,8 @@
+import { and, eq, isNotNull, isNull, max } from "drizzle-orm"
 import { Hono } from "hono"
-import type { Kysely } from "kysely"
 import { z } from "zod"
-import type { CategoryUpdate, Database, NewCategory } from "../db/types"
+import type { Database } from "../db"
+import { categories, categoryBudgets, transactions } from "../db/schema"
 
 const createCategorySchema = z.object({
   name: z.string().min(1),
@@ -10,7 +11,7 @@ const createCategorySchema = z.object({
   emoji: z.string().optional(),
   isRegular: z.boolean().optional(),
   budgetCents: z.number().int().optional(),
-  budgetCurrencyId: z.string().uuid().optional()
+  budgetCurrencyId: z.uuid().optional()
 })
 
 const updateCategorySchema = z.object({
@@ -20,57 +21,38 @@ const updateCategorySchema = z.object({
   emoji: z.string().optional(),
   isRegular: z.boolean().optional(),
   budgetCents: z.number().int().optional(),
-  budgetCurrencyId: z.string().uuid().optional()
+  budgetCurrencyId: z.uuid().optional()
 })
 
 const reorderCategoriesSchema = z.object({
-  ids: z.array(z.string().uuid())
+  ids: z.array(z.uuid())
 })
 
 type Variables = {
-  db: Kysely<Database>
+  db: Database
 }
 
-const categories = new Hono<{ Variables: Variables }>()
+const categoriesRouter = new Hono<{ Variables: Variables }>()
 
 // GET /categories - List all categories
-// Query params: archived=true to show archived categories
-categories.get("/", async (c) => {
+categoriesRouter.get("/", async (c) => {
   const db = c.get("db")
   const archived = c.req.query("archived") === "true"
 
-  let query = db
-    .selectFrom("categories as c")
-    .select((eb) => [
-      "c.id",
-      "c.name",
-      "c.color",
-      "c.icon",
-      "c.emoji",
-      "c.regular",
-      "c.sort_order",
-      "c.created_at",
-      "c.updated_at",
-      eb
-        .exists(
-          eb
-            .selectFrom("transactions")
-            .select(eb.lit(1).as("one"))
-            .whereRef("transactions.category_id", "=", "c.id")
-            .where("transactions.deleted_at", "is", null)
-        )
-        .as("has_transactions")
-    ])
-    .where("c.deleted_at", "is", null)
-    .orderBy("c.sort_order", "asc")
-
-  if (archived) {
-    query = query.where("c.archived_at", "is not", null)
-  } else {
-    query = query.where("c.archived_at", "is", null)
-  }
-
-  const results = await query.execute()
+  const results = await db.query.categories.findMany({
+    where: and(
+      isNull(categories.deletedAt),
+      archived ? isNotNull(categories.archivedAt) : isNull(categories.archivedAt)
+    ),
+    orderBy: categories.sortOrder,
+    with: {
+      transactions: {
+        where: isNull(transactions.deletedAt),
+        columns: { id: true },
+        limit: 1
+      }
+    }
+  })
 
   return c.json(
     results.map((category) => ({
@@ -80,44 +62,37 @@ categories.get("/", async (c) => {
       icon: category.icon,
       emoji: category.emoji,
       isRegular: category.regular,
-      sortOrder: category.sort_order,
-      hasTransactions: Boolean(category.has_transactions),
-      createdAt: category.created_at,
-      updatedAt: category.updated_at
+      sortOrder: category.sortOrder,
+      hasTransactions: category.transactions.length > 0,
+      createdAt: category.createdAt,
+      updatedAt: category.updatedAt
     }))
   )
 })
 
 // GET /categories/:id - Get a single category
-categories.get("/:id", async (c) => {
+categoriesRouter.get("/:id", async (c) => {
   const db = c.get("db")
   const id = c.req.param("id")
 
-  const category = await db
-    .selectFrom("categories")
-    .selectAll()
-    .where("id", "=", id)
-    .where("deleted_at", "is", null)
-    .executeTakeFirst()
+  const category = await db.query.categories.findFirst({
+    where: and(eq(categories.id, id), isNull(categories.deletedAt)),
+    with: {
+      transactions: {
+        where: isNull(transactions.deletedAt),
+        columns: { id: true },
+        limit: 1
+      },
+      budgets: {
+        where: isNull(categoryBudgets.deletedAt),
+        orderBy: categoryBudgets.dateFrom
+      }
+    }
+  })
 
   if (!category) {
     return c.json({ error: "Category not found" }, 404)
   }
-
-  const transactionCount = await db
-    .selectFrom("transactions")
-    .select(db.fn.count("id").as("count"))
-    .where("category_id", "=", category.id)
-    .where("deleted_at", "is", null)
-    .executeTakeFirst()
-
-  const budgets = await db
-    .selectFrom("category_budgets")
-    .selectAll()
-    .where("category_id", "=", id)
-    .where("deleted_at", "is", null)
-    .orderBy("date_from", "asc")
-    .execute()
 
   return c.json({
     id: category.id,
@@ -126,24 +101,24 @@ categories.get("/:id", async (c) => {
     icon: category.icon,
     emoji: category.emoji,
     isRegular: category.regular,
-    sortOrder: category.sort_order,
-    hasTransactions: Number(transactionCount?.count ?? 0) > 0,
-    createdAt: category.created_at,
-    updatedAt: category.updated_at,
-    budgets: budgets.map((b) => ({
+    sortOrder: category.sortOrder,
+    hasTransactions: category.transactions.length > 0,
+    createdAt: category.createdAt,
+    updatedAt: category.updatedAt,
+    budgets: category.budgets.map((b) => ({
       id: b.id,
-      dateFrom: b.date_from,
-      dateTo: b.date_to,
-      budgetCents: b.budget_cents,
-      currencyId: b.currency_id,
-      createdAt: b.created_at,
-      updatedAt: b.updated_at
+      dateFrom: b.dateFrom,
+      dateTo: b.dateTo,
+      budgetCents: b.budgetCents,
+      currencyId: b.currencyId,
+      createdAt: b.createdAt,
+      updatedAt: b.updatedAt
     }))
   })
 })
 
 // POST /categories - Create a new category
-categories.post("/", async (c) => {
+categoriesRouter.post("/", async (c) => {
   const db = c.get("db")
   const parsed = createCategorySchema.safeParse(await c.req.json())
 
@@ -154,45 +129,36 @@ categories.post("/", async (c) => {
   const body = parsed.data
 
   // Get max sort_order
-  const maxSortOrder = await db
-    .selectFrom("categories")
-    .select(db.fn.max("sort_order").as("max_sort_order"))
-    .executeTakeFirst()
+  const [maxResult] = await db.select({ maxSortOrder: max(categories.sortOrder) }).from(categories)
 
-  const sortOrder = ((maxSortOrder?.max_sort_order as number) ?? 0) + 1
+  const sortOrder = (maxResult?.maxSortOrder ?? 0) + 1
 
-  const newCategory: NewCategory = {
-    name: body.name,
-    color: body.color,
-    icon: body.icon,
-    emoji: body.emoji ?? null,
-    regular: body.isRegular ?? false,
-    sort_order: sortOrder,
-    updated_at: new Date()
-  }
-
-  const category = await db
-    .insertInto("categories")
-    .values(newCategory)
-    .returningAll()
-    .executeTakeFirstOrThrow()
+  const [category] = await db
+    .insert(categories)
+    .values({
+      name: body.name,
+      color: body.color,
+      icon: body.icon,
+      emoji: body.emoji ?? null,
+      regular: body.isRegular ?? false,
+      sortOrder,
+      updatedAt: new Date()
+    })
+    .returning()
 
   // Create initial budget if provided
   if (body.budgetCents !== undefined && body.budgetCurrencyId) {
     const dateFrom = new Date()
     dateFrom.setDate(1) // Start of current month
 
-    await db
-      .insertInto("category_budgets")
-      .values({
-        category_id: category.id,
-        date_from: dateFrom,
-        date_to: null,
-        budget_cents: body.budgetCents,
-        currency_id: body.budgetCurrencyId,
-        updated_at: new Date()
-      })
-      .execute()
+    await db.insert(categoryBudgets).values({
+      categoryId: category.id,
+      dateFrom,
+      dateTo: null,
+      budgetCents: body.budgetCents,
+      currencyId: body.budgetCurrencyId,
+      updatedAt: new Date()
+    })
   }
 
   return c.json(
@@ -203,17 +169,17 @@ categories.post("/", async (c) => {
       icon: category.icon,
       emoji: category.emoji,
       isRegular: category.regular,
-      sortOrder: category.sort_order,
+      sortOrder: category.sortOrder,
       hasTransactions: false,
-      createdAt: category.created_at,
-      updatedAt: category.updated_at
+      createdAt: category.createdAt,
+      updatedAt: category.updatedAt
     },
     201
   )
 })
 
 // PATCH /categories/:id - Update a category
-categories.patch("/:id", async (c) => {
+categoriesRouter.patch("/:id", async (c) => {
   const db = c.get("db")
   const id = c.req.param("id")
   const parsed = updateCategorySchema.safeParse(await c.req.json())
@@ -224,19 +190,16 @@ categories.patch("/:id", async (c) => {
 
   const body = parsed.data
 
-  const existing = await db
-    .selectFrom("categories")
-    .selectAll()
-    .where("id", "=", id)
-    .where("deleted_at", "is", null)
-    .executeTakeFirst()
+  const existing = await db.query.categories.findFirst({
+    where: and(eq(categories.id, id), isNull(categories.deletedAt))
+  })
 
   if (!existing) {
     return c.json({ error: "Category not found" }, 404)
   }
 
-  const updates: CategoryUpdate = {
-    updated_at: new Date()
+  const updates: Partial<typeof categories.$inferInsert> = {
+    updatedAt: new Date()
   }
 
   if (body.name !== undefined) updates.name = body.name
@@ -245,12 +208,11 @@ categories.patch("/:id", async (c) => {
   if (body.emoji !== undefined) updates.emoji = body.emoji
   if (body.isRegular !== undefined) updates.regular = body.isRegular
 
-  const category = await db
-    .updateTable("categories")
+  const [category] = await db
+    .update(categories)
     .set(updates)
-    .where("id", "=", id)
-    .returningAll()
-    .executeTakeFirstOrThrow()
+    .where(eq(categories.id, id))
+    .returning()
 
   // Handle budget updates
   if (body.budgetCents !== undefined && body.budgetCurrencyId) {
@@ -259,58 +221,56 @@ categories.patch("/:id", async (c) => {
     monthStart.setHours(0, 0, 0, 0)
 
     // Check if there's an existing budget for this month
-    const existingBudget = await db
-      .selectFrom("category_budgets")
-      .selectAll()
-      .where("category_id", "=", id)
-      .where("deleted_at", "is", null)
-      .where("date_from", "=", monthStart)
-      .executeTakeFirst()
+    const existingBudget = await db.query.categoryBudgets.findFirst({
+      where: and(
+        eq(categoryBudgets.categoryId, id),
+        isNull(categoryBudgets.deletedAt),
+        eq(categoryBudgets.dateFrom, monthStart)
+      )
+    })
 
     if (existingBudget) {
       // Update existing budget
       await db
-        .updateTable("category_budgets")
+        .update(categoryBudgets)
         .set({
-          budget_cents: body.budgetCents,
-          currency_id: body.budgetCurrencyId,
-          updated_at: new Date()
+          budgetCents: body.budgetCents,
+          currencyId: body.budgetCurrencyId,
+          updatedAt: new Date()
         })
-        .where("id", "=", existingBudget.id)
-        .execute()
+        .where(eq(categoryBudgets.id, existingBudget.id))
     } else {
       // Close previous budget and create new one
       await db
-        .updateTable("category_budgets")
+        .update(categoryBudgets)
         .set({
-          date_to: monthStart,
-          updated_at: new Date()
+          dateTo: monthStart,
+          updatedAt: new Date()
         })
-        .where("category_id", "=", id)
-        .where("deleted_at", "is", null)
-        .where("date_to", "is", null)
-        .execute()
+        .where(
+          and(
+            eq(categoryBudgets.categoryId, id),
+            isNull(categoryBudgets.deletedAt),
+            isNull(categoryBudgets.dateTo)
+          )
+        )
 
-      await db
-        .insertInto("category_budgets")
-        .values({
-          category_id: id,
-          date_from: monthStart,
-          date_to: null,
-          budget_cents: body.budgetCents,
-          currency_id: body.budgetCurrencyId,
-          updated_at: new Date()
-        })
-        .execute()
+      await db.insert(categoryBudgets).values({
+        categoryId: id,
+        dateFrom: monthStart,
+        dateTo: null,
+        budgetCents: body.budgetCents,
+        currencyId: body.budgetCurrencyId,
+        updatedAt: new Date()
+      })
     }
   }
 
-  const transactionCount = await db
-    .selectFrom("transactions")
-    .select(db.fn.count("id").as("count"))
-    .where("category_id", "=", category.id)
-    .where("deleted_at", "is", null)
-    .executeTakeFirst()
+  const transactionCount = await db.query.transactions.findMany({
+    where: and(eq(transactions.categoryId, category.id), isNull(transactions.deletedAt)),
+    columns: { id: true },
+    limit: 1
+  })
 
   return c.json({
     id: category.id,
@@ -319,57 +279,50 @@ categories.patch("/:id", async (c) => {
     icon: category.icon,
     emoji: category.emoji,
     isRegular: category.regular,
-    sortOrder: category.sort_order,
-    hasTransactions: Number(transactionCount?.count ?? 0) > 0,
-    createdAt: category.created_at,
-    updatedAt: category.updated_at
+    sortOrder: category.sortOrder,
+    hasTransactions: transactionCount.length > 0,
+    createdAt: category.createdAt,
+    updatedAt: category.updatedAt
   })
 })
 
 // POST /categories/:id/archive - Archive a category
-categories.post("/:id/archive", async (c) => {
+categoriesRouter.post("/:id/archive", async (c) => {
   const db = c.get("db")
   const id = c.req.param("id")
 
-  const existing = await db
-    .selectFrom("categories")
-    .selectAll()
-    .where("id", "=", id)
-    .where("deleted_at", "is", null)
-    .executeTakeFirst()
+  const existing = await db.query.categories.findFirst({
+    where: and(eq(categories.id, id), isNull(categories.deletedAt))
+  })
 
   if (!existing) {
     return c.json({ error: "Category not found" }, 404)
   }
 
-  const category = await db
-    .updateTable("categories")
+  const [category] = await db
+    .update(categories)
     .set({
-      archived_at: new Date(),
-      updated_at: new Date()
+      archivedAt: new Date(),
+      updatedAt: new Date()
     })
-    .where("id", "=", id)
-    .returningAll()
-    .executeTakeFirstOrThrow()
+    .where(eq(categories.id, id))
+    .returning()
 
   return c.json({
     id: category.id,
     name: category.name,
-    archivedAt: category.archived_at
+    archivedAt: category.archivedAt
   })
 })
 
 // DELETE /categories/:id - Soft delete a category and related data
-categories.delete("/:id", async (c) => {
+categoriesRouter.delete("/:id", async (c) => {
   const db = c.get("db")
   const id = c.req.param("id")
 
-  const existing = await db
-    .selectFrom("categories")
-    .selectAll()
-    .where("id", "=", id)
-    .where("deleted_at", "is", null)
-    .executeTakeFirst()
+  const existing = await db.query.categories.findFirst({
+    where: and(eq(categories.id, id), isNull(categories.deletedAt))
+  })
 
   if (!existing) {
     return c.json({ error: "Category not found" }, 404)
@@ -378,40 +331,25 @@ categories.delete("/:id", async (c) => {
   const now = new Date()
 
   // Soft delete the category
-  await db
-    .updateTable("categories")
-    .set({
-      deleted_at: now,
-      updated_at: now
-    })
-    .where("id", "=", id)
-    .execute()
+  await db.update(categories).set({ deletedAt: now, updatedAt: now }).where(eq(categories.id, id))
 
   // Soft delete related budgets
   await db
-    .updateTable("category_budgets")
-    .set({
-      deleted_at: now,
-      updated_at: now
-    })
-    .where("category_id", "=", id)
-    .execute()
+    .update(categoryBudgets)
+    .set({ deletedAt: now, updatedAt: now })
+    .where(eq(categoryBudgets.categoryId, id))
 
   // Soft delete related transactions
   await db
-    .updateTable("transactions")
-    .set({
-      deleted_at: now,
-      updated_at: now
-    })
-    .where("category_id", "=", id)
-    .execute()
+    .update(transactions)
+    .set({ deletedAt: now, updatedAt: now })
+    .where(eq(transactions.categoryId, id))
 
   return c.json({ success: true })
 })
 
 // POST /categories/reorder - Reorder categories
-categories.post("/reorder", async (c) => {
+categoriesRouter.post("/reorder", async (c) => {
   const db = c.get("db")
   const parsed = reorderCategoriesSchema.safeParse(await c.req.json())
 
@@ -424,17 +362,16 @@ categories.post("/reorder", async (c) => {
   await Promise.all(
     body.ids.map((id, index) =>
       db
-        .updateTable("categories")
+        .update(categories)
         .set({
-          sort_order: index + 1,
-          updated_at: new Date()
+          sortOrder: index + 1,
+          updatedAt: new Date()
         })
-        .where("id", "=", id)
-        .execute()
+        .where(eq(categories.id, id))
     )
   )
 
   return c.json({ success: true })
 })
 
-export default categories
+export default categoriesRouter

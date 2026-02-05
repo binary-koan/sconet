@@ -1,11 +1,12 @@
+import { and, asc, desc, eq, gte, ilike, isNull, lte, or } from "drizzle-orm"
 import { Hono } from "hono"
-import type { Kysely } from "kysely"
 import { z } from "zod"
-import type { Database, NewTransaction, TransactionUpdate } from "../db/types"
+import type { Database } from "../db"
+import { categories, currencies, transactions } from "../db/schema"
 
 const transactionFilterSchema = z.object({
-  dateFrom: z.date().optional(),
-  dateUntil: z.date().optional(),
+  dateFrom: z.coerce.date().optional(),
+  dateUntil: z.coerce.date().optional(),
   minAmountCents: z.coerce.number().int().optional(),
   maxAmountCents: z.coerce.number().int().optional(),
   keyword: z.string().optional(),
@@ -18,7 +19,7 @@ const transactionFilterSchema = z.object({
 const createTransactionSchema = z.object({
   shop: z.string().default(""),
   memo: z.string().default(""),
-  date: z.date(),
+  date: z.coerce.date(),
   includeInReports: z.boolean().default(true),
   amountCents: z.number().int().nullable().optional(),
   currencyId: z.uuid().nullable().optional(),
@@ -31,7 +32,7 @@ const createTransactionSchema = z.object({
 const updateTransactionSchema = z.object({
   shop: z.string().optional(),
   memo: z.string().optional(),
-  date: z.date().optional(),
+  date: z.coerce.date().optional(),
   includeInReports: z.boolean().optional(),
   amountCents: z.number().int().nullable().optional(),
   currencyId: z.uuid().nullable().optional(),
@@ -42,7 +43,7 @@ const updateTransactionSchema = z.object({
 })
 
 type Variables = {
-  db: Kysely<Database>
+  db: Database
 }
 
 type CurrencyRow = {
@@ -53,37 +54,14 @@ type CurrencyRow = {
   decimalDigits: number
 }
 
-function formatCurrency(row: {
-  currency_id: string | null
-  currency_code: string | null
-  currency_name: string | null
-  currency_symbol: string | null
-  currency_decimal_digits: number | null
-}): CurrencyRow | null {
-  if (!row.currency_id) return null
+function formatCurrency(currency: typeof currencies.$inferSelect | null): CurrencyRow | null {
+  if (!currency) return null
   return {
-    id: row.currency_id,
-    code: row.currency_code!,
-    name: row.currency_name!,
-    symbol: row.currency_symbol!,
-    decimalDigits: row.currency_decimal_digits!
-  }
-}
-
-function formatShopCurrency(row: {
-  shop_currency_id: string | null
-  shop_currency_code: string | null
-  shop_currency_name: string | null
-  shop_currency_symbol: string | null
-  shop_currency_decimal_digits: number | null
-}): CurrencyRow | null {
-  if (!row.shop_currency_id) return null
-  return {
-    id: row.shop_currency_id,
-    code: row.shop_currency_code!,
-    name: row.shop_currency_name!,
-    symbol: row.shop_currency_symbol!,
-    decimalDigits: row.shop_currency_decimal_digits!
+    id: currency.id,
+    code: currency.code,
+    name: currency.name,
+    symbol: currency.symbol,
+    decimalDigits: currency.decimalDigits
   }
 }
 
@@ -97,31 +75,23 @@ type CategoryRow = {
   sortOrder: number
 }
 
-function formatCategory(row: {
-  cat_id: string | null
-  cat_name: string | null
-  cat_color: string | null
-  cat_icon: string | null
-  cat_emoji: string | null
-  cat_regular: boolean | null
-  cat_sort_order: number | null
-}): CategoryRow | null {
-  if (!row.cat_id) return null
+function formatCategory(category: typeof categories.$inferSelect | null): CategoryRow | null {
+  if (!category) return null
   return {
-    id: row.cat_id,
-    name: row.cat_name!,
-    color: row.cat_color!,
-    icon: row.cat_icon!,
-    emoji: row.cat_emoji,
-    isRegular: row.cat_regular!,
-    sortOrder: row.cat_sort_order!
+    id: category.id,
+    name: category.name,
+    color: category.color,
+    icon: category.icon,
+    emoji: category.emoji,
+    isRegular: category.regular,
+    sortOrder: category.sortOrder
   }
 }
 
-const transactions = new Hono<{ Variables: Variables }>()
+const transactionsRouter = new Hono<{ Variables: Variables }>()
 
 // GET /transactions - List transactions
-transactions.get("/", async (c) => {
+transactionsRouter.get("/", async (c) => {
   const db = c.get("db")
   const parsed = transactionFilterSchema.safeParse(c.req.query())
 
@@ -131,140 +101,63 @@ transactions.get("/", async (c) => {
 
   const filter = parsed.data
 
-  let query = db
-    .selectFrom("transactions as t")
-    .leftJoin("currencies as cur", "cur.id", "t.currency_id")
-    .leftJoin("currencies as shop_cur", "shop_cur.id", "t.shop_currency_id")
-    .leftJoin("categories as cat", "cat.id", "t.category_id")
-    .select([
-      "t.id",
-      "t.shop",
-      "t.memo",
-      "t.date",
-      "t.include_in_reports",
-      "t.amount_cents",
-      "t.shop_amount_cents",
-      "t.category_id",
-      "t.account_id",
-      "t.split_from_id",
-      "t.created_at",
-      "t.updated_at",
-      "cur.id as currency_id",
-      "cur.code as currency_code",
-      "cur.name as currency_name",
-      "cur.symbol as currency_symbol",
-      "cur.decimal_digits as currency_decimal_digits",
-      "shop_cur.id as shop_currency_id",
-      "shop_cur.code as shop_currency_code",
-      "shop_cur.name as shop_currency_name",
-      "shop_cur.symbol as shop_currency_symbol",
-      "shop_cur.decimal_digits as shop_currency_decimal_digits",
-      "cat.id as cat_id",
-      "cat.name as cat_name",
-      "cat.color as cat_color",
-      "cat.icon as cat_icon",
-      "cat.emoji as cat_emoji",
-      "cat.regular as cat_regular",
-      "cat.sort_order as cat_sort_order"
-    ])
-    .where("t.deleted_at", "is", null)
-    .where("t.split_from_id", "is", null) // Only top-level transactions
-    .orderBy("t.date", "desc")
-    .orderBy("t.amount_cents", "asc")
-    .orderBy("t.shop", "asc")
+  // Build the where conditions
+  const conditions = [
+    isNull(transactions.deletedAt),
+    isNull(transactions.splitFromId) // Only top-level transactions
+  ]
 
   if (filter.dateFrom) {
-    query = query.where("t.date", ">=", new Date(filter.dateFrom))
+    conditions.push(gte(transactions.date, filter.dateFrom))
   }
   if (filter.dateUntil) {
-    query = query.where("t.date", "<=", new Date(filter.dateUntil))
+    conditions.push(lte(transactions.date, filter.dateUntil))
   }
   if (filter.minAmountCents !== undefined) {
-    query = query.where("t.amount_cents", ">=", filter.minAmountCents)
+    conditions.push(gte(transactions.amountCents, filter.minAmountCents))
   }
   if (filter.maxAmountCents !== undefined) {
-    query = query.where("t.amount_cents", "<=", filter.maxAmountCents)
+    conditions.push(lte(transactions.amountCents, filter.maxAmountCents))
   }
   if (filter.keyword) {
-    query = query.where((eb) =>
-      eb.or([
-        eb("t.shop", "ilike", `%${filter.keyword}%`),
-        eb("t.memo", "ilike", `%${filter.keyword}%`)
-      ])
-    )
-  }
-  if (filter.categoryIds && filter.categoryIds.length > 0) {
-    query = query.where((eb) =>
-      eb.or([
-        eb("t.category_id", "in", filter.categoryIds!),
-        eb.exists(
-          eb
-            .selectFrom("transactions as child")
-            .select(eb.lit(1).as("one"))
-            .whereRef("child.split_from_id", "=", "t.id")
-            .where("child.category_id", "in", filter.categoryIds!)
-        )
-      ])
+    conditions.push(
+      or(
+        ilike(transactions.shop, `%${filter.keyword}%`),
+        ilike(transactions.memo, `%${filter.keyword}%`)
+      )!
     )
   }
 
-  const results = await query.execute()
-
-  // Get split_to for each transaction
-  const transactionIds = results.map((t) => t.id)
-  const splitToMap = new Map<string, typeof results>()
-
-  if (transactionIds.length > 0) {
-    const splits = await db
-      .selectFrom("transactions as t")
-      .leftJoin("currencies as cur", "cur.id", "t.currency_id")
-      .leftJoin("currencies as shop_cur", "shop_cur.id", "t.shop_currency_id")
-      .leftJoin("categories as cat", "cat.id", "t.category_id")
-      .select([
-        "t.id",
-        "t.shop",
-        "t.memo",
-        "t.date",
-        "t.include_in_reports",
-        "t.amount_cents",
-        "t.shop_amount_cents",
-        "t.category_id",
-        "t.account_id",
-        "t.split_from_id",
-        "t.created_at",
-        "t.updated_at",
-        "cur.id as currency_id",
-        "cur.code as currency_code",
-        "cur.name as currency_name",
-        "cur.symbol as currency_symbol",
-        "cur.decimal_digits as currency_decimal_digits",
-        "shop_cur.id as shop_currency_id",
-        "shop_cur.code as shop_currency_code",
-        "shop_cur.name as shop_currency_name",
-        "shop_cur.symbol as shop_currency_symbol",
-        "shop_cur.decimal_digits as shop_currency_decimal_digits",
-        "cat.id as cat_id",
-        "cat.name as cat_name",
-        "cat.color as cat_color",
-        "cat.icon as cat_icon",
-        "cat.emoji as cat_emoji",
-        "cat.regular as cat_regular",
-        "cat.sort_order as cat_sort_order"
-      ])
-      .where("t.deleted_at", "is", null)
-      .where("t.split_from_id", "in", transactionIds)
-      .orderBy("cat.sort_order", "asc")
-      .orderBy("t.amount_cents", "asc")
-      .orderBy("t.shop", "asc")
-      .execute()
-
-    for (const split of splits) {
-      const parentId = split.split_from_id!
-      if (!splitToMap.has(parentId)) {
-        splitToMap.set(parentId, [])
+  // For category filtering, we need to use the raw query builder
+  // because we need to check both parent and child transactions
+  let results = await db.query.transactions.findMany({
+    where: and(...conditions),
+    orderBy: [desc(transactions.date), asc(transactions.amountCents), asc(transactions.shop)],
+    with: {
+      currency: true,
+      shopCurrency: true,
+      category: true,
+      splitTo: {
+        where: isNull(transactions.deletedAt),
+        orderBy: [asc(transactions.amountCents), asc(transactions.shop)],
+        with: {
+          currency: true,
+          shopCurrency: true,
+          category: true
+        }
       }
-      splitToMap.get(parentId)!.push(split)
     }
+  })
+
+  // Filter by category IDs if provided (check both parent and child transactions)
+  if (filter.categoryIds && filter.categoryIds.length > 0) {
+    results = results.filter((t) => {
+      const parentMatch = t.categoryId && filter.categoryIds!.includes(t.categoryId)
+      const childMatch = t.splitTo.some(
+        (split) => split.categoryId && filter.categoryIds!.includes(split.categoryId)
+      )
+      return parentMatch || childMatch
+    })
   }
 
   return c.json(
@@ -273,189 +166,117 @@ transactions.get("/", async (c) => {
       shop: t.shop,
       memo: t.memo,
       date: t.date,
-      includeInReports: t.include_in_reports,
-      amountCents: t.amount_cents,
-      shopAmountCents: t.shop_amount_cents,
-      accountId: t.account_id,
-      createdAt: t.created_at,
-      updatedAt: t.updated_at,
-      currency: formatCurrency(t),
-      shopCurrency: formatShopCurrency(t),
-      category: formatCategory(t),
-      splitTo: (splitToMap.get(t.id) || []).map((s) => ({
+      includeInReports: t.includeInReports,
+      amountCents: t.amountCents,
+      shopAmountCents: t.shopAmountCents,
+      accountId: t.accountId,
+      createdAt: t.createdAt,
+      updatedAt: t.updatedAt,
+      currency: formatCurrency(t.currency),
+      shopCurrency: formatCurrency(t.shopCurrency),
+      category: formatCategory(t.category),
+      splitTo: t.splitTo.map((s) => ({
         id: s.id,
         shop: s.shop,
         memo: s.memo,
         date: s.date,
-        includeInReports: s.include_in_reports,
-        amountCents: s.amount_cents,
-        shopAmountCents: s.shop_amount_cents,
-        accountId: s.account_id,
-        createdAt: s.created_at,
-        updatedAt: s.updated_at,
-        currency: formatCurrency(s),
-        shopCurrency: formatShopCurrency(s),
-        category: formatCategory(s)
+        includeInReports: s.includeInReports,
+        amountCents: s.amountCents,
+        shopAmountCents: s.shopAmountCents,
+        accountId: s.accountId,
+        createdAt: s.createdAt,
+        updatedAt: s.updatedAt,
+        currency: formatCurrency(s.currency),
+        shopCurrency: formatCurrency(s.shopCurrency),
+        category: formatCategory(s.category)
       }))
     }))
   )
 })
 
 // GET /transactions/:id - Get a single transaction
-transactions.get("/:id", async (c) => {
+transactionsRouter.get("/:id", async (c) => {
   const db = c.get("db")
   const id = c.req.param("id")
 
-  const transaction = await db
-    .selectFrom("transactions as t")
-    .leftJoin("currencies as cur", "cur.id", "t.currency_id")
-    .leftJoin("currencies as shop_cur", "shop_cur.id", "t.shop_currency_id")
-    .leftJoin("categories as cat", "cat.id", "t.category_id")
-    .leftJoin("accounts as acc", "acc.id", "t.account_id")
-    .leftJoin("currencies as acc_cur", "acc_cur.id", "acc.currency_id")
-    .select([
-      "t.id",
-      "t.shop",
-      "t.memo",
-      "t.date",
-      "t.include_in_reports",
-      "t.amount_cents",
-      "t.shop_amount_cents",
-      "t.category_id",
-      "t.account_id",
-      "t.split_from_id",
-      "t.created_at",
-      "t.updated_at",
-      "cur.id as currency_id",
-      "cur.code as currency_code",
-      "cur.name as currency_name",
-      "cur.symbol as currency_symbol",
-      "cur.decimal_digits as currency_decimal_digits",
-      "shop_cur.id as shop_currency_id",
-      "shop_cur.code as shop_currency_code",
-      "shop_cur.name as shop_currency_name",
-      "shop_cur.symbol as shop_currency_symbol",
-      "shop_cur.decimal_digits as shop_currency_decimal_digits",
-      "cat.id as cat_id",
-      "cat.name as cat_name",
-      "cat.color as cat_color",
-      "cat.icon as cat_icon",
-      "cat.emoji as cat_emoji",
-      "cat.regular as cat_regular",
-      "cat.sort_order as cat_sort_order",
-      "acc.id as account_id_joined",
-      "acc.name as account_name",
-      "acc.favourite as account_favourite",
-      "acc.sort_order as account_sort_order",
-      "acc_cur.id as account_currency_id",
-      "acc_cur.code as account_currency_code",
-      "acc_cur.name as account_currency_name",
-      "acc_cur.symbol as account_currency_symbol",
-      "acc_cur.decimal_digits as account_currency_decimal_digits"
-    ])
-    .where("t.id", "=", id)
-    .where("t.deleted_at", "is", null)
-    .executeTakeFirst()
+  const transaction = await db.query.transactions.findFirst({
+    where: and(eq(transactions.id, id), isNull(transactions.deletedAt)),
+    with: {
+      currency: true,
+      shopCurrency: true,
+      category: true,
+      account: {
+        with: {
+          currency: true
+        }
+      },
+      splitTo: {
+        where: isNull(transactions.deletedAt),
+        orderBy: [asc(transactions.amountCents), asc(transactions.shop)],
+        with: {
+          currency: true,
+          shopCurrency: true,
+          category: true
+        }
+      }
+    }
+  })
 
   if (!transaction) {
     return c.json({ error: "Transaction not found" }, 404)
   }
-
-  // Get split_to transactions
-  const splits = await db
-    .selectFrom("transactions as t")
-    .leftJoin("currencies as cur", "cur.id", "t.currency_id")
-    .leftJoin("currencies as shop_cur", "shop_cur.id", "t.shop_currency_id")
-    .leftJoin("categories as cat", "cat.id", "t.category_id")
-    .select([
-      "t.id",
-      "t.shop",
-      "t.memo",
-      "t.date",
-      "t.include_in_reports",
-      "t.amount_cents",
-      "t.shop_amount_cents",
-      "t.category_id",
-      "t.account_id",
-      "t.split_from_id",
-      "t.created_at",
-      "t.updated_at",
-      "cur.id as currency_id",
-      "cur.code as currency_code",
-      "cur.name as currency_name",
-      "cur.symbol as currency_symbol",
-      "cur.decimal_digits as currency_decimal_digits",
-      "shop_cur.id as shop_currency_id",
-      "shop_cur.code as shop_currency_code",
-      "shop_cur.name as shop_currency_name",
-      "shop_cur.symbol as shop_currency_symbol",
-      "shop_cur.decimal_digits as shop_currency_decimal_digits",
-      "cat.id as cat_id",
-      "cat.name as cat_name",
-      "cat.color as cat_color",
-      "cat.icon as cat_icon",
-      "cat.emoji as cat_emoji",
-      "cat.regular as cat_regular",
-      "cat.sort_order as cat_sort_order"
-    ])
-    .where("t.deleted_at", "is", null)
-    .where("t.split_from_id", "=", id)
-    .orderBy("cat.sort_order", "asc")
-    .orderBy("t.amount_cents", "asc")
-    .orderBy("t.shop", "asc")
-    .execute()
 
   return c.json({
     id: transaction.id,
     shop: transaction.shop,
     memo: transaction.memo,
     date: transaction.date,
-    includeInReports: transaction.include_in_reports,
-    amountCents: transaction.amount_cents,
-    shopAmountCents: transaction.shop_amount_cents,
-    splitFromId: transaction.split_from_id,
-    createdAt: transaction.created_at,
-    updatedAt: transaction.updated_at,
-    currency: formatCurrency(transaction),
-    shopCurrency: formatShopCurrency(transaction),
-    category: formatCategory(transaction),
-    account: transaction.account_id_joined
+    includeInReports: transaction.includeInReports,
+    amountCents: transaction.amountCents,
+    shopAmountCents: transaction.shopAmountCents,
+    splitFromId: transaction.splitFromId,
+    createdAt: transaction.createdAt,
+    updatedAt: transaction.updatedAt,
+    currency: formatCurrency(transaction.currency),
+    shopCurrency: formatCurrency(transaction.shopCurrency),
+    category: formatCategory(transaction.category),
+    account: transaction.account
       ? {
-          id: transaction.account_id_joined,
-          name: transaction.account_name,
-          favourite: transaction.account_favourite,
-          sortOrder: transaction.account_sort_order,
-          currency: transaction.account_currency_id
+          id: transaction.account.id,
+          name: transaction.account.name,
+          favourite: transaction.account.favourite,
+          sortOrder: transaction.account.sortOrder,
+          currency: transaction.account.currency
             ? {
-                id: transaction.account_currency_id,
-                code: transaction.account_currency_code!,
-                name: transaction.account_currency_name!,
-                symbol: transaction.account_currency_symbol!,
-                decimalDigits: transaction.account_currency_decimal_digits!
+                id: transaction.account.currency.id,
+                code: transaction.account.currency.code,
+                name: transaction.account.currency.name,
+                symbol: transaction.account.currency.symbol,
+                decimalDigits: transaction.account.currency.decimalDigits
               }
             : null
         }
       : null,
-    splitTo: splits.map((s) => ({
+    splitTo: transaction.splitTo.map((s) => ({
       id: s.id,
       shop: s.shop,
       memo: s.memo,
       date: s.date,
-      includeInReports: s.include_in_reports,
-      amountCents: s.amount_cents,
-      shopAmountCents: s.shop_amount_cents,
-      accountId: s.account_id,
-      createdAt: s.created_at,
-      updatedAt: s.updated_at,
-      currency: formatCurrency(s),
-      shopCurrency: formatShopCurrency(s),
-      category: formatCategory(s)
+      includeInReports: s.includeInReports,
+      amountCents: s.amountCents,
+      shopAmountCents: s.shopAmountCents,
+      accountId: s.accountId,
+      createdAt: s.createdAt,
+      updatedAt: s.updatedAt,
+      currency: formatCurrency(s.currency),
+      shopCurrency: formatCurrency(s.shopCurrency),
+      category: formatCategory(s.category)
     }))
   })
 })
 
 // POST /transactions - Create a new transaction
-transactions.post("/", async (c) => {
+transactionsRouter.post("/", async (c) => {
   const db = c.get("db")
   const parsed = createTransactionSchema.safeParse(await c.req.json())
 
@@ -465,25 +286,22 @@ transactions.post("/", async (c) => {
 
   const body = parsed.data
 
-  const newTransaction: NewTransaction = {
-    shop: body.shop,
-    memo: body.memo,
-    date: body.date,
-    include_in_reports: body.includeInReports,
-    amount_cents: body.amountCents ?? null,
-    currency_id: body.currencyId ?? null,
-    shop_amount_cents: body.shopAmountCents ?? null,
-    shop_currency_id: body.shopCurrencyId ?? null,
-    category_id: body.categoryId ?? null,
-    account_id: body.accountId,
-    updated_at: new Date()
-  }
-
-  const transaction = await db
-    .insertInto("transactions")
-    .values(newTransaction)
-    .returningAll()
-    .executeTakeFirstOrThrow()
+  const [transaction] = await db
+    .insert(transactions)
+    .values({
+      shop: body.shop,
+      memo: body.memo,
+      date: body.date,
+      includeInReports: body.includeInReports,
+      amountCents: body.amountCents ?? null,
+      currencyId: body.currencyId ?? null,
+      shopAmountCents: body.shopAmountCents ?? null,
+      shopCurrencyId: body.shopCurrencyId ?? null,
+      categoryId: body.categoryId ?? null,
+      accountId: body.accountId,
+      updatedAt: new Date()
+    })
+    .returning()
 
   return c.json(
     {
@@ -491,22 +309,22 @@ transactions.post("/", async (c) => {
       shop: transaction.shop,
       memo: transaction.memo,
       date: transaction.date,
-      includeInReports: transaction.include_in_reports,
-      amountCents: transaction.amount_cents,
-      shopAmountCents: transaction.shop_amount_cents,
-      categoryId: transaction.category_id,
-      accountId: transaction.account_id,
-      currencyId: transaction.currency_id,
-      shopCurrencyId: transaction.shop_currency_id,
-      createdAt: transaction.created_at,
-      updatedAt: transaction.updated_at
+      includeInReports: transaction.includeInReports,
+      amountCents: transaction.amountCents,
+      shopAmountCents: transaction.shopAmountCents,
+      categoryId: transaction.categoryId,
+      accountId: transaction.accountId,
+      currencyId: transaction.currencyId,
+      shopCurrencyId: transaction.shopCurrencyId,
+      createdAt: transaction.createdAt,
+      updatedAt: transaction.updatedAt
     },
     201
   )
 })
 
 // PATCH /transactions/:id - Update a transaction
-transactions.patch("/:id", async (c) => {
+transactionsRouter.patch("/:id", async (c) => {
   const db = c.get("db")
   const id = c.req.param("id")
   const parsed = updateTransactionSchema.safeParse(await c.req.json())
@@ -517,23 +335,20 @@ transactions.patch("/:id", async (c) => {
 
   const body = parsed.data
 
-  const existing = await db
-    .selectFrom("transactions")
-    .selectAll()
-    .where("id", "=", id)
-    .where("deleted_at", "is", null)
-    .executeTakeFirst()
+  const existing = await db.query.transactions.findFirst({
+    where: and(eq(transactions.id, id), isNull(transactions.deletedAt))
+  })
 
   if (!existing) {
     return c.json({ error: "Transaction not found" }, 404)
   }
 
-  const updates: TransactionUpdate = {
-    updated_at: new Date()
+  const updates: Partial<typeof transactions.$inferInsert> = {
+    updatedAt: new Date()
   }
 
   // Parent attributes that cascade to splits
-  const parentUpdates: TransactionUpdate = {}
+  const parentUpdates: Partial<typeof transactions.$inferInsert> = {}
 
   if (body.shop !== undefined) {
     updates.shop = body.shop
@@ -544,47 +359,44 @@ transactions.patch("/:id", async (c) => {
     updates.date = body.date
     parentUpdates.date = body.date
   }
-  if (body.includeInReports !== undefined) updates.include_in_reports = body.includeInReports
-  if (body.amountCents !== undefined) updates.amount_cents = body.amountCents
+  if (body.includeInReports !== undefined) updates.includeInReports = body.includeInReports
+  if (body.amountCents !== undefined) updates.amountCents = body.amountCents
   if (body.currencyId !== undefined) {
-    updates.currency_id = body.currencyId
-    parentUpdates.currency_id = body.currencyId
+    updates.currencyId = body.currencyId
+    parentUpdates.currencyId = body.currencyId
   }
-  if (body.shopAmountCents !== undefined) updates.shop_amount_cents = body.shopAmountCents
+  if (body.shopAmountCents !== undefined) updates.shopAmountCents = body.shopAmountCents
   if (body.shopCurrencyId !== undefined) {
-    updates.shop_currency_id = body.shopCurrencyId
-    parentUpdates.shop_currency_id = body.shopCurrencyId
+    updates.shopCurrencyId = body.shopCurrencyId
+    parentUpdates.shopCurrencyId = body.shopCurrencyId
   }
-  if (body.categoryId !== undefined) updates.category_id = body.categoryId
+  if (body.categoryId !== undefined) updates.categoryId = body.categoryId
   if (body.accountId !== undefined) {
-    updates.account_id = body.accountId
-    parentUpdates.account_id = body.accountId
+    updates.accountId = body.accountId
+    parentUpdates.accountId = body.accountId
   }
 
   // If this is a split child, only update non-parent attributes
-  if (existing.split_from_id) {
+  if (existing.splitFromId) {
     delete updates.date
     delete updates.shop
-    delete updates.account_id
-    delete updates.currency_id
-    delete updates.shop_currency_id
+    delete updates.accountId
+    delete updates.currencyId
+    delete updates.shopCurrencyId
   }
 
-  const transaction = await db
-    .updateTable("transactions")
+  const [transaction] = await db
+    .update(transactions)
     .set(updates)
-    .where("id", "=", id)
-    .returningAll()
-    .executeTakeFirstOrThrow()
+    .where(eq(transactions.id, id))
+    .returning()
 
   // Cascade parent attributes to split children
-  if (!existing.split_from_id && Object.keys(parentUpdates).length > 0) {
+  if (!existing.splitFromId && Object.keys(parentUpdates).length > 0) {
     await db
-      .updateTable("transactions")
-      .set({ ...parentUpdates, updated_at: new Date() })
-      .where("split_from_id", "=", id)
-      .where("deleted_at", "is", null)
-      .execute()
+      .update(transactions)
+      .set({ ...parentUpdates, updatedAt: new Date() })
+      .where(and(eq(transactions.splitFromId, id), isNull(transactions.deletedAt)))
   }
 
   return c.json({
@@ -592,29 +404,26 @@ transactions.patch("/:id", async (c) => {
     shop: transaction.shop,
     memo: transaction.memo,
     date: transaction.date,
-    includeInReports: transaction.include_in_reports,
-    amountCents: transaction.amount_cents,
-    shopAmountCents: transaction.shop_amount_cents,
-    categoryId: transaction.category_id,
-    accountId: transaction.account_id,
-    currencyId: transaction.currency_id,
-    shopCurrencyId: transaction.shop_currency_id,
-    createdAt: transaction.created_at,
-    updatedAt: transaction.updated_at
+    includeInReports: transaction.includeInReports,
+    amountCents: transaction.amountCents,
+    shopAmountCents: transaction.shopAmountCents,
+    categoryId: transaction.categoryId,
+    accountId: transaction.accountId,
+    currencyId: transaction.currencyId,
+    shopCurrencyId: transaction.shopCurrencyId,
+    createdAt: transaction.createdAt,
+    updatedAt: transaction.updatedAt
   })
 })
 
 // DELETE /transactions/:id - Soft delete a transaction
-transactions.delete("/:id", async (c) => {
+transactionsRouter.delete("/:id", async (c) => {
   const db = c.get("db")
   const id = c.req.param("id")
 
-  const existing = await db
-    .selectFrom("transactions")
-    .selectAll()
-    .where("id", "=", id)
-    .where("deleted_at", "is", null)
-    .executeTakeFirst()
+  const existing = await db.query.transactions.findFirst({
+    where: and(eq(transactions.id, id), isNull(transactions.deletedAt))
+  })
 
   if (!existing) {
     return c.json({ error: "Transaction not found" }, 404)
@@ -624,19 +433,17 @@ transactions.delete("/:id", async (c) => {
 
   // Soft delete the transaction
   await db
-    .updateTable("transactions")
-    .set({ deleted_at: now, updated_at: now })
-    .where("id", "=", id)
-    .execute()
+    .update(transactions)
+    .set({ deletedAt: now, updatedAt: now })
+    .where(eq(transactions.id, id))
 
   // Soft delete split children
   await db
-    .updateTable("transactions")
-    .set({ deleted_at: now, updated_at: now })
-    .where("split_from_id", "=", id)
-    .execute()
+    .update(transactions)
+    .set({ deletedAt: now, updatedAt: now })
+    .where(eq(transactions.splitFromId, id))
 
   return c.json({ success: true })
 })
 
-export default transactions
+export default transactionsRouter
