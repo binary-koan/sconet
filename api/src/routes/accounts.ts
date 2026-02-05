@@ -129,6 +129,7 @@ accountsRouter.post("/", async (c) => {
       currencyId: body.currencyId,
       favourite: body.favourite ?? false,
       sortOrder,
+      createdAt: new Date(),
       updatedAt: new Date()
     })
     .returning()

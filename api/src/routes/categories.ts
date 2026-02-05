@@ -142,6 +142,7 @@ categoriesRouter.post("/", async (c) => {
       emoji: body.emoji ?? null,
       regular: body.isRegular ?? false,
       sortOrder,
+      createdAt: new Date(),
       updatedAt: new Date()
     })
     .returning()
@@ -157,6 +158,7 @@ categoriesRouter.post("/", async (c) => {
       dateTo: null,
       budgetCents: body.budgetCents,
       currencyId: body.budgetCurrencyId,
+      createdAt: new Date(),
       updatedAt: new Date()
     })
   }
@@ -261,6 +263,7 @@ categoriesRouter.patch("/:id", async (c) => {
         dateTo: null,
         budgetCents: body.budgetCents,
         currencyId: body.budgetCurrencyId,
+        createdAt: new Date(),
         updatedAt: new Date()
       })
     }

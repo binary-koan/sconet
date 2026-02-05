@@ -299,6 +299,7 @@ transactionsRouter.post("/", async (c) => {
       shopCurrencyId: body.shopCurrencyId ?? null,
       categoryId: body.categoryId ?? null,
       accountId: body.accountId,
+      createdAt: new Date(),
       updatedAt: new Date()
     })
     .returning()
