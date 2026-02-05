@@ -4,6 +4,7 @@ import { CategoryPicker } from "@/components/CategoryPicker"
 import { DatePicker } from "@/components/DatePicker"
 import { getSplitsForSubmission, SplitForm, SplitGroup } from "@/components/transactions/SplitForm"
 import { Button } from "@/components/ui/button"
+import { FormModal } from "@/components/ui/form-modal"
 import { Icon } from "@/components/ui/icon"
 import { Input } from "@/components/ui/input"
 import { Text } from "@/components/ui/text"
@@ -20,15 +21,7 @@ import { cn } from "@/lib/utils"
 import { Stack, useLocalSearchParams } from "expo-router"
 import { EyeIcon, EyeOffIcon, SplitIcon, XIcon } from "lucide-react-native"
 import { useEffect, useMemo, useState } from "react"
-import {
-  ActivityIndicator,
-  Modal,
-  Pressable,
-  ScrollView,
-  TouchableOpacity,
-  View
-} from "react-native"
-import { useSafeAreaInsets } from "react-native-safe-area-context"
+import { ActivityIndicator, Pressable, ScrollView, TouchableOpacity, View } from "react-native"
 
 type Account = {
   id: string
@@ -51,7 +44,6 @@ function parseDate(dateString: string): Date {
 
 export default function TransactionDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>()
-  const insets = useSafeAreaInsets()
 
   const { data, loading, error } = useTransactionQuery({ id })
   const { data: categoriesData } = useCategoriesQuery()
@@ -429,49 +421,38 @@ export default function TransactionDetailScreen() {
         </View>
       </ScrollView>
 
-      <Modal
-        visible={splitModalOpen}
-        presentationStyle="formSheet"
-        animationType="slide"
-        onRequestClose={() => setSplitModalOpen(false)}
-      >
-        <View className="bg-background flex-1" style={{ paddingBottom: insets.bottom }}>
-          <View className="border-border mb-4 flex-row items-center justify-between border-b px-4 py-4">
-            <Text variant="large">Split Transaction</Text>
-            <TouchableOpacity onPress={() => setSplitModalOpen(false)}>
-              <Icon as={XIcon} className="size-6 text-foreground" />
-            </TouchableOpacity>
-          </View>
-
-          <ScrollView className="flex-1" keyboardShouldPersistTaps="handled">
-            <View className="gap-4 px-4">
-              <View className="flex-row items-center justify-between">
-                <Text variant="large">{shop || "Split Transaction"}</Text>
-                <Text className="text-muted-foreground">
-                  Total: {transaction?.amount?.formatted ?? "Pending"}
-                </Text>
-              </View>
-
-              <SplitForm
-                groups={splitGroups}
-                onGroupsChange={setSplitGroups}
-                remainder={splitRemainder}
-                categories={categories}
-              />
-            </View>
-          </ScrollView>
-
-          <View className="mt-auto gap-2 px-4 py-4">
-            <Button onPress={handleSplitSubmit} disabled={splitting}>
-              {splitting ? (
-                <ActivityIndicator size="small" color="white" />
-              ) : (
-                <Text>Save Split</Text>
-              )}
-            </Button>
-          </View>
+      <FormModal visible={splitModalOpen} onRequestClose={() => setSplitModalOpen(false)}>
+        <View className="border-border mb-4 flex-row items-center justify-between border-b px-4 py-4">
+          <Text variant="large">Split Transaction</Text>
+          <TouchableOpacity onPress={() => setSplitModalOpen(false)}>
+            <Icon as={XIcon} className="size-6 text-foreground" />
+          </TouchableOpacity>
         </View>
-      </Modal>
+
+        <ScrollView className="flex-1" keyboardShouldPersistTaps="handled">
+          <View className="gap-4 px-4">
+            <View className="flex-row items-center justify-between">
+              <Text variant="large">{shop || "Split Transaction"}</Text>
+              <Text className="text-muted-foreground">
+                Total: {transaction?.amount?.formatted ?? "Pending"}
+              </Text>
+            </View>
+
+            <SplitForm
+              groups={splitGroups}
+              onGroupsChange={setSplitGroups}
+              remainder={splitRemainder}
+              categories={categories}
+            />
+          </View>
+        </ScrollView>
+
+        <View className="mt-auto gap-2 px-4 py-4">
+          <Button onPress={handleSplitSubmit} disabled={splitting}>
+            {splitting ? <ActivityIndicator size="small" color="white" /> : <Text>Save Split</Text>}
+          </Button>
+        </View>
+      </FormModal>
     </>
   )
 }

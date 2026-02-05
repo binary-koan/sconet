@@ -17,8 +17,8 @@ import { Category } from "@/lib/graphql/types"
 import { CombinedGraphQLErrors } from "@apollo/client"
 import { SplitIcon, XIcon } from "lucide-react-native"
 import { useEffect, useMemo, useState } from "react"
-import { ActivityIndicator, Modal, ScrollView, TouchableOpacity, View } from "react-native"
-import { useSafeAreaInsets } from "react-native-safe-area-context"
+import { ActivityIndicator, ScrollView, TouchableOpacity, View } from "react-native"
+import { FormModal } from "../ui/form-modal"
 import { Icon } from "../ui/icon"
 import {
   createInitialGroups,
@@ -56,7 +56,6 @@ export function NewTransactionForm({
   const [selectedAccount, setSelectedAccount] = useState<Account | null>(null)
   const [splittingTransactionId, setSplittingTransactionId] = useState<string | null>(null)
   const [splitGroups, setSplitGroups] = useState<SplitGroup[]>(createInitialGroups())
-  const insets = useSafeAreaInsets()
 
   const { data: categoriesData } = useCategoriesQuery()
   const { data: accountsData } = useAccountsQuery()
@@ -194,133 +193,121 @@ export function NewTransactionForm({
     shop.trim() && amount.trim() && !isNaN(parseFloat(amount.replace(/[^0-9.-]/g, "")))
 
   return (
-    <Modal
-      visible={open}
-      presentationStyle="formSheet"
-      animationType="slide"
-      onRequestClose={handleClose}
-      className="bg-background"
-    >
-      <View className="bg-background flex-1" style={{ paddingBottom: insets.bottom }}>
-        <View className="border-border mb-4 flex-row items-center justify-between border-b px-4 py-4">
-          <Text variant="large">New Transaction</Text>
-          <TouchableOpacity onPress={handleClose}>
-            <Icon as={XIcon} className="size-6 text-foreground" />
-          </TouchableOpacity>
-        </View>
+    <FormModal visible={open} onRequestClose={handleClose}>
+      <View className="border-border mb-4 flex-row items-center justify-between border-b px-4 py-4">
+        <Text variant="large">New Transaction</Text>
+        <TouchableOpacity onPress={handleClose}>
+          <Icon as={XIcon} className="size-6 text-foreground" />
+        </TouchableOpacity>
+      </View>
 
-        {splitMode ? (
-          <ScrollView className="flex-1" keyboardShouldPersistTaps="handled">
-            <View className="gap-4 px-4">
-              <View className="flex-row items-center justify-between">
-                <Text variant="large">{shop || "Split Transaction"}</Text>
-                <Text className="text-muted-foreground">
-                  Total: {selectedAccount?.currency?.symbol ?? "$"}
-                  {amount || "0"}
-                </Text>
-              </View>
-
-              <SplitForm
-                groups={splitGroups}
-                onGroupsChange={setSplitGroups}
-                remainder={splitRemainder}
-                categories={categories}
-              />
+      {splitMode ? (
+        <ScrollView className="flex-1" keyboardShouldPersistTaps="handled">
+          <View className="gap-4 px-4">
+            <View className="flex-row items-center justify-between">
+              <Text variant="large">{shop || "Split Transaction"}</Text>
+              <Text className="text-muted-foreground">
+                Total: {selectedAccount?.currency?.symbol ?? "$"}
+                {amount || "0"}
+              </Text>
             </View>
-          </ScrollView>
-        ) : (
-          <ScrollView className="flex-1" keyboardShouldPersistTaps="handled">
-            <View className="gap-4 px-4">
-              <View className="gap-2">
-                <Text variant="small" className="text-muted-foreground">
-                  Where?
-                </Text>
-                <Input value={shop} onChangeText={setShop} autoFocus />
-              </View>
 
-              <View className="gap-2">
-                <Text variant="small" className="text-muted-foreground">
-                  What?
-                </Text>
-                <Input value={memo} onChangeText={setMemo} />
-              </View>
+            <SplitForm
+              groups={splitGroups}
+              onGroupsChange={setSplitGroups}
+              remainder={splitRemainder}
+              categories={categories}
+            />
+          </View>
+        </ScrollView>
+      ) : (
+        <ScrollView className="flex-1" keyboardShouldPersistTaps="handled">
+          <View className="gap-4 px-4">
+            <View className="gap-2">
+              <Text variant="small" className="text-muted-foreground">
+                Where?
+              </Text>
+              <Input value={shop} onChangeText={setShop} autoFocus />
+            </View>
 
-              <View className="gap-2">
-                <Text variant="small" className="text-muted-foreground">
-                  Amount
-                </Text>
-                <View className="relative">
-                  <Input
-                    value={amount}
-                    onChangeText={setAmount}
-                    keyboardType="decimal-pad"
-                    placeholder={selectedAccount?.currency?.symbol ?? "$"}
-                  />
-                  <View className="absolute top-0 right-0">
-                    <AmountTypePicker value={amountType} onChange={setAmountType} />
-                  </View>
+            <View className="gap-2">
+              <Text variant="small" className="text-muted-foreground">
+                What?
+              </Text>
+              <Input value={memo} onChangeText={setMemo} />
+            </View>
+
+            <View className="gap-2">
+              <Text variant="small" className="text-muted-foreground">
+                Amount
+              </Text>
+              <View className="relative">
+                <Input
+                  value={amount}
+                  onChangeText={setAmount}
+                  keyboardType="decimal-pad"
+                  placeholder={selectedAccount?.currency?.symbol ?? "$"}
+                />
+                <View className="absolute top-0 right-0">
+                  <AmountTypePicker value={amountType} onChange={setAmountType} />
                 </View>
               </View>
+            </View>
 
-              {amountType === "expense" && (
-                <View className="gap-2">
-                  <Text variant="small" className="text-muted-foreground">
-                    Category
-                  </Text>
-                  <CategoryPicker
-                    categories={categories}
-                    selectedCategory={selectedCategory}
-                    onSelect={setSelectedCategory}
-                  />
-                </View>
-              )}
-
+            {amountType === "expense" && (
               <View className="gap-2">
                 <Text variant="small" className="text-muted-foreground">
-                  Date
+                  Category
                 </Text>
-                <DatePicker value={selectedDate} onChange={setSelectedDate} />
-              </View>
-
-              <View className="gap-2">
-                <Text variant="small" className="text-muted-foreground">
-                  Account
-                </Text>
-                <AccountPicker
-                  accounts={accounts}
-                  selectedAccount={selectedAccount}
-                  onSelect={setSelectedAccount}
+                <CategoryPicker
+                  categories={categories}
+                  selectedCategory={selectedCategory}
+                  onSelect={setSelectedCategory}
                 />
               </View>
-            </View>
-          </ScrollView>
-        )}
+            )}
 
-        {splitMode ? (
-          <View className="mt-auto gap-2 px-4 py-4">
-            <Button className="flex-1" onPress={handleSplitSubmit} disabled={splitLoading}>
-              {splitLoading ? <ActivityIndicator size="small" color="white" /> : <Text>Split</Text>}
-            </Button>
-            <Button variant="ghost" className="flex-1" onPress={handleClose}>
-              <Text>Cancel</Text>
-            </Button>
+            <View className="gap-2">
+              <Text variant="small" className="text-muted-foreground">
+                Date
+              </Text>
+              <DatePicker value={selectedDate} onChange={setSelectedDate} />
+            </View>
+
+            <View className="gap-2">
+              <Text variant="small" className="text-muted-foreground">
+                Account
+              </Text>
+              <AccountPicker
+                accounts={accounts}
+                selectedAccount={selectedAccount}
+                onSelect={setSelectedAccount}
+              />
+            </View>
           </View>
-        ) : (
-          <View className="mt-auto gap-2 px-4 py-4">
-            <Button onPress={() => handleSubmit(false)} disabled={!isValid || loading}>
-              {loading ? <ActivityIndicator size="small" color="white" /> : <Text>Save</Text>}
-            </Button>
-            <Button
-              variant="ghost"
-              onPress={() => handleSubmit(true)}
-              disabled={!isValid || loading}
-            >
-              <Icon as={SplitIcon} className="size-4 text-foreground mr-2" />
-              <Text>Save & Split</Text>
-            </Button>
-          </View>
-        )}
-      </View>
-    </Modal>
+        </ScrollView>
+      )}
+
+      {splitMode ? (
+        <View className="mt-auto gap-2 px-4 py-4">
+          <Button className="flex-1" onPress={handleSplitSubmit} disabled={splitLoading}>
+            {splitLoading ? <ActivityIndicator size="small" color="white" /> : <Text>Split</Text>}
+          </Button>
+          <Button variant="ghost" className="flex-1" onPress={handleClose}>
+            <Text>Cancel</Text>
+          </Button>
+        </View>
+      ) : (
+        <View className="mt-auto gap-2 px-4 py-4">
+          <Button onPress={() => handleSubmit(false)} disabled={!isValid || loading}>
+            {loading ? <ActivityIndicator size="small" color="white" /> : <Text>Save</Text>}
+          </Button>
+          <Button variant="ghost" onPress={() => handleSubmit(true)} disabled={!isValid || loading}>
+            <Icon as={SplitIcon} className="size-4 text-foreground mr-2" />
+            <Text>Save & Split</Text>
+          </Button>
+        </View>
+      )}
+    </FormModal>
   )
 }
