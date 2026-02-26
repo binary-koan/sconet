@@ -10,13 +10,14 @@ export const dbMiddleware: MiddlewareHandler = async (c, next) => {
     return c.json({ error: "Database not configured" }, 500)
   }
 
-  const pool = new pg.Pool({ connectionString })
-  const db = drizzle(pool, { schema })
+  const client = new pg.Client({ connectionString })
+  await client.connect()
+  const db = drizzle(client, { schema })
 
   c.set("db", db)
-  c.set("pool", pool)
+  c.set("pool", client)
 
   await next()
 
-  await pool.end()
+  c.executionCtx.waitUntil(client.end())
 }

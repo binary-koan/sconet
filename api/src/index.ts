@@ -19,7 +19,7 @@ export type Bindings = {
 
 export type Variables = {
   db: Database
-  pool: pg.Pool
+  pool: pg.Client
   user: User
 }
 
