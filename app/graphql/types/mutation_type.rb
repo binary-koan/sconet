@@ -13,6 +13,7 @@ module Types
     field :category_delete, mutation: Mutations::CategoryDelete
     field :category_update, mutation: Mutations::CategoryUpdate
     field :credential_delete, mutation: Mutations::CredentialDelete
+    field :currency_create, mutation: Mutations::CurrencyCreate
     field :credential_login_start, mutation: Mutations::CredentialLoginStart
     field :credential_register, mutation: Mutations::CredentialRegister
     field :credential_registration_start, mutation: Mutations::CredentialRegistrationStart
