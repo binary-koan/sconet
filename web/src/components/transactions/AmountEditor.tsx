@@ -59,7 +59,7 @@ export const AmountEditor: Component<{
 
     if (props.field === "shopAmount") {
       currency =
-        currencies()?.currencies.find((currency) => currency.code === newCurrencyId()) || currency
+        currencies()?.currencies.find((currency) => currency.id === newCurrencyId()) || currency
     }
 
     let amount = toCents(newAmount(), currency)
@@ -99,7 +99,7 @@ export const AmountEditor: Component<{
             <CurrencySelect
               value={newCurrencyId()}
               onChange={setNewCurrencyId}
-              filter={(currency) => currency.code !== props.transaction.currency?.id}
+              filter={(currency) => currency.id !== props.transaction.currency?.id}
             >
               {(currency) => (
                 <Button size="xs">

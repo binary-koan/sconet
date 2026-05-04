@@ -163,7 +163,7 @@ export const NewTransactionModal: Component<{
 
     if (shopCurrencyId && shopAmount) {
       const shopCurrency = currencies()?.currencies.find(
-        (currency) => currency.code === shopCurrencyId
+        (currency) => currency.id === shopCurrencyId
       )
       const integerShopAmount = toCents(shopAmount || "0", shopCurrency)
       coercedData.shopAmountCents =
