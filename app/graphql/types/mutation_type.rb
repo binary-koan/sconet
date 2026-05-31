@@ -23,6 +23,7 @@ module Types
     field :favourite_transaction_delete, mutation: Mutations::FavouriteTransactionDelete
     field :login, mutation: Mutations::Login
     field :transaction_create, mutation: Mutations::TransactionCreate
+    field :transaction_create_from_receipt, mutation: Mutations::TransactionCreateFromReceipt
     field :transaction_delete, mutation: Mutations::TransactionDelete
     field :transaction_split, mutation: Mutations::TransactionSplit
     field :transaction_update, mutation: Mutations::TransactionUpdate

@@ -4,11 +4,20 @@ import { TransactionsList } from "@/components/transactions/TransactionsList"
 import { Icon } from "@/components/ui/icon"
 import { Text } from "@/components/ui/text"
 import { formatDate } from "@/lib/formatters"
-import { useTransactionsQuery } from "@/lib/graphql/queries"
-import { Stack } from "expo-router"
-import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, PlusIcon } from "lucide-react-native"
+import { TRANSACTIONS_QUERY, useTransactionsQuery } from "@/lib/graphql/queries"
+import { uploadReceiptPhoto } from "@/lib/uploadReceipt"
+import { useApolloClient } from "@apollo/client/react"
+import * as ImagePicker from "expo-image-picker"
+import { Stack, useRouter } from "expo-router"
+import {
+  CameraIcon,
+  ChevronDownIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  PlusIcon
+} from "lucide-react-native"
 import { useMemo, useState } from "react"
-import { ActivityIndicator, TouchableOpacity, View } from "react-native"
+import { ActivityIndicator, Alert, TouchableOpacity, View } from "react-native"
 
 function getMonthRange(date: Date) {
   const year = date.getFullYear()
@@ -23,11 +32,14 @@ function getMonthRange(date: Date) {
 }
 
 export default function TransactionsScreen() {
+  const router = useRouter()
+  const apolloClient = useApolloClient()
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [showNewTransactionForm, setShowNewTransactionForm] = useState(false)
   const [showMonthPicker, setShowMonthPicker] = useState(false)
   const [currentMonth, setCurrentMonth] = useState(() => new Date())
   const [newTransactionDate, setNewTransactionDate] = useState<Date | undefined>(undefined)
+  const [uploadingReceipt, setUploadingReceipt] = useState(false)
 
   const { dateFrom, dateUntil } = useMemo(() => getMonthRange(currentMonth), [currentMonth])
 
@@ -48,6 +60,34 @@ export default function TransactionsScreen() {
 
   const goToNextMonth = () => {
     setCurrentMonth((prev) => new Date(prev.getFullYear(), prev.getMonth() + 1, 1))
+  }
+
+  const handleCapturePhoto = async () => {
+    if (uploadingReceipt) return
+
+    const permission = await ImagePicker.requestCameraPermissionsAsync()
+    if (!permission.granted) {
+      Alert.alert("Camera permission required", "Allow camera access to capture receipts.")
+      return
+    }
+
+    const result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ["images"],
+      quality: 0.8
+    })
+    if (result.canceled || !result.assets[0]) return
+
+    setUploadingReceipt(true)
+    try {
+      const transaction = await uploadReceiptPhoto(result.assets[0].uri)
+      await apolloClient.refetchQueries({ include: [TRANSACTIONS_QUERY] })
+      router.push(`/transactions/${transaction.id}`)
+    } catch (error) {
+      console.error("Failed to upload receipt:", error)
+      Alert.alert("Upload failed", error instanceof Error ? error.message : "Please try again.")
+    } finally {
+      setUploadingReceipt(false)
+    }
   }
 
   const isCurrentMonth =
@@ -116,12 +156,25 @@ export default function TransactionsScreen() {
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity
-          onPress={() => setShowNewTransactionForm(true)}
-          className="bg-accent absolute bottom-6 right-6 h-14 w-14 items-center justify-center rounded-full shadow-lg"
-        >
-          <Icon as={PlusIcon} className="size-6" />
-        </TouchableOpacity>
+        <View className="absolute bottom-6 right-6 items-end gap-3">
+          <TouchableOpacity
+            onPress={handleCapturePhoto}
+            disabled={uploadingReceipt}
+            className="bg-muted size-12 items-center justify-center rounded-full shadow-lg"
+          >
+            {uploadingReceipt ? (
+              <ActivityIndicator size="small" />
+            ) : (
+              <Icon as={CameraIcon} className="size-5" />
+            )}
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => setShowNewTransactionForm(true)}
+            className="bg-accent h-14 w-14 items-center justify-center rounded-full shadow-lg"
+          >
+            <Icon as={PlusIcon} className="size-6" />
+          </TouchableOpacity>
+        </View>
 
         <NewTransactionForm
           open={showNewTransactionForm}

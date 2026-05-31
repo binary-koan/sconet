@@ -40,6 +40,12 @@
             "backgroundColor": "#5046e6"
           }
         }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "cameraPermission": "Allow Sconet to use the camera to capture receipts."
+        }
       ]
     ],
     "experiments": {
