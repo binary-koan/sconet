@@ -36,7 +36,7 @@ Category.find_by(name: "Second") || Category.create!(
   sort_order: 2
 )
 
-account = Account.find_by(name: "Test") || Account.create!(name: "Test", currency: usd)
+account = Account.find_by(name: "Test") || Account.create!(name: "Test", currency: usd, sort_order: 1)
 
 User.find_by(email: "test@example.com") || User.create!(
   email: "test@example.com",
