@@ -28,7 +28,6 @@ const ReviewTransactionsPage: Component = () => {
 
   return (
     <>
-      <PageHeader size="lg">Review</PageHeader>
       <Cell
         data={routeData.data}
         success={(props: { data: UnconfirmedTransactionsQuery }) => {
@@ -47,28 +46,30 @@ const ReviewTransactionsPage: Component = () => {
               }
             >
               {(transaction) => (
-                <div class="flex flex-col">
-                  <div class="flex flex-col gap-4 md:h-[calc(100vh-14rem)] md:flex-row">
-                    <div class="bg-white p-4 shadow-xs md:flex-1 md:overflow-y-auto lg:rounded-sm">
-                      <TransactionView data={{ transaction: transaction() }} />
-                    </div>
-                    <div class="max-h-[50vh] overflow-y-auto bg-white p-4 shadow-xs md:max-h-none md:flex-1 lg:rounded-sm">
-                      <Show
-                        when={transaction().receiptImages.length > 0}
-                        fallback={<div class="italic text-gray-600">No receipt</div>}
-                      >
+                <>
+                  <PageHeader size="sm">{index() + 1} of {props.data.transactions.nodes.length}</PageHeader>
+                  {/* Hardcoded viewport offset; MainLayout's min-h-screen grows with content so flex-1 can't cap this */}
+                  <div class="grid h-[calc(100dvh-12rem)] grid-cols-1 grid-rows-2 gap-4 md:grid-cols-2 md:grid-rows-1">
+                    <Show
+                      when={transaction().receiptImages.length > 0}
+                      fallback={<div class="italic text-gray-600">No receipt</div>}
+                    >
+                      <div class="overflow-y-auto bg-white shadow-xs lg:rounded-sm">
                         <For each={transaction().receiptImages}>
                           {(image) => (
                             <a href={image.url} target="_blank" rel="noopener noreferrer">
-                              <img src={image.url} alt={image.filename} class="mb-2 w-full" />
+                              <img src={image.url} alt={image.filename} class="w-full" />
                             </a>
                           )}
                         </For>
-                      </Show>
+                      </div>
+                    </Show>
+                    <div class="overflow-y-auto bg-white p-4 shadow-xs lg:rounded-sm">
+                      <TransactionView data={{ transaction: transaction() }} showReceiptImages={false} />
                     </div>
                   </div>
 
-                  <div class="mt-4 flex items-center justify-center gap-2">
+                  <div class="mt-4 px-2 flex items-center justify-center gap-2">
                     <Button
                       disabled={index() <= 0}
                       onClick={() => setIndex((i) => Math.max(i - 1, 0))}
@@ -77,14 +78,14 @@ const ReviewTransactionsPage: Component = () => {
                       <IconChevronLeft />
                     </Button>
                     <Button
+                      class="flex-1"
                       colorScheme="primary"
                       disabled={updateTransaction.loading}
                       onClick={() =>
                         updateTransaction({ id: transaction().id, input: { confirmed: true } })
                       }
                     >
-                      <IconCheck class="mr-2" />
-                      Confirm ({index() + 1} of {transactions().length})
+                      Confirm
                     </Button>
                     <Button
                       disabled={index() >= transactions().length - 1}
@@ -94,7 +95,7 @@ const ReviewTransactionsPage: Component = () => {
                       <IconChevronRight />
                     </Button>
                   </div>
-                </div>
+                </>
               )}
             </Show>
           )

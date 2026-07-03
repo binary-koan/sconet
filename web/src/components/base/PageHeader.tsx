@@ -1,7 +1,8 @@
 import { JSX, splitProps } from "solid-js"
 
 const SIZE_CLASSES = {
-  lg: "text-lg lg:text-2xl"
+  lg: "text-lg lg:text-2xl",
+  sm: "text-sm"
 }
 
 export type HeadingSize = keyof typeof SIZE_CLASSES

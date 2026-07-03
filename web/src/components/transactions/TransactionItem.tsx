@@ -54,22 +54,22 @@ const TransactionItem: Component<{
           />
 
           <div
-            class="ml-2 min-w-0 flex-1 truncate px-2 leading-none"
+            class="ml-2 min-w-0 truncate px-2 leading-none"
             classList={{ "text-gray-600 line-through": !includeInReports() }}
             data-testid="memo"
           >
-            <Show when={!props.transaction.confirmed}>
-              <span class="mr-1 rounded bg-amber-100 px-1.5 py-0.5 text-xs font-medium text-amber-800">
-                Unconfirmed
-              </span>
-            </Show>
             {props.transaction.shop}{" "}
             {props.transaction.memo && (
               <span class="text-gray-600">&ndash; {props.transaction.memo}</span>
             )}
           </div>
+          <Show when={!props.transaction.confirmed}>
+            <span class="inline-block mr-2 rounded-full w-2 h-2 bg-amber-400">
+              <span class="sr-only">Unconfirmed</span>
+            </span>
+          </Show>
           <div
-            class="ml-2 whitespace-nowrap text-right"
+            class="ml-auto whitespace-nowrap text-right"
             classList={{
               "text-gray-600 line-through": !includeInReports()
             }}

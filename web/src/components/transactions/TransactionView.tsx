@@ -14,7 +14,8 @@ import { ShopEditor } from "./ShopEditor"
 import RelationEditor from "./RelationEditor"
 
 export const TransactionView: Component<{
-  data: GetTransactionQuery
+  data: GetTransactionQuery;
+  showReceiptImages?: boolean;
 }> = (props) => {
   const [editingShop, setEditingShop] = createSignal<string>()
   const [editingMemo, setEditingMemo] = createSignal<string>()
@@ -64,7 +65,7 @@ export const TransactionView: Component<{
             </Show>
           </FormControl>
 
-          <Show when={transaction().receiptImages.length > 0}>
+          <Show when={props.showReceiptImages !== false && transaction().receiptImages.length > 0}>
             <FormControl>
               <FormLabel>Receipt Images</FormLabel>
               <div class="flex flex-wrap gap-2">
