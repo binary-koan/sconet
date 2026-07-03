@@ -7,6 +7,7 @@ module Types
     field :memo, String, null: false
     field :date, GraphQL::Types::ISO8601Date, null: false
     field :include_in_reports, Boolean, null: false
+    field :confirmed, Boolean, null: false
     field :amount, Types::MoneyType do
       argument :currency_id, ID, required: false
     end

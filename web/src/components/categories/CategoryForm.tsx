@@ -18,6 +18,7 @@ type CategoryFormValues = {
   color: string
   icon: string
   emoji?: string
+  description?: string
   budget?: string
   budgetCurrencyId?: string
   isRegular?: boolean
@@ -35,6 +36,7 @@ const CategoryForm: Component<{
       color: props.category?.color,
       icon: props.category?.icon,
       emoji: props.category?.emoji || "",
+      description: props.category?.description || "",
       budget: props.category?.budget?.budget.amountDecimal.toString(),
       budgetCurrencyId: props.category?.budget?.currency.id || "",
       isRegular: props.category?.isRegular != null ? props.category.isRegular : true
@@ -44,11 +46,12 @@ const CategoryForm: Component<{
   const selectedCurrency = () =>
     currencies()?.currencies.find((currency) => currency.id === getValue(form, "budgetCurrencyId"))
 
-  const onSave = ({ budget, budgetCurrencyId, emoji, ...data }: CategoryFormValues) => {
+  const onSave = ({ budget, budgetCurrencyId, emoji, description, ...data }: CategoryFormValues) => {
     props.onSave(
       {
         ...data,
         emoji: emoji || null,
+        description: description || null,
         budgetCurrencyId: budgetCurrencyId || null,
         budgetCents: budget ? toCents(budget, selectedCurrency()) : null,
         isRegular: Boolean(data.isRegular)
@@ -92,6 +95,13 @@ const CategoryForm: Component<{
       <FormIconPicker of={form} name="icon" label="Icon" />
 
       <FormInput of={form} label="Emoji" name="emoji" placeholder="e.g. 🛒" />
+
+      <FormInput
+        of={form}
+        label="Description"
+        name="description"
+        placeholder="Notes for AI agents using the API"
+      />
 
       <FormOptionButtons
         of={form}

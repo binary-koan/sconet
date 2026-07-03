@@ -13,6 +13,7 @@ import { NewCategoryRoute } from "./routes/categories/NewCategoryRoute"
 import { BalanceRoute } from "./routes/graphs/BalanceRoute"
 import { BudgetsRoute } from "./routes/graphs/BudgetsRoute"
 import { CurrenciesRoute } from "./routes/settings/CurrenciesRoute"
+import { ReviewTransactionsRoute } from "./routes/transactions/ReviewTransactionsRoute"
 import { ShowTransactionRoute } from "./routes/transactions/ShowTransactionRoute"
 import { TransactionsCalendarRoute } from "./routes/transactions/TransactionsCalendarRoute"
 import { TransactionsListRoute } from "./routes/transactions/TransactionsListRoute"
@@ -56,6 +57,7 @@ const App: Component = () => {
 
           <TransactionsListRoute />
           <TransactionsCalendarRoute />
+          <ReviewTransactionsRoute />
           <ShowTransactionRoute />
 
           <SettingsRoute />

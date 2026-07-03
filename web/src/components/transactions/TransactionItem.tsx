@@ -58,6 +58,11 @@ const TransactionItem: Component<{
             classList={{ "text-gray-600 line-through": !includeInReports() }}
             data-testid="memo"
           >
+            <Show when={!props.transaction.confirmed}>
+              <span class="mr-1 rounded bg-amber-100 px-1.5 py-0.5 text-xs font-medium text-amber-800">
+                Unconfirmed
+              </span>
+            </Show>
             {props.transaction.shop}{" "}
             {props.transaction.memo && (
               <span class="text-gray-600">&ndash; {props.transaction.memo}</span>

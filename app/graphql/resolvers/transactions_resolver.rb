@@ -25,6 +25,10 @@ module Resolvers
         scope = scope.where('amount_cents <= ?', filter.max_amount_cents)
       end
 
+      unless filter&.confirmed.nil?
+        scope = scope.where(confirmed: filter.confirmed)
+      end
+
       if filter&.keyword.present?
         scope = scope.where('shop ILIKE :keyword OR memo ILIKE :keyword', keyword: "%#{filter.keyword}%")
       end

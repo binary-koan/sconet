@@ -14,9 +14,9 @@ export const FavouriteTransactionsList: Component<{
   })
 
   return (
-    <div class="shadow-xs flex flex-col gap-px bg-gray-100">
+    <div class="shadow-xs flex flex-col gap-px bg-white">
       <Show when={favourites().length === 0}>
-        <div class="italic">No favourite transactions</div>
+        <div class="px-4 py-2 italic">No favourite transactions</div>
       </Show>
       <For each={favourites()}>
         {(fav) => (

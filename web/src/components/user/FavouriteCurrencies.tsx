@@ -15,9 +15,9 @@ export const FavouriteCurrencies: Component<{
   })
 
   return (
-    <div class="shadow-xs flex flex-col gap-px bg-gray-100">
+    <div class="shadow-xs flex flex-col gap-px bg-white">
       <Show when={currentUser().favouriteCurrencies.length === 0}>
-        <div class="italic">No favourite currencies</div>
+        <div class="px-4 py-2 italic">No favourite currencies</div>
       </Show>
       <For each={currentUser().favouriteCurrencies}>
         {(currency) => (

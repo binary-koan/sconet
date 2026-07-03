@@ -3,6 +3,9 @@
 module Types
   class MutationType < Types::BaseObject
     field :account_archive, mutation: Mutations::AccountArchive
+    field :api_key_create, mutation: Mutations::ApiKeyCreate
+    field :api_key_regenerate, mutation: Mutations::ApiKeyRegenerate
+    field :api_key_set_disabled, mutation: Mutations::ApiKeySetDisabled
     field :account_create, mutation: Mutations::AccountCreate
     field :account_delete, mutation: Mutations::AccountDelete
     field :account_update, mutation: Mutations::AccountUpdate

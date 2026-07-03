@@ -27,6 +27,7 @@ export const FullTransactionFragment = gql`
     }
 
     includeInReports
+    confirmed
     category {
       id
       name
@@ -94,6 +95,7 @@ export const ListingTransactionFragment = gql`
     }
 
     includeInReports
+    confirmed
     category {
       id
       name

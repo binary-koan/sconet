@@ -8,5 +8,6 @@ module Types
     argument :max_amount_cents, Integer, required: false
     argument :keyword, String, required: false
     argument :category_ids, [ID, null: true], required: false
+    argument :confirmed, Boolean, required: false
   end
 end

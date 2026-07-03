@@ -11,6 +11,7 @@ module Types
     field :created_at, GraphQL::Types::ISO8601DateTime, null: false
     field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
     field :registered_credentials, [Types::UserCredentialType], null: false
+    field :api_keys, [Types::ApiKeyType], null: false
 
     def token
       object.generate_jwt

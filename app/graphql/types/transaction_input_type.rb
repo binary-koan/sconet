@@ -7,6 +7,7 @@ module Types
     argument :memo, String, required: false
     argument :date, GraphQL::Types::ISO8601Date, required: false
     argument :include_in_reports, Boolean, required: false
+    argument :confirmed, Boolean, required: false
     argument :amount_cents, Integer, required: false
     argument :currency_id, ID, required: false
     argument :shop_amount_cents, Integer, required: false

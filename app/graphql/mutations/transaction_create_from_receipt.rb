@@ -19,7 +19,8 @@ module Mutations
         currency: account.currency,
         date: Date.current,
         shop: "Receipt",
-        amount_cents: 0
+        amount_cents: 0,
+        confirmed: false
       )
 
       raise GraphQL::ExecutionError.new("Error creating transaction", extensions: transaction.errors.to_hash) unless transaction.save

@@ -67,7 +67,7 @@ const TransactionsListPage: Component = () => {
       <Title>Transactions</Title>
 
       <button
-        class="2xl:top-1.25 fixed bottom-[calc(66px+1rem+env(safe-area-inset-bottom))] right-4 z-[1025] flex items-center rounded-full border border-gray-200 bg-white px-5 py-2 text-lg text-indigo-600 shadow-lg 2xl:bottom-auto 2xl:right-[50%] 2xl:translate-x-8 2xl:shadow-none"
+        class="fixed bottom-[calc(66px+1rem+env(safe-area-inset-bottom))] right-4 z-[1025] flex items-center rounded-full border border-gray-200 bg-white px-5 py-2 text-lg text-indigo-600 shadow-lg md:hidden"
         onClick={() => setCreatingTransaction(true)}
       >
         <IconPlus size="1.25em" class="-ml-1 mr-2" />

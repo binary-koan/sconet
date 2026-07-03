@@ -29,5 +29,13 @@ export const FullCurrentUserFragment = gql`
       device
       createdAt
     }
+
+    apiKeys {
+      id
+      name
+      tokenPrefix
+      disabledAt
+      createdAt
+    }
   }
 `

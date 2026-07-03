@@ -2,7 +2,7 @@ import { startRegistration } from "@simplewebauthn/browser"
 import { Title } from "@solidjs/meta"
 import { useRouteData } from "@solidjs/router"
 import DeviceDetector from "device-detector-js"
-import { IconFingerprint, IconKey, IconTrash } from "@tabler/icons-solidjs"
+import { IconFingerprint, IconKey, IconRefresh, IconTrash } from "@tabler/icons-solidjs"
 import { Component, For, Show, createSignal } from "solid-js"
 import toast from "solid-toast"
 import { Cell } from "../components/Cell"
@@ -22,6 +22,11 @@ import {
   CurrentUserQuery,
   CurrentUserQueryVariables
 } from "../graphql-types"
+import {
+  useCreateApiKey,
+  useRegenerateApiKey,
+  useSetApiKeyDisabled
+} from "../graphql/mutations/apiKeys"
 import { useDeleteCredential } from "../graphql/mutations/deleteCredential"
 import { useRegisterCredential } from "../graphql/mutations/registerCredentialMutation"
 import { useVerifyCredentialRegistration } from "../graphql/mutations/verifyCredentialRegistrationMutation"
@@ -65,6 +70,26 @@ const SettingsPage: Component = () => {
       toast.success("Credential deleted.")
     }
   })
+
+  const [newToken, setNewToken] = createSignal<string | null>(null)
+
+  const showNewToken = (token: string) => {
+    setNewToken(token)
+    navigator.clipboard?.writeText(token).then(() => toast.success("API key copied to clipboard."))
+  }
+
+  const createApiKey = useCreateApiKey({
+    onSuccess: (data) => showNewToken(data.apiKeyCreate.apiKey.token!)
+  })
+  const regenerateApiKey = useRegenerateApiKey({
+    onSuccess: (data) => showNewToken(data.apiKeyRegenerate.apiKey.token!)
+  })
+  const setApiKeyDisabled = useSetApiKeyDisabled()
+
+  const newApiKey = () => {
+    const name = prompt("Name for the new API key?")
+    if (name) createApiKey({ name })
+  }
 
   const logOut = () => {
     setLoginToken(null)
@@ -116,6 +141,55 @@ const SettingsPage: Component = () => {
               onClick={() => deleteCredential({ id: credential.id })}
             >
               <IconTrash />
+            </Button>
+          </div>
+        )}
+      </For>
+
+      <PageHeader size="lg" class="mt-4">
+        API keys
+        <Button class="ml-auto" size="sm" colorScheme="primary" onClick={newApiKey}>
+          New API Key
+        </Button>
+      </PageHeader>
+
+      <Show when={newToken()}>
+        <div class="shadow-xs bg-white px-4 py-2 text-sm">
+          Copy your new API key now, it won't be shown again:
+          <code class="mt-1 block select-all break-all font-mono">{newToken()}</code>
+        </div>
+      </Show>
+
+      <Show when={data.currentUser()?.currentUser?.apiKeys?.length === 0}>
+        <div class="shadow-xs bg-white px-4 py-2 italic">No API keys</div>
+      </Show>
+      <For each={data.currentUser()?.currentUser?.apiKeys}>
+        {(apiKey) => (
+          <div
+            class="shadow-xs flex items-center gap-2 bg-white px-4 py-2"
+            classList={{ "opacity-50": Boolean(apiKey.disabledAt) }}
+          >
+            <IconKey /> {apiKey.name}{" "}
+            <code class="text-sm text-gray-600">{apiKey.tokenPrefix}...</code>
+            <Show when={apiKey.disabledAt}>
+              <span class="text-sm text-red-600">disabled</span>
+            </Show>
+            <Button
+              size="sm"
+              variant="ghost"
+              class="ml-auto"
+              title="Regenerate"
+              onClick={() => regenerateApiKey({ id: apiKey.id })}
+            >
+              <IconRefresh />
+            </Button>
+            <Button
+              size="sm"
+              variant="ghost"
+              colorScheme={apiKey.disabledAt ? "primary" : "danger"}
+              onClick={() => setApiKeyDisabled({ id: apiKey.id, disabled: !apiKey.disabledAt })}
+            >
+              {apiKey.disabledAt ? "Enable" : "Disable"}
             </Button>
           </div>
         )}
