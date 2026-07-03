@@ -1365,15 +1365,6 @@ export type GetTransactionQueryVariables = Exact<{
 
 export type GetTransactionQuery = { __typename?: 'Query', transaction?: { __typename?: 'Transaction', id: string, shop: string, memo: string, date: any, includeInReports: boolean, confirmed: boolean, amount?: { __typename?: 'Money', amountDecimal: number, formatted: string } | null, currency?: { __typename?: 'Currency', id: string, code: string, symbol: string, decimalDigits: number } | null, shopAmount?: { __typename?: 'Money', amountDecimal: number, formatted: string } | null, shopCurrency?: { __typename?: 'Currency', id: string } | null, category?: { __typename?: 'Category', id: string, name: string, color: string, icon: string } | null, account: { __typename?: 'Account', id: string, name: string, currency: { __typename?: 'Currency', id: string, code: string } }, receiptImages: Array<{ __typename?: 'ReceiptImage', id: string, url: string, filename: string, contentType: string, byteSize: number }>, splitTo: Array<{ __typename?: 'Transaction', id: string, memo: string, includeInReports: boolean, amount?: { __typename?: 'Money', amountDecimal: number, formatted: string } | null, shopAmount?: { __typename?: 'Money', amountDecimal: number, formatted: string } | null, category?: { __typename?: 'Category', id: string, name: string, icon: string, color: string } | null }> } | null };
 
-export type TransactionsByDayQueryVariables = Exact<{
-  currencyId?: InputMaybe<Scalars['ID']['input']>;
-  dateFrom: Scalars['ISO8601Date']['input'];
-  dateUntil: Scalars['ISO8601Date']['input'];
-}>;
-
-
-export type TransactionsByDayQuery = { __typename?: 'Query', transactionsByDay: Array<{ __typename?: 'DailyTransactions', date: any, totalSpent: { __typename?: 'Money', formattedShort: string }, transactions: Array<{ __typename?: 'Transaction', id: string, shop: string, memo: string, date: any, includeInReports: boolean, confirmed: boolean, amount?: { __typename?: 'Money', amountDecimal: number, formatted: string } | null, currency?: { __typename?: 'Currency', id: string } | null, shopAmount?: { __typename?: 'Money', amountDecimal: number, formatted: string } | null, shopCurrency?: { __typename?: 'Currency', id: string } | null, category?: { __typename?: 'Category', id: string, name: string, color: string, icon: string } | null, account: { __typename?: 'Account', id: string, name: string, currency: { __typename?: 'Currency', id: string } }, splitTo: Array<{ __typename?: 'Transaction', id: string, memo: string, includeInReports: boolean, amount?: { __typename?: 'Money', amountDecimal: number, formatted: string } | null, shopAmount?: { __typename?: 'Money', amountDecimal: number, formatted: string } | null, category?: { __typename?: 'Category', id: string, name: string, icon: string, color: string } | null }> }> }> };
-
 export type TransactionsForPopulationQueryVariables = Exact<{ [key: string]: never; }>;
 
 

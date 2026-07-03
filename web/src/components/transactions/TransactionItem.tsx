@@ -64,7 +64,7 @@ const TransactionItem: Component<{
             )}
           </div>
           <Show when={!props.transaction.confirmed}>
-            <span class="inline-block mr-2 rounded-full w-2 h-2 bg-amber-400">
+            <span class="flex-none mr-2 rounded-full w-2 h-2 bg-amber-400">
               <span class="sr-only">Unconfirmed</span>
             </span>
           </Show>

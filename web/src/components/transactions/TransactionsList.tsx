@@ -12,6 +12,7 @@ import TransactionItem from "./TransactionItem"
 export const TransactionsList: Component<{
   data: TransactionsQuery
   isFiltering: boolean
+  hideMonthHeaders?: boolean
   fetchMore?: (variables: any) => void
   setFilterValue: (name: keyof TransactionFilterValues, value: any) => void
 }> = (props) => {
@@ -71,8 +72,9 @@ export const TransactionsList: Component<{
       <For each={items()}>
         {({ date, transactions }, index) => {
           const newMonth = () =>
-            index() === 0 ||
-            formatDate(items()[index() - 1].date, "monthYear") !== formatDate(date, "monthYear")
+            !props.hideMonthHeaders &&
+            (index() === 0 ||
+            formatDate(items()[index() - 1].date, "monthYear") !== formatDate(date, "monthYear"))
 
           const newTransactionDate = new Date(date)
           newTransactionDate.setHours(12, 0, 0, 0)

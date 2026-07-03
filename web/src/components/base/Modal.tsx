@@ -22,9 +22,8 @@ export const Modal = <T extends AsProp = "div">(
       <Dynamic
         component={props.as || "div"}
         ref={props.ref}
-        class={`relative transition-opacity ${
-          props.isOpen ? "visible opacity-100" : "invisible opacity-0"
-        } ${props.class}`}
+        data-open={props.isOpen ? "" : undefined}
+        class={`modal z-modal relative ${props.class}`}
         classList={props.classList}
         {...elementProps}
       >
@@ -57,7 +56,7 @@ export const ModalContent = (allProps: BasicElementProps<"div">) => {
   return (
     <div
       ref={props.ref}
-      class={`relative w-full transform rounded-t-lg bg-white p-5 pt-4 text-left shadow-xl sm:my-8 sm:max-w-lg sm:rounded-lg sm:px-6 sm:py-5 ${props.class}`}
+      class={`modal-panel relative w-full rounded-t-lg bg-white p-5 pt-4 text-left shadow-xl sm:my-8 sm:max-w-lg sm:rounded-lg sm:px-6 sm:py-5 ${props.class}`}
       classList={props.classList}
       {...elementProps}
     >

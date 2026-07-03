@@ -27,3 +27,58 @@ body {
 .tabler-icon {
   width: 1em;
 }
+
+/* Modal open/close animation: fade backdrop, slide panel up on mobile,
+   scale it in on >=sm. @starting-style makes it fire even when the modal
+   mounts already open. */
+.modal {
+  visibility: hidden;
+  opacity: 0;
+  transition:
+    opacity 0.2s,
+    visibility 0.2s;
+}
+
+.modal[data-open] {
+  visibility: visible;
+  opacity: 1;
+}
+
+.modal .modal-panel {
+  translate: 0 5rem;
+  transition:
+    translate 0.2s ease-out,
+    scale 0.2s ease-out;
+}
+
+.modal[data-open] .modal-panel {
+  translate: 0 0;
+}
+
+@starting-style {
+  .modal[data-open] {
+    opacity: 0;
+  }
+
+  .modal[data-open] .modal-panel {
+    translate: 0 5rem;
+  }
+}
+
+@media (min-width: 640px) {
+  .modal .modal-panel {
+    translate: 0 0;
+    scale: 0.95;
+  }
+
+  .modal[data-open] .modal-panel {
+    scale: 1;
+  }
+
+  @starting-style {
+    .modal[data-open] .modal-panel {
+      translate: 0 0;
+      scale: 0.95;
+    }
+  }
+}
