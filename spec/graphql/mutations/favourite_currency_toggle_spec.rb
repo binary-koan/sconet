@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Mutations::CurrentUserTokenGenerate do
+describe Mutations::FavouriteCurrencyToggle do
   include GraphqlSpecHelpers
 
   let(:current_user) { create(:user) }

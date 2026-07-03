@@ -67,3 +67,5 @@ gem "sentry-ruby"
 gem "sentry-rails"
 
 gem "aws-sdk-s3", require: false
+
+gem "mcp", "~> 0.22.0"

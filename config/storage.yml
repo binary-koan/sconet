@@ -1,3 +1,7 @@
+test:
+  service: Disk
+  root: <%= Rails.root.join("tmp/storage") %>
+
 amazon:
   service: S3
   endpoint: <%= Rails.application.credentials.dig(:aws, :endpoint) %>
