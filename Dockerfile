@@ -1,4 +1,4 @@
-FROM oven/bun:1 as frontend
+FROM oven/bun:1 AS frontend
 
 WORKDIR /app
 
@@ -8,7 +8,7 @@ ENV NODE_ENV=production
 COPY web ./web
 RUN cd web && bun run build
 
-FROM ruby:3.4.9-slim as base
+FROM ruby:3.4.9-slim AS base
 
 LABEL fly_launch_runtime="rails"
 
@@ -27,7 +27,7 @@ RUN gem update --system --no-document && \
 
 
 # Throw-away build stage to reduce size of final image
-FROM base as build
+FROM base AS build
 
 # Install packages needed to build gems
 RUN apt-get update -qq && \
