@@ -21,7 +21,11 @@ module Mutations
         filename: old_blob.filename.to_s,
         content_type: image.content_type
       ))
-      old_blob.purge
+      begin
+        old_blob.purge
+      rescue Aws::S3::Errors::NoSuchKey
+        # Old file already gone from R2 (pre-migration blob or prior cleanup) — nothing to delete
+      end
 
       { transaction: attachment.record }
     end
