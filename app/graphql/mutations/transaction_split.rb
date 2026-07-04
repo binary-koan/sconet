@@ -41,7 +41,7 @@ module Mutations
         transaction.split_to.destroy_all
 
         splits.each do |split|
-          attributes = { **split }.except(:amount)
+          attributes = { **split }.except(:amount_cents)
 
           if transaction.shop_amount_cents.present?
             attributes[:shop_amount_cents] = split.amount_cents
