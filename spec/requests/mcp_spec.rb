@@ -74,6 +74,45 @@ describe "MCP endpoint" do
     expect(JSON.parse(recent.dig("result", "content", 0, "text")).first).to include("shop" => "Test Shop")
   end
 
+  it "creates a foreign-currency transaction with splits" do
+    czk = create(:currency, code: "CZK", name: "Czech Koruna", symbol: "Kč", decimal_digits: 2)
+
+    result = mcp_request("tools/call", {
+      name: "create_transaction",
+      arguments: {
+        account_id: account.id.to_s,
+        date: Date.today.iso8601,
+        shop: "Praha Potraviny",
+        shop_amount_cents: -25000,
+        shop_currency_id: czk.id.to_s,
+        confirmed: false,
+        splits: [
+          { amount_cents: -15000, memo: "Bread", category_id: category.id.to_s },
+          { amount_cents: -10000, memo: "Cheese", category_id: category.id.to_s }
+        ]
+      }
+    })
+
+    expect(result.dig("result", "isError")).to be_falsey
+    transaction = Transaction.find(JSON.parse(result.dig("result", "content", 0, "text"))["id"])
+    expect(transaction).to have_attributes(shop_amount_cents: -25000, shop_currency: czk, confirmed: false)
+    expect(transaction.split_to.pluck(:memo, :shop_amount_cents, :category_id, :confirmed))
+      .to contain_exactly(["Bread", -15000, category.id, false], ["Cheese", -10000, category.id, false])
+  end
+
+  it "rejects splits that do not sum to the total" do
+    result = mcp_request("tools/call", {
+      name: "create_transaction",
+      arguments: {
+        account_id: account.id.to_s, date: Date.today.iso8601, shop: "X", amount_cents: -100,
+        splits: [{ amount_cents: -60 }, { amount_cents: -60 }]
+      }
+    })
+
+    expect(result.dig("result", "isError")).to be(true)
+    expect(Transaction.count).to eq(0)
+  end
+
   it "returns a tool error for invalid input" do
     result = mcp_request("tools/call", {
       name: "create_transaction",
