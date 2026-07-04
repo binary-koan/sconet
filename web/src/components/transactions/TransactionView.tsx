@@ -1,8 +1,10 @@
-import { IconEye, IconEyeOff } from "@tabler/icons-solidjs"
+import { IconEye, IconEyeOff, IconRotateClockwise } from "@tabler/icons-solidjs"
 import { Component, For, Show, createSignal } from "solid-js"
 import { GetTransactionQuery } from "../../graphql-types"
+import { useReplaceReceiptImage } from "../../graphql/mutations/replaceReceiptImageMutation"
 import { useUpdateTransaction } from "../../graphql/mutations/updateTransactionMutation"
 import { formatDate } from "../../utils/formatters"
+import { rotateImage } from "../../utils/rotateImage"
 import { namedIcons } from "../../utils/namedIcons"
 import CategoryIndicator from "../CategoryIndicator"
 import { Button } from "../base/Button"
@@ -24,6 +26,10 @@ export const TransactionView: Component<{
   const [editingDate, setEditingDate] = createSignal(false)
 
   const updateTransaction = useUpdateTransaction()
+  const replaceReceiptImage = useReplaceReceiptImage()
+
+  const rotateReceiptImage = async (image: { id: string; url: string; filename: string }) =>
+    replaceReceiptImage({ id: image.id, image: await rotateImage(image.url, image.filename) })
 
   const transaction = () => props.data.transaction
 
@@ -71,18 +77,30 @@ export const TransactionView: Component<{
               <div class="flex flex-wrap gap-2">
                 <For each={transaction().receiptImages}>
                   {(image) => (
-                    <a
-                      href={image.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="group relative block h-24 w-24 overflow-hidden rounded border border-gray-200 hover:border-gray-400"
-                    >
-                      <img
-                        src={image.url}
-                        alt={image.filename}
-                        class="h-full w-full object-cover transition group-hover:opacity-90"
-                      />
-                    </a>
+                    <div class="relative">
+                      <a
+                        href={image.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="group relative block h-24 w-24 overflow-hidden rounded border border-gray-200 hover:border-gray-400"
+                      >
+                        <img
+                          src={image.url}
+                          alt={image.filename}
+                          class="h-full w-full object-cover transition group-hover:opacity-90"
+                        />
+                      </a>
+                      <Button
+                        class="absolute right-1 top-1"
+                        size="sm"
+                        variant="ghost"
+                        disabled={replaceReceiptImage.loading}
+                        aria-label="Rotate image"
+                        onClick={() => void rotateReceiptImage(image)}
+                      >
+                        <IconRotateClockwise size="1em" />
+                      </Button>
+                    </div>
                   )}
                 </For>
               </div>

@@ -102,7 +102,18 @@ module McpTools
             properties: {
               data: { type: "string", description: "Base64-encoded image data" },
               filename: { type: "string" },
-              content_type: { type: "string", description: "e.g. image/jpeg" }
+              content_type: { type: "string", description: "e.g. image/jpeg" },
+              crop: {
+                type: "object",
+                description: "Optional pixel rectangle to crop the image to before attaching",
+                properties: {
+                  x: { type: "integer" },
+                  y: { type: "integer" },
+                  width: { type: "integer" },
+                  height: { type: "integer" }
+                },
+                required: %w[x y width height]
+              }
             },
             required: %w[data filename content_type]
           }
@@ -129,8 +140,13 @@ module McpTools
       transaction.save!
 
       receipt_images.each do |image|
+        io = StringIO.new(Base64.decode64(image[:data]))
+        if (crop = image[:crop])
+          io = ImageCropper.crop(io, x: crop[:x], y: crop[:y], width: crop[:width], height: crop[:height])
+        end
+
         transaction.receipt_images.attach(
-          io: StringIO.new(Base64.decode64(image[:data])),
+          io: io,
           filename: image[:filename],
           content_type: image[:content_type]
         )

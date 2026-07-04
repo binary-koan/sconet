@@ -1,5 +1,5 @@
 import { useRouteData } from "@solidjs/router"
-import { IconCheck, IconChevronLeft, IconChevronRight } from "@tabler/icons-solidjs"
+import { IconCheck, IconChevronLeft, IconChevronRight, IconRotateClockwise } from "@tabler/icons-solidjs"
 import { Component, For, Show, createSignal } from "solid-js"
 import { Cell } from "../../components/Cell"
 import { Button } from "../../components/base/Button"
@@ -12,7 +12,9 @@ import {
 import { UNCONFIRMED_TRANSACTIONS_QUERY } from "../../graphql/queries/unconfirmedTransactionsQuery"
 import { useUpdateTransaction } from "../../graphql/mutations/updateTransactionMutation"
 import { TRANSACTIONS_QUERY } from "../../graphql/queries/transactionsQuery"
+import { useReplaceReceiptImage } from "../../graphql/mutations/replaceReceiptImageMutation"
 import { QueryResource } from "../../utils/graphqlClient/useQuery"
+import { rotateImage } from "../../utils/rotateImage"
 
 export interface ReviewTransactionsPageData {
   data: QueryResource<UnconfirmedTransactionsQuery, UnconfirmedTransactionsQueryVariables>
@@ -25,6 +27,13 @@ const ReviewTransactionsPage: Component = () => {
   const updateTransaction = useUpdateTransaction({
     refetchQueries: [UNCONFIRMED_TRANSACTIONS_QUERY, TRANSACTIONS_QUERY]
   })
+
+  const replaceReceiptImage = useReplaceReceiptImage({
+    refetchQueries: [UNCONFIRMED_TRANSACTIONS_QUERY]
+  })
+
+  const rotateReceiptImage = async (image: { id: string; url: string; filename: string }) =>
+    replaceReceiptImage({ id: image.id, image: await rotateImage(image.url, image.filename) })
 
   return (
     <>
@@ -57,9 +66,20 @@ const ReviewTransactionsPage: Component = () => {
                       <div class="overflow-y-auto bg-white shadow-xs lg:rounded-sm">
                         <For each={transaction().receiptImages}>
                           {(image) => (
-                            <a href={image.url} target="_blank" rel="noopener noreferrer">
-                              <img src={image.url} alt={image.filename} class="w-full" />
-                            </a>
+                            <div class="relative">
+                              <a href={image.url} target="_blank" rel="noopener noreferrer">
+                                <img src={image.url} alt={image.filename} class="w-full" />
+                              </a>
+                              <Button
+                                class="absolute right-2 top-2"
+                                size="sm"
+                                disabled={replaceReceiptImage.loading}
+                                aria-label="Rotate image"
+                                onClick={() => void rotateReceiptImage(image)}
+                              >
+                                <IconRotateClockwise />
+                              </Button>
+                            </div>
                           )}
                         </For>
                       </div>

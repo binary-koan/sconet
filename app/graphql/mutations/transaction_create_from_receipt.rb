@@ -9,8 +9,9 @@ module Mutations
     field :transaction, Types::TransactionType, null: false
 
     argument :receipt_image, Types::UploadType, required: true
+    argument :crop, Types::CropInputType, required: false
 
-    def resolve(receipt_image:)
+    def resolve(receipt_image:, crop: nil)
       account = current_user.default_account || ::Account.where(archived_at: nil).order(:sort_order).first
       raise GraphQL::ExecutionError, "No account available to attach receipt to" unless account
 
@@ -25,7 +26,15 @@ module Mutations
 
       raise GraphQL::ExecutionError.new("Error creating transaction", extensions: transaction.errors.to_hash) unless transaction.save
 
-      transaction.receipt_images.attach(receipt_image)
+      if crop
+        transaction.receipt_images.attach(
+          io: ImageCropper.crop(receipt_image, **crop.to_h),
+          filename: receipt_image.original_filename,
+          content_type: receipt_image.content_type
+        )
+      else
+        transaction.receipt_images.attach(receipt_image)
+      end
 
       { transaction: transaction }
     end

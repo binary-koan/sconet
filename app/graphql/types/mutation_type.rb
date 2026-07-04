@@ -25,6 +25,7 @@ module Types
     field :favourite_transaction_upsert, mutation: Mutations::FavouriteTransactionUpsert
     field :favourite_transaction_delete, mutation: Mutations::FavouriteTransactionDelete
     field :login, mutation: Mutations::Login
+    field :receipt_image_replace, mutation: Mutations::ReceiptImageReplace
     field :transaction_create, mutation: Mutations::TransactionCreate
     field :transaction_create_from_receipt, mutation: Mutations::TransactionCreateFromReceipt
     field :transaction_delete, mutation: Mutations::TransactionDelete

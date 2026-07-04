@@ -12,6 +12,10 @@ class SconetSchema < GraphQL::Schema
     raise GraphqlErrors::NotFoundError, "#{field.type.unwrap.graphql_name} not found"
   end
 
+  rescue_from(ActiveRecord::RecordInvalid, ActiveRecord::RecordNotSaved, ActiveRecord::RecordNotDestroyed) do |err|
+    raise GraphqlErrors::ValidationError, err.message
+  end
+
   # GraphQL-Ruby calls this when something goes wrong while running a query:
   def self.type_error(err, context)
     # if err.is_a?(GraphQL::InvalidNullError)
