@@ -3,6 +3,7 @@ import { gql } from "../../utils/gql"
 import { MutationOptions, useMutation } from "../../utils/graphqlClient/useMutation"
 import { GET_TRANSACTION_QUERY } from "../queries/getTransactionQuery"
 import { TRANSACTIONS_QUERY } from "../queries/transactionsQuery"
+import { UNCONFIRMED_TRANSACTIONS_QUERY } from "../queries/unconfirmedTransactionsQuery"
 
 const UPDATE_TRANSACTION_MUTATION = gql`
   mutation UpdateTransaction($id: ID!, $input: TransactionInput!) {
@@ -18,7 +19,7 @@ export const useUpdateTransaction = (options: MutationOptions<UpdateTransactionM
   useMutation<UpdateTransactionMutation, UpdateTransactionMutationVariables>(
     UPDATE_TRANSACTION_MUTATION,
     {
-      refetchQueries: [TRANSACTIONS_QUERY, GET_TRANSACTION_QUERY],
+      refetchQueries: [TRANSACTIONS_QUERY, GET_TRANSACTION_QUERY, UNCONFIRMED_TRANSACTIONS_QUERY],
       ...options
     }
   )
