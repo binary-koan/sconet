@@ -4,7 +4,7 @@ import MainNavigation from "./MainNavigation"
 
 export const MainLayout: Component = () => {
   return (
-    <div class="flex min-h-screen flex-col pb-20 md:mx-auto md:max-w-5xl md:pt-14">
+    <div class="flex h-dvh flex-col overflow-y-auto pb-20 md:mx-auto md:max-w-5xl md:pt-14">
       <MainNavigation />
       <Outlet />
     </div>

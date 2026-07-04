@@ -182,8 +182,7 @@ const ReviewTransactionsPage: Component = () => {
               {(transaction) => (
                 <>
                   <PageHeader size="sm">{index() + 1} of {props.data.transactions.nodes.length}</PageHeader>
-                  {/* Hardcoded viewport offset; MainLayout's min-h-screen grows with content so flex-1 can't cap this */}
-                  <div class="grid h-[calc(100dvh-12rem)] grid-cols-1 grid-rows-2 gap-4 md:grid-cols-2 md:grid-rows-1">
+                  <div class="grid min-h-0 flex-1 grid-cols-1 grid-rows-2 gap-4 md:grid-cols-2 md:grid-rows-1">
                     <Show
                       when={transaction().receiptImages.length > 0}
                       fallback={<div class="italic text-gray-600">No receipt</div>}
