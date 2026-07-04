@@ -169,8 +169,10 @@ export const TransactionView: Component<{
             when={
               !transaction().splitTo.length &&
               transaction().includeInReports &&
-              transaction().amount &&
-              transaction().amount!.amountDecimal <= 0
+              (
+                (transaction().amount && transaction().amount!.amountDecimal <= 0) ||
+                (transaction().shopAmount && transaction().shopAmount!.amountDecimal <= 0)
+              )
             }
           >
             <FormControl>
