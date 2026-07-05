@@ -1,4 +1,6 @@
 module McpTools
+  READ_ONLY = { read_only_hint: true, destructive_hint: false, idempotent_hint: true, open_world_hint: false }.freeze
+
   def self.text_response(data)
     MCP::Tool::Response.new([{ type: "text", text: JSON.pretty_generate(data) }])
   end
@@ -26,6 +28,7 @@ module McpTools
   class GetCategories < MCP::Tool
     tool_name "get_categories"
     description "List all non-archived transaction categories"
+    annotations(McpTools::READ_ONLY)
     input_schema(properties: {}, required: [])
 
     def self.call(server_context:)
@@ -40,6 +43,7 @@ module McpTools
   class GetCurrencies < MCP::Tool
     tool_name "get_currencies"
     description "List all currencies"
+    annotations(McpTools::READ_ONLY)
     input_schema(properties: {}, required: [])
 
     def self.call(server_context:)
@@ -54,6 +58,7 @@ module McpTools
   class GetAccounts < MCP::Tool
     tool_name "get_accounts"
     description "List all non-archived accounts"
+    annotations(McpTools::READ_ONLY)
     input_schema(properties: {}, required: [])
 
     def self.call(server_context:)
@@ -68,6 +73,7 @@ module McpTools
   class GetRecentTransactions < MCP::Tool
     tool_name "get_recent_transactions"
     description "List the most recent transactions, newest first"
+    annotations(McpTools::READ_ONLY)
     input_schema(
       properties: { limit: { type: "integer", description: "Max transactions to return (default 20)" } },
       required: []
@@ -82,13 +88,14 @@ module McpTools
 
   class CreateTransaction < MCP::Tool
     tool_name "create_transaction"
-    description "Create a transaction, optionally with line-item splits and receipt images. " \
-                "Call get_accounts, get_currencies, and get_categories first — never guess ids. " \
-                "Amounts are in the currency's minor units using its decimal_digits (JPY x1, GBP/CZK x100, not a blanket x100): " \
-                "negative for expenses, positive for income/refunds. " \
-                "Use amount_cents + currency_id when the transaction is in the account's currency; for a purchase made in a " \
-                "different currency, post the original amount to shop_amount_cents + shop_currency_id instead (leave " \
-                "amount_cents unset; the app converts to the account currency)."
+    description "Adds a new expense or income record to the user's personal finance ledger, optionally with line-item " \
+                "splits and receipt images. Existing records are not modified. " \
+                "The account_id, currency_id, and category_id values come from the get_accounts, get_currencies, and " \
+                "get_categories tools. Amounts are integers in the currency's minor units per its decimal_digits " \
+                "(JPY x1, GBP/CZK x100); negative values are expenses, positive are income or refunds. " \
+                "A purchase in a currency other than the account's is recorded via shop_amount_cents + shop_currency_id " \
+                "(the original amount; the app converts), with amount_cents left unset."
+    annotations(destructive_hint: false, idempotent_hint: false, open_world_hint: false, read_only_hint: false)
     input_schema(
       properties: {
         account_id: { type: "string" },
@@ -96,11 +103,11 @@ module McpTools
         shop: { type: "string", description: "Merchant name" },
         amount_cents: {
           type: "integer",
-          description: "Signed minor units (negative = expense). Omit for foreign-currency receipts and use shop_amount_cents instead"
+          description: "Signed minor units (negative = expense); unset when shop_amount_cents is used"
         },
         category_id: {
           type: "string",
-          description: "Best-fit category; omit if nothing fits rather than forcing a bad match"
+          description: "Optional; an uncategorised transaction is valid and the user can categorise it later"
         },
         currency_id: { type: "string", description: "Defaults to the account's currency" },
         shop_amount_cents: {
@@ -109,8 +116,8 @@ module McpTools
                        "requires shop_currency_id"
         },
         shop_currency_id: { type: "string", description: "Currency id of shop_amount_cents" },
-        memo: { type: "string", description: "Leave blank when passing splits — each split carries its own memo" },
-        confirmed: { type: "boolean", description: "Set false to leave the transaction unconfirmed for the user to review" },
+        memo: { type: "string", description: "Blank when splits are given — each split carries its own memo" },
+        confirmed: { type: "boolean", description: "When false, the transaction is held as a draft for the user to review in the app" },
         include_in_reports: { type: "boolean" },
         splits: {
           type: "array",
@@ -128,10 +135,14 @@ module McpTools
         },
         receipt_images: {
           type: "array",
+          description: "Receipt photos to attach. Each entry references a previously uploaded image by blob_signed_id " \
+                       "(returned by this server's upload endpoint), or carries inline base64 data for small images. " \
+                       "One uploaded image can back several transactions, each with its own crop",
           items: {
             type: "object",
             properties: {
-              data: { type: "string", description: "Base64-encoded image data" },
+              blob_signed_id: { type: "string", description: "Signed id returned by POST /mcp/uploads" },
+              data: { type: "string", description: "Base64-encoded image data (requires filename and content_type)" },
               filename: { type: "string" },
               content_type: { type: "string", description: "e.g. image/jpeg" },
               crop: {
@@ -146,7 +157,7 @@ module McpTools
                 required: %w[x y width height]
               }
             },
-            required: %w[data filename content_type]
+            required: []
           }
         }
       },
@@ -195,20 +206,31 @@ module McpTools
       end
 
       receipt_images.each do |image|
-        io = StringIO.new(Base64.decode64(image[:data]))
-        if (crop = image[:crop])
-          io = ImageCropper.crop(io, x: crop[:x], y: crop[:y], width: crop[:width], height: crop[:height])
-        end
+        if (signed_id = image[:blob_signed_id])
+          blob = ActiveStorage::Blob.find_signed!(signed_id)
+          if (crop = image[:crop])
+            io = ImageCropper.crop(StringIO.new(blob.download), x: crop[:x], y: crop[:y], width: crop[:width], height: crop[:height])
+            transaction.receipt_images.attach(io:, filename: "#{blob.filename.base}.jpg", content_type: "image/jpeg")
+          else
+            transaction.receipt_images.attach(blob)
+          end
+        else
+          io = StringIO.new(Base64.decode64(image[:data]))
+          filename = image[:filename]
+          content_type = image[:content_type]
+          if (crop = image[:crop])
+            io = ImageCropper.crop(io, x: crop[:x], y: crop[:y], width: crop[:width], height: crop[:height])
+            filename = "#{File.basename(filename, '.*')}.jpg"
+            content_type = "image/jpeg"
+          end
 
-        transaction.receipt_images.attach(
-          io: io,
-          filename: image[:filename],
-          content_type: image[:content_type]
-        )
+          transaction.receipt_images.attach(io:, filename:, content_type:)
+        end
       end
 
       McpTools.text_response(McpTools.transaction_json(transaction))
-    rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotFound, Date::Error => e
+    rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotFound, Date::Error,
+           ActiveSupport::MessageVerifier::InvalidSignature, Vips::Error => e
       McpTools.error_response(e.message)
     end
   end

@@ -14,14 +14,14 @@ export type ButtonSize = keyof typeof SIZES
 
 const CLASSES = {
   ghost: {
-    primary: "text-indigo-600 hover:bg-gray-200 focus:bg-gray-200",
-    danger: "text-red-600 hover:bg-gray-200 focus:bg-gray-200",
-    neutral: "hover:bg-gray-200 focus:bg-gray-200"
+    primary: "text-indigo-600 hover:bg-gray-100 focus:bg-gray-100",
+    danger: "text-red-600 hover:bg-gray-100 focus:bg-gray-100",
+    neutral: "hover:bg-gray-100 focus:bg-gray-100"
   },
   solid: {
-    primary: "bg-indigo-600 hover:bg-indigo-800  focus:bg-indigo-800 text-white",
-    danger: "bg-red-600 hover:bg-red-800  focus:bg-red-800 text-white",
-    neutral: "bg-gray-200 hover:bg-gray-300 focus:bg-gray-300"
+    primary: "bg-indigo-600 border border-indigo-500 outline-1 outline-solid outline-indigo-700 shadow-xs hover:bg-indigo-800  focus:bg-indigo-800 text-white",
+    danger: "bg-red-600 border border-red-500 outline-1 outline-solid outline-red-700 shadow-xs hover:bg-red-800 focus:bg-red-800 text-white",
+    neutral: "bg-white border border-white outline-1 outline-solid outline-gray-200 shadow-xs hover:bg-gray-50 focus:bg-gray-50"
   }
 }
 
@@ -36,7 +36,7 @@ export interface ButtonCustomProps {
 }
 
 export const buttonClasses = (props: ButtonCustomProps) =>
-  `flex items-center justify-center rounded font-medium transition focus:outline-0 disabled:pointer-events-none disabled:opacity-50 ${
+  `cursor-pointer flex items-center justify-center rounded-full font-medium transition focus:outline-0 disabled:pointer-events-none disabled:opacity-50 ${
     // eslint-disable-next-line solid/reactivity
     CLASSES[props.variant || "solid"][props.colorScheme || "neutral"]
     // eslint-disable-next-line solid/reactivity

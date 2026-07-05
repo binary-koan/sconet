@@ -32,9 +32,12 @@ describe "MCP endpoint" do
   it "lists tools" do
     result = mcp_request("tools/list")
 
-    expect(result.dig("result", "tools").map { |t| t["name"] }).to contain_exactly(
+    tools = result.dig("result", "tools")
+    expect(tools.map { |t| t["name"] }).to contain_exactly(
       "get_categories", "get_currencies", "get_accounts", "get_recent_transactions", "create_transaction"
     )
+    expect(tools.find { |t| t["name"] == "get_accounts" }["annotations"]).to include("readOnlyHint" => true)
+    expect(tools.find { |t| t["name"] == "create_transaction" }["annotations"]).to include("destructiveHint" => false)
   end
 
   it "fetches categories, currencies and accounts" do
@@ -72,6 +75,55 @@ describe "MCP endpoint" do
 
     recent = mcp_request("tools/call", { name: "get_recent_transactions", arguments: {} })
     expect(JSON.parse(recent.dig("result", "content", 0, "text")).first).to include("shop" => "Test Shop")
+  end
+
+  it "uploads a receipt image and attaches it by blob_signed_id" do
+    post "/mcp/#{api_key.token}/uploads",
+         params: { file: Rack::Test::UploadedFile.new(StringIO.new("fake-jpeg-bytes"), "image/jpeg", original_filename: "receipt.jpg") }
+    expect(response).to have_http_status(:ok)
+    signed_id = JSON.parse(response.body).fetch("blob_signed_id")
+
+    result = mcp_request("tools/call", {
+      name: "create_transaction",
+      arguments: {
+        account_id: account.id.to_s, date: Date.today.iso8601, shop: "Blob Shop", amount_cents: -500,
+        receipt_images: [{ blob_signed_id: signed_id }]
+      }
+    })
+
+    expect(result.dig("result", "isError")).to be_falsey
+    transaction = Transaction.find(JSON.parse(result.dig("result", "content", 0, "text"))["id"])
+    expect(transaction.receipt_images.first.filename.to_s).to eq("receipt.jpg")
+  end
+
+  it "crops an uploaded image, converting to JPEG regardless of source format" do
+    png = Tempfile.new(%w[source .png])
+    Vips::Image.black(100, 80).write_to_file(png.path)
+
+    post "/mcp/#{api_key.token}/uploads",
+         params: { file: Rack::Test::UploadedFile.new(png.path, "image/png") }
+    signed_id = JSON.parse(response.body).fetch("blob_signed_id")
+
+    result = mcp_request("tools/call", {
+      name: "create_transaction",
+      arguments: {
+        account_id: account.id.to_s, date: Date.today.iso8601, shop: "Crop Shop", amount_cents: -100,
+        receipt_images: [{ blob_signed_id: signed_id, crop: { x: 10, y: 20, width: 30, height: 40 } }]
+      }
+    })
+
+    expect(result.dig("result", "isError")).to be_falsey
+    transaction = Transaction.find(JSON.parse(result.dig("result", "content", 0, "text"))["id"])
+    image = transaction.receipt_images.first
+    expect(image.filename.to_s).to end_with(".jpg")
+    expect(image.content_type).to eq("image/jpeg")
+    cropped = Vips::Image.new_from_buffer(image.blob.download, "")
+    expect([cropped.width, cropped.height]).to eq([30, 40])
+  end
+
+  it "rejects unauthenticated uploads" do
+    post "/mcp/uploads", params: { file: Rack::Test::UploadedFile.new(StringIO.new("x"), "image/jpeg", original_filename: "x.jpg") }
+    expect(response).to have_http_status(:unauthorized)
   end
 
   it "creates a foreign-currency transaction with splits" do

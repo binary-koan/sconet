@@ -68,7 +68,7 @@ const TransactionsCalendarPage: Component = () => {
       <Title>Transactions</Title>
 
       <button
-        class="fixed bottom-[calc(66px+1rem+env(safe-area-inset-bottom))] right-4 z-[1025] flex items-center rounded-full border border-gray-200 bg-white px-5 py-2 text-lg text-indigo-600 shadow-lg md:hidden"
+        class="fixed bottom-[calc(66px+0.5rem+env(safe-area-inset-bottom))] right-3 z-[1025] flex items-center rounded-full border border-gray-100 bg-white/60 backdrop-blur-lg px-5 py-2 text-lg text-indigo-600 shadow-sm md:hidden"
         onClick={() => setCreatingTransaction(true)}
       >
         <IconPlus size="1.25em" class="-ml-1 mr-2" />

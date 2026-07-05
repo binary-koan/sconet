@@ -29,8 +29,8 @@ module Mutations
       if crop
         transaction.receipt_images.attach(
           io: ImageCropper.crop(receipt_image, **crop.to_h),
-          filename: receipt_image.original_filename,
-          content_type: receipt_image.content_type
+          filename: "#{File.basename(receipt_image.original_filename, '.*')}.jpg",
+          content_type: "image/jpeg"
         )
       else
         transaction.receipt_images.attach(receipt_image)

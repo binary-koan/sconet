@@ -16,11 +16,17 @@ module Mutations
       attachment = ActiveStorage::Attachment.where(record_type: "Transaction", name: "receipt_images").find(id)
       old_blob = attachment.blob
 
-      attachment.update!(blob: ActiveStorage::Blob.create_and_upload!(
-        io: crop ? ImageCropper.crop(image, **crop.to_h) : image,
-        filename: old_blob.filename.to_s,
-        content_type: image.content_type
-      ))
+      attachment.update!(blob: if crop
+        ActiveStorage::Blob.create_and_upload!(
+          io: ImageCropper.crop(image, **crop.to_h),
+          filename: "#{old_blob.filename.base}.jpg",
+          content_type: "image/jpeg"
+        )
+      else
+        ActiveStorage::Blob.create_and_upload!(
+          io: image, filename: old_blob.filename.to_s, content_type: image.content_type
+        )
+      end)
       begin
         old_blob.purge
       rescue Aws::S3::Errors::NoSuchKey

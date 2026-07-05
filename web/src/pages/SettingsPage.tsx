@@ -2,7 +2,7 @@ import { startRegistration } from "@simplewebauthn/browser"
 import { Title } from "@solidjs/meta"
 import { useRouteData } from "@solidjs/router"
 import DeviceDetector from "device-detector-js"
-import { IconFingerprint, IconKey, IconRefresh, IconTrash } from "@tabler/icons-solidjs"
+import { IconFingerprint, IconKey, IconPlus, IconRefresh, IconTrash } from "@tabler/icons-solidjs"
 import { Component, For, Show, createSignal } from "solid-js"
 import toast from "solid-toast"
 import { Cell } from "../components/Cell"
@@ -116,84 +116,85 @@ const SettingsPage: Component = () => {
 
       <PageHeader size="lg" class="mt-4">
         Login methods
-        <Button
-          class="ml-auto"
-          size="sm"
-          colorScheme="primary"
-          onClick={() => registerCredential({})}
-        >
-          Register fingerprint, face ID, ...
+        <Button class="ml-auto" size="sm" onClick={() => registerCredential({})}>
+          <IconPlus />
         </Button>
       </PageHeader>
 
-      <div class="shadow-xs flex items-center gap-2 bg-white px-4 py-2">
-        <IconKey /> Password
+      <div class="flex flex-col px-2">
+        <div class="not-first:border-t-0 flex items-center gap-2 border border-gray-100 bg-white px-4 py-2 first:rounded-t-3xl last:rounded-b-3xl">
+          <IconKey /> Password
+        </div>
+        <For each={data.currentUser()?.currentUser?.registeredCredentials}>
+          {(credential) => (
+            <div class="not-first:border-t-0 flex items-center gap-2 border border-gray-100 bg-white px-4 py-2 first:rounded-t-3xl last:rounded-b-3xl">
+              <IconFingerprint /> {credential.device} (created on {credential.createdAt})
+              <Button
+                size="sm"
+                variant="ghost"
+                colorScheme="danger"
+                class="ml-auto"
+                onClick={() => deleteCredential({ id: credential.id })}
+              >
+                <IconTrash />
+              </Button>
+            </div>
+          )}
+        </For>
       </div>
-      <For each={data.currentUser()?.currentUser?.registeredCredentials}>
-        {(credential) => (
-          <div class="shadow-xs flex items-center gap-2  bg-white px-4 py-2">
-            <IconFingerprint /> {credential.device} (created on {credential.createdAt})
-            <Button
-              size="sm"
-              variant="ghost"
-              colorScheme="danger"
-              class="ml-auto"
-              onClick={() => deleteCredential({ id: credential.id })}
-            >
-              <IconTrash />
-            </Button>
-          </div>
-        )}
-      </For>
 
       <PageHeader size="lg" class="mt-4">
         API keys
-        <Button class="ml-auto" size="sm" colorScheme="primary" onClick={newApiKey}>
-          New API Key
+        <Button class="ml-auto" size="sm" onClick={newApiKey}>
+          <IconPlus />
         </Button>
       </PageHeader>
 
-      <Show when={newToken()}>
-        <div class="shadow-xs bg-white px-4 py-2 text-sm">
-          Copy your new API key now, it won't be shown again:
-          <code class="mt-1 block select-all break-all font-mono">{newToken()}</code>
-        </div>
-      </Show>
-
-      <Show when={data.currentUser()?.currentUser?.apiKeys?.length === 0}>
-        <div class="shadow-xs bg-white px-4 py-2 italic">No API keys</div>
-      </Show>
-      <For each={data.currentUser()?.currentUser?.apiKeys}>
-        {(apiKey) => (
-          <div
-            class="shadow-xs flex items-center gap-2 bg-white px-4 py-2"
-            classList={{ "opacity-50": Boolean(apiKey.disabledAt) }}
-          >
-            <IconKey /> {apiKey.name}{" "}
-            <code class="text-sm text-gray-600">{apiKey.tokenPrefix}...</code>
-            <Show when={apiKey.disabledAt}>
-              <span class="text-sm text-red-600">disabled</span>
-            </Show>
-            <Button
-              size="sm"
-              variant="ghost"
-              class="ml-auto"
-              title="Regenerate"
-              onClick={() => regenerateApiKey({ id: apiKey.id })}
-            >
-              <IconRefresh />
-            </Button>
-            <Button
-              size="sm"
-              variant="ghost"
-              colorScheme={apiKey.disabledAt ? "primary" : "danger"}
-              onClick={() => setApiKeyDisabled({ id: apiKey.id, disabled: !apiKey.disabledAt })}
-            >
-              {apiKey.disabledAt ? "Enable" : "Disable"}
-            </Button>
+      <div class="flex flex-col px-2">
+        <Show when={newToken()}>
+          <div class="not-first:border-t-0 border border-gray-100 bg-white px-4 py-2 text-sm first:rounded-t-3xl last:rounded-b-3xl">
+            Copy your new API key now, it won't be shown again:
+            <code class="mt-1 block select-all break-all font-mono">{newToken()}</code>
           </div>
-        )}
-      </For>
+        </Show>
+
+        <Show when={data.currentUser()?.currentUser?.apiKeys?.length === 0}>
+          <div class="not-first:border-t-0 border border-gray-100 bg-white px-4 py-2 italic first:rounded-t-3xl last:rounded-b-3xl">
+            No API keys
+          </div>
+        </Show>
+        <For each={data.currentUser()?.currentUser?.apiKeys}>
+          {(apiKey) => (
+            <div
+              class="not-first:border-t-0 flex items-center gap-2 border border-gray-100 bg-white px-4 py-2 first:rounded-t-3xl last:rounded-b-3xl"
+              classList={{ "opacity-50": Boolean(apiKey.disabledAt) }}
+            >
+              <IconKey /> {apiKey.name}{" "}
+              <code class="text-sm text-gray-600">{apiKey.tokenPrefix}...</code>
+              <Show when={apiKey.disabledAt}>
+                <span class="text-sm text-red-600">disabled</span>
+              </Show>
+              <Button
+                size="sm"
+                variant="ghost"
+                class="ml-auto"
+                title="Regenerate"
+                onClick={() => regenerateApiKey({ id: apiKey.id })}
+              >
+                <IconRefresh />
+              </Button>
+              <Button
+                size="sm"
+                variant="ghost"
+                colorScheme={apiKey.disabledAt ? "primary" : "danger"}
+                onClick={() => setApiKeyDisabled({ id: apiKey.id, disabled: !apiKey.disabledAt })}
+              >
+                {apiKey.disabledAt ? "Enable" : "Disable"}
+              </Button>
+            </div>
+          )}
+        </For>
+      </div>
 
       <PageHeader size="lg" class="mt-4">
         Favourite currencies

@@ -121,7 +121,7 @@ const AccountsList: Component<{
   })
 
   return (
-    <div class="shadow-xs flex flex-col gap-px bg-gray-100">
+    <div class="flex flex-col px-2">
       <DragDropProviderFixed
         onDragStart={onDragStart}
         onDragEnd={onDragEnd}
@@ -149,14 +149,16 @@ const AccountsList: Component<{
 
         <DragOverlayFixed>
           <Show when={draggingItem()}>
-            <AccountRow
-              account={draggingItem()!}
-              defaultAccountId={defaultAccountId()}
-              onDeleteClick={() => {}}
-              onArchiveClick={() => {}}
-              onFavouriteToggle={noop}
-              onSetDefault={noop}
-            />
+            <div class="overflow-hidden rounded-3xl border border-gray-100">
+              <AccountRow
+                account={draggingItem()!}
+                defaultAccountId={defaultAccountId()}
+                onDeleteClick={() => {}}
+                onArchiveClick={() => {}}
+                onFavouriteToggle={noop}
+                onSetDefault={noop}
+              />
+            </div>
           </Show>
         </DragOverlayFixed>
       </DragDropProviderFixed>
@@ -180,6 +182,7 @@ const SortableAccount: Component<{
   return (
     <div
       ref={sortable.ref}
+      class="not-first:border-t-0 overflow-hidden border border-gray-100 first:rounded-t-3xl last:rounded-b-3xl"
       style={{
         ...transformStyle(sortable.transform),
         opacity: sortable.isActiveDraggable ? "0.25" : "1"
@@ -200,7 +203,7 @@ const AccountRow: Component<{
   sortable?: ReturnType<typeof createSortable>
 }> = (props) => {
   return (
-    <div class="shadow-xs flex items-center bg-white px-4 py-2">
+    <div class="flex items-center bg-white px-4 py-2">
       <div class="mr-2 hidden cursor-move text-gray-600 md:block">
         <IconArrowsSort {...props.sortable?.dragActivators} />
       </div>

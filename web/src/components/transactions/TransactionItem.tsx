@@ -39,10 +39,10 @@ const TransactionItem: Component<{
   return (
     <>
       <div
-        class="flex cursor-pointer items-center bg-white py-2 pr-4"
+        class="flex cursor-pointer items-center bg-white p-2 first:rounded-t-3xl last:rounded-b-3xl border border-gray-100 not-first:border-t-0"
         classList={{
           "pl-10": !!props.parent,
-          "pl-4": !props.parent
+          "border-b-0": !!splitTo().length
         }}
         data-testid="transaction-item"
       >
@@ -92,7 +92,7 @@ const TransactionItem: Component<{
         {(child) => (
           <div
             onClick={navigateToTransaction}
-            class="-mt-px flex cursor-pointer items-center bg-white py-2 pl-10 pr-4"
+            class="-mt-px flex cursor-pointer items-center bg-white border-x last:border-b last:rounded-b-3xl border-gray-100 py-2 pl-10 pr-4"
           >
             <CategoryIndicator
               class="mr-4 h-6 w-6 flex-none"

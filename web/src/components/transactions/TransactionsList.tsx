@@ -102,22 +102,16 @@ export const TransactionsList: Component<{
                 </div>
               </Show>
 
-              <div
-                class="flex px-2 pb-2 pt-5 text-sm text-gray-600"
+              <button
+                type="button"
+                class="flex px-6 pb-2 pt-5 text-sm text-gray-600"
+                onClick={() => setShowingModalForDate(date)}
                 data-testid="transactions-date"
               >
-                <Button
-                  variant="ghost"
-                  size="custom"
-                  class="mr-1 h-5 gap-1 px-2 text-xs text-gray-500"
-                  onClick={() => setShowingModalForDate(date)}
-                >
-                  <IconPlus />
-                </Button>
                 {formatDate(date, "fullDateWithoutYear")}
-              </div>
+              </button>
 
-              <div class="flex flex-col gap-px bg-gray-100 shadow-xs">
+              <div class="flex flex-col px-2">
                 <For each={transactions}>
                   {(transaction) => <TransactionItem transaction={transaction} />}
                 </For>

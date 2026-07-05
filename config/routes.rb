@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
   post "/graphql", to: "graphql#execute"
   post "/mcp", to: "mcp#execute"
+  post "/mcp/uploads", to: "mcp#upload"
+  post "/mcp/:token/uploads", to: "mcp#upload"
   post "/mcp/:token", to: "mcp#execute"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
