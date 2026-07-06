@@ -121,7 +121,7 @@ module McpTools
         include_in_reports: { type: "boolean" },
         allow_duplicate: {
           type: "boolean",
-          description: "By default, creating a transaction with the same shop, amount, and date as an existing one " \
+          description: "By default, creating a transaction with the same amount, currency, and date as an existing one " \
                        "fails. Set true to create it anyway — only after confirming with the user that it is not a duplicate"
         },
         splits: {

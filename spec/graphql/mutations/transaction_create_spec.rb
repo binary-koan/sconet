@@ -38,8 +38,8 @@ describe Mutations::TransactionCreate do
     )
   end
 
-  context "when a transaction with the same shop, amount, and date exists" do
-    let!(:existing) { create(:transaction, account:, currency:, shop: "Test", date: Date.today, amount_cents: -1000) }
+  context "when a transaction with the same amount, currency, and date exists" do
+    let!(:existing) { create(:transaction, account:, currency:, shop: "Elsewhere", date: Date.today, amount_cents: -1000) }
 
     def create_duplicate(arguments = "")
       execute_graphql current_user:, query_string: <<~GRAPHQL

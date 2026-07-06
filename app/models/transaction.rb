@@ -51,9 +51,9 @@ class Transaction < ApplicationRecord
   end
 
   def not_a_duplicate
-    return unless Transaction.top_level.where(date:, shop:, amount_cents:, shop_amount_cents:).exists?
+    return unless Transaction.top_level.where(date:, amount_cents:, currency_id:, shop_amount_cents:, shop_currency_id:).exists?
 
-    errors.add(:base, :duplicate, message: 'A transaction with the same shop and amount already exists on this date')
+    errors.add(:base, :duplicate, message: 'A transaction with the same amount already exists on this date')
   end
 
   def amount_or_shop_amount_present

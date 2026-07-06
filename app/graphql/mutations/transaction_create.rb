@@ -10,7 +10,7 @@ module Mutations
 
     argument :transaction_input, Types::TransactionInputType, required: true
     argument :allow_duplicate, Boolean, required: false, default_value: false,
-             description: "Create the transaction even if one with the same shop, amount, and date already exists"
+             description: "Create the transaction even if one with the same amount, currency, and date already exists"
 
     def resolve(transaction_input:, allow_duplicate:)
       transaction = ::Transaction.new(**transaction_input)

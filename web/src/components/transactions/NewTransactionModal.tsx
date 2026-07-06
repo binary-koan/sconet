@@ -490,8 +490,7 @@ export const NewTransactionModal: Component<{
             <ModalContent>
               <ModalTitle>Duplicate transaction</ModalTitle>
               <p class="mb-4 text-sm text-gray-700">
-                A transaction with the same shop and amount already exists on this date. Create it
-                anyway?
+                A transaction with the same amount already exists on this date. Create it anyway?
               </p>
               <div class="flex justify-end gap-2">
                 <Button
