@@ -1,4 +1,3 @@
-import { IconPlus } from "@tabler/icons-solidjs"
 import { Component, createMemo, createSignal, For, Show } from "solid-js"
 import { ListingTransactionFragment, TransactionsQuery } from "../../graphql-types"
 import { stripTime } from "../../utils/date"
@@ -83,9 +82,9 @@ export const TransactionsList: Component<{
             <>
               <Show when={newMonth()}>
                 <div
-                  class="z-docked sticky top-12 bg-gray-50 pt-2 lg:top-28"
+                  class="z-docked sticky top-0 bg-gray-50 pt-2 md:top-14"
                   classList={{
-                    "-mt-2": index() === 0,
+                    "mt-0": index() === 0,
                     "mt-6": index() !== 0
                   }}
                 >

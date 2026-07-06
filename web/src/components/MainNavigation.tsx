@@ -18,17 +18,20 @@ const MainNavigation: Component = () => {
   const unconfirmedCount = () => unconfirmed()?.transactions.nodes.length ?? 0
 
   return (
-    <div class="flex gap-2 z-navbar fixed bottom-2 left-2 right-2 top-auto mb-[env(safe-area-inset-bottom)] md:bottom-auto md:top-2 md:mb-0 md:ml-4">
-      <div class="flex-1 flex items-center p-1 md:mx-auto md:max-w-5xl md:px-2 bg-white/60 backdrop-blur-lg rounded-full shadow-sm">
-        <Link href="/" class="mr-4 hidden md:block">
-          <img class="w-24" src={fixAssetPath(logoImage)} />
-        </Link>
-        <NavigationItem icon={IconReportMoney} text="History" to="/transactions" />
-        <NavigationItem icon={IconInbox} text="Review" to="/review" badge={unconfirmedCount()} />
-        <NavigationItem icon={IconChartPie} text="Graphs" to="/graphs" />
-        <NavigationItem icon={IconAdjustmentsHorizontal} text="Settings" to="/settings" />
+    <>
+      <div class="z-navbar fixed bottom-0 left-0 right-0 h-10 mb-[env(safe-area-inset-bottom)] bg-gray-50 backdrop-blur-lg mask-t-from-50% md:hidden" />
+      <div class="flex gap-2 z-navbar fixed bottom-2 left-2 right-2 top-auto mb-[env(safe-area-inset-bottom)] md:bottom-auto md:top-2 md:mb-0 md:ml-4">
+        <div class="flex-1 flex items-center p-1 md:mx-auto md:max-w-5xl md:px-2 bg-white/60 backdrop-blur-lg rounded-full shadow-sm">
+          <Link href="/" class="mr-4 hidden md:block">
+            <img class="w-24" src={fixAssetPath(logoImage)} />
+          </Link>
+          <NavigationItem icon={IconReportMoney} text="History" to="/transactions" />
+          <NavigationItem icon={IconInbox} text="Review" to="/review" badge={unconfirmedCount()} />
+          <NavigationItem icon={IconChartPie} text="Graphs" to="/graphs" />
+          <NavigationItem icon={IconAdjustmentsHorizontal} text="Settings" to="/settings" />
+        </div>
       </div>
-    </div>
+    </>
   )
 }
 

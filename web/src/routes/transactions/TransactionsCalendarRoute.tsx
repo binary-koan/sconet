@@ -13,6 +13,7 @@ const transactionsData: RouteDataFunc<unknown, TransactionsCalendarPageData> = (
     // ponytail: one page covers a month, paginate if a month ever exceeds this
     limit: 1000,
     filter: {
+      ...JSON.parse(params.filter ? decodeURIComponent(params.filter) : "{}"),
       dateFrom: `${year()}-${month()}-01`,
       dateUntil: `${year()}-${month()}-${lastDateOfMonth()}`
     }
@@ -38,7 +39,7 @@ const TransactionsCalendarPage = lazy(
 export const TransactionsCalendarRoute: Component = () => {
   return (
     <Route
-      path="/transactions/calendar/:yearmonth"
+      path="/transactions/calendar/:yearmonth/:filter?"
       component={TransactionsCalendarPage}
       data={transactionsData}
     />

@@ -1,14 +1,13 @@
 import { Title } from "@solidjs/meta"
-import { useNavigate, useRouteData } from "@solidjs/router"
-import { IconCalendarEvent, IconFilter, IconPlus } from "@tabler/icons-solidjs"
-import { Component, Show, createSignal, onMount } from "solid-js"
+import { useRouteData } from "@solidjs/router"
+import { Component, createSignal, onMount } from "solid-js"
 import { Cell } from "../../components/Cell"
-import { Button } from "../../components/base/Button"
-import { PageHeader } from "../../components/base/PageHeader"
-import { NewTransactionModal } from "../../components/transactions/NewTransactionModal"
+import { TransactionsActions } from "../../components/transactions/TransactionsActions"
 import {
   TransactionFilterValues,
-  TransactionFilters
+  TransactionFiltersModal,
+  parseFilterValues,
+  serializeFilterValues
 } from "../../components/transactions/TransactionFilters"
 import { TransactionsList } from "../../components/transactions/TransactionsList"
 import { TransactionsQuery, TransactionsQueryVariables } from "../../graphql-types"
@@ -32,10 +31,8 @@ export interface TransactionsListPageData {
 const TransactionsListPage: Component = () => {
   onMount(() => setTransactionsViewPreference("list"))
 
-  const navigate = useNavigate()
   const routeData = useRouteData<TransactionsListPageData>()
   const [isFiltering, setFiltering] = createSignal(false)
-  const [creatingTransaction, setCreatingTransaction] = createSignal(false)
 
   const { form, filterCount, hasFilterValues, clearFilters, setFilterValue } =
     usePageFilter<TransactionFilterValues>({
@@ -43,80 +40,27 @@ const TransactionsListPage: Component = () => {
       paramName: "filter",
       localStorageKey: FILTERS_KEY,
       initialValues: BLANK_FILTERS,
-      parse: (value) => {
-        const data = JSON.parse(value)
-        return {
-          ...data,
-          minAmount: data.minAmount?.toString(),
-          maxAmount: data.minAmount?.toString(),
-          categoryIds: data.categoryIds?.map((categoryId: string | null) => categoryId || "") || []
-        }
-      },
-      serialize: (value) => {
-        return JSON.stringify({
-          ...value,
-          minAmount: value.minAmount != null ? parseInt(value.minAmount) : undefined,
-          maxAmount: value.maxAmount != null ? parseInt(value.maxAmount) : undefined,
-          categoryIds: value.categoryIds?.map((categoryId) => categoryId || null)
-        })
-      }
+      parse: parseFilterValues,
+      serialize: serializeFilterValues
     })
 
   return (
     <>
       <Title>Transactions</Title>
 
-      <button
-        class="fixed bottom-[calc(66px+0.75rem+env(safe-area-inset-bottom))] right-3 z-[1025] flex gap-1 items-center justify-center rounded-full border border-gray-100 bg-white/60 backdrop-blur-lg px-4 py-2 text-indigo-600 shadow-sm md:hidden"
-        onClick={() => setCreatingTransaction(true)}
-      >
-        <IconPlus class="text-lg" />
-        Add
-      </button>
-      <PageHeader size="lg" class="z-docked sticky top-0 bg-gray-50 lg:top-9">
-        <span class="mr-auto">Transactions</span>
-        <Button
-          class="mr-2 rounded-full bg-white border border-gray-200 text-indigo-600 hidden md:flex hover:!bg-gray-100"
-          colorScheme="neutral"
-          variant="solid"
-          onClick={() => setCreatingTransaction(true)}
-        >
-          <IconPlus size="1.25em" class="-ml-1 mr-1" />
-          Add
-        </Button>
-        <Button
-          colorScheme={isFiltering() ? "primary" : "neutral"}
-          variant={isFiltering() ? "solid" : "ghost"}
-          size={hasFilterValues() ? "md" : "square"}
-          aria-label="Filter"
-          onClick={() => setFiltering((isFiltering) => !isFiltering)}
-        >
-          <IconFilter size="1.25em" />
-          {hasFilterValues() && `(${filterCount()})`}
-        </Button>
-        <Button
-          class="ml-2"
-          colorScheme="neutral"
-          variant="ghost"
-          size="square"
-          aria-label="Edit"
-          onClick={() => navigate("/transactions/calendar")}
-        >
-          <IconCalendarEvent size="1.25em" />
-        </Button>
-      </PageHeader>
+      <TransactionsActions
+        view="list"
+        filterCount={filterCount()}
+        onFilter={() => setFiltering(true)}
+      />
 
-      <Show when={creatingTransaction()}>
-        <NewTransactionModal isOpen={true} onClose={() => setCreatingTransaction(false)} />
-      </Show>
-
-      <div classList={{ block: isFiltering(), hidden: !isFiltering() }}>
-        <TransactionFilters
-          form={form}
-          clearFilters={clearFilters}
-          hasFilterValues={hasFilterValues()}
-        />
-      </div>
+      <TransactionFiltersModal
+        isOpen={isFiltering()}
+        form={form}
+        clearFilters={clearFilters}
+        hasFilterValues={hasFilterValues()}
+        onClose={() => setFiltering(false)}
+      />
 
       <Cell
         data={routeData.data}

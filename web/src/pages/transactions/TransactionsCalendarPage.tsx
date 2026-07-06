@@ -1,14 +1,20 @@
 import { Title } from "@solidjs/meta"
-import { useNavigate, useRouteData } from "@solidjs/router"
-import { IconArrowLeft, IconArrowRight, IconList, IconPlus } from "@tabler/icons-solidjs"
+import { useNavigate, useParams, useRouteData } from "@solidjs/router"
+import { IconArrowLeft, IconArrowRight } from "@tabler/icons-solidjs"
 import { Component, Show, createSignal, onMount } from "solid-js"
 import { Cell } from "../../components/Cell"
 import { Button } from "../../components/base/Button"
-import { PageHeader } from "../../components/base/PageHeader"
 import { MonthPickerModal } from "../../components/transactions/MonthPickerModal"
-import { NewTransactionModal } from "../../components/transactions/NewTransactionModal"
+import {
+  TransactionFilterValues,
+  TransactionFiltersModal,
+  parseFilterValues,
+  serializeFilterValues
+} from "../../components/transactions/TransactionFilters"
+import { TransactionsActions } from "../../components/transactions/TransactionsActions"
 import { TransactionsList } from "../../components/transactions/TransactionsList"
 import { TransactionsQuery, TransactionsQueryVariables } from "../../graphql-types"
+import usePageFilter from "../../hooks/usePageFilter"
 import { decrementMonth, incrementMonth } from "../../utils/date"
 import { QueryResource } from "../../utils/graphqlClient/useQuery"
 import { setTransactionsViewPreference } from "../../utils/transactions/viewPreference"
@@ -23,9 +29,19 @@ const TransactionsCalendarPage: Component = () => {
   onMount(() => setTransactionsViewPreference("calendar"))
 
   const navigate = useNavigate()
+  const params = useParams()
   const routeData = useRouteData<TransactionsCalendarPageData>()
   const [pickingMonth, setPickingMonth] = createSignal(false)
-  const [creatingTransaction, setCreatingTransaction] = createSignal(false)
+  const [isFiltering, setFiltering] = createSignal(false)
+
+  const { form, filterCount, hasFilterValues, clearFilters, setFilterValue } =
+    usePageFilter<TransactionFilterValues>({
+      basePath: () => `/transactions/calendar/${routeData.year}-${routeData.month}`,
+      paramName: "filter",
+      initialValues: { keyword: "", categoryIds: [] },
+      parse: parseFilterValues,
+      serialize: serializeFilterValues
+    })
 
   const monthStart = () => new Date(parseInt(routeData.year), parseInt(routeData.month) - 1, 1)
 
@@ -35,7 +51,11 @@ const TransactionsCalendarPage: Component = () => {
   }
 
   const navigateToMonth = (year: number, monthNumber: number) =>
-    navigate(`/transactions/calendar/${year}-${monthNumber.toString().padStart(2, "0")}`)
+    navigate(
+      `/transactions/calendar/${year}-${monthNumber.toString().padStart(2, "0")}${
+        params.filter ? `/${params.filter}` : ""
+      }`
+    )
 
   const step = (changeMonth: typeof incrementMonth) => {
     const { year, monthNumber } = changeMonth({
@@ -67,38 +87,22 @@ const TransactionsCalendarPage: Component = () => {
     <>
       <Title>Transactions</Title>
 
-      <button
-        class="fixed bottom-[calc(66px+0.5rem+env(safe-area-inset-bottom))] right-3 z-[1025] flex items-center rounded-full border border-gray-100 bg-white/60 backdrop-blur-lg px-5 py-2 text-lg text-indigo-600 shadow-sm md:hidden"
-        onClick={() => setCreatingTransaction(true)}
-      >
-        <IconPlus size="1.25em" class="-ml-1 mr-2" />
-        Add
-      </button>
-      <PageHeader size="lg">
-        <span class="mr-auto">Transactions</span>
-        <Button
-          class="mr-2 rounded-full bg-white border border-gray-200 text-indigo-600 hidden md:flex hover:!bg-gray-100"
-          colorScheme="neutral"
-          variant="solid"
-          onClick={() => setCreatingTransaction(true)}
-        >
-          <IconPlus size="1.25em" class="-ml-1 mr-1" />
-          Add
-        </Button>
+      <TransactionsActions
+        view="calendar"
+        filterCount={filterCount()}
+        onFilter={() => setFiltering(true)}
+      />
 
-        <Button
-          class="ml-2"
-          colorScheme="neutral"
-          variant="ghost"
-          size="square"
-          aria-label="List"
-          onClick={() => navigate("/transactions/list")}
-        >
-          <IconList size="1.25em" />
-        </Button>
-      </PageHeader>
+      <TransactionFiltersModal
+        isOpen={isFiltering()}
+        form={form}
+        clearFilters={clearFilters}
+        hasFilterValues={hasFilterValues()}
+        hideDates={true}
+        onClose={() => setFiltering(false)}
+      />
 
-      <div class="mx-4 mb-4 flex gap-2">
+      <div class="m-4 flex gap-2">
         <Button
           size="square"
           aria-label="Previous month"
@@ -125,10 +129,6 @@ const TransactionsCalendarPage: Component = () => {
         </Button>
       </div>
 
-      <Show when={creatingTransaction()}>
-        <NewTransactionModal isOpen={true} onClose={() => setCreatingTransaction(false)} />
-      </Show>
-
       <Show when={pickingMonth()}>
         <MonthPickerModal
           isOpen={true}
@@ -145,7 +145,7 @@ const TransactionsCalendarPage: Component = () => {
           successProps={{
             isFiltering: true,
             hideMonthHeaders: true,
-            setFilterValue: () => {}
+            setFilterValue
           }}
         />
       </div>

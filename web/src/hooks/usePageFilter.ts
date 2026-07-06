@@ -12,7 +12,7 @@ const usePageFilter = <FilterValues extends { [key: string]: any }>({
   parse,
   serialize
 }: {
-  basePath: string
+  basePath: string | (() => string)
   paramName: string
   localStorageKey?: string
   initialValues: PartialValues<FilterValues>
@@ -55,7 +55,7 @@ const usePageFilter = <FilterValues extends { [key: string]: any }>({
 
   const updateFilters = debounce((filters: string) => {
     if (localStorageKey) localStorage.setItem(localStorageKey, filters)
-    navigate([basePath, filters].join("/"))
+    navigate([typeof basePath === "function" ? basePath() : basePath, filters].join("/"))
   }, 500)
 
   const clearFilters = () => {
