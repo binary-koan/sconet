@@ -14,14 +14,14 @@ export type ButtonSize = keyof typeof SIZES
 
 const CLASSES = {
   ghost: {
-    primary: "text-indigo-600 hover:bg-gray-100 focus:bg-gray-100",
-    danger: "text-red-600 hover:bg-gray-100 focus:bg-gray-100",
-    neutral: "hover:bg-gray-100 focus:bg-gray-100"
+    primary: "text-primary hover:bg-accent focus:bg-accent",
+    danger: "text-destructive hover:bg-accent focus:bg-accent",
+    neutral: "hover:bg-accent focus:bg-accent"
   },
   solid: {
     primary: "bg-indigo-600 border border-indigo-500 outline-1 outline-solid outline-indigo-700 shadow-xs hover:bg-indigo-800  focus:bg-indigo-800 text-white",
     danger: "bg-red-600 border border-red-500 outline-1 outline-solid outline-red-700 shadow-xs hover:bg-red-800 focus:bg-red-800 text-white",
-    neutral: "bg-white border border-white outline-1 outline-solid outline-gray-200 shadow-xs hover:bg-gray-50 focus:bg-gray-50"
+    neutral: "bg-card border border-card outline-1 outline-solid outline-border shadow-xs hover:bg-accent focus:bg-accent"
   }
 }
 

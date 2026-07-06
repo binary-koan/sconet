@@ -47,7 +47,7 @@ const BudgetGroup: Component<BudgetGroupProps> = (props) => {
             <IconListSearch />
           </LinkButton>
         </h2>
-        <div class="bg-white pl-6 pr-4 pt-4 shadow-xs lg:mb-6 lg:ml-4">
+        <div class="bg-card pl-6 pr-4 pt-4 shadow-xs lg:mb-6 lg:ml-4">
           <Show when={!props.items.length}>
             <div class="pb-4">No transactions</div>
           </Show>
@@ -63,13 +63,13 @@ const BudgetGroup: Component<BudgetGroupProps> = (props) => {
                   </div>
 
                   <Show when={budget !== false}>
-                    <div class="h-1 w-full rounded-full bg-gray-200">
+                    <div class="h-1 w-full rounded-full bg-muted">
                       <div
                         class="h-1 rounded-full"
                         classList={{
                           [color
                             ? CATEGORY_BACKGROUND_COLORS[color as CategoryColor]
-                            : "bg-gray-600"]: true
+                            : "bg-gray-600 dark:bg-gray-400"]: true
                         }}
                         style={{
                           width: budget
@@ -89,17 +89,17 @@ const BudgetGroup: Component<BudgetGroupProps> = (props) => {
                             classList={{
                               "text-danger-600 font-bold":
                                 total.amountDecimal > budget.amountDecimal,
-                              "text-gray-600": total.amountDecimal <= budget.amountDecimal
+                              "text-muted-foreground": total.amountDecimal <= budget.amountDecimal
                             }}
                           >
                             {((total.amountDecimal / budget.amountDecimal) * 100).toFixed(0)}% spent
                           </span>
-                          <span class="ml-auto text-xs text-gray-600">
+                          <span class="ml-auto text-xs text-muted-foreground">
                             {remaining?.formatted} left / {budget.formatted} budget
                           </span>
                         </>
                       ) : (
-                        <span class="ml-auto text-xs text-gray-600">No budget</span>
+                        <span class="ml-auto text-xs text-muted-foreground">No budget</span>
                       )}
                     </div>
                   </Show>

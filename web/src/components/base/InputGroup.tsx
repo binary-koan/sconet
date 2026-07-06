@@ -19,7 +19,9 @@ export type InputAddonProps = JSX.IntrinsicElements["div"]
 export const InputAddon = (allProps: InputAddonProps) => {
   const [props, elementProps] = splitProps(allProps, ["class"])
 
-  return <div class={`text-gray-600 first:pl-4 last:pr-4 ${props.class}`} {...elementProps} />
+  return (
+    <div class={`text-muted-foreground first:pl-4 last:pr-4 ${props.class}`} {...elementProps} />
+  )
 }
 
 export const InputGroupInput = (allProps: InputProps) => {

@@ -82,18 +82,18 @@ export const TransactionsList: Component<{
             <>
               <Show when={newMonth()}>
                 <div
-                  class="z-docked sticky top-0 bg-gray-50 pt-2 md:top-14"
+                  class="z-docked sticky top-0 bg-background pt-2 md:top-14"
                   classList={{
                     "mt-0": index() === 0,
                     "mt-6": index() !== 0
                   }}
                 >
                   <div class="relative">
-                    <div class="absolute left-4 right-4 top-1/2 border-b border-gray-200" />
+                    <div class="absolute left-4 right-4 top-1/2 border-b border-border" />
                     <button
                       type="button"
                       onClick={() => setMonthPickerDate(new Date(date))}
-                      class="relative mx-2 inline-block rounded-sm bg-gray-50 py-1 pl-2 pr-4 text-base font-semibold text-gray-700"
+                      class="relative mx-2 inline-block rounded-sm bg-background py-1 pl-2 pr-4 text-base font-semibold text-foreground"
                     >
                       {formatDate(date, "monthYear")}
                     </button>
@@ -103,7 +103,7 @@ export const TransactionsList: Component<{
 
               <button
                 type="button"
-                class="flex px-6 pb-2 pt-5 text-sm text-gray-600"
+                class="flex px-6 pb-2 pt-5 text-sm text-muted-foreground"
                 onClick={() => setShowingModalForDate(date)}
                 data-testid="transactions-date"
               >

@@ -76,7 +76,7 @@ const App: Component = () => {
           <Route
             path="/*all"
             element={
-              <div class="flex min-h-[50vh] flex-col items-center justify-center text-center text-gray-600">
+              <div class="flex min-h-[50vh] flex-col items-center justify-center text-center text-muted-foreground">
                 <div class="mb-8 text-7xl">404</div>
                 Couldn't find that page.
               </div>

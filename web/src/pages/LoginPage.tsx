@@ -68,7 +68,7 @@ const LoginPage: Component = () => {
       <div class="flex min-h-screen flex-col pb-20">
         <img class="mx-auto mb-auto mt-8 w-36" src={fixAssetPath(logoImage)} />
 
-        <div class="mx-6 mb-10 mt-2 rounded-sm bg-white p-6 shadow-2xl md:mx-auto md:w-96">
+        <div class="mx-6 mb-10 mt-2 rounded-sm bg-card p-6 shadow-2xl md:mx-auto md:w-96">
           <h1 class="mb-4 flex items-center text-lg font-bold md:text-2xl">Login</h1>
           <Form
             of={form}
@@ -92,7 +92,7 @@ const LoginPage: Component = () => {
 
         <Show when={lastUserEmail()}>
           <button
-            class="mx-auto rounded-full border-2 border-gray-300 p-4 text-gray-400 transition hover:bg-gray-200"
+            class="mx-auto rounded-full border-2 border-border p-4 text-muted-foreground transition hover:bg-accent"
             onClick={() => startCredentialLogin({ email: lastUserEmail()! })}
           >
             <IconFingerprint size="2em" />

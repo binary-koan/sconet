@@ -117,7 +117,7 @@ export const CategoriesList: Component<{ data: CategoriesQuery }> = (props) => {
 
         <DragOverlayFixed>
           <Show when={draggingItem()}>
-            <div class="overflow-hidden rounded-3xl border border-gray-100">
+            <div class="overflow-hidden rounded-3xl border border-border">
               <Category category={draggingItem()!} onDeleteClick={noop} onArchiveClick={noop} />
             </div>
           </Show>
@@ -138,7 +138,7 @@ const SortableCategory: Component<{
   return (
     <div
       ref={sortable.ref}
-      class="not-first:border-t-0 overflow-hidden border border-gray-100 first:rounded-t-3xl last:rounded-b-3xl"
+      class="not-first:border-t-0 overflow-hidden border border-border first:rounded-t-3xl last:rounded-b-3xl"
       style={{
         ...transformStyle(sortable.transform),
         opacity: sortable.isActiveDraggable ? "0.25" : "1"
@@ -156,8 +156,8 @@ const Category: Component<{
   sortable?: ReturnType<typeof createSortable>
 }> = (props) => {
   return (
-    <div class="flex items-center bg-white px-4 py-2">
-      <div class="mr-2 hidden cursor-move text-gray-600 md:block">
+    <div class="flex items-center bg-card px-4 py-2">
+      <div class="mr-2 hidden cursor-move text-muted-foreground md:block">
         <IconArrowsSort {...props.sortable?.dragActivators} />
       </div>
       <CategoryIndicator
@@ -169,7 +169,7 @@ const Category: Component<{
       />
       <div class="me-4 ml-4 min-w-0 flex-1">
         <h3 class="mb-1 truncate leading-none">{props.category.name}</h3>
-        <p class="truncate text-xs leading-tight text-gray-600">
+        <p class="truncate text-xs leading-tight text-muted-foreground">
           {props.category.budget
             ? `Budget: ${props.category.budget.budget.formatted}`
             : "No budget"}

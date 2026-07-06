@@ -26,8 +26,8 @@ const NavigationItem: Component<{
       href={props.to}
       class="flex flex-1 flex-row items-center justify-center gap-1 border-b-2 py-4 md:py-3"
       classList={{
-        "text-indigo-600 border-indigo-600": isMatch(),
-        "text-gray-600 border-gray-200": !isMatch()
+        "text-primary border-primary": isMatch(),
+        "text-muted-foreground border-border": !isMatch()
       }}
     >
       <Dynamic component={props.icon} size="1.5em" />

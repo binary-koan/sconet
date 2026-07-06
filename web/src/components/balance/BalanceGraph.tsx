@@ -27,7 +27,7 @@ export const BalanceGraph: Component<{
     const colors = [
       getCssValue("--color-green-400"),
       getCssValue("--color-red-400"),
-      getCssValue("--color-gray-800")
+      getCssValue("--foreground")
     ]
 
     chart.setOption({
@@ -48,7 +48,8 @@ export const BalanceGraph: Component<{
       legend: {
         data: ["Income", "Spending", "Balance"],
         textStyle: {
-          fontFamily: getComputedStyle(document.body).fontFamily
+          fontFamily: getComputedStyle(document.body).fontFamily,
+          color: getCssValue("--foreground")
         }
       },
       xAxis: [
@@ -69,7 +70,8 @@ export const BalanceGraph: Component<{
             "Dec"
           ],
           axisLabel: {
-            fontFamily: getComputedStyle(document.body).fontFamily
+            fontFamily: getComputedStyle(document.body).fontFamily,
+            color: getCssValue("--muted-foreground")
           }
         }
       ],
@@ -83,7 +85,8 @@ export const BalanceGraph: Component<{
           },
           axisLabel: {
             formatter: (value: number) => `${props.currencySymbol}${value.toFixed(2)}`,
-            fontFamily: getComputedStyle(document.body).fontFamily
+            fontFamily: getComputedStyle(document.body).fontFamily,
+            color: getCssValue("--muted-foreground")
           }
         }
       ],

@@ -77,7 +77,7 @@ const ZoomableReceipts: Component<{
   }
 
   return (
-    <div class="relative h-full bg-white shadow-xs lg:rounded-sm">
+    <div class="relative h-full bg-card shadow-xs lg:rounded-sm">
       <div
         ref={outer}
         class="h-full overflow-hidden"
@@ -173,7 +173,7 @@ const ReviewTransactionsPage: Component = () => {
             <Show
               when={current()}
               fallback={
-                <div class="flex min-h-[50vh] flex-col items-center justify-center text-gray-600">
+                <div class="flex min-h-[50vh] flex-col items-center justify-center text-muted-foreground">
                   <IconCheck size="3em" class="mb-4" />
                   Nothing to review.
                 </div>
@@ -186,7 +186,7 @@ const ReviewTransactionsPage: Component = () => {
                   <div class="grid h-[calc(100dvh-12rem)] grid-cols-1 grid-rows-2 gap-4 md:grid-cols-2 md:grid-rows-1">
                     <Show
                       when={transaction().receiptImages.length > 0}
-                      fallback={<div class="italic text-gray-600">No receipt</div>}
+                      fallback={<div class="italic text-muted-foreground">No receipt</div>}
                     >
                       <ZoomableReceipts
                         images={transaction().receiptImages}
@@ -194,7 +194,7 @@ const ReviewTransactionsPage: Component = () => {
                         onRotate={(image) => void rotateReceiptImage(image)}
                       />
                     </Show>
-                    <div class="overflow-y-auto bg-white p-4 shadow-xs lg:rounded-sm">
+                    <div class="overflow-y-auto bg-card p-4 shadow-xs lg:rounded-sm">
                       <TransactionView data={{ transaction: transaction() }} showReceiptImages={false} />
                     </div>
                   </div>

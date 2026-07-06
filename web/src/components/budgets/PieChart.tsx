@@ -38,11 +38,11 @@ export const PieChart: Component<{
           ...baseSeriesOptions,
           label: {
             fontFamily: getComputedStyle(document.body).fontFamily,
-            color: getCssValue("--color-gray-800")
+            color: getCssValue("--foreground")
           },
           labelLine: {
             lineStyle: {
-              color: getCssValue("--color-gray-600")
+              color: getCssValue("--muted-foreground")
             },
             smooth: 0.2,
             length: 8,

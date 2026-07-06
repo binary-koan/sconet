@@ -34,7 +34,7 @@ export const AccountSelect: Component<{
             )}
           </For>
           <Show when={favourites().length > 0 && others().length > 0}>
-            <div class="my-1 h-px w-full bg-gray-200" />
+            <div class="my-1 h-px w-full bg-border" />
           </Show>
           <For each={others()}>
             {(account) => (

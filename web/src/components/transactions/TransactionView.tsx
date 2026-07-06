@@ -82,7 +82,7 @@ export const TransactionView: Component<{
                         href={image.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        class="group relative block h-24 w-24 overflow-hidden rounded border border-gray-200 hover:border-gray-400"
+                        class="group relative block h-24 w-24 overflow-hidden rounded border border-border hover:border-gray-400 dark:hover:border-gray-500"
                       >
                         <img
                           src={image.url}
@@ -249,7 +249,7 @@ export const TransactionView: Component<{
                     {child.amount?.formatted ?? <em>Pending</em>}
                     <Show when={child.shopAmount}>
                       {(shopAmount) => (
-                        <div class="text-xs text-gray-500">{shopAmount().formatted}</div>
+                        <div class="text-xs text-muted-foreground">{shopAmount().formatted}</div>
                       )}
                     </Show>
                   </div>

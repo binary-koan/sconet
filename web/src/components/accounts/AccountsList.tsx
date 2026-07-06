@@ -149,7 +149,7 @@ const AccountsList: Component<{
 
         <DragOverlayFixed>
           <Show when={draggingItem()}>
-            <div class="overflow-hidden rounded-3xl border border-gray-100">
+            <div class="overflow-hidden rounded-3xl border border-border">
               <AccountRow
                 account={draggingItem()!}
                 defaultAccountId={defaultAccountId()}
@@ -182,7 +182,7 @@ const SortableAccount: Component<{
   return (
     <div
       ref={sortable.ref}
-      class="not-first:border-t-0 overflow-hidden border border-gray-100 first:rounded-t-3xl last:rounded-b-3xl"
+      class="not-first:border-t-0 overflow-hidden border border-border first:rounded-t-3xl last:rounded-b-3xl"
       style={{
         ...transformStyle(sortable.transform),
         opacity: sortable.isActiveDraggable ? "0.25" : "1"
@@ -203,13 +203,13 @@ const AccountRow: Component<{
   sortable?: ReturnType<typeof createSortable>
 }> = (props) => {
   return (
-    <div class="flex items-center bg-white px-4 py-2">
-      <div class="mr-2 hidden cursor-move text-gray-600 md:block">
+    <div class="flex items-center bg-card px-4 py-2">
+      <div class="mr-2 hidden cursor-move text-muted-foreground md:block">
         <IconArrowsSort {...props.sortable?.dragActivators} />
       </div>
       <div class="mr-4 min-w-0 flex-1">
         <h3 class="mb-1 truncate leading-none">{props.account.name}</h3>
-        <p class="text-xs leading-tight text-gray-600">{props.account.currency.code}</p>
+        <p class="text-xs leading-tight text-muted-foreground">{props.account.currency.code}</p>
       </div>
       <Button
         size="sm"

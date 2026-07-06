@@ -42,8 +42,8 @@ export const BudgetSummary: Component<{
         <div
           class="text-sm md:text-xl"
           classList={{
-            "text-red-600": props.budget.difference.amountDecimal < 0,
-            "text-green-600": props.budget.difference.amountDecimal >= 0
+            "text-red-600 dark:text-red-400": props.budget.difference.amountDecimal < 0,
+            "text-green-600 dark:text-green-400": props.budget.difference.amountDecimal >= 0
           }}
         >
           {props.budget.difference.formatted}

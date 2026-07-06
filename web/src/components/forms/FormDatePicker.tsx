@@ -60,7 +60,7 @@ export const FormDatePicker: Component<{
                 </Button>
 
                 <MonthPickerOverlay
-                  class="flex flex-1 items-center rounded-sm px-4 text-center text-sm font-semibold transition hover:bg-gray-200"
+                  class="flex flex-1 items-center rounded-sm px-4 text-center text-sm font-semibold transition hover:bg-accent"
                   value={field.value && field.value.replace(/-\d+$/, "")}
                   disableFutureDates
                   onChange={(value) =>
@@ -110,9 +110,9 @@ export const FormDatePicker: Component<{
                         data-testid="datepicker-date"
                         classList={{
                           "border-transparent": !isSameDate(date, new Date()),
-                          "border-gray-200": isSameDate(date, new Date()),
-                          "text-gray-400": !isCurrentMonth,
-                          "hover:bg-gray-200": !isSelected(),
+                          "border-border": isSameDate(date, new Date()),
+                          "text-muted-foreground": !isCurrentMonth,
+                          "hover:bg-accent": !isSelected(),
                           "bg-indigo-600 text-white hover:bg-indigo-700": isSelected()
                         }}
                         onClick={() => onSelect(date)}

@@ -73,10 +73,11 @@ export const MonthPickerModal: Component<{
                 <button
                   type="button"
                   onClick={() => handleMonthSelect(index())}
-                  class="rounded-md px-2 py-3 text-sm font-medium transition-colors hover:bg-indigo-50 hover:text-indigo-600"
+                  class="rounded-md px-2 py-3 text-sm font-medium transition-colors hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-indigo-950 dark:hover:text-indigo-300"
                   classList={{
-                    "bg-indigo-100 text-indigo-700": isCurrentMonth(),
-                    "text-gray-700": !isCurrentMonth()
+                    "bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300":
+                      isCurrentMonth(),
+                    "text-foreground": !isCurrentMonth()
                   }}
                 >
                   {month.slice(0, 3)}

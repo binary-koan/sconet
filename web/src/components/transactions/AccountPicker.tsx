@@ -26,7 +26,7 @@ const AccountPicker: Component<ValueProps> = (props) => {
         {(account) => <AccountOption account={account} valueProps={props} />}
       </For>
       <Show when={favourites().length > 0 && others().length > 0}>
-        <div class="basis-full border-b border-gray-200" />
+        <div class="basis-full border-b border-border" />
       </Show>
       <For each={others()}>
         {(account) => <AccountOption account={account} valueProps={props} />}

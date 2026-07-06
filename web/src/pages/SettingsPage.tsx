@@ -122,12 +122,12 @@ const SettingsPage: Component = () => {
       </PageHeader>
 
       <div class="flex flex-col px-2">
-        <div class="not-first:border-t-0 flex items-center gap-2 border border-gray-100 bg-white px-4 py-2 first:rounded-t-3xl last:rounded-b-3xl">
+        <div class="not-first:border-t-0 flex items-center gap-2 border border-border bg-card px-4 py-2 first:rounded-t-3xl last:rounded-b-3xl">
           <IconKey /> Password
         </div>
         <For each={data.currentUser()?.currentUser?.registeredCredentials}>
           {(credential) => (
-            <div class="not-first:border-t-0 flex items-center gap-2 border border-gray-100 bg-white px-4 py-2 first:rounded-t-3xl last:rounded-b-3xl">
+            <div class="not-first:border-t-0 flex items-center gap-2 border border-border bg-card px-4 py-2 first:rounded-t-3xl last:rounded-b-3xl">
               <IconFingerprint /> {credential.device} (created on {credential.createdAt})
               <Button
                 size="sm"
@@ -152,27 +152,27 @@ const SettingsPage: Component = () => {
 
       <div class="flex flex-col px-2">
         <Show when={newToken()}>
-          <div class="not-first:border-t-0 border border-gray-100 bg-white px-4 py-2 text-sm first:rounded-t-3xl last:rounded-b-3xl">
+          <div class="not-first:border-t-0 border border-border bg-card px-4 py-2 text-sm first:rounded-t-3xl last:rounded-b-3xl">
             Copy your new API key now, it won't be shown again:
             <code class="mt-1 block select-all break-all font-mono">{newToken()}</code>
           </div>
         </Show>
 
         <Show when={data.currentUser()?.currentUser?.apiKeys?.length === 0}>
-          <div class="not-first:border-t-0 border border-gray-100 bg-white px-4 py-2 italic first:rounded-t-3xl last:rounded-b-3xl">
+          <div class="not-first:border-t-0 border border-border bg-card px-4 py-2 italic first:rounded-t-3xl last:rounded-b-3xl">
             No API keys
           </div>
         </Show>
         <For each={data.currentUser()?.currentUser?.apiKeys}>
           {(apiKey) => (
             <div
-              class="not-first:border-t-0 flex items-center gap-2 border border-gray-100 bg-white px-4 py-2 first:rounded-t-3xl last:rounded-b-3xl"
+              class="not-first:border-t-0 flex items-center gap-2 border border-border bg-card px-4 py-2 first:rounded-t-3xl last:rounded-b-3xl"
               classList={{ "opacity-50": Boolean(apiKey.disabledAt) }}
             >
               <IconKey /> {apiKey.name}{" "}
-              <code class="text-sm text-gray-600">{apiKey.tokenPrefix}...</code>
+              <code class="text-sm text-muted-foreground">{apiKey.tokenPrefix}...</code>
               <Show when={apiKey.disabledAt}>
-                <span class="text-sm text-red-600">disabled</span>
+                <span class="text-sm text-destructive">disabled</span>
               </Show>
               <Button
                 size="sm"

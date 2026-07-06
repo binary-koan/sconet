@@ -17,13 +17,13 @@ export const FavouriteCurrencies: Component<{
   return (
     <div class="flex flex-col px-2">
       <Show when={currentUser().favouriteCurrencies.length === 0}>
-        <div class="not-first:border-t-0 border border-gray-100 bg-white px-4 py-2 italic first:rounded-t-3xl last:rounded-b-3xl">
+        <div class="not-first:border-t-0 border border-border bg-card px-4 py-2 italic first:rounded-t-3xl last:rounded-b-3xl">
           No favourite currencies
         </div>
       </Show>
       <For each={currentUser().favouriteCurrencies}>
         {(currency) => (
-          <div class="not-first:border-t-0 flex items-center justify-between border border-gray-100 bg-white px-4 py-1 first:rounded-t-3xl last:rounded-b-3xl">
+          <div class="not-first:border-t-0 flex items-center justify-between border border-border bg-card px-4 py-1 first:rounded-t-3xl last:rounded-b-3xl">
             {currency.code} ({currency.name})
             <Button
               size="sm"

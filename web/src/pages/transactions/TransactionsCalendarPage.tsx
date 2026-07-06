@@ -113,7 +113,7 @@ const TransactionsCalendarPage: Component = () => {
 
         <button
           type="button"
-          class="flex flex-1 items-center justify-center rounded-sm px-4 font-semibold transition hover:bg-gray-300"
+          class="flex flex-1 items-center justify-center rounded-sm px-4 font-semibold transition hover:bg-accent"
           onClick={() => setPickingMonth(true)}
         >
           {monthStart().toLocaleDateString("default", { month: "long", year: "numeric" })}

@@ -27,7 +27,7 @@ export const Modal = <T extends AsProp = "div">(
         classList={props.classList}
         {...elementProps}
       >
-        <div class="z-modal fixed inset-0 bg-gray-500/75" />
+        <div class="z-modal fixed inset-0 bg-gray-500/75 dark:bg-gray-950/75" />
 
         <div class="z-modal fixed inset-0 overflow-y-auto" role="dialog">
           <div
@@ -56,7 +56,7 @@ export const ModalContent = (allProps: BasicElementProps<"div">) => {
   return (
     <div
       ref={props.ref}
-      class={`modal-panel relative w-full rounded-t-lg bg-white p-5 pt-4 text-left shadow-xl sm:my-8 sm:max-w-lg sm:rounded-lg sm:px-6 sm:py-5 ${props.class}`}
+      class={`modal-panel relative w-full rounded-t-lg bg-card p-5 pt-4 text-left shadow-xl sm:my-8 sm:max-w-lg sm:rounded-lg sm:px-6 sm:py-5 ${props.class}`}
       classList={props.classList}
       {...elementProps}
     >

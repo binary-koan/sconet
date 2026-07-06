@@ -3,6 +3,69 @@
 @config '../tailwind.config.js';
 
 /*
+  shadcn-style semantic colours, switched on the browser colour scheme.
+  Use these (bg-background, bg-card, text-muted-foreground, border-border, ...)
+  instead of raw white/gray utilities so components adapt to dark mode.
+*/
+:root {
+  color-scheme: light dark;
+
+  --background: var(--color-gray-50);
+  --foreground: var(--color-gray-900);
+  --card: var(--color-white);
+  --card-foreground: var(--color-gray-900);
+  --muted: var(--color-gray-200);
+  --muted-foreground: var(--color-gray-600);
+  --accent: var(--color-gray-100);
+  --accent-foreground: var(--color-gray-900);
+  --border: var(--color-gray-200);
+  --input: var(--color-gray-200);
+  --primary: var(--color-indigo-600);
+  --primary-foreground: var(--color-white);
+  --destructive: var(--color-red-600);
+  --destructive-foreground: var(--color-white);
+  --ring: var(--color-indigo-200);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: var(--color-gray-950);
+    --foreground: var(--color-gray-100);
+    --card: var(--color-gray-900);
+    --card-foreground: var(--color-gray-100);
+    --muted: var(--color-gray-700);
+    --muted-foreground: var(--color-gray-400);
+    --accent: var(--color-gray-800);
+    --accent-foreground: var(--color-gray-100);
+    --border: var(--color-gray-800);
+    --input: var(--color-gray-700);
+    --primary: var(--color-indigo-500);
+    --primary-foreground: var(--color-white);
+    --destructive: var(--color-red-500);
+    --destructive-foreground: var(--color-white);
+    --ring: var(--color-indigo-900);
+  }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-ring: var(--ring);
+}
+
+/*
   The default border color has changed to `currentcolor` in Tailwind CSS v4,
   so we've added these compatibility styles to make sure everything still
   looks the same as it did with Tailwind CSS v3.
@@ -16,12 +79,12 @@
   ::before,
   ::backdrop,
   ::file-selector-button {
-    border-color: var(--color-gray-200, currentcolor);
+    border-color: var(--border, currentcolor);
   }
 }
 
 body {
-  @apply bg-gray-50;
+  @apply bg-background text-foreground;
 }
 
 .tabler-icon {

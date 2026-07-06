@@ -143,7 +143,7 @@ const ColorOptionContent: Component<{ value: CategoryColor }> = (props) => {
   return (
     <>
       <div
-        class={`mr-1.5 h-5 w-5 rounded-full border border-gray-200 ${
+        class={`mr-1.5 h-5 w-5 rounded-full border border-border ${
           CATEGORY_BACKGROUND_COLORS[props.value]
         }`}
       />

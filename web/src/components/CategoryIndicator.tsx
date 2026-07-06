@@ -22,15 +22,15 @@ const CategoryIndicator: Component<CategoryIndicatorProps> = (baseProps) => {
   const props = mergeProps({ includeInReports: true, isSplit: false, isIncome: false }, baseProps)
 
   const getBackgroundColor = () => {
-    if (!props.includeInReports || props.isSplit) return "bg-gray-200"
-    if (props.isIncome) return "bg-gray-200"
-    if (!props.color) return "bg-gray-200"
-    return CATEGORY_BACKGROUND_COLORS[props.color as CategoryColor] || "bg-gray-200"
+    if (!props.includeInReports || props.isSplit) return "bg-muted"
+    if (props.isIncome) return "bg-muted"
+    if (!props.color) return "bg-muted"
+    return CATEGORY_BACKGROUND_COLORS[props.color as CategoryColor] || "bg-muted"
   }
 
   const getColor = () => {
-    if (!props.includeInReports) return "text-gray-300"
-    if (props.isSplit) return "text-gray-300"
+    if (!props.includeInReports) return "text-gray-300 dark:text-gray-500"
+    if (props.isSplit) return "text-gray-300 dark:text-gray-500"
     if (props.isIncome) return "text-green-500"
     if (!props.color) return "text-red-500"
     return "text-white"

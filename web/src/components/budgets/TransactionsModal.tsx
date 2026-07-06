@@ -41,7 +41,7 @@ export const TransactionsModal = (props: {
               <For each={transactionsToShow()}>
                 {(transaction) => (
                   <li class="flex py-1">
-                    <span class="mr-4 text-gray-600">
+                    <span class="mr-4 text-muted-foreground">
                       {new Date(transaction.date).toLocaleDateString("default", {
                         day: "numeric",
                         month: "short"
@@ -49,7 +49,7 @@ export const TransactionsModal = (props: {
                     </span>
                     <span class="mr-auto min-w-0 truncate">
                       {transaction.shop}{" "}
-                      <span class="text-gray-600">&ndash; {transaction.memo}</span>
+                      <span class="text-muted-foreground">&ndash; {transaction.memo}</span>
                     </span>
                     <span>{transaction.amount?.formatted}</span>
                   </li>

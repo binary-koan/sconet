@@ -19,9 +19,9 @@ const MainNavigation: Component = () => {
 
   return (
     <>
-      <div class="z-navbar fixed bottom-0 left-0 right-0 h-10 mb-[env(safe-area-inset-bottom)] bg-gray-50 backdrop-blur-lg mask-t-from-50% md:hidden" />
+      <div class="z-navbar fixed bottom-0 left-0 right-0 h-10 mb-[env(safe-area-inset-bottom)] bg-background backdrop-blur-lg mask-t-from-50% md:hidden" />
       <div class="flex gap-2 z-navbar fixed bottom-2 left-2 right-2 top-auto mb-[env(safe-area-inset-bottom)] md:bottom-auto md:top-2 md:mb-0 md:ml-4">
-        <div class="flex-1 flex items-center p-1 md:mx-auto md:max-w-5xl md:px-2 bg-white/60 backdrop-blur-lg rounded-full shadow-sm">
+        <div class="flex-1 flex items-center p-1 md:mx-auto md:max-w-5xl md:px-2 bg-card/60 backdrop-blur-lg rounded-full shadow-sm">
           <Link href="/" class="mr-4 hidden md:block">
             <img class="w-24" src={fixAssetPath(logoImage)} />
           </Link>
@@ -49,7 +49,7 @@ const NavigationItem: Component<{
     <Link
       href={props.to}
       class="flex flex-1 flex-col items-center py-1 rounded-full transition md:flex-none md:flex-row md:gap-2 md:p-3"
-      classList={{ "bg-gray-200/50 text-indigo-600": isMatch(), "text-gray-600": !isMatch() }}
+      classList={{ "bg-muted/50 text-primary": isMatch(), "text-muted-foreground": !isMatch() }}
     >
       <span class="relative">
         <Dynamic component={props.icon} class="text-lg" />

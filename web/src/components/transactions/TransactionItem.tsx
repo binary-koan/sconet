@@ -39,7 +39,7 @@ const TransactionItem: Component<{
   return (
     <>
       <div
-        class="flex cursor-pointer items-center bg-white p-2 first:rounded-t-3xl last:rounded-b-3xl border border-gray-100 not-first:border-t-0"
+        class="flex cursor-pointer items-center bg-card p-2 first:rounded-t-3xl last:rounded-b-3xl border border-border not-first:border-t-0"
         classList={{
           "pl-10": !!props.parent,
           "border-b-0": !!splitTo().length
@@ -55,12 +55,12 @@ const TransactionItem: Component<{
 
           <div
             class="ml-2 min-w-0 truncate px-2 leading-none"
-            classList={{ "text-gray-600 line-through": !includeInReports() }}
+            classList={{ "text-muted-foreground line-through": !includeInReports() }}
             data-testid="memo"
           >
             {props.transaction.shop}{" "}
             {props.transaction.memo && (
-              <span class="text-gray-600">&ndash; {props.transaction.memo}</span>
+              <span class="text-muted-foreground">&ndash; {props.transaction.memo}</span>
             )}
           </div>
           <Show when={!props.transaction.confirmed}>
@@ -71,7 +71,7 @@ const TransactionItem: Component<{
           <div
             class="ml-auto whitespace-nowrap text-right"
             classList={{
-              "text-gray-600 line-through": !includeInReports()
+              "text-muted-foreground line-through": !includeInReports()
             }}
             data-testid="amount"
           >
@@ -79,7 +79,7 @@ const TransactionItem: Component<{
 
             <Show when={props.transaction.shopAmount}>
               {(shopAmount) => (
-                <div class="ml-1 text-xs text-gray-600">{shopAmount().formatted}</div>
+                <div class="ml-1 text-xs text-muted-foreground">{shopAmount().formatted}</div>
               )}
             </Show>
           </div>
@@ -92,7 +92,7 @@ const TransactionItem: Component<{
         {(child) => (
           <div
             onClick={navigateToTransaction}
-            class="-mt-px flex cursor-pointer items-center bg-white border-x last:border-b last:rounded-b-3xl border-gray-100 py-2 pl-10 pr-4"
+            class="-mt-px flex cursor-pointer items-center bg-card border-x last:border-b last:rounded-b-3xl border-border py-2 pl-10 pr-4"
           >
             <CategoryIndicator
               class="mr-4 h-6 w-6 flex-none"
@@ -107,7 +107,7 @@ const TransactionItem: Component<{
 
             <div class="mr-2 min-w-0 truncate text-sm">{child().memos}</div>
 
-            <div class="ml-auto mr-1 flex h-6 w-6 flex-none items-center justify-center rounded-full bg-gray-200 text-xs">
+            <div class="ml-auto mr-1 flex h-6 w-6 flex-none items-center justify-center rounded-full bg-muted text-xs">
               {child().count}
             </div>
           </div>

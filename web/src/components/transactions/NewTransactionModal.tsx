@@ -315,7 +315,7 @@ export const NewTransactionModal: Component<{
                       <Button
                         size="custom"
                         variant="ghost"
-                        class="rounded-sm border border-gray-100 px-4 py-2 text-xs text-gray-700"
+                        class="rounded-sm border border-border px-4 py-2 text-xs text-muted-foreground"
                         onClick={() =>
                           setValue(
                             form,
@@ -358,7 +358,7 @@ export const NewTransactionModal: Component<{
                           <Button
                             size="custom"
                             variant="ghost"
-                            class="w-full rounded-sm border border-gray-100 px-4 py-2 text-xs text-gray-700"
+                            class="w-full rounded-sm border border-border px-4 py-2 text-xs text-muted-foreground"
                             data-testid="category-select"
                           >
                             <Show when={selectedCategory()}>
@@ -383,7 +383,7 @@ export const NewTransactionModal: Component<{
                   <Button
                     size="custom"
                     variant="ghost"
-                    class="whitespace-nowrap rounded-sm border border-gray-100 px-4 py-2 text-xs text-gray-700"
+                    class="whitespace-nowrap rounded-sm border border-border px-4 py-2 text-xs text-muted-foreground"
                     onClick={() => setValue(form, "date", "")}
                   >
                     <IconCalendarEvent class="mr-1" />
@@ -405,7 +405,7 @@ export const NewTransactionModal: Component<{
                           <Button
                             size="custom"
                             variant="ghost"
-                            class="rounded-sm border border-gray-100 px-4 py-2 text-xs text-gray-700"
+                            class="rounded-sm border border-border px-4 py-2 text-xs text-muted-foreground"
                             data-testid="account-select"
                           >
                             {account?.name} ({account?.currency.code})
@@ -427,7 +427,7 @@ export const NewTransactionModal: Component<{
                           <Button
                             size="custom"
                             variant="ghost"
-                            class="gap-1 rounded-sm border border-gray-100 px-4 py-2 text-xs text-gray-700"
+                            class="gap-1 rounded-sm border border-border px-4 py-2 text-xs text-muted-foreground"
                             data-testid="account-select"
                           >
                             {currency ? `Originally ${currency.code}` : "Original currency"}
@@ -443,7 +443,7 @@ export const NewTransactionModal: Component<{
                       class={`${buttonClasses({
                         size: "custom",
                         variant: "ghost"
-                      })} whitespace-nowrap rounded-sm border border-gray-100 px-4 py-2 text-xs text-gray-700`}
+                      })} whitespace-nowrap rounded-sm border border-border px-4 py-2 text-xs text-muted-foreground`}
                     >
                       <IconPhoto class="mr-1" />
                       {receiptImages().length > 0
@@ -489,7 +489,7 @@ export const NewTransactionModal: Component<{
           <Modal isOpen={true} onClickOutside={() => setDuplicatePending(false)}>
             <ModalContent>
               <ModalTitle>Duplicate transaction</ModalTitle>
-              <p class="mb-4 text-sm text-gray-700">
+              <p class="mb-4 text-sm text-muted-foreground">
                 A transaction with the same amount already exists on this date. Create it anyway?
               </p>
               <div class="flex justify-end gap-2">
@@ -516,14 +516,14 @@ export const NewTransactionModal: Component<{
         </Show>
         <Show when={shopFocused() && favourites()?.favouriteTransactions.length}>
           <Portal>
-            <div class="z-modal fixed inset-x-0 bottom-0 hidden bg-white/60 shadow-sm sm:block lg:bottom-2 lg:left-1/2 lg:max-w-lg lg:-translate-x-1/2 lg:rounded-sm">
+            <div class="z-modal fixed inset-x-0 bottom-0 hidden bg-card/60 shadow-sm sm:block lg:bottom-2 lg:left-1/2 lg:max-w-lg lg:-translate-x-1/2 lg:rounded-sm">
               <div class="flex flex-wrap gap-2 p-2">
                 <For each={favourites()?.favouriteTransactions || []}>
                   {(fav) => (
                     <Button
                       size="custom"
                       variant="ghost"
-                      class="bg-white px-3 py-2 text-xs"
+                      class="bg-card px-3 py-2 text-xs"
                       onClick={() => applyFavourite(fav)}
                     >
                       {fav.name}

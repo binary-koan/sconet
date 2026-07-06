@@ -4,7 +4,7 @@ import { Component, Show, createSignal } from "solid-js"
 import { NewTransactionModal } from "./NewTransactionModal"
 
 const BUTTON_CLASS =
-  "flex items-center justify-center gap-1 rounded-full border border-gray-200 bg-white px-3 h-10 hover:bg-gray-100"
+  "flex items-center justify-center gap-1 rounded-full border border-border bg-card px-3 h-10 hover:bg-accent"
 
 export const TransactionsActions: Component<{
   view: "list" | "calendar"
@@ -19,7 +19,7 @@ export const TransactionsActions: Component<{
       <div class="fixed bottom-[calc(66px+0.75rem+env(safe-area-inset-bottom))] right-3 z-[1025] flex items-center gap-2 md:bottom-6 md:right-6">
         <button
           type="button"
-          class={`${BUTTON_CLASS} px-4 shadow-sm text-indigo-600`}
+          class={`${BUTTON_CLASS} px-4 shadow-sm text-primary`}
           onClick={() => setCreatingTransaction(true)}
         >
           <IconPlus size="1.25em" class="-ml-1" />
@@ -28,7 +28,7 @@ export const TransactionsActions: Component<{
         <div class="flex rounded-full shadow-sm">
           <button
             type="button"
-            class={`${BUTTON_CLASS} rounded-r-none border-r-0 text-gray-600`}
+            class={`${BUTTON_CLASS} rounded-r-none border-r-0 text-muted-foreground`}
             classList={{ "!bg-indigo-600 !text-white": Boolean(props.filterCount) }}
             aria-label="Filter"
             onClick={() => props.onFilter()}
@@ -38,7 +38,7 @@ export const TransactionsActions: Component<{
           </button>
           <button
             type="button"
-            class={`${BUTTON_CLASS} rounded-l-none text-gray-600`}
+            class={`${BUTTON_CLASS} rounded-l-none text-muted-foreground`}
             aria-label={props.view === "list" ? "Calendar view" : "List view"}
             onClick={() =>
               navigate(props.view === "list" ? "/transactions/calendar" : "/transactions/list")
