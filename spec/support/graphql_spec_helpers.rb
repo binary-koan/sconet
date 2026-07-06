@@ -7,6 +7,10 @@ module GraphqlSpecHelpers
     @graphql_result["data"]
   end
 
+  def graphql_errors
+    @graphql_result["errors"]
+  end
+
   def expect_graphql_success
     expect(@graphql_result["errors"]).to be_nil
   end

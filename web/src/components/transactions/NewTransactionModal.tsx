@@ -7,7 +7,7 @@ import {
   setValue,
   SubmitEvent
 } from "@modular-forms/solid"
-import { repeat, uniq } from "lodash"
+import { isObject, repeat, uniq } from "lodash"
 import {
   IconArrowsSplit2,
   IconCalendarEvent,
@@ -27,6 +27,7 @@ import { useTransactionsForPopulationQuery } from "../../graphql/queries/transac
 import { useFavouriteTransactionsQuery } from "../../graphql/queries/favouriteTransactionsQuery"
 import { CATEGORY_BACKGROUND_COLORS, CategoryColor } from "../../utils/categoryColors"
 import { stripTime } from "../../utils/date"
+import { GraphQLError } from "../../utils/graphqlClient/requestGraphql"
 import { AccountSelect } from "../accounts/AccountSelect"
 import { Button, buttonClasses } from "../base/Button"
 import { InputAddon } from "../base/InputGroup"
@@ -66,9 +67,21 @@ export const NewTransactionModal: Component<{
 
   const recentShopsId = createUniqueId()
 
+  let lastSubmit: { input: TransactionInput; action?: string } | undefined
+  const [duplicatePending, setDuplicatePending] = createSignal(false)
+
   const createTransaction = useCreateTransaction({
     onSuccess: () => {
       toast.success("Transaction created")
+    },
+    onError: (error) => {
+      if (error instanceof GraphQLError && error.code === "DUPLICATE_TRANSACTION") {
+        setDuplicatePending(true)
+      } else {
+        toast.error(
+          isObject(error) && "message" in error ? `${error.message}` : "An API error occurred"
+        )
+      }
     }
   })
 
@@ -171,9 +184,18 @@ export const NewTransactionModal: Component<{
       coercedData.shopCurrencyId = shopCurrencyId
     }
 
-    const result = await createTransaction({ input: coercedData })
+    lastSubmit = { input: coercedData, action: event.submitter.dataset.action }
+    await submit(lastSubmit)
+  }
 
-    if (result && event.submitter.dataset.action === "split") {
+  const submit = async (
+    { input, action }: { input: TransactionInput; action?: string },
+    allowDuplicate = false
+  ) => {
+    const result = await createTransaction({ input, allowDuplicate })
+    if (!result) return
+
+    if (action === "split") {
       setSplittingTransaction(result.transactionCreate.transaction)
     } else {
       props.onClose()
@@ -463,6 +485,36 @@ export const NewTransactionModal: Component<{
             </Form>
           </ModalContent>
         </Modal>
+        <Show when={duplicatePending()}>
+          <Modal isOpen={true} onClickOutside={() => setDuplicatePending(false)}>
+            <ModalContent>
+              <ModalTitle>Duplicate transaction</ModalTitle>
+              <p class="mb-4 text-sm text-gray-700">
+                A transaction with the same shop and amount already exists on this date. Create it
+                anyway?
+              </p>
+              <div class="flex justify-end gap-2">
+                <Button
+                  colorScheme="neutral"
+                  variant="ghost"
+                  onClick={() => setDuplicatePending(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  colorScheme="primary"
+                  loading={createTransaction.loading}
+                  onClick={() => {
+                    setDuplicatePending(false)
+                    submit(lastSubmit!, true)
+                  }}
+                >
+                  Create anyway
+                </Button>
+              </div>
+            </ModalContent>
+          </Modal>
+        </Show>
         <Show when={shopFocused() && favourites()?.favouriteTransactions.length}>
           <Portal>
             <div class="z-modal fixed inset-x-0 bottom-0 hidden bg-white/60 shadow-sm sm:block lg:bottom-2 lg:left-1/2 lg:max-w-lg lg:-translate-x-1/2 lg:rounded-sm">

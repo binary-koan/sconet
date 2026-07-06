@@ -19,10 +19,11 @@ class Transaction < ApplicationRecord
   validates :shop_currency_id, presence: true, if: :shop_amount_cents
   validates :category, absence: true, if: :income?
   validate :amount_or_shop_amount_present
+  validate :not_a_duplicate, on: :create, unless: -> { allow_duplicate || split_from_id }
 
   before_validation :clear_duplicate_shop_amount
 
-  attr_accessor :amount_in_currency, :shop_amount_in_currency
+  attr_accessor :amount_in_currency, :shop_amount_in_currency, :allow_duplicate
 
   def expense?
     amount_cents && amount_cents <= 0
@@ -47,6 +48,12 @@ class Transaction < ApplicationRecord
       self.shop_currency_id = nil
       self.shop_amount_cents = nil
     end
+  end
+
+  def not_a_duplicate
+    return unless Transaction.top_level.where(date:, shop:, amount_cents:, shop_amount_cents:).exists?
+
+    errors.add(:base, :duplicate, message: 'A transaction with the same shop and amount already exists on this date')
   end
 
   def amount_or_shop_amount_present

@@ -119,6 +119,11 @@ module McpTools
         memo: { type: "string", description: "Blank when splits are given — each split carries its own memo" },
         confirmed: { type: "boolean", description: "When false, the transaction is held as a draft for the user to review in the app" },
         include_in_reports: { type: "boolean" },
+        allow_duplicate: {
+          type: "boolean",
+          description: "By default, creating a transaction with the same shop, amount, and date as an existing one " \
+                       "fails. Set true to create it anyway — only after confirming with the user that it is not a duplicate"
+        },
         splits: {
           type: "array",
           description: "Line-item splits. Amounts are signed like the parent and must sum exactly to the parent amount " \
@@ -166,7 +171,7 @@ module McpTools
 
     def self.call(account_id:, date:, shop:, amount_cents: nil, category_id: nil, currency_id: nil,
                   shop_amount_cents: nil, shop_currency_id: nil, memo: "", confirmed: true,
-                  include_in_reports: true, splits: [], receipt_images: [], server_context:)
+                  include_in_reports: true, allow_duplicate: false, splits: [], receipt_images: [], server_context:)
       account = Account.find(account_id)
 
       expected_total = shop_amount_cents || amount_cents
@@ -187,6 +192,7 @@ module McpTools
         confirmed:,
         include_in_reports:
       )
+      transaction.allow_duplicate = allow_duplicate
 
       Transaction.transaction do
         transaction.save!

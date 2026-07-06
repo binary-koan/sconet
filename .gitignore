@@ -38,3 +38,5 @@ web/build
 /config/master.key
 
 /skills
+
+*.dump.sql

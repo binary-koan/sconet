@@ -7,7 +7,11 @@ export class GraphQLError extends Error {
   }
 
   get isUnauthenticatedError() {
-    return this.errorsResponse?.[0]?.extensions?.code === "UNAUTHENTICATED"
+    return this.code === "UNAUTHENTICATED"
+  }
+
+  get code() {
+    return this.errorsResponse?.[0]?.extensions?.code
   }
 }
 

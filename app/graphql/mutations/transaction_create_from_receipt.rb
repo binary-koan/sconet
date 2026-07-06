@@ -23,6 +23,7 @@ module Mutations
         amount_cents: 0,
         confirmed: false
       )
+      transaction.allow_duplicate = true
 
       raise GraphQL::ExecutionError.new("Error creating transaction", extensions: transaction.errors.to_hash) unless transaction.save
 

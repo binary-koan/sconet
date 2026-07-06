@@ -8,8 +8,8 @@ import { TRANSACTIONS_QUERY } from "../queries/transactionsQuery"
 const CREATE_TRANSACTION_MUTATION = gql`
   ${FullTransactionFragment}
 
-  mutation CreateTransaction($input: TransactionInput!) {
-    transactionCreate(input: { transactionInput: $input }) {
+  mutation CreateTransaction($input: TransactionInput!, $allowDuplicate: Boolean) {
+    transactionCreate(input: { transactionInput: $input, allowDuplicate: $allowDuplicate }) {
       transaction {
         ...FullTransaction
       }
